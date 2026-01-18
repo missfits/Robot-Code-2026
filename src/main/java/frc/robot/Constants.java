@@ -62,12 +62,12 @@ public final class Constants {
     public static final double ROTATION_KD = 0.0;
 
     // PID constants for PathPlanner AutoBuilder
-    public static final double ROBOT_POSITION_P = 0;
+    public static final double ROBOT_POSITION_P = 5.0;
     public static final double ROBOT_POSITION_I = 0;
     public static final double ROBOT_POSITION_D = 0;
-    public static final double ROBOT_ROTATION_D = 0;
+    public static final double ROBOT_ROTATION_P = 5.0;
     public static final double ROBOT_ROTATION_I = 0;
-    public static final double ROBOT_ROTATION_P = 0;
+    public static final double ROBOT_ROTATION_D = 0;
   }
 
   public static class AngularMechanismConstants {
