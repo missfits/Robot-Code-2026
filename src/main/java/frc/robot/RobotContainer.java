@@ -115,7 +115,7 @@ public class RobotContainer {
 
 
   public void updatePoseEst() {
-    List<LocalizationCamera> cameras = m_vision.getLocalizationCameras();
+    List<LocalizationCamera> cameras = m_vision.getCameraReadings();
 
     for (LocalizationCamera cam : cameras){
       updatePoseEst(cam);

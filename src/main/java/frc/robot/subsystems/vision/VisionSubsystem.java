@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Queue;
 import java.util.function.Supplier;
 
 import org.photonvision.EstimatedRobotPose;
@@ -44,13 +45,16 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 
 import frc.robot.Constants;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.subsystems.vision.LocalizationCamera.CameraReading;
 import frc.robot.subsystems.vision.VisionUtils;
 
 
 
 public class VisionSubsystem extends SubsystemBase {
   private ArrayList<LocalizationCamera> cameras = new ArrayList<>();
+  private List<LocalizationCamera> camerasWithReadings = new ArrayList<>();
   private List<LocalizationCamera> camerasWithValidPose = new ArrayList<>();
+  private Optional<CameraReading> m_lastReading; // last vision measurement added to drivetrain
 
   /** Creates a new Vision Subsystem. */
   public VisionSubsystem() {
@@ -58,28 +62,86 @@ public class VisionSubsystem extends SubsystemBase {
     cameras.add(new LocalizationCamera(VisionConstants.CAMERA2_NAME, VisionConstants.ROBOT_TO_CAM2_3D));
   }
 
-  public List<LocalizationCamera> getLocalizationCameras(){
+  public List<LocalizationCamera> getCameraReadings(){
     return camerasWithValidPose;
   }
 
   @Override
   public void periodic() {
     for (LocalizationCamera cam : cameras){
-      cam.findTarget();
+      cam.updateCameraReading();
     }
 
+    camerasWithReadings = cameras.stream()
+    .filter((camera) -> {
+      return camera.getCameraReading()
+        .flatMap(CameraReading::robotPose).isPresent();}).toList();
+
     // sorts the camera readings by time (care less about older readings)
-    camerasWithValidPose = cameras.stream() // turn the list into a stream
-    .filter((camera) -> { // only get the cameras with a valid EstimatedRobotPose
-         return camera.getRobotPose() != null && camera.getTargetFound();
+    
+    camerasWithValidPose = camerasWithReadings.stream() // turn the list into a stream
+    .filter((camera) -> { // only get the cameras with a valid, filtered EstimatedRobotPose
+         return filterCameraReading(camera).isPresent();
     })
     .sorted((camera_a, camera_b) -> { // simplified comparator because we've filtered out invalid readings.
-         EstimatedRobotPose poseA = camera_a.getRobotPose();
-         EstimatedRobotPose poseB = camera_b.getRobotPose();
-         return Double.compare(poseA.timestampSeconds, poseB.timestampSeconds);
+         return Double.compare(camera_a.getCameraReading().orElseThrow().timestampSeconds(), camera_b.getCameraReading().orElseThrow().timestampSeconds());
      })
     .toList();
+
+    if (camerasWithValidPose.size() > 0) {
+      // update m_lastReading to be the most recent reading
+      m_lastReading = camerasWithValidPose.get(camerasWithValidPose.size() - 1).getCameraReading();
     }
+  }
+
+  private Optional<CameraReading> filterCameraReading(LocalizationCamera cam) {
+    if (!cam.getCameraReading().isPresent()) {
+      return Optional.empty();
+    }
+
+    CameraReading reading = cam.getCameraReading().get();
+
+    // --- timestamp check ---
+    if (m_lastReading.isPresent()) {
+      // if timestamp is older than last reading, return empty
+      if (reading.timestampSeconds() < m_lastReading.get().timestampSeconds()) {
+        SmartDashboard.putString("vision/" + cam.getCameraName() + "/timestampCheck", "failed");
+        return Optional.empty();
+      }
+    }
+
+    // return reading if roll/pitch/yaw is sane AND reading is NOT jumpy (compared to all newest readings)
+    return VisionUtils.poseIsSane(reading.robotPose().get().estimatedPose) && !isEstReadingJumpy(reading) ? Optional.of(reading) : Optional.empty();
+  }
+
+  // checks if reading is too far from avg pose calculated from all camera readings
+  private boolean isEstReadingJumpy(CameraReading reading) {
+    // not enough data to determine jumpiness
+    if (camerasWithReadings.size() < VisionConstants.MIN_NUM_CAMERA_READINGS) {
+      return false;
+    }
+
+    double sumX = 0, sumY = 0;
+    int numPoses = 0;
+    // cam.getCameraReading() will never be empty bc camerasWithReadings will filter.
+    for (LocalizationCamera cam : camerasWithReadings) {
+      if (cam.getCameraReading().get().robotPose().isPresent()){
+        Pose2d pose = cam.getCameraReading().get().robotPose().get().estimatedPose.toPose2d();
+        sumX += pose.getX();
+        sumY += pose.getY();
+        numPoses++;
+      }
+    }
+
+    // checks for division by zero
+    if (numPoses == 0){
+      return false;
+    }
+
+    Pose2d avgPose = new Pose2d(sumX / numPoses, sumY / numPoses, new Rotation2d());
+
+    return reading.robotPose().get().estimatedPose.toPose2d().getTranslation().getDistance(avgPose.getTranslation()) > VisionConstants.MAX_VISION_READING_DISTANCE;
+  }
 
   @Override
   public void simulationPeriodic() {
