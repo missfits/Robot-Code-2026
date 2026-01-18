@@ -76,24 +76,18 @@ public class RobotContainer {
   }
 
   /**
-   * Define trigger -> command mappings 
+   * Define trigger -> command mappings
    */
   private void configureBindings() {
     // Default drive
     m_drivetrain.setDefaultCommand(
       // Drivetrain will execute this command periodically
-      m_drivetrainCommandFactory.defaultDrive(
-        new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
-        new JoystickVals(m_driverJoystick.getRightX(), m_driverJoystick.getRightY()),
-        false)
+      m_drivetrainCommandFactory.defaultDrive(m_driverJoystick, () -> false)
     );
 
     // Drive in slowmode while right trigger is pressed
     m_driverJoystick.rightTrigger().whileTrue(
-      m_drivetrainCommandFactory.defaultDrive(
-        new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
-        new JoystickVals(m_driverJoystick.getRightX(), m_driverJoystick.getRightY()),
-        true)
+      m_drivetrainCommandFactory.defaultDrive(m_driverJoystick, () -> true)
     );
 
     m_drivetrain.registerTelemetry(logger::telemeterize);
