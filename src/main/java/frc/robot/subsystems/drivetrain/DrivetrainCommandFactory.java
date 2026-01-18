@@ -62,14 +62,15 @@ public class DrivetrainCommandFactory {
     }
 
     // ----- SNAP TO ANGLE -----
-    public Command snapToAngle(CommandXboxController joystick, double angle){
-        SmartDashboard.putNumber("drivetrain/snap to angle", angle);
-        JoystickVals shapedValues = Controls.inputShape(joystick.getLeftX(), joystick.getLeftY(), true, false);
-        return m_drivetrain.getCommandFromRequest(() ->
-        m_driveFacingAngle.withVelocityX(-shapedValues.y() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive forward with negative Y (forward)
+    public Command snapToAngle(CommandXboxController joystick, double angle) {
+        return m_drivetrain.getCommandFromRequest(() -> {
+            SmartDashboard.putNumber("drivetrain/snap to angle", angle);
+            JoystickVals shapedValues = Controls.inputShape(joystick.getLeftX(), joystick.getLeftY(), true, false);
+            
+            return m_driveFacingAngle.withVelocityX(-shapedValues.y() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive forward with negative Y (forward)
             .withVelocityY(-shapedValues.x() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive left with negative X (left)
-            .withTargetDirection(Rotation2d.fromDegrees(angle))
-        );
+            .withTargetDirection(Rotation2d.fromDegrees(angle));
+        });
     }
 
     public void setHeadingController(){
