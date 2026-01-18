@@ -77,7 +77,7 @@ public class LocalizationCamera {
       
       // if present + not jumpy when compared to last 3 camera readings,
       // update instance var m_currentReading and add to m_lastReadings
-      if (poseEstimatorOutput.isPresent() && isEstPoseJumpy()) {
+      if (poseEstimatorOutput.isPresent()) {
         // update std devs (will account for multi + single tag)
         m_currentReading = Optional.of(new CameraReading(poseEstimatorOutput, updateEstimationStdDevs(poseEstimatorOutput, result.getTargets()), result.getTimestampSeconds(), result.getTargets().size()));
 
@@ -150,7 +150,7 @@ public class LocalizationCamera {
   // LOGIC UNCHANGED
   // checks if the pose is jumpy based on avg speed since by calculating based on speed, 
   // the camera fps doesn't matter as the speed between readings will still be the same. this is based on last 3 readings
-  private boolean isEstPoseJumpy() {
+  public boolean isEstPoseJumpy() {
     if (m_lastReadings.size() < VisionConstants.NUM_LAST_EST_POSES) {
       return true;
     }

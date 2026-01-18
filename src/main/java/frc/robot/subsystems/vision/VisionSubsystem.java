@@ -111,11 +111,11 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
     // return reading if roll/pitch/yaw is sane AND reading is NOT jumpy (compared to all newest readings)
-    return VisionUtils.poseIsSane(reading.robotPose().get().estimatedPose) && !isEstReadingJumpy(reading) ? Optional.of(reading) : Optional.empty();
+    return VisionUtils.poseIsSane(reading.robotPose().get().estimatedPose) && !cameraReadingMatchesOtherReadings(reading) ? Optional.of(reading) : Optional.empty();
   }
 
   // checks if reading is too far from avg pose calculated from all camera readings
-  private boolean isEstReadingJumpy(CameraReading reading) {
+  private boolean cameraReadingMatchesOtherReadings(CameraReading reading) {
     // not enough data to determine jumpiness
     if (camerasWithReadings.size() < VisionConstants.MIN_NUM_CAMERA_READINGS) {
       return false;
