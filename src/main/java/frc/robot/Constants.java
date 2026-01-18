@@ -7,10 +7,12 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-
+import edu.wpi.first.math.util.Units;
 import frc.robot.generated.TunerConstants;
 
 /**
@@ -62,12 +64,12 @@ public final class Constants {
     public static final double ROTATION_KD = 0.0;
 
     // PID constants for PathPlanner AutoBuilder
-    public static final double ROBOT_POSITION_P = 0;
+    public static final double ROBOT_POSITION_P = 5.0;
     public static final double ROBOT_POSITION_I = 0;
     public static final double ROBOT_POSITION_D = 0;
-    public static final double ROBOT_ROTATION_D = 0;
+    public static final double ROBOT_ROTATION_P = 5.0;
     public static final double ROBOT_ROTATION_I = 0;
-    public static final double ROBOT_ROTATION_P = 0;
+    public static final double ROBOT_ROTATION_D = 0;
   }
 
   public static class AngularMechanismConstants {
@@ -107,8 +109,39 @@ public final class Constants {
     // (camera setup)
     public static final String CAMERA1_NAME = "camera1";
     public static final String CAMERA2_NAME = "camera2";
-    public static final Transform3d ROBOT_TO_CAM1_3D = null;
-    public static final Transform3d ROBOT_TO_CAM2_3D = null;
+
+    // Camera 1 position (translation in inches, converted to meters)
+    public static final double ROBOT_TO_CAM1_X = Units.inchesToMeters(2);
+    public static final double ROBOT_TO_CAM1_Y = Units.inchesToMeters(-7);
+    public static final double ROBOT_TO_CAM1_Z = Units.inchesToMeters(8);
+
+    // Camera 1 rotation (in degrees, converted to radians)
+    // yaw = 45; angle of mount is 45 upwards. chatgpt did the math 
+    public static final double ROBOT_TO_CAM1_ROLL = Units.degreesToRadians(-35.26);
+    public static final double ROBOT_TO_CAM1_PITCH = Units.degreesToRadians(30);
+    public static final double ROBOT_TO_CAM1_YAW = Units.degreesToRadians(45); 
+
+    public static final Transform3d ROBOT_TO_CAM1_3D =
+      new Transform3d(
+        new Translation3d(ROBOT_TO_CAM1_X, ROBOT_TO_CAM1_Y, ROBOT_TO_CAM1_Z),
+        new Rotation3d(ROBOT_TO_CAM1_ROLL, ROBOT_TO_CAM1_PITCH, ROBOT_TO_CAM1_YAW)
+      );
+
+    // Camera 2 position (translation in inches, converted to meters)
+    public static final double ROBOT_TO_CAM2_X = 0;
+    public static final double ROBOT_TO_CAM2_Y = 0;
+    public static final double ROBOT_TO_CAM2_Z = 0;
+
+    // Camera 2 rotation (in degrees, converted to radians)
+    public static final double ROBOT_TO_CAM2_ROLL = 0;
+    public static final double ROBOT_TO_CAM2_PITCH = 0;
+    public static final double ROBOT_TO_CAM2_YAW = 0;
+
+    public static final Transform3d ROBOT_TO_CAM2_3D =
+      new Transform3d(
+        new Translation3d(ROBOT_TO_CAM2_X, ROBOT_TO_CAM2_Y, ROBOT_TO_CAM2_Z),
+        new Rotation3d(ROBOT_TO_CAM2_ROLL, ROBOT_TO_CAM2_PITCH, ROBOT_TO_CAM2_YAW)
+      );
   }
   
   public static class LEDConstants { // placeholder constants
