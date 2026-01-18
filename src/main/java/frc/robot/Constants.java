@@ -105,8 +105,8 @@ public final class Constants {
 
     // --- vision subsystem ---
     // (camera setup)
-    public static final String CAMERA1_NAME = null;
-    public static final String CAMERA2_NAME = null;
+    public static final String CAMERA1_NAME = "camera1";
+    public static final String CAMERA2_NAME = "camera2";
     public static final Transform3d ROBOT_TO_CAM1_3D = null;
     public static final Transform3d ROBOT_TO_CAM2_3D = null;
   }
