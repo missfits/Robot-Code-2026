@@ -2,6 +2,10 @@ package frc.robot.subsystems.drivetrain;
 
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
+
+import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
+
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
@@ -39,20 +43,23 @@ public class DrivetrainCommandFactory {
     // ----- DEFAULT DRIVE -----
     // Note that X is defined as forward according to WPILib convention,
     // and Y is defined as to the left according to WPILib convention.
-    public Command defaultDrive(JoystickVals transVals, JoystickVals rotVals, boolean slowmode) {
-        JoystickVals shapedTrans = Controls.inputShape(transVals.x(), transVals.y(), true, slowmode);
-        JoystickVals shapedRot = Controls.inputShape(rotVals.x(), rotVals.y(), false, slowmode);
+    public Command defaultDrive(Supplier<JoystickVals> transValsSupplier, Supplier<JoystickVals> rotValsSupplier, boolean slowmode) {
 
-        SmartDashboard.putNumber("controller/translation x", -shapedTrans.y());
-        SmartDashboard.putNumber("controller/translation y", -shapedTrans.x());
-        SmartDashboard.putNumber("controller/rotation x", -shapedRot.x());
-        SmartDashboard.putNumber("controller/rotation y", -shapedRot.y());
+        return m_drivetrain.getCommandFromRequest(() -> {
 
-        return m_drivetrain.getCommandFromRequest(() ->
-            m_drive.withVelocityX(-shapedTrans.y() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive forward with negative Y (forward)
+            JoystickVals shapedTrans = Controls.inputShape(transValsSupplier.get().x(), transValsSupplier.get().y(), true, slowmode);
+            JoystickVals shapedRot = Controls.inputShape(rotValsSupplier.get().x(), rotValsSupplier.get().y(), false, slowmode);
+
+            SmartDashboard.putNumber("controller/translation x", -shapedTrans.y());
+            SmartDashboard.putNumber("controller/translation y", -shapedTrans.x());
+            SmartDashboard.putNumber("controller/rotation x", -shapedRot.x());
+            SmartDashboard.putNumber("controller/rotation y", -shapedRot.y());
+
+            return m_drive.withVelocityX(-shapedTrans.y() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive forward with negative Y (forward)
                 .withVelocityY(-shapedTrans.x() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive left with negative X (left)
-                .withRotationalRate(-shapedRot.x() * DrivetrainConstants.MAX_ROTATION_SPEED) // Drive counterclockwise with negative X (left)
-        );
+                .withRotationalRate(-shapedRot.x() * DrivetrainConstants.MAX_ROTATION_SPEED); // Drive counterclockwise with negative X (left)
+            }
+            );
     }
 
     // ----- SNAP TO ANGLE -----

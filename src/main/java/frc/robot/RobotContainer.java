@@ -83,16 +83,16 @@ public class RobotContainer {
     m_drivetrain.setDefaultCommand(
       // Drivetrain will execute this command periodically
       m_drivetrainCommandFactory.defaultDrive(
-        new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
-        new JoystickVals(m_driverJoystick.getRightX(), m_driverJoystick.getRightY()),
+        () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
+        () -> new JoystickVals(m_driverJoystick.getRightX(), m_driverJoystick.getRightY()),
         false)
     );
 
     // Drive in slowmode while right trigger is pressed
     m_driverJoystick.rightTrigger().whileTrue(
       m_drivetrainCommandFactory.defaultDrive(
-        new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
-        new JoystickVals(m_driverJoystick.getRightX(), m_driverJoystick.getRightY()),
+        () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
+        () -> new JoystickVals(m_driverJoystick.getRightX(), m_driverJoystick.getRightY()),
         true)
     );
 
