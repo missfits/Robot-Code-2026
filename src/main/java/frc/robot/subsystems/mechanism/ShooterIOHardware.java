@@ -65,9 +65,8 @@ public class ShooterIOHardware {
   public void resetPosition() {
         setPosition(0);
     }
-
-  public void setVelocityVoltage(double value) {
-    m_shooterMotor.setControl(new VelocityVoltage(value));
-    SmartDashboard.putNumber("shooter/velocity voltage", value);
-  }
+  
+  public void setVelocityVoltage(VelocityVoltage request) {
+    m_shooterMotor.setControl(request);
+}
 }

@@ -16,8 +16,8 @@ public class IntakeSubsystem extends SubsystemBase {
   public Command runIntake(double speed) {
         return new FunctionalCommand(
             // set voltage in init also
-            () -> {m_IO.setVoltage(speed); SmartDashboard.putString("intake/currentlyRunningCommand", "runCollar");},
-            () -> {m_IO.setVoltage(speed); SmartDashboard.putString("intake/currentlyRunningCommand", "runCollar");},
+            () -> {m_IO.setVoltage(speed); SmartDashboard.putString("intake/currentlyRunningCommand", "runIntake");},
+            () -> {m_IO.setVoltage(speed); SmartDashboard.putString("intake/currentlyRunningCommand", "runIntake");},
             (interrupted) -> {},
             () -> false,
             this
