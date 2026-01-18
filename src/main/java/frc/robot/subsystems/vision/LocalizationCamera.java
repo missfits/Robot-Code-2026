@@ -6,7 +6,6 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -19,7 +18,6 @@ import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
-import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import frc.robot.Constants.VisionConstants;
@@ -28,6 +26,7 @@ public class LocalizationCamera {
 
   private final PhotonCamera m_camera;
   private final String m_cameraName;
+  private final String m_logString;
 
   private AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
   private final Field2d m_estPoseField = new Field2d(); // field pose estimator
@@ -37,11 +36,12 @@ public class LocalizationCamera {
 
   private Optional<CameraReading> m_currentReading = Optional.empty();
 
-  public static record CameraReading(Optional<EstimatedRobotPose> robotPose, Matrix<N3, N1> stdDevs, double timestampSeconds, Integer numTargets) {}
+  public static record CameraReading(EstimatedRobotPose robotPose, Matrix<N3, N1> stdDevs, double timestampSeconds, Integer numTargets) {}
 
   public LocalizationCamera(String cameraName, Transform3d robotToCam) {
     m_cameraName = cameraName;
     m_camera = new PhotonCamera(m_cameraName);
+    m_logString = "vision/" + m_cameraName;
     poseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, robotToCam);
 
     SmartDashboard.putBoolean("isConnected/" + m_cameraName, m_camera.isConnected());
@@ -63,11 +63,29 @@ public class LocalizationCamera {
   public void updateField(Pose2d newPos){
     m_estPoseField.setRobotPose(newPos);
 
-    SmartDashboard.putData("est pose field/" + m_cameraName + "/", m_estPoseField);
+    SmartDashboard.putData(m_logString + "/est pose field/", m_estPoseField);
   }
 
   
   public void updateCameraReading() {
+    Optional<CameraReading> newReading = calculateNewCameraReading();
+
+    if (newReading.isPresent()) {
+      m_currentReading = newReading;
+      m_lastReadings.add(m_currentReading.get());
+
+      if (m_lastReadings.size() > VisionConstants.NUM_LAST_EST_POSES) {
+        m_lastReadings.removeFirst();
+      }
+
+      SmartDashboard.putBoolean(m_logString + "/is-Present", true);
+      SmartDashboard.putString(m_logString + "/is-multiTag", newReading.get().numTargets() > 1 ? "multitagReading" : "singleTagReading");
+    } else {
+      SmartDashboard.putBoolean(m_logString + "/is-Present", false);
+    }
+  }
+
+  private Optional<CameraReading> calculateNewCameraReading() {
     var results = m_camera.getAllUnreadResults(); // raw camera data
 
     if (!results.isEmpty()) {
@@ -79,76 +97,56 @@ public class LocalizationCamera {
       // update instance var m_currentReading and add to m_lastReadings
       if (poseEstimatorOutput.isPresent()) {
         // update std devs (will account for multi + single tag)
-        var stdDevs = calculateEstimationStdDevs(poseEstimatorOutput, result.getTargets());
-        m_currentReading = Optional.of(new CameraReading(poseEstimatorOutput, stdDevs, result.getTimestampSeconds(), result.getTargets().size()));
+        var stdDevs = calculateEstimationStdDevs(poseEstimatorOutput.get(), result.getTargets());
+        var newReading = new CameraReading(poseEstimatorOutput.get(), stdDevs, result.getTimestampSeconds(), result.getTargets().size());
 
         // return empty if single tag has high pose ambiguity
-        if (m_currentReading.get().numTargets() == 1 && result.getBestTarget().getPoseAmbiguity() > VisionConstants.MAX_POSE_AMBIGUITY) {
-          m_currentReading = Optional.empty();
-          return;
+        if (newReading.numTargets() == 1 && result.getBestTarget().getPoseAmbiguity() > VisionConstants.MAX_POSE_AMBIGUITY) {
+          return Optional.empty();
         }
 
-        m_lastReadings.add(m_currentReading.get());
-
-        if (m_lastReadings.size() > VisionConstants.NUM_LAST_EST_POSES) {
-          m_lastReadings.removeFirst();
-        }
-
-      } else {
-        // if newest reading empty or jumpy, set m_currentReading to be empty
-        m_currentReading = Optional.empty(); 
+        return Optional.of(newReading);
       }
-
-      SmartDashboard.putString("vision/" + m_cameraName + "/targetState", result.hasTargets() ? "targetsFound" : "noTargets");
-      SmartDashboard.putString("vision/" + m_cameraName + "/is-multiTag", result.getTargets().size() > 1 ? "multitagReading" : "singleTagReading");
     }
+    return Optional.empty();
   }
 
-  // LOGIC UNCHANGED
   // Standard deviation measures how "spread out" / accurate a vision reading is
-  private Matrix<N3, N1> calculateEstimationStdDevs(Optional<EstimatedRobotPose> estimatedPose, List<PhotonTrackedTarget> targets) {
-    if (estimatedPose.isEmpty()) {
-      // No pose input. Default to single-tag std devs
-      SmartDashboard.putNumber("vision/" + m_cameraName + "/standardDeviation-average-distance", Double.MAX_VALUE);
-      SmartDashboard.putString("vision/" + m_cameraName + "/standardDeviation-state", "empty");
+  private Matrix<N3, N1> calculateEstimationStdDevs(EstimatedRobotPose estimatedPose, List<PhotonTrackedTarget> targets) {
+    // Pose present. Start running Heuristic
+    int numTags = 0;
+    double avgDist = 0;
+
+    // Precalculation - see how many tags we found, and calculate an
+    // average-distance metric
+    for (var tgt : targets) {
+      var tagPose = poseEstimator.getFieldTags().getTagPose(tgt.getFiducialId());
+      if (tagPose.isEmpty())
+        continue;
+      numTags++;
+      avgDist += tagPose
+          .get()
+          .toPose2d()
+          .getTranslation()
+          .getDistance(estimatedPose.estimatedPose.toPose2d().getTranslation());
+    }
+
+    if (numTags == 0) {
+      // No tags visible. Default to single-tag std devs
+      SmartDashboard.putString("vision/" + m_cameraName + "/standardDeviation-state", "no tags visible");
       return VisionConstants.kSingleTagStdDevs;
+    } else if (numTags == 1 && avgDist > VisionConstants.VISION_DISTANCE_DISCARD) {
+      SmartDashboard.putString("vision/" + m_cameraName + "/standardDeviation-state", "target too far");
+      return VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
     } else {
-      // Pose present. Start running Heuristic
-      int numTags = 0;
-      double avgDist = 0;
-
-      // Precalculation - see how many tags we found, and calculate an
-      // average-distance metric
-      for (var tgt : targets) {
-        var tagPose = poseEstimator.getFieldTags().getTagPose(tgt.getFiducialId());
-        if (tagPose.isEmpty())
-          continue;
-        numTags++;
-        avgDist += tagPose
-            .get()
-            .toPose2d()
-            .getTranslation()
-            .getDistance(estimatedPose.get().estimatedPose.toPose2d().getTranslation());
-      }
-
-      if (numTags == 0) {
-        // No tags visible. Default to single-tag std devs
-        SmartDashboard.putString("vision/" + m_cameraName + "/standardDeviation-state", "no tags visible");
-        return VisionConstants.kSingleTagStdDevs;
-      } else if (numTags == 1 && avgDist > VisionConstants.VISION_DISTANCE_DISCARD) {
-        SmartDashboard.putString("vision/" + m_cameraName + "/standardDeviation-state", "target too far");
-        return VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
-      } else {
-        var unscaledStdDevs = numTags > 1 ? VisionConstants.kMultiTagStdDevs : VisionConstants.kSingleTagStdDevs;
-        avgDist /= numTags;
-        // increase std devs based on (average) distance
-        SmartDashboard.putString("vision/" + m_cameraName + "/standardDeviation-state", "good :)");
-        return unscaledStdDevs.times(1 + (avgDist * avgDist / VisionConstants.STD_DEV_SCALER));
-      }
+      var unscaledStdDevs = numTags > 1 ? VisionConstants.kMultiTagStdDevs : VisionConstants.kSingleTagStdDevs;
+      avgDist /= numTags;
+      // increase std devs based on (average) distance
+      SmartDashboard.putString("vision/" + m_cameraName + "/standardDeviation-state", "good :)");
+      return unscaledStdDevs.times(1 + (avgDist * avgDist / VisionConstants.STD_DEV_SCALER));
     }
   }
 
-  // LOGIC UNCHANGED
   // checks if the pose is jumpy based on avg speed since by calculating based on speed, 
   // the camera fps doesn't matter as the speed between readings will still be the same. this is based on last 3 readings
   public boolean isEstPoseJumpy() {
@@ -161,8 +159,8 @@ public class LocalizationCamera {
 
     for (int i = 0; i < m_lastReadings.size() - 1; i++) {
       // add distance between ith pose and i+1th pose
-      var pose1 = m_lastReadings.get(i).robotPose.get().estimatedPose.toPose2d();
-      var pose2 = m_lastReadings.get(i + 1).robotPose.get().estimatedPose.toPose2d();
+      Pose2d pose1 = m_lastReadings.get(i).robotPose.estimatedPose.toPose2d();
+      Pose2d pose2 = m_lastReadings.get(i + 1).robotPose.estimatedPose.toPose2d();
       
       totalDistance += Math.abs(pose1.minus(pose2).getTranslation().getNorm());
       totalTime += Math.abs(m_lastReadings.get(i).timestampSeconds - m_lastReadings.get(i+1).timestampSeconds);
