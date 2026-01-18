@@ -78,7 +78,7 @@ public final class Constants {
   
   public static class VisionConstants {
     // --- vision utils ---
-    public static final double MAX_VISION_POSE_DISTANCE = 1;
+    public static final double MAX_VISION_POSE_DISTANCE = 1; // for vision (fusedpose) vs odometry
     public static final double MAX_VISION_POSE_Z = 0.1;
     public static final double MAX_VISION_POSE_ROLL = 0.05; // in radians
     public static final double MAX_VISION_POSE_PITCH = 0.05; // in radians
@@ -101,6 +101,10 @@ public final class Constants {
     public static final String CAMERA2_NAME = null;
     public static final Transform3d ROBOT_TO_CAM1_3D = null;
     public static final Transform3d ROBOT_TO_CAM2_3D = null;
+
+
+    public static final int MIN_NUM_CAMERA_READINGS = 2; // min number of diff camera readings for "jumpy" check
+    public static final double MAX_VISION_READING_DISTANCE = 0.5; // max distance between two camera readings
   }
   
   public static class LEDConstants { // placeholder constants
