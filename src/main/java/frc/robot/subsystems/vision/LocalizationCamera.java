@@ -79,7 +79,8 @@ public class LocalizationCamera {
       // update instance var m_currentReading and add to m_lastReadings
       if (poseEstimatorOutput.isPresent()) {
         // update std devs (will account for multi + single tag)
-        m_currentReading = Optional.of(new CameraReading(poseEstimatorOutput, updateEstimationStdDevs(poseEstimatorOutput, result.getTargets()), result.getTimestampSeconds(), result.getTargets().size()));
+        var stdDevs = calculateEstimationStdDevs(poseEstimatorOutput, result.getTargets());
+        m_currentReading = Optional.of(new CameraReading(poseEstimatorOutput, stdDevs, result.getTimestampSeconds(), result.getTargets().size()));
 
         // return empty if single tag has high pose ambiguity
         if (m_currentReading.get().numTargets() == 1 && result.getBestTarget().getPoseAmbiguity() > VisionConstants.MAX_POSE_AMBIGUITY) {
@@ -105,7 +106,7 @@ public class LocalizationCamera {
 
   // LOGIC UNCHANGED
   // Standard deviation measures how "spread out" / accurate a vision reading is
-  private Matrix<N3, N1> updateEstimationStdDevs(Optional<EstimatedRobotPose> estimatedPose, List<PhotonTrackedTarget> targets) {
+  private Matrix<N3, N1> calculateEstimationStdDevs(Optional<EstimatedRobotPose> estimatedPose, List<PhotonTrackedTarget> targets) {
     if (estimatedPose.isEmpty()) {
       // No pose input. Default to single-tag std devs
       SmartDashboard.putNumber("vision/" + m_cameraName + "/standardDeviation-average-distance", Double.MAX_VALUE);
@@ -160,7 +161,10 @@ public class LocalizationCamera {
 
     for (int i = 0; i < m_lastReadings.size() - 1; i++) {
       // add distance between ith pose and i+1th pose
-      totalDistance += Math.abs(m_lastReadings.get(i).robotPose.get().estimatedPose.toPose2d().minus(m_lastReadings.get(i + 1).robotPose.get().estimatedPose.toPose2d()).getTranslation().getNorm());
+      var pose1 = m_lastReadings.get(i).robotPose.get().estimatedPose.toPose2d();
+      var pose2 = m_lastReadings.get(i + 1).robotPose.get().estimatedPose.toPose2d();
+      
+      totalDistance += Math.abs(pose1.minus(pose2).getTranslation().getNorm());
       totalTime += Math.abs(m_lastReadings.get(i).timestampSeconds - m_lastReadings.get(i+1).timestampSeconds);
     }
 
