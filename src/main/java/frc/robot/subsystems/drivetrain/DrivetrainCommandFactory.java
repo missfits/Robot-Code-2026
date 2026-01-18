@@ -4,7 +4,6 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
 
 import java.util.function.BooleanSupplier;
-import java.util.function.Supplier;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
@@ -43,12 +42,12 @@ public class DrivetrainCommandFactory {
     // ----- DEFAULT DRIVE -----
     // Note that X is defined as forward according to WPILib convention,
     // and Y is defined as to the left according to WPILib convention.
-    public Command defaultDrive(Supplier<JoystickVals> transValsSupplier, Supplier<JoystickVals> rotValsSupplier, boolean slowmode) {
+    public Command defaultDrive(CommandXboxController controller, BooleanSupplier slowmodeSupplier) {
 
         return m_drivetrain.getCommandFromRequest(() -> {
 
-            JoystickVals shapedTrans = Controls.inputShape(transValsSupplier.get().x(), transValsSupplier.get().y(), true, slowmode);
-            JoystickVals shapedRot = Controls.inputShape(rotValsSupplier.get().x(), rotValsSupplier.get().y(), false, slowmode);
+            JoystickVals shapedTrans = Controls.inputShape(controller.getLeftX(), controller.getLeftY(), true, slowmodeSupplier.getAsBoolean());
+            JoystickVals shapedRot = Controls.inputShape(controller.getRightX(), controller.getRightY(), false, slowmodeSupplier.getAsBoolean());
 
             SmartDashboard.putNumber("controller/translation x", -shapedTrans.y());
             SmartDashboard.putNumber("controller/translation y", -shapedTrans.x());
