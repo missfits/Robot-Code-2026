@@ -91,8 +91,8 @@ public class DrivetrainCommandFactory {
         // Get the angle to the target
         Rotation2d angleToTarget = translationToTarget.getAngle();
 
-        SmartDashboard.putNumber("drivetrain/snap to target/target x", poseSupplier.get().getX());
-        SmartDashboard.putNumber("drivetrain/snap to target/target y", poseSupplier.get().getY());
+        SmartDashboard.putNumber("drivetrain/snap to target/target x", targetPose.getX());
+        SmartDashboard.putNumber("drivetrain/snap to target/target y", targetPose.getY());
         SmartDashboard.putNumber("drivetrain/snap to target/angle", angleToTarget.getRadians());
 
 
