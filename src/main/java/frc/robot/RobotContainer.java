@@ -130,7 +130,7 @@ public class RobotContainer {
     if (!optionalReading.isPresent()) {
       return;
     }
-    var cameraReading = camera.getCameraReading().get();
+    var cameraReading = optionalReading.get();
     EstimatedRobotPose robotPose = cameraReading.robotPose();
 
     Pose3d estPose3d = robotPose.estimatedPose; // estimated robot pose of vision

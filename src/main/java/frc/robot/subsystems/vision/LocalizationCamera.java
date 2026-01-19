@@ -78,6 +78,7 @@ public class LocalizationCamera {
         m_lastReadings.removeFirst();
       }
 
+      // logging all cameraReading data to SmartDashboard
       SmartDashboard.putBoolean(m_logString + "/is-Present", true);
 
       SmartDashboard.putNumber(m_logString + "/robot-pose-X", newReading.get().robotPose().estimatedPose.getX());
@@ -86,9 +87,8 @@ public class LocalizationCamera {
       SmartDashboard.putNumber(m_logString + "/robot-num-targets-seen", newReading.get().numTargets());
       SmartDashboard.putNumberArray(m_logString + "/robot-standard-devs", newReading.get().stdDevs().getData());
       SmartDashboard.putNumber(m_logString + "/robot-timestamp", newReading.get().timestampSeconds());
-
-
       SmartDashboard.putString(m_logString + "/is-multiTag", newReading.get().numTargets() > 1 ? "multitagReading" : "singleTagReading");
+
     } else {
       SmartDashboard.putBoolean(m_logString + "/is-Present", false);
     }
