@@ -161,7 +161,7 @@ public class RobotContainer {
       m_drivetrain.getState().Pose.getX(), m_drivetrain.getState().Pose.getY(), m_drivetrain.getState().Pose.getRotation().getRadians()});
 
     
-      m_drivetrain.addVisionMeasurement(estPose2d, Utils.fpgaToCurrentTime(robotPose.timestampSeconds));
+      m_drivetrain.addVisionMeasurement(estPose2d, robotPose.timestampSeconds);
       camera.updateField(estPose2d);
 
       // sample drivetrain fusedPose after updating
