@@ -52,6 +52,8 @@ public class VisionSubsystem extends SubsystemBase {
   private ArrayList<LocalizationCamera> cameras = new ArrayList<>();
   private List<LocalizationCamera> camerasWithValidPose = new ArrayList<>();
 
+  private double m_lastTimestamp = 0.0;
+
   /** Creates a new Vision Subsystem. */
   public VisionSubsystem() {
     cameras.add(new LocalizationCamera(VisionConstants.CAMERA1_NAME, VisionConstants.ROBOT_TO_CAM1_3D));
@@ -65,21 +67,25 @@ public class VisionSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     for (LocalizationCamera cam : cameras){
-      cam.findTarget();
+      cam.updateCameraReading();
     }
 
     // sorts the camera readings by time (care less about older readings)
     camerasWithValidPose = cameras.stream() // turn the list into a stream
     .filter((camera) -> { // only get the cameras with a valid EstimatedRobotPose
-         return camera.getRobotPose() != null && camera.getTargetFound();
+         return camera.getCameraReading().isPresent() && camera.getCameraReading().get().timestampSeconds() > m_lastTimestamp;
     })
     .sorted((camera_a, camera_b) -> { // simplified comparator because we've filtered out invalid readings.
-         EstimatedRobotPose poseA = camera_a.getRobotPose();
-         EstimatedRobotPose poseB = camera_b.getRobotPose();
-         return Double.compare(poseA.timestampSeconds, poseB.timestampSeconds);
+         return Double.compare(camera_a.getCameraReading().get().timestampSeconds(), 
+                              camera_b.getCameraReading().get().timestampSeconds());
      })
     .toList();
+    
+    if (camerasWithValidPose.size() > 0){
+      // update last timestamp
+      m_lastTimestamp = camerasWithValidPose.get(camerasWithValidPose.size() - 1).getCameraReading().get().timestampSeconds();
     }
+  }
 
   @Override
   public void simulationPeriodic() {

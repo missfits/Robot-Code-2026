@@ -4,6 +4,7 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
 
 import java.util.function.Supplier;
+import java.util.function.BooleanSupplier;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
@@ -44,31 +45,35 @@ public class DrivetrainCommandFactory {
     // ----- DEFAULT DRIVE -----
     // Note that X is defined as forward according to WPILib convention,
     // and Y is defined as to the left according to WPILib convention.
-    public Command defaultDrive(JoystickVals transVals, JoystickVals rotVals, boolean slowmode) {
-        JoystickVals shapedTrans = Controls.inputShape(transVals.x(), transVals.y(), true, slowmode);
-        JoystickVals shapedRot = Controls.inputShape(rotVals.x(), rotVals.y(), false, slowmode);
+    public Command defaultDrive(CommandXboxController controller, BooleanSupplier slowmodeSupplier) {
 
-        SmartDashboard.putNumber("controller/translation x", -shapedTrans.y());
-        SmartDashboard.putNumber("controller/translation y", -shapedTrans.x());
-        SmartDashboard.putNumber("controller/rotation x", -shapedRot.x());
-        SmartDashboard.putNumber("controller/rotation y", -shapedRot.y());
+        return m_drivetrain.getCommandFromRequest(() -> {
 
-        return m_drivetrain.getCommandFromRequest(() ->
-            m_drive.withVelocityX(-shapedTrans.y() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive forward with negative Y (forward)
+            JoystickVals shapedTrans = Controls.inputShape(controller.getLeftX(), controller.getLeftY(), true, slowmodeSupplier.getAsBoolean());
+            JoystickVals shapedRot = Controls.inputShape(controller.getRightX(), controller.getRightY(), false, slowmodeSupplier.getAsBoolean());
+
+            SmartDashboard.putNumber("controller/translation x", -shapedTrans.y());
+            SmartDashboard.putNumber("controller/translation y", -shapedTrans.x());
+            SmartDashboard.putNumber("controller/rotation x", -shapedRot.x());
+            SmartDashboard.putNumber("controller/rotation y", -shapedRot.y());
+
+            return m_drive.withVelocityX(-shapedTrans.y() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive forward with negative Y (forward)
                 .withVelocityY(-shapedTrans.x() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive left with negative X (left)
-                .withRotationalRate(-shapedRot.x() * DrivetrainConstants.MAX_ROTATION_SPEED) // Drive counterclockwise with negative X (left)
-        );
+                .withRotationalRate(-shapedRot.x() * DrivetrainConstants.MAX_ROTATION_SPEED); // Drive counterclockwise with negative X (left)
+            }
+            );
     }
 
     // ----- SNAP TO ANGLE -----
-    public Command snapToAngle(CommandXboxController joystick, double angle){
-        SmartDashboard.putNumber("drivetrain/snap to angle", angle);
-        JoystickVals shapedValues = Controls.inputShape(joystick.getLeftX(), joystick.getLeftY(), true, false);
-        return m_drivetrain.getCommandFromRequest(() ->
-        m_driveFacingAngle.withVelocityX(-shapedValues.y() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive forward with negative Y (forward)
+    public Command snapToAngle(CommandXboxController joystick, double angle) {
+        return m_drivetrain.getCommandFromRequest(() -> {
+            SmartDashboard.putNumber("drivetrain/snap to angle", angle);
+            JoystickVals shapedValues = Controls.inputShape(joystick.getLeftX(), joystick.getLeftY(), true, false);
+            
+            return m_driveFacingAngle.withVelocityX(-shapedValues.y() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive forward with negative Y (forward)
             .withVelocityY(-shapedValues.x() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive left with negative X (left)
-            .withTargetDirection(Rotation2d.fromDegrees(angle))
-        );
+            .withTargetDirection(Rotation2d.fromDegrees(angle));
+        });
     }
 
     // ---- SNAP TO TARGET -----
