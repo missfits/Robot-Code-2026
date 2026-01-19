@@ -1,18 +1,39 @@
 package frc.robot.generated;
 
-import static edu.wpi.first.units.Units.*;
+import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.KilogramSquareMeters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.CANBus;
-import com.ctre.phoenix6.configs.*;
-import com.ctre.phoenix6.hardware.*;
-import com.ctre.phoenix6.signals.*;
-import com.ctre.phoenix6.swerve.*;
-import com.ctre.phoenix6.swerve.SwerveModuleConstants.*;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.Pigeon2Configuration;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
+import com.ctre.phoenix6.swerve.SwerveDrivetrain;
+import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
+import com.ctre.phoenix6.swerve.SwerveModuleConstants;
+import com.ctre.phoenix6.swerve.SwerveModuleConstants.ClosedLoopOutputType;
+import com.ctre.phoenix6.swerve.SwerveModuleConstants.DriveMotorArrangement;
+import com.ctre.phoenix6.swerve.SwerveModuleConstants.SteerFeedbackType;
+import com.ctre.phoenix6.swerve.SwerveModuleConstants.SteerMotorArrangement;
+import com.ctre.phoenix6.swerve.SwerveModuleConstantsFactory;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.units.measure.*;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.units.measure.MomentOfInertia;
+import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants;
 import frc.robot.RobotConfig;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
@@ -209,42 +230,41 @@ public class TunerConstants {
 
             case CERIDWEN:
                 // Ceridwen module configuration
-                // TODO: Update these values for Ceridwen after running Tuner X
-                kFrontLeftDriveMotorId = 8;
-                kFrontLeftSteerMotorId = 7;
-                kFrontLeftEncoderId = 9;
-                kFrontLeftEncoderOffset = Rotations.of(0.0); // NEEDS TUNING
+                kFrontLeftDriveMotorId = 2;
+                kFrontLeftSteerMotorId = 1;
+                kFrontLeftEncoderId = 3;
+                kFrontLeftEncoderOffset = Rotations.of(0.256103515625);
                 kFrontLeftSteerMotorInverted = true;
                 kFrontLeftEncoderInverted = false;
-                kFrontLeftXPos = Inches.of(7.875);
-                kFrontLeftYPos = Inches.of(13.875);
+                kFrontLeftXPos = Inches.of(10);
+                kFrontLeftYPos = Inches.of(10);
 
-                kFrontRightDriveMotorId = 2;
-                kFrontRightSteerMotorId = 1;
-                kFrontRightEncoderId = 3;
-                kFrontRightEncoderOffset = Rotations.of(0.0); // NEEDS TUNING
+                kFrontRightDriveMotorId = 11;
+                kFrontRightSteerMotorId = 10;
+                kFrontRightEncoderId = 12;
+                kFrontRightEncoderOffset = Rotations.of(0.417236328125);
                 kFrontRightSteerMotorInverted = true;
                 kFrontRightEncoderInverted = false;
-                kFrontRightXPos = Inches.of(7.875);
-                kFrontRightYPos = Inches.of(-13.875);
+                kFrontRightXPos = Inches.of(10);
+                kFrontRightYPos = Inches.of(-10);
 
-                kBackLeftDriveMotorId = 11;
-                kBackLeftSteerMotorId = 10;
-                kBackLeftEncoderId = 12;
-                kBackLeftEncoderOffset = Rotations.of(0.0); // NEEDS TUNING
+                kBackLeftDriveMotorId = 5;
+                kBackLeftSteerMotorId = 4;
+                kBackLeftEncoderId = 6;
+                kBackLeftEncoderOffset = Rotations.of(-0.20556640625);
                 kBackLeftSteerMotorInverted = true;
                 kBackLeftEncoderInverted = false;
-                kBackLeftXPos = Inches.of(-7.875);
-                kBackLeftYPos = Inches.of(13.875);
+                kBackLeftXPos = Inches.of(-10);
+                kBackLeftYPos = Inches.of(10);
 
-                kBackRightDriveMotorId = 5;
-                kBackRightSteerMotorId = 4;
-                kBackRightEncoderId = 6;
-                kBackRightEncoderOffset = Rotations.of(0.0); // NEEDS TUNING
+                kBackRightDriveMotorId = 8;
+                kBackRightSteerMotorId = 7;
+                kBackRightEncoderId = 9;
+                kBackRightEncoderOffset = Rotations.of(-0.33642578125);
                 kBackRightSteerMotorInverted = true;
                 kBackRightEncoderInverted = false;
-                kBackRightXPos = Inches.of(-7.875);
-                kBackRightYPos = Inches.of(-13.875);
+                kBackRightXPos = Inches.of(-10);
+                kBackRightYPos = Inches.of(-10);
                 break;
 
             default:
