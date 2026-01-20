@@ -146,7 +146,7 @@ public class RobotContainer {
     SmartDashboard.putString("fusedVision/" + camera.getCameraName() + "/filterState", "distance-filtering");
 
     // Only accept vision measurement if distance is reasonable
-    if (distance < VisionConstants.MAX_VISION_POSE_DISTANCE || !camera.isEstPoseJumpy()) {
+    if (distance < VisionConstants.MAX_VISION_POSE_DISTANCE && !camera.isEstPoseJumpy()) {
       m_drivetrain.setVisionMeasurementStdDevs(cameraReading.stdDevs());
 
       // sample drivetrain fusedPose before updating
