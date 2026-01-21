@@ -141,7 +141,7 @@ public class RobotContainer {
 
     SmartDashboard.putNumber("fusedVision/" + camera.getCameraName() + "/distanceBetweenVisionAndActualPose", distance);
 
-    SmartDashboard.putBoolean("fusedVision/" + camera.getCameraName() + "/isPoseJumpy", camera.isEstPoseJumpy());
+    SmartDashboard.putBoolean("fusedVision/" + camera.getCameraName() + "/areRecentCameraPosesConsistent", camera.areRecentCameraPosesConsistent());
 
     SmartDashboard.putString("fusedVision/" + camera.getCameraName() + "/filterState", "distance-filtering");
 
