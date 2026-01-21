@@ -92,7 +92,7 @@ public class LocalizationCamera {
       }
 
       // logging all cameraReading data to SmartDashboard
-      SmartDashboard.putBoolean(m_logString + "/is-Present", true);
+      SmartDashboard.putBoolean(m_logString + "/reading-is-Present", true);
 
       SmartDashboard.putNumber(m_logString + "/reading-num-targets-seen", newReading.get().numTargets());
       SmartDashboard.putNumberArray(m_logString + "/reading-standard-devs", newReading.get().stdDevs().getData());
