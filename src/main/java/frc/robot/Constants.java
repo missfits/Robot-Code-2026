@@ -37,39 +37,40 @@ public final class Constants {
 
   public static class DrivetrainConstants {
     // Steer motor PID and feedforward gains
-    public static final double STEER_KP;
-    public static final double STEER_KI;
-    public static final double STEER_KD;
-    public static final double STEER_KS;
-    public static final double STEER_KV;
-    public static final double STEER_KA;
+    public static double STEER_KP = 100;
+    public static double STEER_KI = 0;
+    public static double STEER_KD = 0.5;
+    public static double STEER_KS = 0.1;
+    public static double STEER_KV = 2.66;
+    public static double STEER_KA = 0;
 
     // Drive motor PID and feedforward gains
-    public static final double DRIVE_KP;
-    public static final double DRIVE_KI;
-    public static final double DRIVE_KD;
-    public static final double DRIVE_KS;
-    public static final double DRIVE_KV;
-    public static final double DRIVE_KA;
+    public static double DRIVE_KP = 0.1;
+    public static double DRIVE_KI = 0;
+    public static double DRIVE_KD = 0;
+    public static double DRIVE_KS = 0;
+    public static double DRIVE_KV = 0.124;
+    public static double DRIVE_KA = 0;
 
-    public static final double WHEEL_RADIUS_FUDGE_FACTOR;
+    public static double WHEEL_RADIUS_FUDGE_FACTOR = 1.0;
+
 
     // Max speeds for drivetrain
     public static final double MAX_TRANSLATION_SPEED = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     public static final double MAX_ROTATION_SPEED = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
     // Rotation heading controller PID gains
-    public static final double ROTATION_KP;
-    public static final double ROTATION_KI;
-    public static final double ROTATION_KD;
+    public static double ROTATION_KP = 10.0;
+    public static double ROTATION_KI = 0.0;
+    public static double ROTATION_KD = 0.0;
 
     // PID constants for PathPlanner AutoBuilder
-    public static final double ROBOT_POSITION_P;
-    public static final double ROBOT_POSITION_I;
-    public static final double ROBOT_POSITION_D;
-    public static final double ROBOT_ROTATION_P;
-    public static final double ROBOT_ROTATION_I;
-    public static final double ROBOT_ROTATION_D;
+    public static double ROBOT_POSITION_P = 5.0;
+    public static double ROBOT_POSITION_I = 0;
+    public static double ROBOT_POSITION_D = 0;
+    public static double ROBOT_ROTATION_P = 5.0;
+    public static double ROBOT_ROTATION_I = 0;
+    public static double ROBOT_ROTATION_D = 0;
 
     static {
       switch (RobotConfig.getRobot()) {
