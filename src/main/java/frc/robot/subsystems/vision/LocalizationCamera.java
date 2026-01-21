@@ -5,9 +5,12 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -36,6 +39,10 @@ public class LocalizationCamera {
 
   private Optional<CameraReading> m_currentReading = Optional.empty();
 
+  private final StructPublisher<Pose2d> pose2dPublisher;
+  private final StructPublisher<Pose3d> pose3dPublisher;
+
+  // every camera periodically creates a new CameraReading containing robot pose, std dev, timestamp, and number of targets seen.
   public static record CameraReading(EstimatedRobotPose robotPose, Matrix<N3, N1> stdDevs, double timestampSeconds, Integer numTargets) {}
 
   public LocalizationCamera(String cameraName, Transform3d robotToCam) {
@@ -43,6 +50,12 @@ public class LocalizationCamera {
     m_camera = new PhotonCamera(m_cameraName);
     m_logString = "vision/" + m_cameraName;
     poseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, robotToCam);
+
+    pose2dPublisher = NetworkTableInstance.getDefault()
+            .getStructTopic("SmartDashboard/" + m_logString + "/estimatedRobotPose2D", Pose2d.struct).publish();
+
+    pose3dPublisher = NetworkTableInstance.getDefault()
+            .getStructTopic("SmartDashboard/" + m_logString + "/estimatedRobotPose3D", Pose3d.struct).publish();
 
     SmartDashboard.putBoolean("isConnected/" + m_cameraName, m_camera.isConnected());
   }
@@ -81,9 +94,6 @@ public class LocalizationCamera {
       // logging all cameraReading data to SmartDashboard
       SmartDashboard.putBoolean(m_logString + "/is-Present", true);
 
-      SmartDashboard.putNumber(m_logString + "/reading-pose-X", newReading.get().robotPose().estimatedPose.getX());
-      SmartDashboard.putNumber(m_logString + "/reading-pose-Y", newReading.get().robotPose().estimatedPose.getY());
-      SmartDashboard.putNumber(m_logString + "/reading-pose-Z", newReading.get().robotPose().estimatedPose.getZ());
       SmartDashboard.putNumber(m_logString + "/reading-num-targets-seen", newReading.get().numTargets());
       SmartDashboard.putNumberArray(m_logString + "/reading-standard-devs", newReading.get().stdDevs().getData());
       SmartDashboard.putNumber(m_logString + "/reading-timestamp", newReading.get().timestampSeconds());
@@ -92,7 +102,13 @@ public class LocalizationCamera {
     } else {
       SmartDashboard.putBoolean(m_logString + "/reading-is-Present", false);
     }
+    // no matter what, want to publish isConnected to NetworkTables
     SmartDashboard.putBoolean("isConnected/" + m_cameraName, m_camera.isConnected());
+
+    // publish estimated robot Pose2d to NetworkTables
+    // uses map for efficient unwrapping of Optional<CameraReading>
+    pose2dPublisher.set(newReading.map(reading -> reading.robotPose().estimatedPose.toPose2d()).orElse(null));
+    pose3dPublisher.set(newReading.map(reading -> reading.robotPose().estimatedPose).orElse(null));
   }
 
   private Optional<CameraReading> calculateNewCameraReading() {
