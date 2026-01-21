@@ -77,13 +77,13 @@ public class DrivetrainCommandFactory {
     }
 
     // ---- SNAP TO TARGET -----
-    public Command snapToTarget(CommandXboxController joystick, Supplier<Pose2d> poseSupplier) {
+    public Command snapToTarget(CommandXboxController joystick, Supplier<Pose2d> targetPoseSupplier) {
         return m_drivetrain.getCommandFromRequest(() -> {
 
             JoystickVals shapedValues = Controls.inputShape(joystick.getLeftX(), joystick.getLeftY(), true, false);
 
             Pose2d robotPose = m_drivetrain.getState().Pose; // current robot pose
-            Pose2d targetPose = poseSupplier.get(); // target pose
+            Pose2d targetPose = targetPoseSupplier.get(); // target pose
 
             // Get the translation from robot to target
             Translation2d translationToTarget = targetPose.getTranslation().minus(robotPose.getTranslation());
