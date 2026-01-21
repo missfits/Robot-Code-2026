@@ -3,6 +3,7 @@ package frc.robot.subsystems.drivetrain;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
 
+import java.util.function.Supplier;
 import java.util.function.BooleanSupplier;
 
 import com.ctre.phoenix6.SignalLogger;
@@ -15,7 +16,9 @@ import com.ctre.phoenix6.swerve.SwerveRequest.FieldCentricFacingAngle;
 import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 import com.ctre.phoenix6.swerve.SwerveRequest.PointWheelsAt;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -72,6 +75,32 @@ public class DrivetrainCommandFactory {
             return m_driveFacingAngle.withVelocityX(-shapedValues.y() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive forward with negative Y (forward)
             .withVelocityY(-shapedValues.x() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive left with negative X (left)
             .withTargetDirection(Rotation2d.fromDegrees(angle));
+        });
+    }
+
+    // ---- SNAP TO TARGET -----
+    public Command snapToTarget(CommandXboxController joystick, Supplier<Pose2d> targetPoseSupplier) {
+        return m_drivetrain.getCommandFromRequest(() -> {
+
+            JoystickVals shapedValues = Controls.inputShape(joystick.getLeftX(), joystick.getLeftY(), true, false);
+
+            Pose2d robotPose = m_drivetrain.getState().Pose; // current robot pose
+            Pose2d targetPose = targetPoseSupplier.get(); // target pose
+
+            // Get the translation from robot to target
+            Translation2d translationToTarget = targetPose.getTranslation().minus(robotPose.getTranslation());
+
+            // Get the angle to the target
+            Rotation2d angleToTarget = translationToTarget.getAngle();
+
+            SmartDashboard.putNumber("drivetrain/snap to target/target x", targetPose.getX());
+            SmartDashboard.putNumber("drivetrain/snap to target/target y", targetPose.getY());
+            SmartDashboard.putNumber("drivetrain/snap to target/angle", angleToTarget.getRadians());
+
+
+            return m_driveFacingAngle.withVelocityX(-shapedValues.y() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive forward with negative Y (forward)
+                .withVelocityY(-shapedValues.x() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive left with negative X (left)
+                .withTargetDirection(angleToTarget);
         });
     }
 
