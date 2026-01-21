@@ -109,6 +109,9 @@ public final class Constants {
     public static final String CAMERA2_NAME = null;
     public static final Transform3d ROBOT_TO_CAM1_3D = null;
     public static final Transform3d ROBOT_TO_CAM2_3D = null;
+
+    // --- localization camera tests ---
+    public static final int NUM_TEST_EST_POSES = 10;
   }
   
   public static class LEDConstants { // placeholder constants

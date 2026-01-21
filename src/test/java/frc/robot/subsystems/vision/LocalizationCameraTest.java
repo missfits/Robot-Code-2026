@@ -87,7 +87,7 @@ class LocalizationCameraTest {
     double baseTime = 1.0;
     double timeInterval = 0.02; // 50 fps - 20ms between frames
 
-    for (int i = 0; i < VisionConstants.NUM_LAST_EST_POSES; i++) {
+    for (int i = 0; i < VisionConstants.NUM_TEST_EST_POSES; i++) {
       // Create poses that move very slowly (well under the max speed threshold)
       Pose3d pose = new Pose3d(
           1.0 + i * 0.001, // Very small movement: 1mm per reading
@@ -119,7 +119,7 @@ class LocalizationCameraTest {
     double baseTime = 1.0;
     double timeInterval = 0.02; // 50 fps
 
-    for (int i = 0; i < VisionConstants.NUM_LAST_EST_POSES; i++) {
+    for (int i = 0; i < VisionConstants.NUM_TEST_EST_POSES; i++) {
       // Create poses that move very fast (well above max speed threshold)
       // Max speed is MAX_AVG_DIST * 50, so we need to exceed that
       Pose3d pose = new Pose3d(
@@ -151,7 +151,7 @@ class LocalizationCameraTest {
 
     double sameTime = 1.0;
 
-    for (int i = 0; i < VisionConstants.NUM_LAST_EST_POSES; i++) {
+    for (int i = 0; i < VisionConstants.NUM_TEST_EST_POSES; i++) {
       Pose3d pose = new Pose3d(1.0 + i * 0.01, 2.0, 0.0, new Rotation3d(0, 0, 0));
       EstimatedRobotPose estPose = new EstimatedRobotPose(pose, sameTime, List.of(), null);
       sameTimeReadings.add(new CameraReading(estPose, VisionConstants.kSingleTagStdDevs, sameTime, 1));
@@ -173,7 +173,7 @@ class LocalizationCameraTest {
     // Movement that results in speed just at the threshold
     double distancePerReading = VisionConstants.MAX_AVG_SPEED_BETWEEN_LAST_EST_POSES * timeInterval;
 
-    for (int i = 0; i < VisionConstants.NUM_LAST_EST_POSES; i++) {
+    for (int i = 0; i < VisionConstants.NUM_TEST_EST_POSES; i++) {
       Pose3d pose = new Pose3d(
           1.0 + i * distancePerReading,
           2.0, 0.0, new Rotation3d(0, 0, 0)
