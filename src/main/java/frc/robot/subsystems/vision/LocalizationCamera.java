@@ -173,11 +173,14 @@ public class LocalizationCamera {
     }
   }
 
-  // checks if the pose is jumpy based on avg speed since by calculating based on speed, 
-  // the camera fps doesn't matter as the speed between readings will still be the same. this is based on last 3 readings
-  public boolean isEstPoseJumpy() {
+  /*
+   * returns true if the average speed between the last 3 camera readings (FROM ONE CAMREA)
+   * is less than the max average speed.
+   * goal is to check if the last three readings are smooth + consistent. 
+   */
+  public boolean areRecentCameraPosesConsistent() {
     if (m_lastReadings.size() < VisionConstants.NUM_LAST_EST_POSES) {
-      return true;
+      return false;
     }
 
     double totalDistance = 0;
@@ -196,7 +199,7 @@ public class LocalizationCamera {
     double avgDist = totalDistance / (m_lastReadings.size() - 1);
     double avgTime = totalTime / (m_lastReadings.size() - 1);
     if (avgTime == 0){
-      return true;
+      return false;
     }
     double avgSpeed = avgDist/avgTime;
 
@@ -204,7 +207,7 @@ public class LocalizationCamera {
     SmartDashboard.putNumber("vision/" + m_cameraName + "/avgSpeedBetweenLastEstPoses", avgSpeed);
     SmartDashboard.putNumber("vision/" + m_cameraName + "/avgTimeBetweenLastEstPoses", avgTime);
 
-    return avgSpeed > VisionConstants.MAX_AVG_SPEED_BETWEEN_LAST_EST_POSES;
+    return avgSpeed < VisionConstants.MAX_AVG_SPEED_BETWEEN_LAST_EST_POSES;
   }
 }
 

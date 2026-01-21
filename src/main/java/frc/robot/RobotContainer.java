@@ -147,7 +147,7 @@ public class RobotContainer {
 
     // Only accept vision measurement if distance is reasonable
     // checks if vision measurement within 
-    if (distance < VisionConstants.MAX_VISION_POSE_DISTANCE || !camera.isEstPoseJumpy()) {
+    if (distance < VisionConstants.MAX_VISION_POSE_DISTANCE || camera.areRecentCameraPosesConsistent()) {
       m_drivetrain.setVisionMeasurementStdDevs(cameraReading.stdDevs());
 
       // sample drivetrain fusedPose before updating
