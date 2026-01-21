@@ -59,7 +59,7 @@ public final class Constants {
     public static final double MAX_ROTATION_SPEED = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
     // Rotation heading controller PID gains
-    public static final double ROTATION_KP = 10.0;
+    public static final double ROTATION_KP = 5.0;
     public static final double ROTATION_KI = 0.0;
     public static final double ROTATION_KD = 0.0;
 
