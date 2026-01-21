@@ -61,6 +61,12 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems and commands. */
   public RobotContainer() {
+    //Pathplanner register named commands
+    //TO:DO -- REPLACE WITH PROPER COMMAND ONCE IT HAS BEEN WRITTEN 
+    NamedCommands.registerCommand("trigger intake", swerve.WaitCommand());
+    NamedCommands.registerCommand("orient to hub", swerve.WaitCommand());
+    NamedCommands.registerCommand("climb", swerve.WaitCommand());
+
     // Configure trigger bindings
     configureBindings();
 
