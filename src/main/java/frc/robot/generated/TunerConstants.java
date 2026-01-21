@@ -195,41 +195,48 @@ public class TunerConstants {
         switch (RobotConfig.getRobot()) {
             case CLEO:
                 // Cleo module configuration
-                kFrontLeftDriveMotorId = 8;
-                kFrontLeftSteerMotorId = 7;
-                kFrontLeftEncoderId = 9;
-                kFrontLeftEncoderOffset = Rotations.of(-0.036865234375);
+                kFrontLeftDriveMotorId = 5;
+                kFrontLeftSteerMotorId = 4;
+                kFrontLeftEncoderId = 6;
+                kFrontLeftEncoderOffset = Rotations.of(0.247314453125);
                 kFrontLeftSteerMotorInverted = true;
                 kFrontLeftEncoderInverted = false;
-                kFrontLeftXPos = Inches.of(7.875);
-                kFrontLeftYPos = Inches.of(13.875);
 
-                kFrontRightDriveMotorId = 2;
-                kFrontRightSteerMotorId = 1;
-                kFrontRightEncoderId = 3;
-                kFrontRightEncoderOffset = Rotations.of(-0.0234375);
+                kFrontLeftXPos = Inches.of(-7.875);
+                kFrontLeftYPos = Inches.of(-13.875);
+
+                // Front Right 
+                kFrontRightDriveMotorId = 11;
+                kFrontRightSteerMotorId = 10;
+                kFrontRightEncoderId = 12;
+                kFrontRightEncoderOffset = Rotations.of(-0.256591796875);
                 kFrontRightSteerMotorInverted = true;
                 kFrontRightEncoderInverted = false;
-                kFrontRightXPos = Inches.of(7.875);
-                kFrontRightYPos = Inches.of(-13.875);
 
-                kBackLeftDriveMotorId = 11;
-                kBackLeftSteerMotorId = 10;
-                kBackLeftEncoderId = 12;
-                kBackLeftEncoderOffset = Rotations.of(-0.256591796875);
+                kFrontRightXPos = Inches.of(-7.875);
+                kFrontRightYPos = Inches.of(13.875);
+
+                // Back Left 
+                kBackLeftDriveMotorId = 2;
+                kBackLeftSteerMotorId = 1;
+                kBackLeftEncoderId = 3;
+                kBackLeftEncoderOffset = Rotations.of(-0.0234375);
                 kBackLeftSteerMotorInverted = true;
                 kBackLeftEncoderInverted = false;
-                kBackLeftXPos = Inches.of(-7.875);
-                kBackLeftYPos = Inches.of(13.875);
 
-                kBackRightDriveMotorId = 5;
-                kBackRightSteerMotorId = 4;
-                kBackRightEncoderId = 6;
-                kBackRightEncoderOffset = Rotations.of(0.247314453125);
+                kBackLeftXPos = Inches.of(7.875);
+                kBackLeftYPos = Inches.of(-13.875);
+
+                // Back Right 
+                kBackRightDriveMotorId = 8;
+                kBackRightSteerMotorId = 7;
+                kBackRightEncoderId = 9;
+                kBackRightEncoderOffset = Rotations.of(-0.036865234375);
                 kBackRightSteerMotorInverted = true;
                 kBackRightEncoderInverted = false;
-                kBackRightXPos = Inches.of(-7.875);
-                kBackRightYPos = Inches.of(-13.875);
+
+                kBackRightXPos = Inches.of(7.875);
+                kBackRightYPos = Inches.of(13.875);
                 break;
 
             case CERIDWEN:
