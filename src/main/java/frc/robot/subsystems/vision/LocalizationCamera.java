@@ -43,7 +43,7 @@ public class LocalizationCamera {
   private final StructPublisher<Pose3d> pose3dPublisher;
 
   // every camera periodically creates a new CameraReading containing robot pose, std dev, timestamp, and number of targets seen.
-  public static record CameraReading(EstimatedRobotPose robotPose, Matrix<N3, N1> stdDevs, double timestampSeconds, Integer numTargets) {}
+  public static record CameraReading(EstimatedRobotPose robotPose, Matrix<N3, N1> stdDevs, double timestampSeconds, int numTargets) {}
 
   public LocalizationCamera(String cameraName, Transform3d robotToCam) {
     m_cameraName = cameraName;
