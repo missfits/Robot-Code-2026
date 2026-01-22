@@ -58,21 +58,20 @@ public class ShooterIOHardware {
     m_shooterMotor.stopMotor();
   }
 
+  public void setVoltage(double value) {
+    m_shooterMotor.setControl(new VoltageOut(value));
+    SmartDashboard.putNumber("shooter/voltage", value);
+  }
+
   public void setPosition(double value){
     m_shooterMotor.setPosition(value);
   }
 
   public void resetPosition() {
         setPosition(0);
-  }
-
-  public void setVoltage(double value) {
-    m_shooterMotor.setControl(new VoltageOut(value));
-    SmartDashboard.putNumber("shooter motor/voltage", value);
-  }
+    }
   
-  public void setVelocityVoltage(double value) {
-    m_shooterMotor.setControl(new VelocityVoltage(value));
-    SmartDashboard.putNumber("shooter motor/velocity voltage", value);
-  }
+  public void setVelocityVoltage(VelocityVoltage request) {
+    m_shooterMotor.setControl(request);
+}
 }

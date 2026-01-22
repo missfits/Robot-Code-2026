@@ -19,27 +19,35 @@ public class ShooterSubsystem extends SubsystemBase {
         m_followerIO.resetPosition();
   }
 
-  public Command runShooter(double influencerVelocity, double followerVelocity) {
-    return this.run(() -> {
-        m_influencerIO.setVoltage(influencerVelocity);
-        m_followerIO.setVoltage(followerVelocity);
-        SmartDashboard.putNumber("shooter/influencer input velocity", influencerVelocity);
-        SmartDashboard.putNumber("shooter/follower input velocity", followerVelocity);
-    });
-  }
+  public Command runShooter(double speed) {
+        return new FunctionalCommand(
+            // set voltage in init also
+            () -> {m_influencerIO.setVoltage(speed); SmartDashboard.putString("shooter/currentlyRunningCommand", "runShooter");},
+            () -> {m_influencerIO.setVoltage(speed); SmartDashboard.putString("shooter/currentlyRunningCommand", "runShooter");},
+            (interrupted) -> {},
+            () -> false,
+            this
+        ).withName("runShooter");
+    }
 
-  public Command runShooterPID(double influencerVelocity, double followerVelocity) {
+  public Command VelocityVoltage(double velocity, boolean enableFOC, double feedForward, int slot, boolean overrideBrakeDurNeutral) {
+    VelocityVoltage request = new VelocityVoltage(velocity)
+        .withEnableFOC(enableFOC)
+        .withFeedForward(feedForward)
+        .withSlot(slot)
+        .withOverrideBrakeDurNeutral(overrideBrakeDurNeutral);
+
     return this.run(() -> {
-        m_influencerIO.setVelocityVoltage(influencerVelocity);
-        m_followerIO.setVelocityVoltage(followerVelocity);
-        SmartDashboard.putNumber("shooter/influencer input velocity", influencerVelocity);
-        SmartDashboard.putNumber("shooter/follower input velocity", followerVelocity);
+        m_influencerIO.setVelocityVoltage(request);
+        SmartDashboard.putNumber("shooter/velocity voltage", velocity);
     });
-  }
+}
 
   public Command runShooterOff() {
-    return new RunCommand(() -> {
+    return new RunCommand(
+      () -> {
         m_influencerIO.setVoltage(0);
+        SmartDashboard.putBoolean("shooter/off", true);
       },
       this
     );
