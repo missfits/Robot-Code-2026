@@ -11,21 +11,19 @@ public class IntakeCommandFactory {
     }
 
     public Command runIntake() {
-        return m_subsystem.runIntake(IntakeConstants.OUTTAKE_MOTOR_VELOCITY)
-            .withName("run intake");
+        return m_subsystem.runIntake(IntakeConstants.OUTTAKE_MOTOR_VELOCITY);
     }
 
     public Command runIntakeBack() {
-        return m_subsystem.runIntake(IntakeConstants.INTAKE_BACK_VELOCITY)
-            .withName("run intake back");
+        return m_subsystem.runIntake(IntakeConstants.INTAKE_BACK_VELOCITY);
     }
 
     public Command runIntakeWithTimeout() {
         return m_subsystem.runIntake(IntakeConstants.OUTTAKE_MOTOR_VELOCITY)
-            .withTimeout(IntakeConstants.RUN_INTAKE_TIME).withName("run intake timeout");
+            .withTimeout(IntakeConstants.RUN_INTAKE_TIME);
     }
 
     public Command intakeOff() {
-        return m_subsystem.runIntakeOff().withName("intake off");
+        return m_subsystem.runIntakeOff();
     }
 }

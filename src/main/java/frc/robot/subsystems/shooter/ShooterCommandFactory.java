@@ -14,24 +14,24 @@ public class ShooterCommandFactory {
         return m_subsystem.runShooter(
             ShooterConstants.INFLUENCER_OUTTAKE_MOTOR_VELOCITY,
             ShooterConstants.FOLLOWER_OUTTAKE_MOTOR_VELOCITY
-        ).withName("run shooter");
+        );
     }
 
     public Command runShooterBack() {
         return m_subsystem.runShooter(
             ShooterConstants.INFLUENCER_SHOOTER_BACK_VELOCITY,
             ShooterConstants.FOLLOWER_SHOOTER_BACK_VELOCITY
-        ).withName("run shooter back");
+        );
     }
 
     public Command runShooterWithTimeout() {
         return m_subsystem.runShooter(
             ShooterConstants.INFLUENCER_OUTTAKE_MOTOR_VELOCITY,
             ShooterConstants.FOLLOWER_OUTTAKE_MOTOR_VELOCITY
-        ).withTimeout(ShooterConstants.RUN_SHOOTER_TIME).withName("run shooter timeout");
+        ).withTimeout(ShooterConstants.RUN_SHOOTER_TIME);
     }
 
     public Command shooterOff() {
-        return m_subsystem.runShooterOff().withName("shooter off");
+        return m_subsystem.runShooterOff();
     }
 }
