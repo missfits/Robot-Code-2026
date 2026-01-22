@@ -40,6 +40,8 @@ public class DrivetrainCommandFactory {
 
     public DrivetrainCommandFactory(CommandSwerveDrivetrain drivetrain) {
         m_drivetrain = drivetrain;
+
+        setHeadingController();
     }
 
     // ----- DEFAULT DRIVE -----

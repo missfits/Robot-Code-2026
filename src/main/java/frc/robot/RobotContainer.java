@@ -90,6 +90,11 @@ public class RobotContainer {
       m_drivetrainCommandFactory.defaultDrive(m_driverJoystick, () -> true)
     );
 
+    // TODO: change -- this is for testing 
+    m_driverJoystick.a().whileTrue(
+      m_drivetrainCommandFactory.snapToAngle(m_driverJoystick, 0)
+    );
+
     m_drivetrain.registerTelemetry(logger::telemeterize);
   }
 
