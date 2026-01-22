@@ -137,6 +137,13 @@ public final class Constants {
           throw new IllegalStateException("Unknown robot type: " + RobotConfig.getRobot());
       }
     }
+
+    /* Universal drivetrain constants (not robot-dependent) */
+
+    // Snap to target distance threshold (meters)
+    // If robot is within this distance of target, maintain current heading
+    public static final double SNAP_TO_TARGET_DISTANCE_THRESHOLD = 0.05; // 5cm
+
   }
 
   public static class AngularMechanismConstants {

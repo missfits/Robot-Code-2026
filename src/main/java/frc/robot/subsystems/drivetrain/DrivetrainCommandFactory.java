@@ -83,10 +83,16 @@ public class DrivetrainCommandFactory {
      * Calculates the angle from a reference pose to a target pose
      * @param referencePose The reference pose (typically robot pose)
      * @param targetPose The target pose
-     * @return The angle from reference to target
+     * @return The angle from reference to target, or the current heading if already at the target
      */
     private static Rotation2d calculateAngleToTarget(Pose2d referencePose, Pose2d targetPose) {
         Translation2d translationToTarget = targetPose.getTranslation().minus(referencePose.getTranslation());
+
+        // If we're already at the target (zero distance), keep the current heading
+        if (translationToTarget.getNorm() < DrivetrainConstants.SNAP_TO_TARGET_DISTANCE_THRESHOLD) {
+            return referencePose.getRotation();
+        }
+
         return translationToTarget.getAngle();
     }
 
