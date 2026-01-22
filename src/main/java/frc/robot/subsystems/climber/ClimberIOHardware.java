@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.mechanism;
+package frc.robot.subsystems.climber;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -18,35 +18,40 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ClimberConstants;
+import frc.robot.Constants.ClimberConstants;
 
-import frc.robot.Constants.ShooterConstants;
 
-
-public class ShooterIOHardware {
-  private final TalonFX m_shooterMotor;
-
+public class ClimberIOHardware {
+  private final TalonFX m_climberMotor;
+  private final StatusSignal<Angle> m_positionSignal;
   private final StatusSignal<AngularVelocity> m_velocitySignal;
   private final StatusSignal<Current> m_currentSignal;
 
   // constructor
-  public ShooterIOHardware(int motorID) {
-    m_shooterMotor = new TalonFX(motorID);
-    m_velocitySignal = m_shooterMotor.getVelocity();
-    m_currentSignal = m_shooterMotor.getStatorCurrent();
+  public ClimberIOHardware(int motorID) {
+    m_climberMotor = new TalonFX(motorID);
+    m_positionSignal = m_climberMotor.getPosition();
+    m_velocitySignal = m_climberMotor.getVelocity();
+    m_currentSignal = m_climberMotor.getStatorCurrent();
 
 
-    var talonFXConfigurator = m_shooterMotor.getConfigurator();
+    var talonFXConfigurator = m_climberMotor.getConfigurator();
     var limitConfigs = new CurrentLimitsConfigs();
 
-    limitConfigs.StatorCurrentLimit = ShooterConstants.MOTOR_STATOR_LIMIT;
+    limitConfigs.StatorCurrentLimit = ClimberConstants.MOTOR_STATOR_LIMIT;
     limitConfigs.StatorCurrentLimitEnable = true;
 
     talonFXConfigurator.apply(limitConfigs);
   }
 
   // getters
-  public double getVelocity() { //in radians
-    return Math.toRadians(m_velocitySignal.refresh().getValue().in(RevolutionsPerSecond)*ShooterConstants.DEGREES_PER_ROTATION);
+  public double getPosition() {
+    return m_positionSignal.refresh().getValue().in(Revolutions)*ClimberConstants.METERS_PER_ROTATION;
+  }
+
+  public double getVelocity() {
+    return m_velocitySignal.refresh().getValue().in(RevolutionsPerSecond)*ClimberConstants.METERS_PER_ROTATION;
   }
 
   public double getCurrent() {
@@ -55,24 +60,24 @@ public class ShooterIOHardware {
 
   // setters
   public void motorOff() {
-    m_shooterMotor.stopMotor();
+    m_climberMotor.stopMotor();
   }
 
-  public void setPosition(double value){
-    m_shooterMotor.setPosition(value);
+  public void setPosition(double value) {
+    m_climberMotor.setPosition(value);
   }
 
   public void resetPosition() {
-        setPosition(0);
+    setPosition(0);
   }
 
   public void setVoltage(double value) {
-    m_shooterMotor.setControl(new VoltageOut(value));
-    SmartDashboard.putNumber("shooter motor/voltage", value);
+    m_climberMotor.setControl(new VoltageOut(value));
+    SmartDashboard.putNumber("climber/voltage", value);
   }
-  
+
   public void setVelocityVoltage(double value) {
-    m_shooterMotor.setControl(new VelocityVoltage(value));
-    SmartDashboard.putNumber("shooter motor/velocity voltage", value);
+    m_climberMotor.setControl(new VelocityVoltage(value));
+    SmartDashboard.putNumber("climber/velocity voltage", value);
   }
 }

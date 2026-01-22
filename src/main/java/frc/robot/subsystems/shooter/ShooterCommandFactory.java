@@ -1,4 +1,4 @@
-package frc.robot.subsystems.mechanism;
+package frc.robot.subsystems.shooter;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ShooterConstants;
