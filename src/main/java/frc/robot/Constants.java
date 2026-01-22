@@ -67,6 +67,13 @@ public final class Constants {
     public static final int MOTOR_STATOR_LIMIT = 0;
 
     public static final double DEGREES_PER_ROTATION = 0;
+
+    // Intake motor velocities
+    public static final double OUTTAKE_MOTOR_VELOCITY = 0;
+    public static final double INTAKE_BACK_VELOCITY = 0;
+
+    // Timing
+    public static final double RUN_INTAKE_TIME = 0;
   }
 
   public static class ShooterConstants {
