@@ -1,4 +1,4 @@
-package frc.robot.subsystems.shooter;
+package frc.robot.subsystems.mechanism;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 
 import edu.wpi.first.math.MathUtil;
