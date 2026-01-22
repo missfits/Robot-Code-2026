@@ -23,19 +23,13 @@ import frc.robot.Constants.ClimberConstants;
 
 
 public class ClimberIOHardware {
-  private final TalonFX m_climberMotor;
-  private final StatusSignal<Angle> m_positionSignal;
-  private final StatusSignal<AngularVelocity> m_velocitySignal;
-  private final StatusSignal<Current> m_currentSignal;
+  private final TalonFX m_climberMotor = new TalonFX(ClimberConstants.MECHANISM_MOTOR_ID);
+  private final StatusSignal<Angle> m_positionSignal = m_climberMotor.getPosition();
+  private final StatusSignal<AngularVelocity> m_velocitySignal = m_climberMotor.getVelocity();
+  private final StatusSignal<Current> m_currentSignal = m_climberMotor.getStatorCurrent();
 
   // constructor
-  public ClimberIOHardware(int motorID) {
-    m_climberMotor = new TalonFX(motorID);
-    m_positionSignal = m_climberMotor.getPosition();
-    m_velocitySignal = m_climberMotor.getVelocity();
-    m_currentSignal = m_climberMotor.getStatorCurrent();
-
-
+  public ClimberIOHardware() {
     var talonFXConfigurator = m_climberMotor.getConfigurator();
     var limitConfigs = new CurrentLimitsConfigs();
 

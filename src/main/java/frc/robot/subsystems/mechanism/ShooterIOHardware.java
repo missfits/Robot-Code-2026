@@ -23,18 +23,13 @@ import frc.robot.Constants.ShooterConstants;
 
 
 public class ShooterIOHardware {
-  private final TalonFX m_shooterMotor;
+  private final TalonFX m_shooterMotor = new TalonFX(ShooterConstants.MECHANISM_MOTOR_ID);
 
-  private final StatusSignal<AngularVelocity> m_velocitySignal;
-  private final StatusSignal<Current> m_currentSignal;
+  private final StatusSignal<AngularVelocity> m_velocitySignal = m_shooterMotor.getVelocity();
+  private final StatusSignal<Current> m_currentSignal = m_shooterMotor.getStatorCurrent();
 
   // constructor
-  public ShooterIOHardware(int motorID) {
-    m_shooterMotor = new TalonFX(motorID);
-    m_velocitySignal = m_shooterMotor.getVelocity();
-    m_currentSignal = m_shooterMotor.getStatorCurrent();
-
-
+  public ShooterIOHardware() {
     var talonFXConfigurator = m_shooterMotor.getConfigurator();
     var limitConfigs = new CurrentLimitsConfigs();
 

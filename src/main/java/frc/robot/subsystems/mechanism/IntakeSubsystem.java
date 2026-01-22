@@ -5,10 +5,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.IntakeConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
-  private final IntakeIOHardware m_IO = new IntakeIOHardware(IntakeConstants.MECHANISM_MOTOR_ID);
+  private final IntakeIOHardware m_IO = new IntakeIOHardware();
 
   public IntakeSubsystem() {
     m_IO.resetPosition();
