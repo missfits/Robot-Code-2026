@@ -67,6 +67,7 @@ public class DrivetrainCommandFactory {
     }
 
     // ----- SNAP TO ANGLE -----
+    // Drives the robot while automatically rotating to face a specified angle
     public Command snapToAngle(CommandXboxController joystick, double angle) {
         return m_drivetrain.getCommandFromRequest(() -> {
             SmartDashboard.putNumber("drivetrain/snap to angle", angle);
@@ -90,6 +91,7 @@ public class DrivetrainCommandFactory {
     }
 
     // ---- SNAP TO TARGET -----
+    // Drives the robot while automatically rotating to face a target pose
     public Command snapToTarget(CommandXboxController joystick, Supplier<Pose2d> targetPoseSupplier) {
         return m_drivetrain.getCommandFromRequest(() -> {
 
