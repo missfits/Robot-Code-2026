@@ -40,6 +40,7 @@ public class ShooterSubsystem extends SubsystemBase {
   public Command runShooterOff() {
     return new RunCommand(() -> {
         m_influencerIO.setVoltage(0);
+        m_followerIO.setVoltage(0);
       },
       this
     );

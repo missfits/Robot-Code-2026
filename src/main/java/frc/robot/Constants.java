@@ -70,10 +70,22 @@ public final class Constants {
   }
 
   public static class ShooterConstants {
-    public static final int MECHANISM_MOTOR_ID = 0;
+    public static final int INFLUENCER_MOTOR_ID = 0;
+    public static final int FOLLOWER_MOTOR_ID = 0;
     public static final int MOTOR_STATOR_LIMIT = 0;
 
     public static final double DEGREES_PER_ROTATION = 0;
+
+    // Influencer motor velocities
+    public static final double INFLUENCER_OUTTAKE_MOTOR_VELOCITY = 0;
+    public static final double INFLUENCER_SHOOTER_BACK_VELOCITY = 0;
+
+    // Follower motor velocities
+    public static final double FOLLOWER_OUTTAKE_MOTOR_VELOCITY = 0;
+    public static final double FOLLOWER_SHOOTER_BACK_VELOCITY = 0;
+
+    // Timing
+    public static final double RUN_SHOOTER_TIME = 0;
   }
 
   public static class ClimberConstants {
