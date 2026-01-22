@@ -8,8 +8,10 @@ import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import frc.robot.Constants.ShooterConstants;
+
 public class ShooterSubsystem extends SubsystemBase {
-  private final ShooterIOHardware m_IO = new ShooterIOHardware();
+  private final ShooterIOHardware m_IO = new ShooterIOHardware(ShooterConstants.MECHANISM_MOTOR_ID);
 
   public ShooterSubsystem() {
         m_IO.resetPosition();

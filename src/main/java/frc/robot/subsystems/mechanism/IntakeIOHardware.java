@@ -23,13 +23,18 @@ import frc.robot.Constants.IntakeConstants;
 
 
 public class IntakeIOHardware {
-  private final TalonFX m_intakeMotor = new TalonFX(IntakeConstants.MECHANISM_MOTOR_ID);
+  private final TalonFX m_intakeMotor;
 
-  private final StatusSignal<AngularVelocity> m_velocitySignal = m_intakeMotor.getVelocity();
-  private final StatusSignal<Current> m_currentSignal = m_intakeMotor.getStatorCurrent();
+  private final StatusSignal<AngularVelocity> m_velocitySignal;
+  private final StatusSignal<Current> m_currentSignal;
 
   // constructor
-  public IntakeIOHardware() {
+  public IntakeIOHardware(int motorID) {
+    m_intakeMotor = new TalonFX(motorID);
+    m_velocitySignal = m_intakeMotor.getVelocity();
+    m_currentSignal = m_intakeMotor.getStatorCurrent();
+
+
     var talonFXConfigurator = m_intakeMotor.getConfigurator();
     var limitConfigs = new CurrentLimitsConfigs();
 
