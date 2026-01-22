@@ -11,17 +11,19 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
 
 public class ShooterSubsystem extends SubsystemBase {
-  private final ShooterIOHardware m_IO = new ShooterIOHardware(ShooterConstants.MECHANISM_MOTOR_ID);
+  private final ShooterIOHardware m_influencerIO = new ShooterIOHardware(ShooterConstants.INFLUENCER_MOTOR_ID);
+  private final ShooterIOHardware m_followerIO = new ShooterIOHardware(ShooterConstants.FOLLOWER_MOTOR_ID);
 
   public ShooterSubsystem() {
-        m_IO.resetPosition();
+        m_influencerIO.resetPosition();
+        m_followerIO.resetPosition();
   }
 
   public Command runShooter(double speed) {
         return new FunctionalCommand(
             // set voltage in init also
-            () -> {m_IO.setVoltage(speed); SmartDashboard.putString("shooter/currentlyRunningCommand", "runShooter");},
-            () -> {m_IO.setVoltage(speed); SmartDashboard.putString("shooter/currentlyRunningCommand", "runShooter");},
+            () -> {m_influencerIO.setVoltage(speed); SmartDashboard.putString("shooter/currentlyRunningCommand", "runShooter");},
+            () -> {m_influencerIO.setVoltage(speed); SmartDashboard.putString("shooter/currentlyRunningCommand", "runShooter");},
             (interrupted) -> {},
             () -> false,
             this
@@ -36,7 +38,7 @@ public class ShooterSubsystem extends SubsystemBase {
         .withOverrideBrakeDurNeutral(overrideBrakeDurNeutral);
 
     return this.run(() -> {
-        m_IO.setVelocityVoltage(request);
+        m_influencerIO.setVelocityVoltage(request);
         SmartDashboard.putNumber("shooter/velocity voltage", velocity);
     });
 }
@@ -44,7 +46,7 @@ public class ShooterSubsystem extends SubsystemBase {
   public Command runShooterOff() {
     return new RunCommand(
       () -> {
-        m_IO.setVoltage(0);
+        m_influencerIO.setVoltage(0);
         SmartDashboard.putBoolean("shooter/off", true);
       },
       this
@@ -54,7 +56,7 @@ public class ShooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putData("shooter/subsystem", this);
-    SmartDashboard.putNumber("shooter/current", m_IO.getCurrent());
+    SmartDashboard.putNumber("shooter/current", m_influencerIO.getCurrent());
   }
 
 }
