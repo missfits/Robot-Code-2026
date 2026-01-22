@@ -52,10 +52,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     /* Keep track if we've ever applied the operator perspective before or not */
     private boolean m_hasAppliedOperatorPerspective = false;
 
-
-    private StructArrayPublisher<SwerveModuleState> publisher = NetworkTableInstance.getDefault().getStructArrayTopic("drivetrain/actualModuleStates", SwerveModuleState.struct).publish();
-    private StructArrayPublisher<SwerveModuleState> targetPublisher = NetworkTableInstance.getDefault().getStructArrayTopic("drivetrain/targetModuleStates", SwerveModuleState.struct).publish();
-    private DoubleArrayPublisher voltagePublisher = NetworkTableInstance.getDefault().getDoubleArrayTopic("drivetrain/moduleVoltages").publish();    
+    // publishers for swerve module states 
+    private StructArrayPublisher<SwerveModuleState> moduleStatePublisher = NetworkTableInstance.getDefault().getStructArrayTopic("drivetrain/actualModuleStates", SwerveModuleState.struct).publish();
+    private StructArrayPublisher<SwerveModuleState> targetModuleStatePublisher = NetworkTableInstance.getDefault().getStructArrayTopic("drivetrain/targetModuleStates", SwerveModuleState.struct).publish();
+    private DoubleArrayPublisher moduleDriveVoltagePublisher = NetworkTableInstance.getDefault().getDoubleArrayTopic("drivetrain/moduleDriveVoltages").publish();    
     private StructPublisher<Pose2d> posePublisher = NetworkTableInstance.getDefault().getStructTopic("drivetrain/pose", Pose2d.struct).publish();
 
     /* Swerve requests to apply during SysId characterization */
@@ -196,6 +196,16 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         }
 
         configureAutoBuilder();
+
+        // register telemetry for periodic publishing to networktables
+        registerTelemetry((state) -> {
+            double[] driveVoltages = {this.getModule(0).getDriveMotor().getMotorVoltage().getValueAsDouble(), this.getModule(1).getDriveMotor().getMotorVoltage().getValueAsDouble(), this.getModule(2).getDriveMotor().getMotorVoltage().getValueAsDouble(), this.getModule(3).getDriveMotor().getMotorVoltage().getValueAsDouble()};
+
+            moduleDriveVoltagePublisher.set(driveVoltages);
+            moduleStatePublisher.set(state.ModuleStates);;
+            targetModuleStatePublisher.set(state.ModuleTargets);
+            posePublisher.set(this.getState().Pose);
+        });
     }
 
     /**
@@ -222,6 +232,16 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         }
 
         configureAutoBuilder();
+
+        // register telemetry for periodic publishing to networktables
+        registerTelemetry((state) -> {
+            double[] driveVoltages = {this.getModule(0).getDriveMotor().getMotorVoltage().getValueAsDouble(), this.getModule(1).getDriveMotor().getMotorVoltage().getValueAsDouble(), this.getModule(2).getDriveMotor().getMotorVoltage().getValueAsDouble(), this.getModule(3).getDriveMotor().getMotorVoltage().getValueAsDouble()};
+
+            moduleDriveVoltagePublisher.set(driveVoltages);
+            moduleStatePublisher.set(state.ModuleStates);;
+            targetModuleStatePublisher.set(state.ModuleTargets);
+            posePublisher.set(this.getState().Pose);
+        });
     }
 
     /**
@@ -256,6 +276,16 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         }
 
         configureAutoBuilder();
+
+        // register telemetry for periodic publishing to networktables
+        registerTelemetry((state) -> {
+            double[] driveVoltages = {this.getModule(0).getDriveMotor().getMotorVoltage().getValueAsDouble(), this.getModule(1).getDriveMotor().getMotorVoltage().getValueAsDouble(), this.getModule(2).getDriveMotor().getMotorVoltage().getValueAsDouble(), this.getModule(3).getDriveMotor().getMotorVoltage().getValueAsDouble()};
+
+            moduleDriveVoltagePublisher.set(driveVoltages);
+            moduleStatePublisher.set(state.ModuleStates);;
+            targetModuleStatePublisher.set(state.ModuleTargets);
+            posePublisher.set(this.getState().Pose);
+        });
     }
 
     /**
@@ -313,19 +343,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 m_hasAppliedOperatorPerspective = true;
             });
         }
-
-
-        SwerveModuleState[] currentStates = {this.getModule(0).getCurrentState(), this.getModule(1).getCurrentState(), this.getModule(2).getCurrentState(), this.getModule(3).getCurrentState()};
-        SwerveModuleState[] targetStates = {this.getModule(0).getTargetState(), this.getModule(1).getTargetState(), this.getModule(2).getTargetState(), this.getModule(3).getTargetState()};
-        double[] voltages = {this.getModule(0).getDriveMotor().getMotorVoltage().getValueAsDouble(), this.getModule(1).getDriveMotor().getMotorVoltage().getValueAsDouble(), this.getModule(2).getDriveMotor().getMotorVoltage().getValueAsDouble(), this.getModule(3).getDriveMotor().getMotorVoltage().getValueAsDouble()};
-       
-
-        publisher.set(currentStates);
-
-        targetPublisher.set(targetStates);
-        voltagePublisher.set(voltages);
-
-        posePublisher.set(this.getState().Pose);
     }
 
     private void startSimThread() {
