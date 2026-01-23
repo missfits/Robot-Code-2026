@@ -63,25 +63,41 @@ public final class Constants {
   }
 
   public static class IntakeConstants {
-    public static final int MECHANISM_MOTOR_ID = 0;
-    public static final int MOTOR_STATOR_LIMIT = 0;
+    // Motor IDs
+    public static final int ROLLER_MOTOR_ID = 0;
+    public static final int PIVOT_MOTOR_ID = 0;
 
-    public static final double DEGREES_PER_ROTATION = 0;
+    // Motor limits
+    public static final int ROLLER_MOTOR_STATOR_LIMIT = 0;
+    public static final int PIVOT_MOTOR_STATOR_LIMIT = 0;
+
+    // Conversions
+    public static final double ROLLER_DEGREES_PER_ROTATION = 0;
+    public static final double PIVOT_DEGREES_PER_ROTATION = 0;
 
     // Intake motor velocities
     public static final double OUTTAKE_MOTOR_VELOCITY = 0;
     public static final double INTAKE_BACK_VELOCITY = 0;
+    public static final double PIVOT_UP_VELOCITY = 0;
+    public static final double PIVOT_DOWN_VELOCITY = 0;
 
     // Timing
     public static final double RUN_INTAKE_TIME = 0;
   }
 
-  public static class ShooterConstants {
+  public static class ScorerConstants {
+    // Motor IDs
     public static final int INFLUENCER_MOTOR_ID = 0;
     public static final int FOLLOWER_MOTOR_ID = 0;
-    public static final int MOTOR_STATOR_LIMIT = 0;
+    public static final int INDEXER_MOTOR_ID = 0;
 
-    public static final double DEGREES_PER_ROTATION = 0;
+    // Motor limits
+    public static final int SHOOTER_MOTOR_STATOR_LIMIT = 0;
+    public static final int INDEXER_MOTOR_STATOR_LIMIT = 0;
+
+    // Conversions
+    public static final double SHOOTER_DEGREES_PER_ROTATION = 0;
+    public static final double INDEXER_DEGREES_PER_ROTATION = 0;
 
     // Influencer motor velocities
     public static final double INFLUENCER_OUTTAKE_MOTOR_VELOCITY = 0;

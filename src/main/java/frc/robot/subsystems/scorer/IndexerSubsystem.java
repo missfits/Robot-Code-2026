@@ -8,45 +8,33 @@ import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import frc.robot.Constants.IndexerConstants;
+import frc.robot.Constants.ScorerConstants;
 
 
 public class IndexerSubsystem extends SubsystemBase {
-  private final ShooterIOHardware m_IO = new ShooterIOHardware(IndexerConstants.MECHANISM_MOTOR_ID);
+  private final IndexerIOHardware m_IO = new IndexerIOHardware(ScorerConstants.INDEXER_MOTOR_ID);
 
   public IndexerSubsystem() {
-        m_IO.resetPosition();
+    m_IO.resetPosition();
   }
 
-  public Command runShooter(double speed) {
-        return new FunctionalCommand(
-            // set voltage in init also
-            () -> {m_IO.setVoltage(speed); SmartDashboard.putString("indexer/currentlyRunningCommand", "runIndexer");},
-            () -> {m_IO.setVoltage(speed); SmartDashboard.putString("indexer/currentlyRunningCommand", "runIndexer");},
-            (interrupted) -> {},
-            () -> false,
-            this
-        ).withName("runIndexer");
-    }
-
-  public Command VelocityVoltage(double velocity, boolean enableFOC, double feedForward, int slot, boolean overrideBrakeDurNeutral) {
-    VelocityVoltage request = new VelocityVoltage(velocity)
-        .withEnableFOC(enableFOC)
-        .withFeedForward(feedForward)
-        .withSlot(slot)
-        .withOverrideBrakeDurNeutral(overrideBrakeDurNeutral);
-
+  public Command runIndexer(double velocity) {
     return this.run(() -> {
-        m_IO.setVelocityVoltage(request);
-        SmartDashboard.putNumber("indexer/velocity voltage", velocity);
+        m_IO.setVoltage(velocity);
+        SmartDashboard.putNumber("intake/input velocity", velocity);
     });
-}
+  }
 
-  public Command runShooterOff() {
-    return new RunCommand(
-      () -> {
+  public Command runIndexerPID(double velocity) {
+    return this.run(() -> {
+        m_IO.setVelocityVoltage(velocity);
+        SmartDashboard.putNumber("intake/input velocity", velocity);
+    });
+  }
+
+  public Command runIndexerOff() {
+    return new RunCommand(() -> {
         m_IO.setVoltage(0);
-        SmartDashboard.putBoolean("indexer/off", true);
       },
       this
     );
@@ -57,5 +45,4 @@ public class IndexerSubsystem extends SubsystemBase {
     SmartDashboard.putData("indexer/subsystem", this);
     SmartDashboard.putNumber("indexer/current", m_IO.getCurrent());
   }
-
 }
