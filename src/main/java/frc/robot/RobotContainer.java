@@ -8,11 +8,16 @@ import frc.robot.commands.Autos;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainCommandFactory;
+import frc.robot.subsystems.intake.IntakeCommandFactory;
+import frc.robot.subsystems.scorer.ScorerCommandFactory;
 import frc.robot.subsystems.vision.LocalizationCamera;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.robot.subsystems.drivetrain.Telemetry;
-
+import frc.robot.subsystems.intake.RollerSubsystem;
+import frc.robot.subsystems.scorer.ShooterSubsystem;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.ScorerConstants;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.VisionConstants;
 
@@ -22,6 +27,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -49,10 +55,14 @@ public class RobotContainer {
 
   // Subsystems
   public final CommandSwerveDrivetrain m_drivetrain = TunerConstants.createDrivetrain();
+  public final RollerSubsystem m_roller = new RollerSubsystem();
+  public final ShooterSubsystem m_shooter = new ShooterSubsystem();
   public final VisionSubsystem m_vision = new VisionSubsystem();
   
   // Command factories
   private final DrivetrainCommandFactory m_drivetrainCommandFactory = new DrivetrainCommandFactory(m_drivetrain);
+  private final IntakeCommandFactory m_intakeCommandFactory = new IntakeCommandFactory(m_roller);
+  private final ScorerCommandFactory m_shooterCommandFactory = new ScorerCommandFactory(m_shooter);
 
   private final CommandXboxController m_driverJoystick =
     new CommandXboxController(OperatorConstants.kDriverControllerPort);
@@ -73,6 +83,8 @@ public class RobotContainer {
     DataLogManager.start(); // Starts recording to data log
     DriverStation.startDataLog(DataLogManager.getLog()); // Record both DS control and joystick data
     DriverStation.silenceJoystickConnectionWarning(true); // Turn off unplugged joystick errors
+
+    logToSmartDashboard();
   }
 
   /**
@@ -95,7 +107,50 @@ public class RobotContainer {
       m_drivetrainCommandFactory.snapToAngle(m_driverJoystick, 0)
     );
 
+    m_driverJoystick.povCenter().negate().onTrue(new InstantCommand(() -> resetControllerConstantsSmartDashboard()));
+
+
     m_drivetrain.registerTelemetry(logger::telemeterize);
+  }
+
+  private void logToSmartDashboard() {
+    // Roller
+    SmartDashboard.putNumber("roller IO/kP", SmartDashboard.getNumber("roller IO/kP", IntakeConstants.ROLLER_kP));
+    SmartDashboard.putNumber("roller IO/kI", SmartDashboard.getNumber("roller IO/kI", IntakeConstants.ROLLER_kI));
+    SmartDashboard.putNumber("roller IO/kD", SmartDashboard.getNumber("roller IO/kD", IntakeConstants.ROLLER_kD));
+    SmartDashboard.putNumber("roller IO/velocity", SmartDashboard.getNumber("roller IO/velocity", IntakeConstants.OUTTAKE_MOTOR_VELOCITY));
+
+    // Shooter Influencer 
+    SmartDashboard.putNumber("shooter influencer IO/kP", SmartDashboard.getNumber("shooter influencer IO/kP", ScorerConstants.INFLUENCER_kP));
+    SmartDashboard.putNumber("shooter influencer IO/kI", SmartDashboard.getNumber("shooter influencer IO/kI", ScorerConstants.INFLUENCER_kI));
+    SmartDashboard.putNumber("shooter influencer IO/kD", SmartDashboard.getNumber("shooter influencer IO/kD", ScorerConstants.INFLUENCER_kD));
+    SmartDashboard.putNumber("shooter influencer IO/velocity", SmartDashboard.getNumber("shooter influencer IO/velocity", ScorerConstants.INFLUENCER_OUTTAKE_MOTOR_VELOCITY));
+
+    // Shooter Follower 
+    SmartDashboard.putNumber("shooter follower IO/kP", SmartDashboard.getNumber("shooter follower IO/kP", ScorerConstants.FOLLOWER_kP));
+    SmartDashboard.putNumber("shooter follower IO/kI", SmartDashboard.getNumber("shooter follower IO/kI", ScorerConstants.FOLLOWER_kI));
+    SmartDashboard.putNumber("shooter follower IO/kD", SmartDashboard.getNumber("shooter follower IO/kD", ScorerConstants.FOLLOWER_kD));
+    SmartDashboard.putNumber("shooter follower IO/velocity", SmartDashboard.getNumber("shooter follower IO/velocity", ScorerConstants.FOLLOWER_OUTTAKE_MOTOR_VELOCITY));
+  }
+
+  private void resetControllerConstantsSmartDashboard() {
+    IntakeConstants.ROLLER_kP = SmartDashboard.getNumber("roller IO/kP", 0);
+    IntakeConstants.ROLLER_kI = SmartDashboard.getNumber("roller IO/kI", 0);
+    IntakeConstants.ROLLER_kD = SmartDashboard.getNumber("roller IO/kD", 0);
+    IntakeConstants.OUTTAKE_MOTOR_VELOCITY = SmartDashboard.getNumber("roller IO/velocity", 0);
+
+    ScorerConstants.INFLUENCER_kP = SmartDashboard.getNumber("shooter influencer IO/kP", 0);
+    ScorerConstants.INFLUENCER_kI = SmartDashboard.getNumber("shooter influencer IO/kI", 0);
+    ScorerConstants.INFLUENCER_kD = SmartDashboard.getNumber("shooter influencer IO/kD", 0);
+    ScorerConstants.INFLUENCER_OUTTAKE_MOTOR_VELOCITY = SmartDashboard.getNumber("shooter influencer IO/velocity", 0);
+
+    ScorerConstants.FOLLOWER_kP = SmartDashboard.getNumber("shooter follower IO/kP", 0);
+    ScorerConstants.FOLLOWER_kI = SmartDashboard.getNumber("shooter follower IO/kI", 0);
+    ScorerConstants.FOLLOWER_kD = SmartDashboard.getNumber("shooter follower IO/kD", 0);
+    ScorerConstants.FOLLOWER_OUTTAKE_MOTOR_VELOCITY = SmartDashboard.getNumber("shooter follower IO/velocity", 0);
+
+    m_roller.resetControllers();
+    m_shooter.resetControllers();
   }
 
   /**

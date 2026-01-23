@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -15,37 +16,68 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import frc.robot.Constants.ShooterConstants;
+import frc.robot.Constants.ScorerConstants;
 
 
-public class ShooterIOHardware {
+public class ShooterInfluencerIOHardware {
   private final TalonFX m_shooterMotor;
 
+  private final StatusSignal<Angle> m_positionSignal;
   private final StatusSignal<AngularVelocity> m_velocitySignal;
+  private final StatusSignal<Voltage> m_voltageSignal;
   private final StatusSignal<Current> m_currentSignal;
 
   // constructor
-  public ShooterIOHardware(int motorID) {
+  public ShooterInfluencerIOHardware(int motorID) {
     m_shooterMotor = new TalonFX(motorID);
+    m_positionSignal = m_shooterMotor.getPosition();
     m_velocitySignal = m_shooterMotor.getVelocity();
+    m_voltageSignal = m_shooterMotor.getMotorVoltage();
     m_currentSignal = m_shooterMotor.getStatorCurrent();
 
     var talonFXConfigurator = m_shooterMotor.getConfigurator();
     var limitConfigs = new CurrentLimitsConfigs();
 
-    limitConfigs.StatorCurrentLimit = ShooterConstants.MOTOR_STATOR_LIMIT;
+    limitConfigs.StatorCurrentLimit = ScorerConstants.INFLUENCER_MOTOR_STATOR_LIMIT;
     limitConfigs.StatorCurrentLimitEnable = true;
 
     talonFXConfigurator.apply(limitConfigs);
   }
 
+  // configure pid values on motor
+  public void resetSlot0Gains() {
+    var talonFXConfigs = new TalonFXConfiguration();
+    var slot0Configs = talonFXConfigs.Slot0;
+    slot0Configs.kP = ScorerConstants.INFLUENCER_kP;
+    slot0Configs.kI = ScorerConstants.INFLUENCER_kI;
+    slot0Configs.kD = ScorerConstants.INFLUENCER_kD;
+    m_shooterMotor.getConfigurator().apply(talonFXConfigs);
+  }
+
   // getters
+  public double getPosition() {
+    return Math.toRadians(m_positionSignal.refresh().getValue().in(Revolutions)*ScorerConstants.INFLUENCER_DEGREES_PER_ROTATION);
+  }
+
+  public double getPositionDegrees() {
+    return m_positionSignal.refresh().getValue().in(Revolutions)*ScorerConstants.INFLUENCER_DEGREES_PER_ROTATION;
+  }
+
   public double getVelocity() { //in radians
-    return Math.toRadians(m_velocitySignal.refresh().getValue().in(RevolutionsPerSecond)*ShooterConstants.DEGREES_PER_ROTATION);
+    return Math.toRadians(m_velocitySignal.refresh().getValue().in(RevolutionsPerSecond)*ScorerConstants.INFLUENCER_DEGREES_PER_ROTATION);
+  }
+
+  public double getVelocityDegrees() {
+    return m_velocitySignal.refresh().getValue().in(RevolutionsPerSecond)*ScorerConstants.INFLUENCER_DEGREES_PER_ROTATION;
+  }
+
+  public double getVoltage() {
+    return m_voltageSignal.refresh().getValue().in(Volts);
   }
 
   public double getCurrent() {
@@ -70,7 +102,8 @@ public class ShooterIOHardware {
         setPosition(0);
     }
   
-  public void setVelocityVoltage(VelocityVoltage request) {
-    m_shooterMotor.setControl(request);
-}
+  public void setVelocityVoltage(double value) {
+    m_shooterMotor.setControl(new VelocityVoltage(value));
+    SmartDashboard.putNumber("shooter/velocity voltage", value);
+  }
 }

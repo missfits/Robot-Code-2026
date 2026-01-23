@@ -1,64 +1,66 @@
 package frc.robot.subsystems.scorer;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import frc.robot.Constants.ShooterConstants;
-
+import frc.robot.Constants.ScorerConstants;
 
 public class ShooterSubsystem extends SubsystemBase {
-  private final ShooterIOHardware m_IO = new ShooterIOHardware(ShooterConstants.MECHANISM_MOTOR_ID);
+  private final ShooterInfluencerIOHardware m_influencerIO = new ShooterInfluencerIOHardware(ScorerConstants.INFLUENCER_MOTOR_ID);
+  private final ShooterFollowerIOHardware m_followerIO = new ShooterFollowerIOHardware(ScorerConstants.FOLLOWER_MOTOR_ID);
 
   public ShooterSubsystem() {
-        m_IO.resetPosition();
+    m_influencerIO.resetPosition();
+    m_followerIO.resetPosition();
   }
 
-  public Command runShooter(double speed) {
-    return loggedCommand(
-        "runShooter",
-        this.run(() -> m_IO.setVoltage(speed))
-    );
+  public Command runShooter(double influencerVelocity, double followerVelocity) {
+    return this.run(() -> {
+        m_influencerIO.setVoltage(influencerVelocity);
+        m_followerIO.setVoltage(followerVelocity);
+        SmartDashboard.putNumber("shooter/influencer input velocity", influencerVelocity);
+        SmartDashboard.putNumber("shooter/follower input velocity", followerVelocity);
+    });
   }
-  public Command velocityVoltage(double velocity, boolean enableFOC, double feedForward, int slot, boolean overrideBrakeDurNeutral) {
-    VelocityVoltage request = new VelocityVoltage(velocity)
-        .withEnableFOC(enableFOC)
-        .withFeedForward(feedForward)
-        .withSlot(slot)
-        .withOverrideBrakeDurNeutral(overrideBrakeDurNeutral);
 
-    return loggedCommand(
-      "velocityVoltage",
-      this.run(() -> m_IO.setVelocityVoltage(request))
-  );
-}
+  public Command runShooterPID(double influencerVelocity, double followerVelocity) {
+    return this.run(() -> {
+        m_influencerIO.setVelocityVoltage(influencerVelocity);
+        m_followerIO.setVelocityVoltage(followerVelocity);
+        SmartDashboard.putNumber("shooter/influencer input velocity", influencerVelocity);
+        SmartDashboard.putNumber("shooter/follower input velocity", followerVelocity);
+    });
+  }
 
   public Command runShooterOff() {
-    return loggedCommand(
-      "runShooterOff",
-      new RunCommand(() -> m_IO.setVoltage(0), this)
-      );
+    return new RunCommand(() -> {
+        m_influencerIO.setVoltage(0);
+        m_followerIO.setVoltage(0);
+      },
+      this
+    );
   }
 
-  private Command loggedCommand(String name, Command command) {
-  return command.withName(name).beforeStarting(() ->
-          SmartDashboard.putString("shooter/lastRunningInnerCommand", name)
-      );
+  public void resetControllers() {
+    m_influencerIO.resetSlot0Gains();
+    m_followerIO.resetSlot0Gains();
   }
-
 
   @Override
   public void periodic() {
     SmartDashboard.putData("shooter/subsystem", this);
-    SmartDashboard.putNumber("shooter/current", m_IO.getCurrent());
+    SmartDashboard.putNumber("shooter/influencer current", m_influencerIO.getCurrent());
+    SmartDashboard.putNumber("shooter/follower current", m_followerIO.getCurrent());
 
     Command current = this.getCurrentCommand();
     SmartDashboard.putString(
       "shooter/currentlyRunningOuterCommand",
       current != null ? current.getName() : "None"
-  );
-}
+    );
+  }
 }
