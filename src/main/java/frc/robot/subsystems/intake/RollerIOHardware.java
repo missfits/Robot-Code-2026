@@ -22,7 +22,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.IntakeConstants;
 
-
 public class RollerIOHardware {
   private final TalonFX m_intakeMotor;
 
@@ -38,7 +37,6 @@ public class RollerIOHardware {
     m_velocitySignal = m_intakeMotor.getVelocity();
     m_voltageSignal = m_intakeMotor.getMotorVoltage();
     m_currentSignal = m_intakeMotor.getStatorCurrent();
-
 
     var talonFXConfigurator = m_intakeMotor.getConfigurator();
     var limitConfigs = new CurrentLimitsConfigs();

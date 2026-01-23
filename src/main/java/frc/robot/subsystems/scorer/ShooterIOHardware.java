@@ -39,7 +39,6 @@ public class ShooterIOHardware {
     m_voltageSignal = m_shooterMotor.getMotorVoltage();
     m_currentSignal = m_shooterMotor.getStatorCurrent();
 
-
     var talonFXConfigurator = m_shooterMotor.getConfigurator();
     var limitConfigs = new CurrentLimitsConfigs();
 

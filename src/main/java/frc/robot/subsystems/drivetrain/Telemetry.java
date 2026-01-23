@@ -5,11 +5,14 @@ import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.DoubleArrayPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StringPublisher;
+import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -42,6 +45,10 @@ public class Telemetry {
     private final DoublePublisher velocityY = driveStats.getDoubleTopic("Velocity Y").publish();
     private final DoublePublisher speed = driveStats.getDoubleTopic("Speed").publish();
     private final DoublePublisher odomPeriod = driveStats.getDoubleTopic("Odometry Period").publish();
+
+    // publishers for swerve module states 
+    private StructArrayPublisher<SwerveModuleState> moduleStatePublisher = NetworkTableInstance.getDefault().getStructArrayTopic("drivetrain/actualModuleStates", SwerveModuleState.struct).publish();
+    private StructArrayPublisher<SwerveModuleState> targetModuleStatePublisher = NetworkTableInstance.getDefault().getStructArrayTopic("drivetrain/targetModuleStates", SwerveModuleState.struct).publish();
 
     /* Keep a reference of the last pose to calculate the speeds */
     private Pose2d m_lastPose = new Pose2d();
@@ -97,6 +104,9 @@ public class Telemetry {
         velocityX.set(velocities.getX());
         velocityY.set(velocities.getY());
         odomPeriod.set(state.OdometryPeriod);
+
+        moduleStatePublisher.set(state.ModuleStates);;
+        targetModuleStatePublisher.set(state.ModuleTargets);
 
         /* Telemeterize the module's states */
         for (int i = 0; i < 4; ++i) {

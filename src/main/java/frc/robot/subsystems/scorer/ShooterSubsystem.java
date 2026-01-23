@@ -49,7 +49,13 @@ public class ShooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putData("shooter/subsystem", this);
-    SmartDashboard.putNumber("shooter/current", m_influencerIO.getCurrent());
-  }
+    SmartDashboard.putNumber("shooter/influencer current", m_influencerIO.getCurrent());
+    SmartDashboard.putNumber("shooter/follower current", m_followerIO.getCurrent());
 
+    Command current = this.getCurrentCommand();
+    SmartDashboard.putString(
+      "shooter/currentlyRunningOuterCommand",
+      current != null ? current.getName() : "None"
+    );
+  }
 }

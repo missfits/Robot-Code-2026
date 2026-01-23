@@ -7,10 +7,12 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-
+import edu.wpi.first.math.util.Units;
 import frc.robot.generated.TunerConstants;
 
 /**
@@ -35,31 +37,106 @@ public final class Constants {
 
   public static class DrivetrainConstants {
     // Steer motor PID and feedforward gains
-    public static final double STEER_KP = 100;
-    public static final double STEER_KI = 0;
-    public static final double STEER_KD = 0.5;
-    public static final double STEER_KS = 0.1;
-    public static final double STEER_KV = 2.66;
-    public static final double STEER_KA = 0;
+    public static double STEER_KP = 100;
+    public static double STEER_KI = 0;
+    public static double STEER_KD = 0.5;
+    public static double STEER_KS = 0.1;
+    public static double STEER_KV = 2.66;
+    public static double STEER_KA = 0;
 
     // Drive motor PID and feedforward gains
-    public static final double DRIVE_KP = 0.1;
-    public static final double DRIVE_KI = 0;
-    public static final double DRIVE_KD = 0;
-    public static final double DRIVE_KS = 0;
-    public static final double DRIVE_KV = 0.124;
-    public static final double DRIVE_KA = 0;
+    public static double DRIVE_KP = 0.1;
+    public static double DRIVE_KI = 0;
+    public static double DRIVE_KD = 0;
+    public static double DRIVE_KS = 0;
+    public static double DRIVE_KV = 0.124;
+    public static double DRIVE_KA = 0;
 
-    public static final double WHEEL_RADIUS_FUDGE_FACTOR = 1.0;
+    public static double WHEEL_RADIUS_FUDGE_FACTOR = 1.0;
+
 
     // Max speeds for drivetrain
     public static final double MAX_TRANSLATION_SPEED = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     public static final double MAX_ROTATION_SPEED = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
     // Rotation heading controller PID gains
-    public static final double ROTATION_KP = 10.0;
-    public static final double ROTATION_KI = 0.0;
-    public static final double ROTATION_KD = 0.0;
+    public static double ROTATION_KP = 5.0;
+    public static double ROTATION_KI = 0.0;
+    public static double ROTATION_KD = 0.0;
+
+    // PID constants for PathPlanner AutoBuilder
+    public static double ROBOT_POSITION_P = 5.0;
+    public static double ROBOT_POSITION_I = 0;
+    public static double ROBOT_POSITION_D = 0;
+    public static double ROBOT_ROTATION_P = 5.0;
+    public static double ROBOT_ROTATION_I = 0;
+    public static double ROBOT_ROTATION_D = 0;
+
+    static {
+      switch (RobotConfig.getRobot()) {
+        case CLEO:
+          STEER_KP = 100;
+          STEER_KI = 0;
+          STEER_KD = 0.5;
+          STEER_KS = 0.1;
+          STEER_KV = 2.66;
+          STEER_KA = 0;
+
+          DRIVE_KP = 0.1;
+          DRIVE_KI = 0;
+          DRIVE_KD = 0;
+          DRIVE_KS = 0;
+          DRIVE_KV = 0.124;
+          DRIVE_KA = 0;
+
+          WHEEL_RADIUS_FUDGE_FACTOR = 1.0;
+
+          ROTATION_KP = 5.0;
+          ROTATION_KI = 0.0;
+          ROTATION_KD = 0.0;
+
+          ROBOT_POSITION_P = 5.0;
+          ROBOT_POSITION_I = 0;
+          ROBOT_POSITION_D = 0;
+          ROBOT_ROTATION_P = 5.0;
+          ROBOT_ROTATION_I = 0;
+          ROBOT_ROTATION_D = 0;
+          break;
+
+        case CERIDWEN:
+          // TODO: Tune these values for Ceridwen
+          STEER_KP = 100;
+          STEER_KI = 0;
+          STEER_KD = 0.5;
+          STEER_KS = 0.1;
+          STEER_KV = 2.66;
+          STEER_KA = 0;
+
+          DRIVE_KP = 0.1;
+          DRIVE_KI = 0;
+          DRIVE_KD = 0;
+          DRIVE_KS = 0;
+          DRIVE_KV = 0.124;
+          DRIVE_KA = 0;
+
+          WHEEL_RADIUS_FUDGE_FACTOR = 1.0;
+
+          ROTATION_KP = 5.0;
+          ROTATION_KI = 0.0;
+          ROTATION_KD = 0.0;
+
+          ROBOT_POSITION_P = 5.0;
+          ROBOT_POSITION_I = 0;
+          ROBOT_POSITION_D = 0;
+          ROBOT_ROTATION_P = 5.0;
+          ROBOT_ROTATION_I = 0;
+          ROBOT_ROTATION_D = 0;
+          break;
+
+        default:
+          throw new IllegalStateException("Unknown robot type: " + RobotConfig.getRobot());
+      }
+    }
   }
 
   public static class IntakeConstants {
@@ -67,7 +144,7 @@ public final class Constants {
     public static final int ROLLER_MOTOR_ID = 0;
     public static final int PIVOT_MOTOR_ID = 0;
 
-    // Motor limits
+    // Motor limitss
     public static final int ROLLER_MOTOR_STATOR_LIMIT = 0;
     public static final int PIVOT_MOTOR_STATOR_LIMIT = 0;
 
@@ -139,10 +216,87 @@ public final class Constants {
 
     // --- vision subsystem ---
     // (camera setup)
-    public static final String CAMERA1_NAME = null;
-    public static final String CAMERA2_NAME = null;
-    public static final Transform3d ROBOT_TO_CAM1_3D = null;
-    public static final Transform3d ROBOT_TO_CAM2_3D = null;
+    public static final String CAMERA1_NAME;
+    public static final String CAMERA2_NAME;
+
+    // Camera 1 position - robot-specific because camera mounting may differ
+    public static final double ROBOT_TO_CAM1_X;
+    public static final double ROBOT_TO_CAM1_Y;
+    public static final double ROBOT_TO_CAM1_Z;
+    public static final double ROBOT_TO_CAM1_ROLL;
+    public static final double ROBOT_TO_CAM1_PITCH;
+    public static final double ROBOT_TO_CAM1_YAW;
+    public static final Transform3d ROBOT_TO_CAM1_3D;
+
+    // Camera 2 position - robot-specific
+    public static final double ROBOT_TO_CAM2_X;
+    public static final double ROBOT_TO_CAM2_Y;
+    public static final double ROBOT_TO_CAM2_Z;
+    public static final double ROBOT_TO_CAM2_ROLL;
+    public static final double ROBOT_TO_CAM2_PITCH;
+    public static final double ROBOT_TO_CAM2_YAW;
+    public static final Transform3d ROBOT_TO_CAM2_3D;
+
+    static {
+      switch (RobotConfig.getRobot()) {
+        case CLEO:
+          // TODO: Measure and update these values for Cleo
+
+          CAMERA1_NAME = "camera1";
+          CAMERA2_NAME = "camera2";
+
+          // Cleo camera positions
+          ROBOT_TO_CAM1_X = 0;
+          ROBOT_TO_CAM1_Y = 0;
+          ROBOT_TO_CAM1_Z = 0;
+          ROBOT_TO_CAM1_ROLL = 0;
+          ROBOT_TO_CAM1_PITCH = 0;
+          ROBOT_TO_CAM1_YAW = 0;
+
+          ROBOT_TO_CAM2_X = 0;
+          ROBOT_TO_CAM2_Y = 0;
+          ROBOT_TO_CAM2_Z = 0;
+          ROBOT_TO_CAM2_ROLL = 0;
+          ROBOT_TO_CAM2_PITCH = 0;
+          ROBOT_TO_CAM2_YAW = 0;
+          break;
+
+        case CERIDWEN:
+          // Ceridwen camera positions
+
+          CAMERA1_NAME = "camera1";
+          CAMERA2_NAME = "camera2";
+
+          ROBOT_TO_CAM1_X = Units.inchesToMeters(2);
+          ROBOT_TO_CAM1_Y = Units.inchesToMeters(-7);
+          ROBOT_TO_CAM1_Z = Units.inchesToMeters(8);
+          ROBOT_TO_CAM1_ROLL = Units.degreesToRadians(-35.26);
+          ROBOT_TO_CAM1_PITCH = Units.degreesToRadians(30);
+          ROBOT_TO_CAM1_YAW = Units.degreesToRadians(45);
+
+          ROBOT_TO_CAM2_X = 0;
+          ROBOT_TO_CAM2_Y = 0;
+          ROBOT_TO_CAM2_Z = 0;
+          ROBOT_TO_CAM2_ROLL = 0;
+          ROBOT_TO_CAM2_PITCH = 0;
+          ROBOT_TO_CAM2_YAW = 0;
+          break;
+
+        default:
+          throw new IllegalStateException("Unknown robot type: " + RobotConfig.getRobot());
+      }
+
+      // Compute Transform3d after switch (same for all robots)
+      ROBOT_TO_CAM1_3D = new Transform3d(
+        new Translation3d(ROBOT_TO_CAM1_X, ROBOT_TO_CAM1_Y, ROBOT_TO_CAM1_Z),
+        new Rotation3d(ROBOT_TO_CAM1_ROLL, ROBOT_TO_CAM1_PITCH, ROBOT_TO_CAM1_YAW)
+      );
+
+      ROBOT_TO_CAM2_3D = new Transform3d(
+        new Translation3d(ROBOT_TO_CAM2_X, ROBOT_TO_CAM2_Y, ROBOT_TO_CAM2_Z),
+        new Rotation3d(ROBOT_TO_CAM2_ROLL, ROBOT_TO_CAM2_PITCH, ROBOT_TO_CAM2_YAW)
+      );
+    }
   }
   
   public static class LEDConstants { // placeholder constants
