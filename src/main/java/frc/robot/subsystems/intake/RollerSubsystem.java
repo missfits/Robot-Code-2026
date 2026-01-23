@@ -5,9 +5,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.RollerConstants;
+
 
 public class RollerSubsystem extends SubsystemBase {
-  private final RollerIOHardware m_IO = new RollerIOHardware();
+  private final RollerIOHardware m_IO = new RollerIOHardware(RollerConstants.MECHANISM_MOTOR_ID);
 
   public RollerSubsystem() {
     m_IO.resetPosition();

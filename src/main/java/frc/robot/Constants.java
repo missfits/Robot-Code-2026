@@ -92,6 +92,7 @@ public final class Constants {
     public static final double DEGREES_PER_ROTATION = 0;
   }
 
+  //CLIMBER
   public static class ClimberConstants {
     public static final int MECHANISM_MOTOR_ID = 0;
     public static final int MOTOR_STATOR_LIMIT = 0;

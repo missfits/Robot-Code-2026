@@ -18,14 +18,19 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import frc.robot.Constants.PivotConstants;
 
 public class PivotIOHardware {
-    private final TalonFX m_pivotMotor = new TalonFX(PivotConstants.MECHANISM_MOTOR_ID);
-    private final StatusSignal<Angle> m_positionSignal = m_pivotMotor.getPosition();
-    private final StatusSignal<AngularVelocity> m_velocitySignal = m_pivotMotor.getVelocity();
-    private final StatusSignal<Voltage> m_voltageSignal = m_pivotMotor.getMotorVoltage();
+    private final TalonFX m_pivotMotor;
+    private final StatusSignal<Angle> m_positionSignal; 
+    private final StatusSignal<AngularVelocity> m_velocitySignal;
+    private final StatusSignal<Voltage> m_voltageSignal;
 
 
     // constructor
-    public PivotIOHardware() {        
+    public PivotIOHardware(int motorID) {
+        m_pivotMotor = new TalonFX(motorID);
+        m_positionSignal = m_pivotMotor.getPosition();
+        m_velocitySignal = m_pivotMotor.getVelocity();
+        m_voltageSignal = m_pivotMotor.getMotorVoltage();
+
         var talonFXConfigurator = m_pivotMotor.getConfigurator();
         var limitConfigs = new CurrentLimitsConfigs();
 

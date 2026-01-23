@@ -14,20 +14,24 @@ import frc.robot.Constants.IndexerConstants;
 
 public class IndexerIOHardware {
 
-    private final TalonFX m_indexerMotor = new TalonFX(IndexerConstants.MECHANISM_MOTOR_ID);
-
-    private final StatusSignal<AngularVelocity> m_velocitySignal = m_indexerMotor.getVelocity();
-    private final StatusSignal<Voltage> m_voltageSignal = m_indexerMotor.getMotorVoltage();
+    private final TalonFX m_indexerMotor;
+    private final StatusSignal<AngularVelocity> m_velocitySignal;
+    private final StatusSignal<Voltage> m_voltageSignal; 
 
     // constructor
-    public IndexerIOHardware() {
-        var talonFXConfigurator = m_indexerMotor.getConfigurator();
-        var limitConfigs = new CurrentLimitsConfigs();
+    public IndexerIOHardware(int motorID) {
+      m_indexerMotor = new TalonFX(motorID);
+      m_velocitySignal = m_indexerMotor.getVelocity();
+      m_voltageSignal = m_indexerMotor.getMotorVoltage();
 
-        limitConfigs.StatorCurrentLimit = IndexerConstants.MOTOR_STATOR_LIMIT;
-        limitConfigs.StatorCurrentLimitEnable = true;
+      var talonFXConfigurator = m_indexerMotor.getConfigurator();
+      var limitConfigs = new CurrentLimitsConfigs();
 
-        talonFXConfigurator.apply(limitConfigs);
+
+      limitConfigs.StatorCurrentLimit = IndexerConstants.MOTOR_STATOR_LIMIT;
+      limitConfigs.StatorCurrentLimitEnable = true;
+
+      talonFXConfigurator.apply(limitConfigs);
     }
 
     // getters

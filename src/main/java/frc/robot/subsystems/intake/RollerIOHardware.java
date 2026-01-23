@@ -23,13 +23,16 @@ import frc.robot.Constants.RollerConstants;;
 
 
 public class RollerIOHardware {
-  private final TalonFX m_rollerMotor = new TalonFX(RollerConstants.MECHANISM_MOTOR_ID);
-
-  private final StatusSignal<AngularVelocity> m_velocitySignal = m_rollerMotor.getVelocity();
-  private final StatusSignal<Current> m_currentSignal = m_rollerMotor.getStatorCurrent();
+  private final TalonFX m_rollerMotor;
+  private final StatusSignal<AngularVelocity> m_velocitySignal;
+  private final StatusSignal<Current> m_currentSignal;
 
   // constructor
-  public RollerIOHardware() {
+  public RollerIOHardware(int motorID) {
+    m_rollerMotor = new TalonFX(motorID);
+    m_velocitySignal = m_rollerMotor.getVelocity();
+    m_currentSignal = m_rollerMotor.getStatorCurrent();
+
     var talonFXConfigurator = m_rollerMotor.getConfigurator();
     var limitConfigs = new CurrentLimitsConfigs();
 
