@@ -42,8 +42,10 @@ public class LocalizationCamera {
   private final StructPublisher<Pose2d> pose2dPublisher;
   private final StructPublisher<Pose3d> pose3dPublisher;
 
+  private VisionFilter visionFilter;
+
   // every camera periodically creates a new CameraReading containing robot pose, std dev, timestamp, and number of targets seen.
-  public static record CameraReading(EstimatedRobotPose robotPose, Matrix<N3, N1> stdDevs, double timestampSeconds, int numTargets) {}
+  public static record CameraReading(String cameraName, EstimatedRobotPose robotPose, Matrix<N3, N1> stdDevs, double timestampSeconds, int numTargets) {}
 
   public LocalizationCamera(String cameraName, Transform3d robotToCam) {
     m_cameraName = cameraName;
@@ -79,6 +81,10 @@ public class LocalizationCamera {
     SmartDashboard.putData(m_logString + "/est pose field/", m_estPoseField);
   }
 
+  // sets vision filtering logic (method filter)
+  public void setVisionFilter(VisionFilter filter) {
+      this.visionFilter = filter;
+  }
   
   public void updateCameraReading() {
     Optional<CameraReading> newReading = calculateNewCameraReading();
@@ -124,10 +130,14 @@ public class LocalizationCamera {
       if (poseEstimatorOutput.isPresent()) {
         // update std devs (will account for multi + single tag)
         var stdDevs = calculateEstimationStdDevs(poseEstimatorOutput.get(), result.getTargets());
-        var newReading = new CameraReading(poseEstimatorOutput.get(), stdDevs, result.getTimestampSeconds(), result.getTargets().size());
+        var newReading = new CameraReading(m_cameraName, poseEstimatorOutput.get(), stdDevs, result.getTimestampSeconds(), result.getTargets().size());
 
         // return empty if single tag has high pose ambiguity
         if (newReading.numTargets() == 1 && result.getBestTarget().getPoseAmbiguity() > VisionConstants.MAX_POSE_AMBIGUITY) {
+          return Optional.empty();
+        }
+
+        if (visionFilter != null && !visionFilter.isValid(newReading, this)) {
           return Optional.empty();
         }
 

@@ -44,15 +44,20 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 
 import frc.robot.Constants;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.subsystems.vision.LocalizationCamera.CameraReading;
 import frc.robot.subsystems.vision.VisionUtils;
 
 
 
 public class VisionSubsystem extends SubsystemBase {
   private ArrayList<LocalizationCamera> cameras = new ArrayList<>();
-  private List<LocalizationCamera> camerasWithValidPose = new ArrayList<>();
+  private List<CameraReading> readingsWithValidPose = new ArrayList<>();
 
   private double m_lastTimestamp = 0.0;
+
+  // has to be optional b/c starts as empty
+  private Optional<CameraReading> m_lastReading; // last vision measurement added to drivetrain
+
 
   /** Creates a new Vision Subsystem. */
   public VisionSubsystem() {
@@ -60,8 +65,8 @@ public class VisionSubsystem extends SubsystemBase {
     cameras.add(new LocalizationCamera(VisionConstants.CAMERA2_NAME, VisionConstants.ROBOT_TO_CAM2_3D));
   }
 
-  public List<LocalizationCamera> getLocalizationCameras(){
-    return camerasWithValidPose;
+  public List<CameraReading> getCameraReadings(){
+    return readingsWithValidPose;
   }
 
   @Override
@@ -69,24 +74,55 @@ public class VisionSubsystem extends SubsystemBase {
     for (LocalizationCamera cam : cameras){
       cam.updateCameraReading();
     }
-
+        
     // sorts the camera readings by time (care less about older readings)
-    camerasWithValidPose = cameras.stream() // turn the list into a stream
-    .filter((camera) -> { // only get the cameras with a valid EstimatedRobotPose
-         return camera.getCameraReading().isPresent() && camera.getCameraReading().get().timestampSeconds() > m_lastTimestamp;
+    readingsWithValidPose = cameras.stream() // turn the list into a stream
+    .flatMap((camera) -> { // only get the cameras with a valid EstimatedRobotPose
+      return filterCameraReading(camera).stream();  // .stream() converts Optional to Stream
     })
-    .sorted((camera_a, camera_b) -> { // simplified comparator because we've filtered out invalid readings.
-         return Double.compare(camera_a.getCameraReading().get().timestampSeconds(), 
-                              camera_b.getCameraReading().get().timestampSeconds());
+    .sorted((reading_a, reading_b) -> { // simplified comparator because we've filtered out invalid readings.
+         return Double.compare(reading_a.timestampSeconds(),
+                              reading_b.timestampSeconds());
      })
     .toList();
     
-    if (camerasWithValidPose.size() > 0){
-      // update last timestamp
-      m_lastTimestamp = camerasWithValidPose.get(camerasWithValidPose.size() - 1).getCameraReading().get().timestampSeconds();
+    if (readingsWithValidPose.size() > 0){
+      // update most recent timestamp
+      m_lastTimestamp = readingsWithValidPose.get(readingsWithValidPose.size() - 1).timestampSeconds();
+
+      // update m_lastReading to be the most recent reading
+      m_lastReading = Optional.of(readingsWithValidPose.get(readingsWithValidPose.size() - 1));
     }
   }
 
+  public void setFilter(VisionFilter filter) {
+    // loop through cameras and set filter for each one
+    for (LocalizationCamera cam : cameras) {
+      cam.setVisionFilter(filter);
+    }
+  }
+
+  private Optional<CameraReading> filterCameraReading(LocalizationCamera cam) {
+    if (!cam.getCameraReading().isPresent()) {
+      return Optional.empty();
+    }
+
+    CameraReading reading = cam.getCameraReading().get();
+
+    // --- timestamp check ---
+    if (m_lastReading.isPresent()) {
+      // if timestamp is older than last reading, return empty
+      if (reading.timestampSeconds() < m_lastTimestamp) {
+        SmartDashboard.putString("vision/" + cam.getCameraName() + "/timestampCheck", "failed");
+        return Optional.empty();
+      }
+    }
+
+    // return reading if reading is NOT jumpy (compared to all newest readings)
+    return Optional.of(reading);
+  }
+
+  
   @Override
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
