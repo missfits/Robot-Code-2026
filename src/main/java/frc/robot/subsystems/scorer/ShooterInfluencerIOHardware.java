@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -46,6 +47,16 @@ public class ShooterInfluencerIOHardware {
     limitConfigs.StatorCurrentLimitEnable = true;
 
     talonFXConfigurator.apply(limitConfigs);
+  }
+
+  // configure pid values on motor
+  public void resetSlot0Gains() {
+    var talonFXConfigs = new TalonFXConfiguration();
+    var slot0Configs = talonFXConfigs.Slot0;
+    slot0Configs.kP = ScorerConstants.INFLUENCER_kP;
+    slot0Configs.kI = ScorerConstants.INFLUENCER_kI;
+    slot0Configs.kD = ScorerConstants.INFLUENCER_kD;
+    m_shooterMotor.getConfigurator().apply(talonFXConfigs);
   }
 
   // getters
