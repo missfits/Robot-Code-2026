@@ -153,7 +153,7 @@ public final class Constants {
     public static final double PIVOT_DEGREES_PER_ROTATION = 0;
 
     // Intake motor velocities
-    public static final double OUTTAKE_MOTOR_VELOCITY = 0;
+    public static double OUTTAKE_MOTOR_VELOCITY = 0;
     public static final double INTAKE_BACK_VELOCITY = 0;
     public static final double PIVOT_UP_VELOCITY = 0;
     public static final double PIVOT_DOWN_VELOCITY = 0;
@@ -188,11 +188,11 @@ public final class Constants {
     public static final double INDEXER_DEGREES_PER_ROTATION = 0;
 
     // Influencer motor velocities
-    public static final double INFLUENCER_OUTTAKE_MOTOR_VELOCITY = 0;
+    public static double INFLUENCER_OUTTAKE_MOTOR_VELOCITY = 0;
     public static final double INFLUENCER_SHOOTER_BACK_VELOCITY = 0;
 
     // Follower motor velocities
-    public static final double FOLLOWER_OUTTAKE_MOTOR_VELOCITY = 0;
+    public static double FOLLOWER_OUTTAKE_MOTOR_VELOCITY = 0;
     public static final double FOLLOWER_SHOOTER_BACK_VELOCITY = 0;
 
     // Influencer PID gains
