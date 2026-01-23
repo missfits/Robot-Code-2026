@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.mechanism;
+package frc.robot.subsystems.intake;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -19,21 +19,21 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.RollerConstants;;
 
 
-public class IntakeIOHardware {
-  private final TalonFX m_intakeMotor = new TalonFX(IntakeConstants.MECHANISM_MOTOR_ID);
+public class RollerIOHardware {
+  private final TalonFX m_rollerMotor = new TalonFX(RollerConstants.MECHANISM_MOTOR_ID);
 
-  private final StatusSignal<AngularVelocity> m_velocitySignal = m_intakeMotor.getVelocity();
-  private final StatusSignal<Current> m_currentSignal = m_intakeMotor.getStatorCurrent();
+  private final StatusSignal<AngularVelocity> m_velocitySignal = m_rollerMotor.getVelocity();
+  private final StatusSignal<Current> m_currentSignal = m_rollerMotor.getStatorCurrent();
 
   // constructor
-  public IntakeIOHardware() {
-    var talonFXConfigurator = m_intakeMotor.getConfigurator();
+  public RollerIOHardware() {
+    var talonFXConfigurator = m_rollerMotor.getConfigurator();
     var limitConfigs = new CurrentLimitsConfigs();
 
-    limitConfigs.StatorCurrentLimit = IntakeConstants.MOTOR_STATOR_LIMIT;
+    limitConfigs.StatorCurrentLimit = RollerConstants.MOTOR_STATOR_LIMIT;
     limitConfigs.StatorCurrentLimitEnable = true;
 
     talonFXConfigurator.apply(limitConfigs);
@@ -41,7 +41,7 @@ public class IntakeIOHardware {
 
   // getters
   public double getVelocity() { //in radians
-    return Math.toRadians(m_velocitySignal.refresh().getValue().in(RevolutionsPerSecond)*IntakeConstants.DEGREES_PER_ROTATION);
+    return Math.toRadians(m_velocitySignal.refresh().getValue().in(RevolutionsPerSecond)*RollerConstants.DEGREES_PER_ROTATION);
   }
 
   public double getCurrent() {
@@ -50,21 +50,21 @@ public class IntakeIOHardware {
 
   // setters
   public void motorOff() {
-    m_intakeMotor.stopMotor();
+    m_rollerMotor.stopMotor();
   }
 
   public void setVoltage(double value) {
-    m_intakeMotor.setControl(new VoltageOut(value));
-    SmartDashboard.putNumber("intake/voltage", value);
+    m_rollerMotor.setControl(new VoltageOut(value));
+    SmartDashboard.putNumber("roller/voltage", value);
   }
 
   public void setVelocityVoltage(double value) {
-    m_intakeMotor.setControl(new VelocityVoltage(value));
-    SmartDashboard.putNumber("intake/velocity voltage", value);
+    m_rollerMotor.setControl(new VelocityVoltage(value));
+    SmartDashboard.putNumber("roller/velocity voltage", value);
   }
 
   public void setPosition(double value){
-    m_intakeMotor.setPosition(value);
+    m_rollerMotor.setPosition(value);
   }
 
   public void resetPosition() {

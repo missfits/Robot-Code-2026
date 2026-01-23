@@ -1,0 +1,76 @@
+package frc.robot.subsystems.intake;
+
+import edu.wpi.first.math.MathUtil;
+import static edu.wpi.first.units.Units.*;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.ControlRequest;
+import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
+
+import frc.robot.Constants.PivotConstants;
+
+public class PivotIOHardware {
+    private final TalonFX m_pivotMotor = new TalonFX(PivotConstants.MECHANISM_MOTOR_ID);
+    private final StatusSignal<Angle> m_positionSignal = m_pivotMotor.getPosition();
+    private final StatusSignal<AngularVelocity> m_velocitySignal = m_pivotMotor.getVelocity();
+    private final StatusSignal<Voltage> m_voltageSignal = m_pivotMotor.getMotorVoltage();
+
+
+    // constructor
+    public PivotIOHardware() {        
+        var talonFXConfigurator = m_pivotMotor.getConfigurator();
+        var limitConfigs = new CurrentLimitsConfigs();
+
+        limitConfigs.StatorCurrentLimit = PivotConstants.MOTOR_STATOR_LIMIT;
+        limitConfigs.StatorCurrentLimitEnable = true;
+
+        talonFXConfigurator.apply(limitConfigs);
+
+    }
+
+    // getters
+    public double getPosition() {
+        return Math.toRadians(m_positionSignal.refresh().getValue().in(Revolutions)*PivotConstants.DEGREES_PER_ROTATION);
+    }
+
+    public double getPositionDegrees() {
+        return m_positionSignal.refresh().getValue().in(Revolutions)*PivotConstants.DEGREES_PER_ROTATION;
+    }
+
+    public double getVelocity() {
+        return Math.toRadians(m_velocitySignal.refresh().getValue().in(RevolutionsPerSecond)*PivotConstants.DEGREES_PER_ROTATION);
+    }
+
+    public double getVelocityDegrees() {
+        return m_velocitySignal.refresh().getValue().in(RevolutionsPerSecond)*PivotConstants.DEGREES_PER_ROTATION;
+    }
+
+    public double getVoltage() {
+        return m_voltageSignal.refresh().getValue().in(Volts);
+    }
+
+    // setters
+    public void motorOff() {
+        m_pivotMotor.stopMotor();
+    }
+
+    public void setPosition(double value) {
+        m_pivotMotor.setPosition(value);
+    }
+
+    public void resetPosition() {
+        setPosition(0);
+    }
+    
+    public void setVoltage(double value) {
+        m_pivotMotor.setControl(new VoltageOut(value));
+    }
+}
