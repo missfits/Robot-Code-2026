@@ -159,9 +159,9 @@ public final class Constants {
     public static final double PIVOT_DOWN_VELOCITY = 0;
 
     // Roller PID gains
-    public static final double ROLLER_kP = 0;
-    public static final double ROLLER_kI = 0;
-    public static final double ROLLER_kD = 0;
+    public static double ROLLER_kP = 0;
+    public static double ROLLER_kI = 0;
+    public static double ROLLER_kD = 0;
 
     // Timing
     public static final double RUN_INTAKE_TIME = 0;
@@ -196,14 +196,14 @@ public final class Constants {
     public static final double FOLLOWER_SHOOTER_BACK_VELOCITY = 0;
 
     // Influencer PID gains
-    public static final double INFLUENCER_kP = 0;
-    public static final double INFLUENCER_kI = 0;
-    public static final double INFLUENCER_kD = 0;
+    public static double INFLUENCER_kP = 0;
+    public static double INFLUENCER_kI = 0;
+    public static double INFLUENCER_kD = 0;
 
     // Follower PID gains
-    public static final double FOLLOWER_kP = 0;
-    public static final double FOLLOWER_kI = 0;
-    public static final double FOLLOWER_kD = 0;
+    public static double FOLLOWER_kP = 0;
+    public static double FOLLOWER_kI = 0;
+    public static double FOLLOWER_kD = 0;
 
     // Timing
     public static final double RUN_SHOOTER_TIME = 0;

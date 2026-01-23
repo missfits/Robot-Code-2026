@@ -38,6 +38,10 @@ public class RollerSubsystem extends SubsystemBase {
     );
   }
 
+  public void resetControllers() {
+    m_IO.resetSlot0Gains();
+  }
+
   @Override
   public void periodic() {
     SmartDashboard.putData("roller/subsystem", this);

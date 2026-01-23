@@ -46,6 +46,11 @@ public class ShooterSubsystem extends SubsystemBase {
     );
   }
 
+  public void resetControllers() {
+    m_influencerIO.resetSlot0Gains();
+    m_followerIO.resetSlot0Gains();
+  }
+
   @Override
   public void periodic() {
     SmartDashboard.putData("shooter/subsystem", this);
