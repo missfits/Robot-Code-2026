@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.mechanism;
+package frc.robot.subsystems.climber;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -18,22 +18,27 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ClimberConstants;
+import frc.robot.Constants.ClimberConstants;
 
-import frc.robot.Constants.AngularMechanismConstants;
 
-
-public class AngularMechanismIOHardware {
-  private final TalonFX m_motorName = new TalonFX(AngularMechanismConstants.MECHANISM_MOTOR_ID);
-  private final StatusSignal<Angle> m_positionSignal = m_motorName.getPosition();
-  private final StatusSignal<AngularVelocity> m_velocitySignal = m_motorName.getVelocity();
-  private final StatusSignal<Current> m_currentSignal = m_motorName.getStatorCurrent();
+public class ClimberIOHardware {
+  private final TalonFX m_climberMotor;
+  private final StatusSignal<Angle> m_positionSignal;
+  private final StatusSignal<AngularVelocity> m_velocitySignal;
+  private final StatusSignal<Current> m_currentSignal;
 
   // constructor
-  public AngularMechanismIOHardware() {
-    var talonFXConfigurator = m_motorName.getConfigurator();
+  public ClimberIOHardware(int motorID) {
+    m_climberMotor = new TalonFX(motorID);
+    m_positionSignal = m_climberMotor.getPosition();
+    m_velocitySignal = m_climberMotor.getVelocity();
+    m_currentSignal = m_climberMotor.getStatorCurrent();
+
+    var talonFXConfigurator = m_climberMotor.getConfigurator();
     var limitConfigs = new CurrentLimitsConfigs();
 
-    limitConfigs.StatorCurrentLimit = AngularMechanismConstants.MOTOR_STATOR_LIMIT;
+    limitConfigs.StatorCurrentLimit = ClimberConstants.MOTOR_STATOR_LIMIT;
     limitConfigs.StatorCurrentLimitEnable = true;
 
     talonFXConfigurator.apply(limitConfigs);
@@ -41,11 +46,11 @@ public class AngularMechanismIOHardware {
 
   // getters
   public double getPosition() {
-    return Math.toRadians(m_positionSignal.refresh().getValue().in(Revolutions)*AngularMechanismConstants.DEGREES_PER_ROTATION);
+    return m_positionSignal.refresh().getValue().in(Revolutions)*ClimberConstants.METERS_PER_ROTATION;
   }
 
   public double getVelocity() {
-    return Math.toRadians(m_velocitySignal.refresh().getValue().in(RevolutionsPerSecond)*AngularMechanismConstants.DEGREES_PER_ROTATION);
+    return m_velocitySignal.refresh().getValue().in(RevolutionsPerSecond)*ClimberConstants.METERS_PER_ROTATION;
   }
 
   public double getCurrent() {
@@ -54,11 +59,11 @@ public class AngularMechanismIOHardware {
 
   // setters
   public void motorOff() {
-    m_motorName.stopMotor();
+    m_climberMotor.stopMotor();
   }
 
   public void setPosition(double value) {
-    m_motorName.setPosition(value);
+    m_climberMotor.setPosition(value);
   }
 
   public void resetPosition() {
@@ -66,12 +71,12 @@ public class AngularMechanismIOHardware {
   }
 
   public void setVoltage(double value) {
-    m_motorName.setControl(new VoltageOut(value));
-    SmartDashboard.putNumber("angular mechanism/voltage", value);
+    m_climberMotor.setControl(new VoltageOut(value));
+    SmartDashboard.putNumber("climber/voltage", value);
   }
 
   public void setVelocityVoltage(double value) {
-    m_motorName.setControl(new VelocityVoltage(value));
-    SmartDashboard.putNumber("angular mechanism/velocity voltage", value);
+    m_climberMotor.setControl(new VelocityVoltage(value));
+    SmartDashboard.putNumber("climber/velocity voltage", value);
   }
 }
