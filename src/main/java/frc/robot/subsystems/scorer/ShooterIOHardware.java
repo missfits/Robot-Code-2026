@@ -2,11 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-<<<<<<<< HEAD:src/main/java/frc/robot/subsystems/scorer/ShooterIOHardware.java
 package frc.robot.subsystems.scorer;
-========
-package frc.robot.subsystems.mechanism;
->>>>>>>> 93d25e4ce2f6d3f1b224eaf70377d462fe1c0bde:src/main/java/frc/robot/subsystems/mechanism/ShooterIOHardware.java
 
 import static edu.wpi.first.units.Units.*;
 
@@ -96,7 +92,8 @@ public class ShooterIOHardware {
         setPosition(0);
     }
   
-  public void setVelocityVoltage(VelocityVoltage request) {
-    m_shooterMotor.setControl(request);
-}
+  public void setVelocityVoltage(double value) {
+    m_shooterMotor.setControl(new VelocityVoltage(value));
+    SmartDashboard.putNumber("shooter/velocity voltage", value);
+  }
 }
