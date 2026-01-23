@@ -1,7 +1,6 @@
 package frc.robot.subsystems.scorer;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
@@ -19,43 +18,47 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public Command runShooter(double speed) {
-        return new FunctionalCommand(
-            // set voltage in init also
-            () -> {m_IO.setVoltage(speed); SmartDashboard.putString("shooter/currentlyRunningCommand", "runShooter");},
-            () -> {m_IO.setVoltage(speed); SmartDashboard.putString("shooter/currentlyRunningCommand", "runShooter");},
-            (interrupted) -> {},
-            () -> false,
-            this
-        ).withName("runShooter");
-    }
-
-  public Command VelocityVoltage(double velocity, boolean enableFOC, double feedForward, int slot, boolean overrideBrakeDurNeutral) {
+    return loggedCommand(
+        "runShooter",
+        this.run(() -> m_IO.setVoltage(speed))
+    );
+  }
+  public Command velocityVoltage(double velocity, boolean enableFOC, double feedForward, int slot, boolean overrideBrakeDurNeutral) {
     VelocityVoltage request = new VelocityVoltage(velocity)
         .withEnableFOC(enableFOC)
         .withFeedForward(feedForward)
         .withSlot(slot)
         .withOverrideBrakeDurNeutral(overrideBrakeDurNeutral);
 
-    return this.run(() -> {
-        m_IO.setVelocityVoltage(request);
-        SmartDashboard.putNumber("shooter/velocity voltage", velocity);
-    });
+    return loggedCommand(
+      "velocityVoltage",
+      this.run(() -> m_IO.setVelocityVoltage(request))
+  );
 }
 
   public Command runShooterOff() {
-    return new RunCommand(
-      () -> {
-        m_IO.setVoltage(0);
-        SmartDashboard.putBoolean("shooter/off", true);
-      },
-      this
-    );
+    return loggedCommand(
+      "runShooterOff",
+      new RunCommand(() -> m_IO.setVoltage(0), this)
+      );
   }
+
+  private Command loggedCommand(String name, Command command) {
+  return command.withName(name).beforeStarting(() ->
+          SmartDashboard.putString("shooter/lastRunningInnerCommand", name)
+      );
+  }
+
 
   @Override
   public void periodic() {
     SmartDashboard.putData("shooter/subsystem", this);
     SmartDashboard.putNumber("shooter/current", m_IO.getCurrent());
-  }
 
+    Command current = this.getCurrentCommand();
+    SmartDashboard.putString(
+      "shooter/currentlyRunningOuterCommand",
+      current != null ? current.getName() : "None"
+  );
+}
 }
