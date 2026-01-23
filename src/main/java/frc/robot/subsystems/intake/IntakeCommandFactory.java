@@ -25,6 +25,11 @@ public class IntakeCommandFactory {
       .withTimeout(IntakeConstants.RUN_INTAKE_TIME).withName("run intake timeout");
   }
 
+  public Command runIntakePID() { 
+    return m_roller.runRollerPID(IntakeConstants.OUTTAKE_MOTOR_VELOCITY)
+      .withName("run intake PID");
+  }
+
   public Command intakeOff() {
     return m_roller.runRollerOff().withName("intake off");
   }

@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ScorerConstants;
 
 public class ShooterSubsystem extends SubsystemBase {
-  private final ShooterFollowerIOHardware m_influencerIO = new ShooterFollowerIOHardware(ScorerConstants.INFLUENCER_MOTOR_ID);
+  private final ShooterInfluencerIOHardware m_influencerIO = new ShooterInfluencerIOHardware(ScorerConstants.INFLUENCER_MOTOR_ID);
   private final ShooterFollowerIOHardware m_followerIO = new ShooterFollowerIOHardware(ScorerConstants.FOLLOWER_MOTOR_ID);
 
   public ShooterSubsystem() {

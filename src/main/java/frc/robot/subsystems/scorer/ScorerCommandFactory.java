@@ -31,6 +31,13 @@ public class ScorerCommandFactory {
     ).withTimeout(ScorerConstants.RUN_SHOOTER_TIME).withName("run shooter timeout");
   }
 
+  public Command runShooterPID() { 
+    return m_subsystem.runShooterPID(
+      ScorerConstants.INFLUENCER_OUTTAKE_MOTOR_VELOCITY,
+      ScorerConstants.FOLLOWER_OUTTAKE_MOTOR_VELOCITY
+    ).withName("run shooter PID");
+  }
+
   public Command shooterOff() {
     return m_subsystem.runShooterOff().withName("shooter off");
   }

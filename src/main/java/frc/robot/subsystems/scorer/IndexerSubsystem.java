@@ -21,21 +21,21 @@ public class IndexerSubsystem extends SubsystemBase {
   public Command runIndexer(double velocity) {
     return this.run(() -> {
         m_IO.setVoltage(velocity);
-        SmartDashboard.putNumber("intake/input velocity", velocity);
+        SmartDashboard.putNumber("indexer/input velocity", velocity);
     });
   }
 
   public Command runIndexerPID(double velocity) {
     return this.run(() -> {
         m_IO.setVelocityVoltage(velocity);
-        SmartDashboard.putNumber("intake/input velocity", velocity);
+        SmartDashboard.putNumber("indexer/input velocity", velocity);
     });
   }
 
   public Command runIndexerOff() {
     return new RunCommand(() -> {
         m_IO.setVoltage(0);
-        SmartDashboard.putBoolean("intake/off", true);
+        SmartDashboard.putBoolean("indexer/off", true);
       },
       this
     );
