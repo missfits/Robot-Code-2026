@@ -30,6 +30,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import java.util.List;
 import java.util.Optional;
 
+import org.ironmaple.simulation.SimulatedArena;
 import org.photonvision.EstimatedRobotPose;
 
 import com.ctre.phoenix6.Utils;
@@ -165,5 +166,14 @@ public class RobotContainer {
         estPose3d.getRotation().toRotation2d().getRadians()
       }); // post vision 3d to smartdashboard
     }
+  }
+  public void displaySimFieldToAdvantageScope() {
+    if (Constants.currentMode != Constants.Mode.SIM) return;
+
+    SimulatedArena.getInstance().simulationPeriodic();
+    Pose3d(driveSimulation.getSimulatedDriveTrainPose()));
+    // The pose by maplesim, including collisions with the field. 
+    // See https://www.chiefdelphi.com/t/simulated-robot-goes-through-walls-with-maplesim/508663.
+
   }
 }
