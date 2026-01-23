@@ -23,7 +23,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ScorerConstants;
 
 
-public class ShooterIOHardware {
+public class ShooterInfluencerIOHardware {
   private final TalonFX m_shooterMotor;
 
   private final StatusSignal<Angle> m_positionSignal;
@@ -32,7 +32,7 @@ public class ShooterIOHardware {
   private final StatusSignal<Current> m_currentSignal;
 
   // constructor
-  public ShooterIOHardware(int motorID) {
+  public ShooterInfluencerIOHardware(int motorID) {
     m_shooterMotor = new TalonFX(motorID);
     m_positionSignal = m_shooterMotor.getPosition();
     m_velocitySignal = m_shooterMotor.getVelocity();
@@ -42,7 +42,7 @@ public class ShooterIOHardware {
     var talonFXConfigurator = m_shooterMotor.getConfigurator();
     var limitConfigs = new CurrentLimitsConfigs();
 
-    limitConfigs.StatorCurrentLimit = ScorerConstants.SHOOTER_MOTOR_STATOR_LIMIT;
+    limitConfigs.StatorCurrentLimit = ScorerConstants.INFLUENCER_MOTOR_STATOR_LIMIT;
     limitConfigs.StatorCurrentLimitEnable = true;
 
     talonFXConfigurator.apply(limitConfigs);
@@ -50,19 +50,19 @@ public class ShooterIOHardware {
 
   // getters
   public double getPosition() {
-    return Math.toRadians(m_positionSignal.refresh().getValue().in(Revolutions)*ScorerConstants.SHOOTER_DEGREES_PER_ROTATION);
+    return Math.toRadians(m_positionSignal.refresh().getValue().in(Revolutions)*ScorerConstants.INFLUENCER_DEGREES_PER_ROTATION);
   }
 
   public double getPositionDegrees() {
-    return m_positionSignal.refresh().getValue().in(Revolutions)*ScorerConstants.SHOOTER_DEGREES_PER_ROTATION;
+    return m_positionSignal.refresh().getValue().in(Revolutions)*ScorerConstants.INFLUENCER_DEGREES_PER_ROTATION;
   }
 
   public double getVelocity() { //in radians
-    return Math.toRadians(m_velocitySignal.refresh().getValue().in(RevolutionsPerSecond)*ScorerConstants.SHOOTER_DEGREES_PER_ROTATION);
+    return Math.toRadians(m_velocitySignal.refresh().getValue().in(RevolutionsPerSecond)*ScorerConstants.INFLUENCER_DEGREES_PER_ROTATION);
   }
 
   public double getVelocityDegrees() {
-    return m_velocitySignal.refresh().getValue().in(RevolutionsPerSecond)*ScorerConstants.SHOOTER_DEGREES_PER_ROTATION;
+    return m_velocitySignal.refresh().getValue().in(RevolutionsPerSecond)*ScorerConstants.INFLUENCER_DEGREES_PER_ROTATION;
   }
 
   public double getVoltage() {

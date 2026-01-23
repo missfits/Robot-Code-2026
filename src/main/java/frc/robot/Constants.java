@@ -168,12 +168,18 @@ public final class Constants {
     public static final int FOLLOWER_MOTOR_ID = 0;
     public static final int INDEXER_MOTOR_ID = 0;
 
-    // Motor limits
-    public static final int SHOOTER_MOTOR_STATOR_LIMIT = 0;
+    // Motor limits - Influencer
+    public static final int INFLUENCER_MOTOR_STATOR_LIMIT = 0;
+    // Motor limits - Follower
+    public static final int FOLLOWER_MOTOR_STATOR_LIMIT = 0;
+    // Motor limits - Indexer
     public static final int INDEXER_MOTOR_STATOR_LIMIT = 0;
 
-    // Conversions
-    public static final double SHOOTER_DEGREES_PER_ROTATION = 0;
+    // Conversions - Influencer
+    public static final double INFLUENCER_DEGREES_PER_ROTATION = 0;
+    // Conversions - Follower
+    public static final double FOLLOWER_DEGREES_PER_ROTATION = 0;
+    // Conversions - Indexer
     public static final double INDEXER_DEGREES_PER_ROTATION = 0;
 
     // Influencer motor velocities
