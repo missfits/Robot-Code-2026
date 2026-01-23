@@ -141,12 +141,12 @@ public final class Constants {
 
   public static class IntakeConstants {
     // Motor IDs
-    public static final int ROLLER_MOTOR_ID = 0;
+    public static final int ROLLER_MOTOR_ID = 50;
     public static final int PIVOT_MOTOR_ID = 0;
 
     // Motor limitss
-    public static final int ROLLER_MOTOR_STATOR_LIMIT = 0;
-    public static final int PIVOT_MOTOR_STATOR_LIMIT = 0;
+    public static final int ROLLER_MOTOR_STATOR_LIMIT = 40;
+    public static final int PIVOT_MOTOR_STATOR_LIMIT = 40;
 
     // Conversions
     public static final double ROLLER_DEGREES_PER_ROTATION = 0;
@@ -169,16 +169,16 @@ public final class Constants {
 
   public static class ScorerConstants {
     // Motor IDs
-    public static final int INFLUENCER_MOTOR_ID = 0;
-    public static final int FOLLOWER_MOTOR_ID = 0;
+    public static final int INFLUENCER_MOTOR_ID = 51;
+    public static final int FOLLOWER_MOTOR_ID = 52;
     public static final int INDEXER_MOTOR_ID = 0;
 
     // Motor limits - Influencer
-    public static final int INFLUENCER_MOTOR_STATOR_LIMIT = 0;
+    public static final int INFLUENCER_MOTOR_STATOR_LIMIT = 40;
     // Motor limits - Follower
-    public static final int FOLLOWER_MOTOR_STATOR_LIMIT = 0;
+    public static final int FOLLOWER_MOTOR_STATOR_LIMIT = 40;
     // Motor limits - Indexer
-    public static final int INDEXER_MOTOR_STATOR_LIMIT = 0;
+    public static final int INDEXER_MOTOR_STATOR_LIMIT = 40;
 
     // Conversions - Influencer
     public static final double INFLUENCER_DEGREES_PER_ROTATION = 0;
