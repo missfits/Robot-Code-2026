@@ -142,14 +142,14 @@ public final class Constants {
   //INTAKE
   public static class PivotConstants {
     public static final int MECHANISM_MOTOR_ID = 50;
-    public static final int MOTOR_STATOR_LIMIT = 0;
+    public static final int MOTOR_STATOR_LIMIT = 40;
 
     public static final double DEGREES_PER_ROTATION = 0;
   }
 
   public static class RollerConstants {
     public static final int MECHANISM_MOTOR_ID = 51;
-    public static final int MOTOR_STATOR_LIMIT = 0;
+    public static final int MOTOR_STATOR_LIMIT = 40;
 
     public static final double DEGREES_PER_ROTATION = 0;
   }
@@ -157,14 +157,14 @@ public final class Constants {
   //SCORER
   public static class IndexerConstants {
     public static final int MECHANISM_MOTOR_ID = 52;
-    public static final int MOTOR_STATOR_LIMIT = 0;
+    public static final int MOTOR_STATOR_LIMIT = 40;
 
     public static final double DEGREES_PER_ROTATION = 0;
   }
 
   public static class ShooterConstants {
     public static final int MECHANISM_MOTOR_ID = 53;
-    public static final int MOTOR_STATOR_LIMIT = 0;
+    public static final int MOTOR_STATOR_LIMIT = 40;
 
     public static final double DEGREES_PER_ROTATION = 0;
   }
@@ -172,7 +172,7 @@ public final class Constants {
   //CLIMBER
   public static class ClimberConstants {
     public static final int MECHANISM_MOTOR_ID = 54;
-    public static final int MOTOR_STATOR_LIMIT = 0;
+    public static final int MOTOR_STATOR_LIMIT = 40;
 
     public static final double METERS_PER_ROTATION = 0;
   }
