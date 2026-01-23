@@ -19,30 +19,19 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.Notifier;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.DrivetrainConstants;
-import frc.robot.generated.TunerConstants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
-import frc.robot.utils.simulation.MapleSimSwerveDrivetrain;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
  * Subsystem so it can easily be used in command-based projects.
  */
 public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Subsystem {
-    private static final double kSimLoopPeriod = 0.005; // 5 ms
-    private Notifier m_simNotifier = null;
-    private double m_lastSimTime;
-
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
     /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
@@ -125,13 +114,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             this.resetPose(newPose);
         }
     }
-    @Override
-    public void resetPose(Pose2d pose) {
-        if (this.mapleSimSwerveDrivetrain != null)
-            mapleSimSwerveDrivetrain.mapleSimDrive.setSimulationWorldPose(pose);
-        Timer.delay(0.05); // Wait for simulation to update
-        super.resetPose(pose);
-    }  
 
     
     private void configureAutoBuilder() {
@@ -191,10 +173,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         SwerveModuleConstants<?, ?, ?>... modules
     ) {
         super(drivetrainConstants, modules);
-        if (Utils.isSimulation()) {
-            startSimThread();
-        }
-
         configureAutoBuilder();
     }
 
@@ -216,11 +194,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         double odometryUpdateFrequency,
         SwerveModuleConstants<?, ?, ?>... modules
     ) {
-        super(drivetrainConstants, odometryUpdateFrequency, MapleSimSwerveDrivetrain.regulateModuleConstantsForSimulation(modules));
-        if (Utils.isSimulation()) {
-            startSimThread();
-        }
-
+        super(drivetrainConstants, odometryUpdateFrequency, modules);
         configureAutoBuilder();
     }
 
@@ -250,11 +224,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         Matrix<N3, N1> visionStandardDeviation,
         SwerveModuleConstants<?, ?, ?>... modules
     ) {
-        super(drivetrainConstants, odometryUpdateFrequency, odometryStandardDeviation, visionStandardDeviation, MapleSimSwerveDrivetrain.regulateModuleConstantsForSimulation(modules));
-        if (Utils.isSimulation()) {
-            startSimThread();
-        }
-
+        super(drivetrainConstants, odometryUpdateFrequency, odometryStandardDeviation, visionStandardDeviation, modules);
         configureAutoBuilder();
     }
 
@@ -315,28 +285,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         }
     }
 
-    private MapleSimSwerveDrivetrain mapleSimSwerveDrivetrain = null;
-    private void startSimThread() {
-        mapleSimSwerveDrivetrain = new MapleSimSwerveDrivetrain(
-            Seconds.of(kSimLoopPeriod),
-            // TODO: modify the following constants according to your robot
-            Pounds.of(115), // robot weight
-            Inches.of(30), // bumper length
-            Inches.of(30), // bumper width
-            DCMotor.getKrakenX60(1), // drive motor type
-            DCMotor.getFalcon500(1), // steer motor type
-            1.2, // wheel COF
-            getModuleLocations(),
-            getPigeon2(),
-            getModules(),
-            TunerConstants.FrontLeft,
-            TunerConstants.FrontRight,
-            TunerConstants.BackLeft,
-            TunerConstants.BackRight);
-    /* Run simulation at a faster rate so PID gains behave more reasonably */
-        m_simNotifier = new Notifier(mapleSimSwerveDrivetrain::update);
-        m_simNotifier.startPeriodic(kSimLoopPeriod);
-}
+
 
     /**
      * Adds a vision measurement to the Kalman Filter. This will correct the odometry pose estimate

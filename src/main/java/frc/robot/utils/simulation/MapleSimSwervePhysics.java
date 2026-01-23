@@ -45,7 +45,7 @@ import org.ironmaple.simulation.motorsims.SimulatedMotorController;
  *
  * <p>It replaces the {@link com.ctre.phoenix6.swerve.SimSwerveDrivetrain} class.
  */
-public class MapleSimSwerveDrivetrain {
+public class MapleSimSwervePhysics {
     private final Pigeon2SimState pigeonSim;
     private final SimSwerveModule[] simModules;
     public final SwerveDriveSimulation mapleSimDrive;
@@ -69,7 +69,7 @@ public class MapleSimSwerveDrivetrain {
      * @param modules the {@link SwerveModule}s, typically obtained via {@link SwerveDrivetrain#getModules()}
      * @param moduleConstants the constants for the swerve modules
      */
-    public MapleSimSwerveDrivetrain(
+    public MapleSimSwervePhysics(
             Time simPeriod,
             Mass robotMassWithBumpers,
             Distance bumperLengthX,

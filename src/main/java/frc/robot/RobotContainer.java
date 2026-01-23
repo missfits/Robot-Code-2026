@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.commands.Autos;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
+import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrainSim;
 import frc.robot.subsystems.drivetrain.DrivetrainCommandFactory;
 import frc.robot.subsystems.vision.LocalizationCamera;
 import frc.robot.subsystems.vision.VisionSubsystem;
@@ -29,11 +30,13 @@ import edu.wpi.first.math.geometry.Pose3d;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import org.ironmaple.simulation.SimulatedArena;
 import org.photonvision.EstimatedRobotPose;
 
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 /**
@@ -65,6 +68,7 @@ public class RobotContainer {
     // Configure trigger bindings
     configureBindings();
 
+
     // Configure auto builder
     createNamedCommands();
     m_autoChooser = AutoBuilder.buildAutoChooser("drive forward 1m");
@@ -91,7 +95,15 @@ public class RobotContainer {
       m_drivetrainCommandFactory.defaultDrive(m_driverJoystick, () -> true)
     );
 
-    m_drivetrain.registerTelemetry(logger::telemeterize);
+    if (Utils.isSimulation()){
+      Consumer<SwerveDriveState> telemetry =  ((CommandSwerveDrivetrainSim) m_drivetrain)
+          .getSimTelemetryConsumer().andThen(logger::telemeterize);
+      m_drivetrain.registerTelemetry(telemetry);
+    }
+    else{
+       m_drivetrain.registerTelemetry(logger::telemeterize);
+    }
+   
   }
 
   /**
@@ -167,7 +179,7 @@ public class RobotContainer {
       }); // post vision 3d to smartdashboard
     }
   }
-  public void displaySimFieldToAdvantageScope() {
+/*   public void displaySimFieldToAdvantageScope() {
     if (Constants.currentMode != Constants.Mode.SIM) return;
 
     SimulatedArena.getInstance().simulationPeriodic();
@@ -175,5 +187,5 @@ public class RobotContainer {
     // The pose by maplesim, including collisions with the field. 
     // See https://www.chiefdelphi.com/t/simulated-robot-goes-through-walls-with-maplesim/508663.
 
-  }
+  } */
 }
