@@ -15,8 +15,8 @@ public class ShooterSubsystem extends SubsystemBase {
   private final ShooterIOHardware m_followerIO = new ShooterIOHardware(ScorerConstants.FOLLOWER_MOTOR_ID);
 
   public ShooterSubsystem() {
-        m_influencerIO.resetPosition();
-        m_followerIO.resetPosition();
+    m_influencerIO.resetPosition();
+    m_followerIO.resetPosition();
   }
 
   public Command runShooter(double influencerVelocity, double followerVelocity) {
