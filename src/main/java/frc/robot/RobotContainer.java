@@ -196,7 +196,7 @@ public class RobotContainer {
 
     // check if new estimated pose and previous pose are less than 2 meters apart (fused poseEst)
     double distance = estPose2d.getTranslation().getDistance(m_drivetrain.getState().Pose.getTranslation());
-    SmartDashboard.putBoolean("fusedVision/" + camera.getCameraName()  + "/filtering" + "/isDistanceBetweenVisionAndActualPoseLessThanMax", distance < VisionConstants.MAX_VISION_POSE_DISTANCE ? true : false);
+    SmartDashboard.putBoolean("fusedVision/" + camera.getCameraName()  + "/filtering" + "/isDistanceBetweenVisionAndActualPoseLessThanMax", distance < VisionConstants.MAX_VISION_POSE_DISTANCE);
 
 
     SmartDashboard.putNumber("fusedVision/" + camera.getCameraName() + "/distanceBetweenVisionAndActualPose", distance);
