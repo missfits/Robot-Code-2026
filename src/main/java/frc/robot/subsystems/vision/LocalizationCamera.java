@@ -68,6 +68,10 @@ public class LocalizationCamera {
     return m_currentReading;
   }
 
+  public LinkedList<CameraReading> getLastCameraReadings() {
+    return m_lastReadings;
+  }
+  
   public Field2d getEstField(){
     return m_estPoseField;
   }

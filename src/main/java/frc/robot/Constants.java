@@ -230,6 +230,15 @@ public final class Constants {
     public static final double MAX_VISION_POSE_ROLL = 0.05; // in radians
     public static final double MAX_VISION_POSE_PITCH = 0.05; // in radians
 
+    // --- filtering constants ---
+    // max average distance and speed to use for local filters
+    public static final double MAX_AVG_DIST_BETWEEN_LAST_EST_POSES = 0.3; // in meters 
+    public static final double MAX_AVG_SPEED_BETWEEN_LAST_EST_POSES = MAX_AVG_DIST_BETWEEN_LAST_EST_POSES * 50.;
+    public static final double MAX_VISION_READING_DISTANCE = 0.5; // in meters
+
+    // min number of camera readings to use for global filters
+    public static final int MIN_NUM_CAMERA_READINGS = 2; // NEEDS TO BE CONFIRMED W/ LOGIC 1/24
+
     // --- localization camera ---
     // default vision standard deviation
     public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(6, 6, 4);
@@ -237,8 +246,6 @@ public final class Constants {
 
     public static final double VISION_DISTANCE_DISCARD = 10; 
     public static final double MAX_POSE_AMBIGUITY = 0.2;
-    public static final double MAX_AVG_DIST_BETWEEN_LAST_EST_POSES = 0.3; // in meters 
-    public static final double MAX_AVG_SPEED_BETWEEN_LAST_EST_POSES = MAX_AVG_DIST_BETWEEN_LAST_EST_POSES * 50.;
     public static final int NUM_LAST_EST_POSES = 3;
     public static final double STD_DEV_SCALER = 30;
 
