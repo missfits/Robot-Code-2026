@@ -35,7 +35,7 @@ public class LocalizationCamera {
   private final Field2d m_estPoseField = new Field2d(); // field pose estimator
   private PhotonPoseEstimator poseEstimator;
 
-  private LocalVisionFilterPipeline m_filterPipeline; // filtering pipeline for each camera
+  private LocalVisionFilterPipeline m_filterPipeline = new LocalVisionFilterPipeline(); // filtering pipeline for each camera, initalizes as empty pipeline
 
   private LinkedList<CameraReading> m_lastReadings = new LinkedList<>();
 
@@ -51,6 +51,7 @@ public class LocalizationCamera {
     m_cameraName = cameraName;
     m_camera = new PhotonCamera(m_cameraName);
     m_logString = "vision/" + m_cameraName;
+
     poseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, robotToCam);
 
     pose2dPublisher = NetworkTableInstance.getDefault()
