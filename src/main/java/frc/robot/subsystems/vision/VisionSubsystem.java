@@ -52,6 +52,9 @@ public class VisionSubsystem extends SubsystemBase {
   private ArrayList<LocalizationCamera> cameras = new ArrayList<>();
   private List<LocalizationCamera> camerasWithValidPose = new ArrayList<>();
 
+  // filtering pipeline for logic that requires ALL cameras
+  private GlobalVisionFilterPipeline globalFilterPipeline = new GlobalVisionFilterPipeline();
+
   private double m_lastTimestamp = 0.0;
 
   /** Creates a new Vision Subsystem. */
@@ -62,6 +65,19 @@ public class VisionSubsystem extends SubsystemBase {
 
   public List<LocalizationCamera> getLocalizationCameras(){
     return camerasWithValidPose;
+  }
+
+  // --- filtering methods ---
+  // NOTE: only sets single instance variable globalFilterPipeline
+  public void setGlobalFilterPipeline(GlobalVisionFilterPipeline filterPipeline) {
+    globalFilterPipeline = filterPipeline;
+  }
+
+  // NOTE: sets filterPipeline for each camera INDIVIDUALLY, requires loop
+  public void setLocalFilteringPipeline(LocalVisionFilterPipeline filterPipeline){
+    for (LocalizationCamera cam : cameras){
+      cam.setFilterPipeline(filterPipeline);
+    }
   }
 
   @Override
