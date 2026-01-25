@@ -11,6 +11,6 @@ public interface LocalVisionFilter {
      * 
      * Interface for filtering logic that is specific to one camera.
      */
-    boolean isValid(CameraReading reading, LocalizationCamera cam)
+    boolean isValid(CameraReading reading, LocalizationCamera cam);
 
 }

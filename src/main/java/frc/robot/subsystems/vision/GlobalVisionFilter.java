@@ -13,5 +13,5 @@ public interface GlobalVisionFilter {
      * 
      * Interface for filtering logic that looks at all cameras.
      */
-    boolean isValid(CameraReading reading, List<CameraReading> allReadings)
+    boolean isValid(CameraReading reading, List<CameraReading> allReadings);
 }
