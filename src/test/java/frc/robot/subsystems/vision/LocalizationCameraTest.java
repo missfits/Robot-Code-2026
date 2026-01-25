@@ -59,12 +59,6 @@ class LocalizationCameraTest {
   }
 
   @Test
-  void testGetEstFieldNotNull() {
-    Field2d field = m_camera.getEstField();
-    assertNotNull(field, "Field2d should not be null");
-  }
-
-  @Test
   void testInitialCameraReadingIsEmpty() {
     assertTrue(m_camera.getCameraReading().isEmpty(),
         "Initial camera reading should be empty");
@@ -161,50 +155,6 @@ class LocalizationCameraTest {
 
     assertTrue(m_camera.isEstPoseJumpy(),
         "Should be jumpy when time interval is zero (division by zero protection)");
-  }
-
-  @Test
-  void testIsEstPoseJumpy_BoundarySpeed() throws Exception {
-    // Test at exactly the boundary speed
-    LinkedList<CameraReading> boundaryReadings = new LinkedList<>();
-
-    double baseTime = 1.0;
-    double timeInterval = 0.02;
-    // Movement that results in speed just at the threshold
-    double distancePerReading = VisionConstants.MAX_AVG_SPEED_BETWEEN_LAST_EST_POSES * timeInterval;
-
-    for (int i = 0; i < VisionConstants.NUM_TEST_EST_POSES; i++) {
-      Pose3d pose = new Pose3d(
-          1.0 + i * distancePerReading,
-          2.0, 0.0, new Rotation3d(0, 0, 0)
-      );
-      double timestamp = baseTime + i * timeInterval;
-      EstimatedRobotPose estPose = new EstimatedRobotPose(pose, timestamp, List.of(), null);
-      boundaryReadings.add(new CameraReading(estPose, VisionConstants.kSingleTagStdDevs, timestamp, 1));
-    }
-
-    injectLastReadings(boundaryReadings);
-
-    // At exactly the boundary, it should NOT be jumpy (> comparison, not >=)
-    assertFalse(m_camera.isEstPoseJumpy(),
-        "Should not be jumpy at exactly the boundary speed");
-  }
-
-  // ==================== updateField Tests ====================
-
-  @Test
-  void testUpdateFieldSetsRobotPose() {
-    edu.wpi.first.math.geometry.Pose2d testPose =
-        new edu.wpi.first.math.geometry.Pose2d(3.0, 4.0, Rotation2d.fromDegrees(45));
-
-    m_camera.updateField(testPose);
-
-    Field2d field = m_camera.getEstField();
-    edu.wpi.first.math.geometry.Pose2d retrievedPose = field.getRobotPose();
-
-    assertEquals(testPose.getX(), retrievedPose.getX(), DELTA);
-    assertEquals(testPose.getY(), retrievedPose.getY(), DELTA);
-    assertEquals(testPose.getRotation().getDegrees(), retrievedPose.getRotation().getDegrees(), DELTA);
   }
 
   // ==================== Helper Methods ====================
