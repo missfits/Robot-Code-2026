@@ -24,7 +24,6 @@ import frc.robot.Constants.ShooterConstants;
 
 public class ShooterIOHardware {
   private final TalonFX m_shooterMotor;
-
   private final StatusSignal<AngularVelocity> m_velocitySignal;
   private final StatusSignal<Current> m_currentSignal;
 
@@ -67,10 +66,10 @@ public class ShooterIOHardware {
   }
 
   public void resetPosition() {
-        setPosition(0);
-    }
+    m_shooterMotor.setPosition(0);
+  }
   
   public void setVelocityVoltage(VelocityVoltage request) {
     m_shooterMotor.setControl(request);
-}
+  }
 }

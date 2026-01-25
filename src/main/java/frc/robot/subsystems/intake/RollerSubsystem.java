@@ -1,45 +1,30 @@
 package frc.robot.subsystems.intake;
-import edu.wpi.first.math.MathUtil;
+import com.ctre.phoenix6.controls.VelocityVoltage;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RollerConstants;
+import frc.robot.subsystems.MechanismsSubsystemBase;
 
 
-public class RollerSubsystem extends SubsystemBase {
+public class RollerSubsystem extends MechanismsSubsystemBase {
   private final RollerIOHardware m_IO = new RollerIOHardware(RollerConstants.MECHANISM_MOTOR_ID);
 
   public RollerSubsystem() {
+    super("roller", "roller");
     m_IO.resetPosition();
   }
 
-  public Command runRoller(double speed) {
-        return new FunctionalCommand(
-            // set voltage in init also
-            () -> {m_IO.setVoltage(speed); SmartDashboard.putString("roller/currentlyRunningCommand", "runRoller");},
-            () -> {m_IO.setVoltage(speed); SmartDashboard.putString("roller/currentlyRunningCommand", "runRoller");},
-            (interrupted) -> {},
-            () -> false,
-            this
-        ).withName("runRoller");
-    }
+  protected void setVoltage(double volts) {
+    m_IO.setVoltage(volts);
+  }
 
-  public Command runRollerOff() {
-    return new RunCommand(
-      () -> {
-        m_IO.setVoltage(0);
-        SmartDashboard.putBoolean("roller/off", true);
-      },
-      this
-    );
+  protected void applyVelocityVoltage(VelocityVoltage request) {
+    m_IO.setVelocityVoltage(request);
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putData("roller/subsystem", this);
+    super.periodic();
     SmartDashboard.putNumber("roller/current", m_IO.getCurrent());
   }
-
 }

@@ -75,8 +75,7 @@ public class ClimberIOHardware {
     SmartDashboard.putNumber("climber/voltage", value);
   }
 
-  public void setVelocityVoltage(double value) {
-    m_climberMotor.setControl(new VelocityVoltage(value));
-    SmartDashboard.putNumber("climber/velocity voltage", value);
+  public void setVelocityVoltage(VelocityVoltage request) {
+    m_climberMotor.setControl(request);
   }
 }
