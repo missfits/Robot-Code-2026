@@ -64,17 +64,17 @@ class LocalizationCameraTest {
         "Initial camera reading should be empty");
   }
 
-  // ==================== isEstPoseJumpy Tests ====================
+  // ==================== areRecentCameraPosesConsistent Tests ====================
 
   @Test
-  void testIsEstPoseJumpy_NotEnoughReadings() {
+  void testareRecentCameraPosesConsistent_NotEnoughReadings() {
     // With no readings added, should return true (jumpy)
-    assertTrue(m_camera.isEstPoseJumpy(), 
+    assertTrue(m_camera.areRecentCameraPosesConsistent(), 
         "Should be jumpy when fewer than NUM_LAST_EST_POSES readings exist");
   }
 
   @Test
-  void testIsEstPoseJumpy_StablePoses() throws Exception {
+  void testareRecentCameraPosesConsistent_StablePoses() throws Exception {
     // Inject stable poses that are close together with reasonable time intervals
     LinkedList<CameraReading> stableReadings = new LinkedList<>();
 
@@ -101,12 +101,12 @@ class LocalizationCameraTest {
 
     injectLastReadings(stableReadings);
 
-    assertFalse(m_camera.isEstPoseJumpy(),
+    assertFalse(m_camera.areRecentCameraPosesConsistent(),
         "Should NOT be jumpy when poses are stable and close together");
   }
 
   @Test
-  void testIsEstPoseJumpy_JumpyPoses() throws Exception {
+  void testareRecentCameraPosesConsistent_JumpyPoses() throws Exception {
     // Inject poses that jump around significantly
     LinkedList<CameraReading> jumpyReadings = new LinkedList<>();
 
@@ -134,12 +134,12 @@ class LocalizationCameraTest {
 
     injectLastReadings(jumpyReadings);
 
-    assertTrue(m_camera.isEstPoseJumpy(),
+    assertTrue(m_camera.areRecentCameraPosesConsistent(),
         "Should be jumpy when poses move too fast");
   }
 
   @Test
-  void testIsEstPoseJumpy_ZeroTimeInterval() throws Exception {
+  void testareRecentCameraPosesConsistent_ZeroTimeInterval() throws Exception {
     // Edge case: all poses have the same timestamp - should return true (jumpy)
     LinkedList<CameraReading> sameTimeReadings = new LinkedList<>();
 
@@ -153,7 +153,7 @@ class LocalizationCameraTest {
 
     injectLastReadings(sameTimeReadings);
 
-    assertTrue(m_camera.isEstPoseJumpy(),
+    assertTrue(m_camera.areRecentCameraPosesConsistent(),
         "Should be jumpy when time interval is zero (division by zero protection)");
   }
 
@@ -169,3 +169,4 @@ class LocalizationCameraTest {
   }
 }
 
+// 
