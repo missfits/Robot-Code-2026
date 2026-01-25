@@ -1,15 +1,16 @@
-package frc.robot.subsystems.mechanism;
+package frc.robot.subsystems.climber;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ClimberConstants;
 
-public class LinearMechanismSubsystem extends SubsystemBase {
-  private final LinearMechanismIOHardware m_IO = new LinearMechanismIOHardware();
+public class ClimberSubsystem extends SubsystemBase {
+  private final ClimberIOHardware m_IO = new ClimberIOHardware(ClimberConstants.MECHANISM_MOTOR_ID);
 
-  public LinearMechanismSubsystem() {
+  public ClimberSubsystem() {
     resetPosition();
   }
 
@@ -21,7 +22,7 @@ public class LinearMechanismSubsystem extends SubsystemBase {
     return new RunCommand(
       () -> {
         m_IO.setVoltage(0);
-        SmartDashboard.putBoolean("linear mechanism/off", true);
+        SmartDashboard.putBoolean("climber/off", true);
       },
       this
     );
@@ -29,9 +30,9 @@ public class LinearMechanismSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putData("linear mechanism/subsystem", this);
-    SmartDashboard.putNumber("linear mechanism/position", m_IO.getPosition());
-    SmartDashboard.putNumber("linear mechanism/current", m_IO.getCurrent());
+    SmartDashboard.putData("climber/subsystem", this);
+    SmartDashboard.putNumber("climber/position", m_IO.getPosition());
+    SmartDashboard.putNumber("climber/current", m_IO.getCurrent());
   }
 
 }

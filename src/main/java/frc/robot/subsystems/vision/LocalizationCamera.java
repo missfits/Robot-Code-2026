@@ -5,9 +5,12 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -36,13 +39,23 @@ public class LocalizationCamera {
 
   private Optional<CameraReading> m_currentReading = Optional.empty();
 
-  public static record CameraReading(EstimatedRobotPose robotPose, Matrix<N3, N1> stdDevs, double timestampSeconds, Integer numTargets) {}
+  private final StructPublisher<Pose2d> pose2dPublisher;
+  private final StructPublisher<Pose3d> pose3dPublisher;
+
+  // every camera periodically creates a new CameraReading containing robot pose, std dev, timestamp, and number of targets seen.
+  public static record CameraReading(String cameraName, EstimatedRobotPose robotPose, Matrix<N3, N1> stdDevs, double timestampSeconds, int numTargets) {}
 
   public LocalizationCamera(String cameraName, Transform3d robotToCam) {
     m_cameraName = cameraName;
     m_camera = new PhotonCamera(m_cameraName);
     m_logString = "vision/" + m_cameraName;
     poseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, robotToCam);
+
+    pose2dPublisher = NetworkTableInstance.getDefault()
+            .getStructTopic("SmartDashboard/" + m_logString + "/estimatedRobotPose2D", Pose2d.struct).publish();
+
+    pose3dPublisher = NetworkTableInstance.getDefault()
+            .getStructTopic("SmartDashboard/" + m_logString + "/estimatedRobotPose3D", Pose3d.struct).publish();
 
     SmartDashboard.putBoolean("isConnected/" + m_cameraName, m_camera.isConnected());
   }
@@ -55,6 +68,10 @@ public class LocalizationCamera {
     return m_currentReading;
   }
 
+  public LinkedList<CameraReading> getLastCameraReadings() {
+    return m_lastReadings;
+  }
+  
   public Field2d getEstField(){
     return m_estPoseField;
   }
@@ -78,11 +95,24 @@ public class LocalizationCamera {
         m_lastReadings.removeFirst();
       }
 
-      SmartDashboard.putBoolean(m_logString + "/is-Present", true);
-      SmartDashboard.putString(m_logString + "/is-multiTag", newReading.get().numTargets() > 1 ? "multitagReading" : "singleTagReading");
+      // logging all cameraReading data to SmartDashboard
+      SmartDashboard.putBoolean(m_logString + "/reading-is-Present", true);
+
+      SmartDashboard.putNumber(m_logString + "/reading-num-targets-seen", newReading.get().numTargets());
+      SmartDashboard.putNumberArray(m_logString + "/reading-standard-devs", newReading.get().stdDevs().getData());
+      SmartDashboard.putNumber(m_logString + "/reading-timestamp", newReading.get().timestampSeconds());
+      SmartDashboard.putString(m_logString + "/reading-is-multiTag", newReading.get().numTargets() > 1 ? "multitagReading" : "singleTagReading");
+
     } else {
-      SmartDashboard.putBoolean(m_logString + "/is-Present", false);
+      SmartDashboard.putBoolean(m_logString + "/reading-is-Present", false);
     }
+    // no matter what, want to publish isConnected to NetworkTables
+    SmartDashboard.putBoolean("isConnected/" + m_cameraName, m_camera.isConnected());
+
+    // publish estimated robot Pose2d to NetworkTables
+    // uses map for efficient unwrapping of Optional<CameraReading>
+    pose2dPublisher.set(newReading.map(reading -> reading.robotPose().estimatedPose.toPose2d()).orElse(null));
+    pose3dPublisher.set(newReading.map(reading -> reading.robotPose().estimatedPose).orElse(null));
   }
 
   private Optional<CameraReading> calculateNewCameraReading() {
@@ -98,7 +128,7 @@ public class LocalizationCamera {
       if (poseEstimatorOutput.isPresent()) {
         // update std devs (will account for multi + single tag)
         var stdDevs = calculateEstimationStdDevs(poseEstimatorOutput.get(), result.getTargets());
-        var newReading = new CameraReading(poseEstimatorOutput.get(), stdDevs, result.getTimestampSeconds(), result.getTargets().size());
+        var newReading = new CameraReading(m_cameraName, poseEstimatorOutput.get(), stdDevs, result.getTimestampSeconds(), result.getTargets().size());
 
         // return empty if single tag has high pose ambiguity
         if (newReading.numTargets() == 1 && result.getBestTarget().getPoseAmbiguity() > VisionConstants.MAX_POSE_AMBIGUITY) {
@@ -147,11 +177,14 @@ public class LocalizationCamera {
     }
   }
 
-  // checks if the pose is jumpy based on avg speed since by calculating based on speed, 
-  // the camera fps doesn't matter as the speed between readings will still be the same. this is based on last 3 readings
-  public boolean isEstPoseJumpy() {
+  /*
+   * returns true if the average speed between the last 3 camera readings (FROM ONE CAMREA)
+   * is less than the max average speed.
+   * goal is to check if the last three readings are smooth + consistent. 
+   */
+  public boolean areRecentCameraPosesConsistent() {
     if (m_lastReadings.size() < VisionConstants.NUM_LAST_EST_POSES) {
-      return true;
+      return false;
     }
 
     double totalDistance = 0;
@@ -170,7 +203,7 @@ public class LocalizationCamera {
     double avgDist = totalDistance / (m_lastReadings.size() - 1);
     double avgTime = totalTime / (m_lastReadings.size() - 1);
     if (avgTime == 0){
-      return true;
+      return false;
     }
     double avgSpeed = avgDist/avgTime;
 
@@ -178,7 +211,7 @@ public class LocalizationCamera {
     SmartDashboard.putNumber("vision/" + m_cameraName + "/avgSpeedBetweenLastEstPoses", avgSpeed);
     SmartDashboard.putNumber("vision/" + m_cameraName + "/avgTimeBetweenLastEstPoses", avgTime);
 
-    return avgSpeed > VisionConstants.MAX_AVG_SPEED_BETWEEN_LAST_EST_POSES;
+    return avgSpeed < VisionConstants.MAX_AVG_SPEED_BETWEEN_LAST_EST_POSES;
   }
 }
 
