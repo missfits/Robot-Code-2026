@@ -132,7 +132,7 @@ public class LocalizationCamera {
 
         // return empty if single tag has high pose ambiguity
         if (newReading.numTargets() == 1 && result.getBestTarget().getPoseAmbiguity() > VisionConstants.MAX_POSE_AMBIGUITY) {
-          SmartDashboard.putString(m_logString + "/filtering/" + "poseAmbiguity/", "discarded on pose ambiguity");
+          SmartDashboard.putString(m_logString + "/filtering/" + "poseAmbiguity", "discarded on pose ambiguity");
           return Optional.empty();
         }
 
@@ -185,6 +185,7 @@ public class LocalizationCamera {
    */
   public boolean areRecentCameraPosesConsistent() {
     if (m_lastReadings.size() < VisionConstants.NUM_LAST_EST_POSES) {
+      SmartDashboard.putString(m_logString + "/filtering/" + "areRecentCameraPosesConsistent", "skipped, not enough data");
       return false;
     }
 
@@ -204,6 +205,7 @@ public class LocalizationCamera {
     double avgDist = totalDistance / (m_lastReadings.size() - 1);
     double avgTime = totalTime / (m_lastReadings.size() - 1);
     if (avgTime == 0){
+      SmartDashboard.putString(m_logString + "/filtering/" + "areRecentCameraPosesConsistent", "discard on zero timestamp change");
       return false;
     }
     double avgSpeed = avgDist/avgTime;
