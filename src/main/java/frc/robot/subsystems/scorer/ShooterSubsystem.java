@@ -71,7 +71,7 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
   public void periodic() {
     super.periodic();
 
-    SmartDashboard.putNumber("shooterFollower/current", m_followerIO.getCurrent());
-    SmartDashboard.putNumber("shooterInfluencer/current", m_influencerIO.getCurrent());
+    SmartDashboard.putNumber("shooter follower/current", m_followerIO.getCurrent());
+    SmartDashboard.putNumber("shooter influencer/current", m_influencerIO.getCurrent());
   }
 }

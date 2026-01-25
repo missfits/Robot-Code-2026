@@ -89,7 +89,7 @@ public class ShooterInfluencerIOHardware {
 
   public void setVoltage(double value) {
     m_shooterMotor.setControl(new VoltageOut(value));
-    SmartDashboard.putNumber("shooter/voltage", value);
+    SmartDashboard.putNumber("shooter influencer/voltage", value);
   }
 
   public void setPosition(double value){
@@ -100,8 +100,8 @@ public class ShooterInfluencerIOHardware {
         setPosition(0);
     }
   
-  public void setVelocityVoltage(double value) {
-    m_shooterMotor.setControl(new VelocityVoltage(value));
-    SmartDashboard.putNumber("shooter/velocity voltage", value);
+  public void setVelocityVoltage(double velocity) {
+    m_shooterMotor.setControl(new VelocityVoltage(velocity));
+    SmartDashboard.putNumber("shooter influencer/velocity voltage", velocity);
   }
 }

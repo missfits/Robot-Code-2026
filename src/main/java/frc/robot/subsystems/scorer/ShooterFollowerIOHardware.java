@@ -89,7 +89,7 @@ public class ShooterFollowerIOHardware {
 
   public void setVoltage(double value) {
     m_shooterMotor.setControl(new VoltageOut(value));
-    SmartDashboard.putNumber("shooter/voltage", value);
+    SmartDashboard.putNumber("shooter follower/voltage", value);
   }
 
   public void setPosition(double value){
@@ -102,5 +102,6 @@ public class ShooterFollowerIOHardware {
   
   public void setVelocityVoltage(double velocity) {
     m_shooterMotor.setControl(new VelocityVoltage(velocity));
+    SmartDashboard.putNumber("shooter influencer/velocity voltage", velocity);
   }
 }
