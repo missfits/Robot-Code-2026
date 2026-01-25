@@ -1,4 +1,5 @@
 package frc.robot.subsystems.scorer;
+
 import com.ctre.phoenix6.controls.VelocityVoltage;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -21,11 +22,17 @@ public class IndexerSubsystem extends MechanismsSubsystemBase {
   protected void applyVelocityVoltage(VelocityVoltage request) {
     m_IO.setVelocityVoltage(request);
   }
+  
+  public Command runIndexerPID(double velocity) {
+    return this.run(() -> {
+        m_IO.setVelocityVoltage(velocity);
+        SmartDashboard.putNumber("indexer/input velocity", velocity);
+    });
+  }
 
   @Override
   public void periodic() {
     super.periodic();
     SmartDashboard.putNumber("indexer/current", m_IO.getCurrent());
   }
-  
 }

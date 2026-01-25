@@ -15,10 +15,11 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.ClimberConstants;
+
 import frc.robot.Constants.ClimberConstants;
 
 
@@ -26,6 +27,7 @@ public class ClimberIOHardware {
   private final TalonFX m_climberMotor;
   private final StatusSignal<Angle> m_positionSignal;
   private final StatusSignal<AngularVelocity> m_velocitySignal;
+  private final StatusSignal<Voltage> m_voltageSignal;
   private final StatusSignal<Current> m_currentSignal;
 
   // constructor
@@ -33,7 +35,9 @@ public class ClimberIOHardware {
     m_climberMotor = new TalonFX(motorID);
     m_positionSignal = m_climberMotor.getPosition();
     m_velocitySignal = m_climberMotor.getVelocity();
+    m_voltageSignal = m_climberMotor.getMotorVoltage();
     m_currentSignal = m_climberMotor.getStatorCurrent();
+
 
     var talonFXConfigurator = m_climberMotor.getConfigurator();
     var limitConfigs = new CurrentLimitsConfigs();
@@ -51,6 +55,10 @@ public class ClimberIOHardware {
 
   public double getVelocity() {
     return m_velocitySignal.refresh().getValue().in(RevolutionsPerSecond)*ClimberConstants.METERS_PER_ROTATION;
+  }
+
+  public double getVoltage() {
+    return m_voltageSignal.refresh().getValue().in(Volts);
   }
 
   public double getCurrent() {

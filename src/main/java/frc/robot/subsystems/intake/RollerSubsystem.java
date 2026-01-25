@@ -1,13 +1,16 @@
 package frc.robot.subsystems.intake;
-import com.ctre.phoenix6.controls.VelocityVoltage;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants.RollerConstants;
-import frc.robot.subsystems.MechanismsSubsystemBase;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import frc.robot.Constants.IntakeConstants;
 
-public class RollerSubsystem extends MechanismsSubsystemBase {
-  private final RollerIOHardware m_IO = new RollerIOHardware(RollerConstants.MECHANISM_MOTOR_ID);
+public class RollerSubsystem extends SubsystemBase {
+  private final RollerIOHardware m_IO = new RollerIOHardware(IntakeConstants.ROLLER_MOTOR_ID);
 
   public RollerSubsystem() {
     super("roller", "roller");
@@ -20,6 +23,17 @@ public class RollerSubsystem extends MechanismsSubsystemBase {
 
   protected void applyVelocityVoltage(VelocityVoltage request) {
     m_IO.setVelocityVoltage(request);
+  }
+
+  public Command runRollerPID(double velocity) {
+    return this.run(() -> {
+        m_IO.setVelocityVoltage(velocity);
+        SmartDashboard.putNumber("roller/input velocity", velocity);
+    });
+  }
+
+  public void resetControllers() {
+    m_IO.resetSlot0Gains();
   }
 
   @Override

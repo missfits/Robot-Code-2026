@@ -137,41 +137,87 @@ public final class Constants {
           throw new IllegalStateException("Unknown robot type: " + RobotConfig.getRobot());
       }
     }
+
+    /* Universal drivetrain constants (not robot-dependent) */
+
+    // Snap to target distance threshold (meters)
+    // If robot is within this distance of target, maintain current heading
+    public static final double SNAP_TO_TARGET_DISTANCE_THRESHOLD = 0.05; // 5cm
+
   }
 
-  //INTAKE
-  public static class PivotConstants {
-    public static final int MECHANISM_MOTOR_ID = 50;
-    public static final int MOTOR_STATOR_LIMIT = 0;
+  public static class IntakeConstants {
+    // Motor IDs
+    public static final int ROLLER_MOTOR_ID = 50;
+    public static final int PIVOT_MOTOR_ID = 0;
 
-    public static final double DEGREES_PER_ROTATION = 0;
+    // Motor limitss
+    public static final int ROLLER_MOTOR_STATOR_LIMIT = 40;
+    public static final int PIVOT_MOTOR_STATOR_LIMIT = 40;
+
+    // Conversions
+    public static final double ROLLER_DEGREES_PER_ROTATION = 0;
+    public static final double PIVOT_DEGREES_PER_ROTATION = 0;
+
+    // Intake motor velocities
+    public static double OUTTAKE_MOTOR_VELOCITY = 0;
+    public static final double INTAKE_BACK_VELOCITY = 0;
+    public static final double PIVOT_UP_VELOCITY = 0;
+    public static final double PIVOT_DOWN_VELOCITY = 0;
+
+    // Roller PID gains
+    public static double ROLLER_kP = 0;
+    public static double ROLLER_kI = 0;
+    public static double ROLLER_kD = 0;
+
+    // Timing
+    public static final double RUN_INTAKE_TIME = 0;
   }
 
-  public static class RollerConstants {
-    public static final int MECHANISM_MOTOR_ID = 51;
-    public static final int MOTOR_STATOR_LIMIT = 0;
+  public static class ScorerConstants {
+    // Motor IDs
+    public static final int INFLUENCER_MOTOR_ID = 51;
+    public static final int FOLLOWER_MOTOR_ID = 52;
+    public static final int INDEXER_MOTOR_ID = 0;
 
-    public static final double DEGREES_PER_ROTATION = 0;
+    // Motor limits - Influencer
+    public static final int INFLUENCER_MOTOR_STATOR_LIMIT = 40;
+    // Motor limits - Follower
+    public static final int FOLLOWER_MOTOR_STATOR_LIMIT = 40;
+    // Motor limits - Indexer
+    public static final int INDEXER_MOTOR_STATOR_LIMIT = 40;
+
+    // Conversions - Influencer
+    public static final double INFLUENCER_DEGREES_PER_ROTATION = 0;
+    // Conversions - Follower
+    public static final double FOLLOWER_DEGREES_PER_ROTATION = 0;
+    // Conversions - Indexer
+    public static final double INDEXER_DEGREES_PER_ROTATION = 0;
+
+    // Influencer motor velocities
+    public static double INFLUENCER_OUTTAKE_MOTOR_VELOCITY = 0;
+    public static final double INFLUENCER_SHOOTER_BACK_VELOCITY = 0;
+
+    // Follower motor velocities
+    public static double FOLLOWER_OUTTAKE_MOTOR_VELOCITY = 0;
+    public static final double FOLLOWER_SHOOTER_BACK_VELOCITY = 0;
+
+    // Influencer PID gains
+    public static double INFLUENCER_kP = 0;
+    public static double INFLUENCER_kI = 0;
+    public static double INFLUENCER_kD = 0;
+
+    // Follower PID gains
+    public static double FOLLOWER_kP = 0;
+    public static double FOLLOWER_kI = 0;
+    public static double FOLLOWER_kD = 0;
+
+    // Timing
+    public static final double RUN_SHOOTER_TIME = 0;
   }
 
-  //SCORER
-  public static class IndexerConstants {
-    public static final int MECHANISM_MOTOR_ID = 52;
-    public static final int MOTOR_STATOR_LIMIT = 0;
-
-    public static final double DEGREES_PER_ROTATION = 0;
-  }
-
-  public static class ShooterConstants {
-    public static final int MECHANISM_MOTOR_ID = 53;
-    public static final int MOTOR_STATOR_LIMIT = 0;
-
-    public static final double DEGREES_PER_ROTATION = 0;
-  }
-
-  //CLIMBER
   public static class ClimberConstants {
-    public static final int MECHANISM_MOTOR_ID = 54;
+    public static final int MECHANISM_MOTOR_ID = 0;
     public static final int MOTOR_STATOR_LIMIT = 0;
 
     public static final double METERS_PER_ROTATION = 0;
@@ -184,6 +230,15 @@ public final class Constants {
     public static final double MAX_VISION_POSE_ROLL = 0.05; // in radians
     public static final double MAX_VISION_POSE_PITCH = 0.05; // in radians
 
+    // --- filtering constants ---
+    // max average distance and speed to use for local filters
+    public static final double MAX_AVG_DIST_BETWEEN_LAST_EST_POSES = 0.3; // in meters 
+    public static final double MAX_AVG_SPEED_BETWEEN_LAST_EST_POSES = MAX_AVG_DIST_BETWEEN_LAST_EST_POSES * 50.;
+    public static final double MAX_VISION_READING_DISTANCE = 0.5; // in meters
+
+    // min number of camera readings to use for global filters
+    public static final int MIN_NUM_CAMERA_READINGS = 2; // NEEDS TO BE CONFIRMED W/ LOGIC 1/24
+
     // --- localization camera ---
     // default vision standard deviation
     public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(6, 6, 4);
@@ -191,8 +246,6 @@ public final class Constants {
 
     public static final double VISION_DISTANCE_DISCARD = 10; 
     public static final double MAX_POSE_AMBIGUITY = 0.2;
-    public static final double MAX_AVG_DIST_BETWEEN_LAST_EST_POSES = 0.3; // in meters 
-    public static final double MAX_AVG_SPEED_BETWEEN_LAST_EST_POSES = MAX_AVG_DIST_BETWEEN_LAST_EST_POSES * 50.;
     public static final int NUM_LAST_EST_POSES = 3;
     public static final double STD_DEV_SCALER = 30;
 

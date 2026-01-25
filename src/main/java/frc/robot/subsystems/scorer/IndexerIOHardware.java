@@ -20,18 +20,20 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import frc.robot.Constants.IndexerConstants;;
-
+import frc.robot.Constants.ScorerConstants;
 
 public class IndexerIOHardware {
+
   private final TalonFX m_indexerMotor;
+  private final StatusSignal<Angle> m_positionSignal;
   private final StatusSignal<AngularVelocity> m_velocitySignal;
-  private final StatusSignal<Voltage> m_voltageSignal; 
+  private final StatusSignal<Voltage> m_voltageSignal;
   private final StatusSignal<Current> m_currentSignal;
 
-    // constructor
+  // constructor
   public IndexerIOHardware(int motorID) {
     m_indexerMotor = new TalonFX(motorID);
+    m_positionSignal = m_indexerMotor.getPosition();
     m_velocitySignal = m_indexerMotor.getVelocity();
     m_voltageSignal = m_indexerMotor.getMotorVoltage();
     m_currentSignal = m_indexerMotor.getStatorCurrent();
@@ -42,16 +44,27 @@ public class IndexerIOHardware {
     limitConfigs.StatorCurrentLimit = IndexerConstants.MOTOR_STATOR_LIMIT;
     limitConfigs.StatorCurrentLimitEnable = true;
 
+    limitConfigs.StatorCurrentLimit = ScorerConstants.INDEXER_MOTOR_STATOR_LIMIT;
+    limitConfigs.StatorCurrentLimitEnable = true;
+
     talonFXConfigurator.apply(limitConfigs);
   }
 
-    // getters
-  public double getVelocity() { //in radians
-    return Math.toRadians(m_velocitySignal.refresh().getValue().in(RevolutionsPerSecond)*IndexerConstants.DEGREES_PER_ROTATION);
+  // getters
+  public double getPosition() {
+    return Math.toRadians(m_positionSignal.refresh().getValue().in(Revolutions)*ScorerConstants.INDEXER_DEGREES_PER_ROTATION);
   }
 
-  public double getCurrent() {
-    return m_currentSignal.refresh().getValue().in(Amps);
+  public double getPositionDegrees() {
+    return m_positionSignal.refresh().getValue().in(Revolutions)*ScorerConstants.INDEXER_DEGREES_PER_ROTATION;
+  }
+
+  public double getVelocity() { //in radians
+    return Math.toRadians(m_velocitySignal.refresh().getValue().in(RevolutionsPerSecond)*ScorerConstants.INDEXER_DEGREES_PER_ROTATION);
+  }
+
+  public double getVelocityDegrees() {
+    return m_velocitySignal.refresh().getValue().in(RevolutionsPerSecond)*ScorerConstants.INDEXER_DEGREES_PER_ROTATION;
   }
 
   public double getVoltage() {
