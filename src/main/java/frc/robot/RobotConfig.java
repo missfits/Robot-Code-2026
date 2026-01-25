@@ -16,8 +16,7 @@ public final class RobotConfig {
   // ========================================
   // CHANGE THIS LINE TO SWITCH ROBOTS
   // ========================================
-  // private static RobotType ROBOT = RobotType.CLEO;
-  private static RobotType ROBOT = RobotType.CERIDWEN;
+  private static RobotType ROBOT = RobotType.CLEO;
 
   /**
    * Gets the current robot type.
