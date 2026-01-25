@@ -60,7 +60,7 @@ public class GlobalVisionFilterPipeline {
       boolean passed = filter.isValid(reading, allReadings);
 
       // log result to SmartDashboard
-      SmartDashboard.putBoolean(m_logPrefix + cameraName + "/" + filterName + "/result", passed);
+      SmartDashboard.putString(m_logPrefix + cameraName + "/" + filterName + "/result", (passed ? "passed" : "failed"));
 
       // short circuit if ANY filter fails
       if (!passed) {
