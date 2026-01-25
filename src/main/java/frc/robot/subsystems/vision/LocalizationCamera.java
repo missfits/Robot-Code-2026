@@ -132,6 +132,7 @@ public class LocalizationCamera {
 
         // return empty if single tag has high pose ambiguity
         if (newReading.numTargets() == 1 && result.getBestTarget().getPoseAmbiguity() > VisionConstants.MAX_POSE_AMBIGUITY) {
+          SmartDashboard.putString(m_logString + "/filtering/" + "poseAmbiguity/", "discarded on pose ambiguity");
           return Optional.empty();
         }
 
@@ -210,6 +211,8 @@ public class LocalizationCamera {
     SmartDashboard.putNumber("vision/" + m_cameraName + "/avgDistBetweenLastEstPoses", avgDist);
     SmartDashboard.putNumber("vision/" + m_cameraName + "/avgSpeedBetweenLastEstPoses", avgSpeed);
     SmartDashboard.putNumber("vision/" + m_cameraName + "/avgTimeBetweenLastEstPoses", avgTime);
+
+    SmartDashboard.putString(m_logString + "/filtering/" + "areRecentCameraPosesConsistent", avgSpeed < VisionConstants.MAX_AVG_SPEED_BETWEEN_LAST_EST_POSES ? "true" : "false");
 
     return avgSpeed < VisionConstants.MAX_AVG_SPEED_BETWEEN_LAST_EST_POSES;
   }
