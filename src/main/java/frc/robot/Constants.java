@@ -178,7 +178,7 @@ public final class Constants {
     // Motor IDs
     public static final int INFLUENCER_MOTOR_ID = 51;
     public static final int FOLLOWER_MOTOR_ID = 52;
-    public static final int INDEXER_MOTOR_ID = 0;
+    public static final int INDEXER_MOTOR_ID = 53;
 
     // Motor limits - Influencer
     public static final int INFLUENCER_MOTOR_STATOR_LIMIT = 40;
