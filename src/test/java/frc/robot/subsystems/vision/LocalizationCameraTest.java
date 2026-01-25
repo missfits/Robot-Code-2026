@@ -26,6 +26,7 @@ import java.util.List;
 
 class LocalizationCameraTest {
   static final double DELTA = 1e-5; // acceptable deviation range
+  static final int NUM_TEST_EST_POSES = 10;
 
   LocalizationCamera m_camera;
   Transform3d m_robotToCam;
@@ -73,6 +74,13 @@ class LocalizationCameraTest {
         "Should be jumpy when fewer than NUM_LAST_EST_POSES readings exist");
   }
 
+    @Test
+  void testareRecentCameraPosesConsistent_NotEnoughReadingsWithOneOrTwoReadings() {
+    // With no readings added, should return true (jumpy)
+    assertTrue(m_camera.areRecentCameraPosesConsistent(), 
+        "Should be jumpy when fewer than NUM_LAST_EST_POSES readings exist");
+  } //ABOVE TEST work in progress
+
   @Test
   void testareRecentCameraPosesConsistent_StablePoses() throws Exception {
     // Inject stable poses that are close together with reasonable time intervals
@@ -81,7 +89,7 @@ class LocalizationCameraTest {
     double baseTime = 1.0;
     double timeInterval = 0.02; // 50 fps - 20ms between frames
 
-    for (int i = 0; i < VisionConstants.NUM_TEST_EST_POSES; i++) {
+    for (int i = 0; i < NUM_TEST_EST_POSES; i++) {
       // Create poses that move very slowly (well under the max speed threshold)
       Pose3d pose = new Pose3d(
           1.0 + i * 0.001, // Very small movement: 1mm per reading
@@ -113,7 +121,7 @@ class LocalizationCameraTest {
     double baseTime = 1.0;
     double timeInterval = 0.02; // 50 fps
 
-    for (int i = 0; i < VisionConstants.NUM_TEST_EST_POSES; i++) {
+    for (int i = 0; i < NUM_TEST_EST_POSES; i++) {
       // Create poses that move very fast (well above max speed threshold)
       // Max speed is MAX_AVG_DIST * 50, so we need to exceed that
       Pose3d pose = new Pose3d(
@@ -145,7 +153,7 @@ class LocalizationCameraTest {
 
     double sameTime = 1.0;
 
-    for (int i = 0; i < VisionConstants.NUM_TEST_EST_POSES; i++) {
+    for (int i = 0; i < NUM_TEST_EST_POSES; i++) {
       Pose3d pose = new Pose3d(1.0 + i * 0.01, 2.0, 0.0, new Rotation3d(0, 0, 0));
       EstimatedRobotPose estPose = new EstimatedRobotPose(pose, sameTime, List.of(), null);
       sameTimeReadings.add(new CameraReading(estPose, VisionConstants.kSingleTagStdDevs, sameTime, 1));
