@@ -43,7 +43,7 @@ public class LocalizationCamera {
   private final StructPublisher<Pose3d> pose3dPublisher;
 
   // every camera periodically creates a new CameraReading containing robot pose, std dev, timestamp, and number of targets seen.
-  public static record CameraReading(EstimatedRobotPose robotPose, Matrix<N3, N1> stdDevs, double timestampSeconds, int numTargets) {}
+  public static record CameraReading(String cameraName, EstimatedRobotPose robotPose, Matrix<N3, N1> stdDevs, double timestampSeconds, int numTargets) {}
 
   public LocalizationCamera(String cameraName, Transform3d robotToCam) {
     m_cameraName = cameraName;
@@ -124,7 +124,7 @@ public class LocalizationCamera {
       if (poseEstimatorOutput.isPresent()) {
         // update std devs (will account for multi + single tag)
         var stdDevs = calculateEstimationStdDevs(poseEstimatorOutput.get(), result.getTargets());
-        var newReading = new CameraReading(poseEstimatorOutput.get(), stdDevs, result.getTimestampSeconds(), result.getTargets().size());
+        var newReading = new CameraReading(m_cameraName, poseEstimatorOutput.get(), stdDevs, result.getTimestampSeconds(), result.getTargets().size());
 
         // return empty if single tag has high pose ambiguity
         if (newReading.numTargets() == 1 && result.getBestTarget().getPoseAmbiguity() > VisionConstants.MAX_POSE_AMBIGUITY) {
