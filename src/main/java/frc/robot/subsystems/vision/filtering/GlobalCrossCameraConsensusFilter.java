@@ -21,9 +21,10 @@ public class GlobalCrossCameraConsensusFilter implements GlobalVisionFilter{
 
   @Override
   public boolean isValid(CameraReading reading, List<CameraReading> allReadings) {
-    // If we don't have enough readings, return false
+    // If we don't have enough readings, return true to skip this filter.
+    //  NOTE: returning false will cause the entire filter pipeline to stop.
     if (allReadings.size() < VisionConstants.MIN_NUM_CAMERA_READINGS) {
-      return false;
+      return true;
     }
 
     // Calculate the average estimated Pose2d of across all readings w/ (sum || sumY) / numposes

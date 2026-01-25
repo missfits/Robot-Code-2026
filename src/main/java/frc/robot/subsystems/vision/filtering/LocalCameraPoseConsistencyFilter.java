@@ -25,9 +25,10 @@ public class LocalCameraPoseConsistencyFilter implements LocalVisionFilter{
     LinkedList<CameraReading> lastReadings = cam.getLastCameraReadings();
     String cameraName = cam.getCameraName();
 
-    // If we don't have enough readings, return false.
+    // If we don't have enough readings, return true to skip this filter.
+    //  NOTE: returning false will cause the entire filter pipeline to stop.
     if (lastReadings.size() < VisionConstants.NUM_LAST_EST_POSES) {
-      return false;
+      return true;
     }
 
     double totalDistance = 0;
