@@ -132,9 +132,11 @@ public class LocalizationCamera {
 
         // return empty if single tag has high pose ambiguity
         if (newReading.numTargets() == 1 && result.getBestTarget().getPoseAmbiguity() > VisionConstants.MAX_POSE_AMBIGUITY) {
+          SmartDashboard.putString(m_logString + "/filtering/" + "poseAmbiguity", "sad");
           return Optional.empty();
         }
-
+        
+        SmartDashboard.putString(m_logString + "/filtering/" + "poseAmbiguity", "happy");
         return Optional.of(newReading);
       }
     }
@@ -184,6 +186,7 @@ public class LocalizationCamera {
    */
   public boolean areRecentCameraPosesConsistent() {
     if (m_lastReadings.size() < VisionConstants.NUM_LAST_EST_POSES) {
+      SmartDashboard.putString(m_logString + "/filtering/" + "areRecentCameraPosesConsistent", "skipped");
       return false;
     }
 
@@ -203,6 +206,7 @@ public class LocalizationCamera {
     double avgDist = totalDistance / (m_lastReadings.size() - 1);
     double avgTime = totalTime / (m_lastReadings.size() - 1);
     if (avgTime == 0){
+      SmartDashboard.putString(m_logString + "/filtering/" + "areRecentCameraPosesConsistent", "discard");
       return false;
     }
     double avgSpeed = avgDist/avgTime;
@@ -210,6 +214,8 @@ public class LocalizationCamera {
     SmartDashboard.putNumber("vision/" + m_cameraName + "/avgDistBetweenLastEstPoses", avgDist);
     SmartDashboard.putNumber("vision/" + m_cameraName + "/avgSpeedBetweenLastEstPoses", avgSpeed);
     SmartDashboard.putNumber("vision/" + m_cameraName + "/avgTimeBetweenLastEstPoses", avgTime);
+
+    SmartDashboard.putString(m_logString + "/filtering/" + "areRecentCameraPosesConsistent", avgSpeed < VisionConstants.MAX_AVG_SPEED_BETWEEN_LAST_EST_POSES ? "good" : "bad");
 
     return avgSpeed < VisionConstants.MAX_AVG_SPEED_BETWEEN_LAST_EST_POSES;
   }
