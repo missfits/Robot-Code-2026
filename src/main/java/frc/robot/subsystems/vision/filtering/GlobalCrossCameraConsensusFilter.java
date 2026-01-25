@@ -36,11 +36,7 @@ public class GlobalCrossCameraConsensusFilter implements GlobalVisionFilter{
       numPoses++;
     }
 
-    // Checks for division by zero!
-    if (numPoses == 0){
-      return false;
-    }
-
+    // NOTE: Don't need to check for division by zero because MIN_NUM_CAMERA_READINGS > 0.
     Pose2d avgPose = new Pose2d(sumX / numPoses, sumY / numPoses, new Rotation2d());
     Pose2d readingPose = reading.robotPose().estimatedPose.toPose2d();
 
