@@ -34,7 +34,7 @@ public abstract class MechanismsSubsystemBase extends SubsystemBase {
   protected abstract void applyVelocityVoltage(double velocity);
 
   protected Command velocityVoltage(double velocity, boolean enableFOC, double feedForward, int slot, boolean overrideBrakeDurNeutral) {
-    VelocityVoltage request = new VelocityVoltage(velocity)
+    new VelocityVoltage(velocity)
     .withEnableFOC(enableFOC)
     .withFeedForward(feedForward)   
     .withSlot(slot)
