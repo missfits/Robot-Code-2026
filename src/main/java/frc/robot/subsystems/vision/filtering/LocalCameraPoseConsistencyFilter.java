@@ -14,6 +14,7 @@ public class LocalCameraPoseConsistencyFilter implements LocalVisionFilter{
   /*
    * Filter to check if the last 3 camera readings from a given camera
    *   are consistent with each other.
+   * NOTE: most recent reading is included in last 3 readings.
    * 
    * GOAL: check if the last three readings are smooth + consistent.
    */
