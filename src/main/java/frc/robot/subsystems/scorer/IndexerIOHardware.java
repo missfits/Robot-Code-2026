@@ -41,7 +41,7 @@ public class IndexerIOHardware {
     var talonFXConfigurator = m_indexerMotor.getConfigurator();
     var limitConfigs = new CurrentLimitsConfigs();
 
-    limitConfigs.StatorCurrentLimit = IndexerConstants.MOTOR_STATOR_LIMIT;
+    limitConfigs.StatorCurrentLimit = ScorerConstants.INDEXER_MOTOR_ID;
     limitConfigs.StatorCurrentLimitEnable = true;
 
     limitConfigs.StatorCurrentLimit = ScorerConstants.INDEXER_MOTOR_STATOR_LIMIT;
@@ -71,6 +71,10 @@ public class IndexerIOHardware {
     return m_voltageSignal.refresh().getValue().in(Volts);
   }
 
+  public double getCurrent() {
+    return m_currentSignal.refresh().getValue().in(Amps);
+  }
+
     // setters
   public void motorOff() {
     m_indexerMotor.stopMotor();
@@ -79,6 +83,10 @@ public class IndexerIOHardware {
   public void setVoltage(double volts) {
     m_indexerMotor.setControl(new VoltageOut(volts));
   }
+
+  public void setVelocityVoltage(double velocity) {
+    m_indexerMotor.setControl(new VelocityVoltage(velocity));
+  }  
 
   public void resetPosition() {
     m_indexerMotor.setPosition(0);

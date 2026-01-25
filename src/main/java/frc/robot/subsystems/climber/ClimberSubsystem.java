@@ -1,5 +1,4 @@
 package frc.robot.subsystems.climber;
-import com.ctre.phoenix6.controls.VelocityVoltage;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.ClimberConstants;
@@ -18,8 +17,8 @@ public class ClimberSubsystem extends MechanismsSubsystemBase {
     m_IO.setVoltage(volts);
   }
 
-  protected void applyVelocityVoltage(VelocityVoltage request) {
-    m_IO.setVelocityVoltage(request);
+  protected void applyVelocityVoltage(double velocity) {
+    m_IO.setVelocityVoltage(velocity);
   }
 
   @Override

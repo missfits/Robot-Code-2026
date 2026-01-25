@@ -102,7 +102,7 @@ public class ShooterFollowerIOHardware {
     m_shooterMotor.setPosition(0);
   }
   
-  public void setVelocityVoltage(VelocityVoltage request) {
-    m_shooterMotor.setControl(request);
+  public void setVelocityVoltage(double velocity) {
+    m_shooterMotor.setControl(new VelocityVoltage(velocity));
   }
 }

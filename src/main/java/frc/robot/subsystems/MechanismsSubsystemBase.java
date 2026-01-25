@@ -23,15 +23,15 @@ public abstract class MechanismsSubsystemBase extends SubsystemBase {
 
   protected abstract void setVoltage(double volts);
 
-  protected Command runMechanism(double speed){
+  public Command runMechanism(double speed){
     return loggedCommand("run"+mechanismDashboardName, this.run(() -> setVoltage(speed)));
   }
 
-  protected Command runMechanismOff() {
+  public Command runMechanismOff() {
     return loggedCommand("run"+mechanismDashboardName+"off", new RunCommand(() -> setVoltage(0), this));
   }
 
-  protected abstract void applyVelocityVoltage(VelocityVoltage request);
+  protected abstract void applyVelocityVoltage(double velocity);
 
   protected Command velocityVoltage(double velocity, boolean enableFOC, double feedForward, int slot, boolean overrideBrakeDurNeutral) {
     VelocityVoltage request = new VelocityVoltage(velocity)
@@ -39,7 +39,7 @@ public abstract class MechanismsSubsystemBase extends SubsystemBase {
     .withFeedForward(feedForward)   
     .withSlot(slot)
     .withOverrideBrakeDurNeutral(overrideBrakeDurNeutral);
-    return loggedCommand("velocityVoltage", this.run(() -> applyVelocityVoltage(request)));
+    return loggedCommand("velocityVoltage", this.run(() -> applyVelocityVoltage(velocity)));
   }
 
   @Override

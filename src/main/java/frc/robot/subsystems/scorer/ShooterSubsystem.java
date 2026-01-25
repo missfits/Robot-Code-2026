@@ -1,19 +1,38 @@
 package frc.robot.subsystems.scorer;
-import com.ctre.phoenix6.controls.VelocityVoltage;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Constants.ScorerConstants;
+import frc.robot.subsystems.MechanismsSubsystemBase;
 
-public class ShooterSubsystem extends SubsystemBase {
+public class ShooterSubsystem extends MechanismsSubsystemBase {
   private final ShooterInfluencerIOHardware m_influencerIO = new ShooterInfluencerIOHardware(ScorerConstants.INFLUENCER_MOTOR_ID);
   private final ShooterFollowerIOHardware m_followerIO = new ShooterFollowerIOHardware(ScorerConstants.FOLLOWER_MOTOR_ID);
 
   public ShooterSubsystem() {
+    super("shooter", "shooter");
     m_influencerIO.resetPosition();
     m_followerIO.resetPosition();
   }
+
+  protected void setVoltage(double volts) {
+    m_influencerIO.setVoltage(volts);
+    m_followerIO.setVoltage(volts);
+  }
+
+  protected void applyVelocityVoltage(double velocity) {
+    m_influencerIO.setVelocityVoltage(velocity);
+    m_followerIO.setVelocityVoltage(velocity);
+  }
+
+  public Command runMechanism(double motor1, double motor2) {
+    return loggedCommand("runShooter",
+        this.run(() -> {
+            setVoltage(motor1);
+            setVoltage(motor2);
+        }));
+      }
 
   public Command runShooter(double influencerVelocity, double followerVelocity) {
     return this.run(() -> {
@@ -23,6 +42,16 @@ public class ShooterSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("shooter/follower input velocity", followerVelocity);
     });
   }
+  
+  public Command runShooterPID(double influencerVelocity, double followerVelocity) {
+    return this.run(() -> {
+        m_influencerIO.setVelocityVoltage(influencerVelocity);
+        m_followerIO.setVelocityVoltage(followerVelocity);
+
+        SmartDashboard.putNumber("shooter/influencer_velocity", influencerVelocity);
+        SmartDashboard.putNumber("shooter/follower_velocity", followerVelocity);
+    });
+}
 
   public Command runShooterOff() {
     return new RunCommand(() -> {
@@ -40,14 +69,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putData("shooter/subsystem", this);
-    SmartDashboard.putNumber("shooter/influencer current", m_influencerIO.getCurrent());
-    SmartDashboard.putNumber("shooter/follower current", m_followerIO.getCurrent());
+    super.periodic();
 
-    Command current = this.getCurrentCommand();
-    SmartDashboard.putString(
-      "shooter/currentlyRunningOuterCommand",
-      current != null ? current.getName() : "None"
-    );
+    SmartDashboard.putNumber("shooterFollower/current", m_followerIO.getCurrent());
+    SmartDashboard.putNumber("shooterInfluencer/current", m_influencerIO.getCurrent());
   }
 }

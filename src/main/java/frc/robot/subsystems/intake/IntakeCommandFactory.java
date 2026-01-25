@@ -11,18 +11,17 @@ public class IntakeCommandFactory {
   }
 
   public Command runIntake() {
-    return m_roller.runRoller(IntakeConstants.OUTTAKE_MOTOR_VELOCITY)
-      .withName("run intake");
+    return m_roller.runMechanism(IntakeConstants.OUTTAKE_MOTOR_VELOCITY).withName("run intake");
   }
 
   public Command runIntakeBack() {
-    return m_roller.runRoller(IntakeConstants.INTAKE_BACK_VELOCITY)
-      .withName("run intake back");
+    return m_roller.runMechanism(IntakeConstants.INTAKE_BACK_VELOCITY).withName("run intake");
   }
 
   public Command runIntakeWithTimeout() {
-    return m_roller.runRoller(IntakeConstants.OUTTAKE_MOTOR_VELOCITY)
-      .withTimeout(IntakeConstants.RUN_INTAKE_TIME).withName("run intake timeout");
+    return m_roller.runMechanism(IntakeConstants.OUTTAKE_MOTOR_VELOCITY)
+    .withTimeout(IntakeConstants.RUN_INTAKE_TIME)
+    .withName("run intake timeout");
   }
 
   public Command runIntakePID() { 
@@ -31,6 +30,6 @@ public class IntakeCommandFactory {
   }
 
   public Command intakeOff() {
-    return m_roller.runRollerOff().withName("intake off");
+    return m_roller.runMechanismOff().withName("intake off");
   }
 }

@@ -1,12 +1,10 @@
 package frc.robot.subsystems.intake;
 
-import edu.wpi.first.math.MathUtil;
 import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.StatusSignal;
@@ -21,6 +19,7 @@ public class PivotIOHardware {
     private final StatusSignal<Angle> m_positionSignal; 
     private final StatusSignal<AngularVelocity> m_velocitySignal;
     private final StatusSignal<Voltage> m_voltageSignal;
+    private final StatusSignal<Current> m_currentSignal;
 
 
     // constructor
@@ -29,11 +28,12 @@ public class PivotIOHardware {
         m_positionSignal = m_pivotMotor.getPosition();
         m_velocitySignal = m_pivotMotor.getVelocity();
         m_voltageSignal = m_pivotMotor.getMotorVoltage();
+        m_currentSignal = m_pivotMotor.getStatorCurrent();
 
     var talonFXConfigurator = m_pivotMotor.getConfigurator();
     var limitConfigs = new CurrentLimitsConfigs();
 
-        limitConfigs.StatorCurrentLimit = PivotConstants.MOTOR_STATOR_LIMIT;
+        limitConfigs.StatorCurrentLimit = IntakeConstants.PIVOT_MOTOR_STATOR_LIMIT;
         limitConfigs.StatorCurrentLimitEnable = true;
 
     talonFXConfigurator.apply(limitConfigs);
@@ -42,20 +42,24 @@ public class PivotIOHardware {
 
     // getters
     public double getPosition() {
-        return Math.toRadians(m_positionSignal.refresh().getValue().in(Revolutions)*PivotConstants.DEGREES_PER_ROTATION);
+        return Math.toRadians(m_positionSignal.refresh().getValue().in(Revolutions)*IntakeConstants.PIVOT_DEGREES_PER_ROTATION);
     }
 
     public double getPositionDegrees() {
-        return m_positionSignal.refresh().getValue().in(Revolutions)*PivotConstants.DEGREES_PER_ROTATION;
+        return m_positionSignal.refresh().getValue().in(Revolutions)*IntakeConstants.PIVOT_DEGREES_PER_ROTATION;
     }
 
     public double getVelocity() {
-        return Math.toRadians(m_velocitySignal.refresh().getValue().in(RevolutionsPerSecond)*PivotConstants.DEGREES_PER_ROTATION);
+        return Math.toRadians(m_velocitySignal.refresh().getValue().in(RevolutionsPerSecond)*IntakeConstants.PIVOT_DEGREES_PER_ROTATION);
     }
 
     public double getVelocityDegrees() {
-        return m_velocitySignal.refresh().getValue().in(RevolutionsPerSecond)*PivotConstants.DEGREES_PER_ROTATION;
+        return m_velocitySignal.refresh().getValue().in(RevolutionsPerSecond)*IntakeConstants.PIVOT_DEGREES_PER_ROTATION;
     }
+
+  public void setVelocityVoltage(double velocity) {
+    m_pivotMotor.setControl(new VelocityVoltage(velocity));
+  }  
 
   public double getVoltage() {
     return m_voltageSignal.refresh().getValue().in(Volts);
@@ -75,10 +79,10 @@ public class PivotIOHardware {
   }
 
     public void resetPosition() {
-        setPosition(0);
+       setPosition(0);
     }
     
     public void setVoltage(double value) {
-        m_pivotMotor.setControl(new VoltageOut(value));
+      m_pivotMotor.setControl(new VoltageOut(value));
     }
 }

@@ -11,21 +11,21 @@ public class ScorerCommandFactory {
   }
 
   public Command runShooter() {
-    return m_subsystem.runShooter(
+    return m_subsystem.runMechanism(
       ScorerConstants.INFLUENCER_OUTTAKE_MOTOR_VELOCITY,
       ScorerConstants.FOLLOWER_OUTTAKE_MOTOR_VELOCITY
     ).withName("run shooter");
   }
 
   public Command runShooterBack() {
-    return m_subsystem.runShooter(
+    return m_subsystem.runMechanism(
       ScorerConstants.INFLUENCER_SHOOTER_BACK_VELOCITY,
       ScorerConstants.FOLLOWER_SHOOTER_BACK_VELOCITY
     ).withName("run shooter back");
   }
 
   public Command runShooterWithTimeout() {
-    return m_subsystem.runShooter(
+    return m_subsystem.runMechanism(
       ScorerConstants.INFLUENCER_OUTTAKE_MOTOR_VELOCITY,
       ScorerConstants.FOLLOWER_OUTTAKE_MOTOR_VELOCITY
     ).withTimeout(ScorerConstants.RUN_SHOOTER_TIME).withName("run shooter timeout");
@@ -39,6 +39,6 @@ public class ScorerCommandFactory {
   }
 
   public Command shooterOff() {
-    return m_subsystem.runShooterOff().withName("shooter off");
+    return m_subsystem.runMechanismOff().withName("shooter off");
   }
 }
