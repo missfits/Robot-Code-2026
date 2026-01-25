@@ -182,11 +182,11 @@ public class RobotContainer {
   public void updatePoseEst(LocalizationCamera camera){
     var optionalReading = camera.getCameraReading();
     if (!optionalReading.isPresent()) {
-      SmartDashboard.putBoolean("fusedVision/" + "filtering/" + "isCameraReadingPresentUpdatePoseEst", false);
+      SmartDashboard.putBoolean("fusedVision/" + camera.getCameraName() + "filtering/" + "isCameraReadingPresentUpdatePoseEst", false);
       return;
     }
 
-    SmartDashboard.putBoolean("fusedVision/" + "filtering/" + "isCameraReadingPresentUpdatePoseEst", true);
+    SmartDashboard.putBoolean("fusedVision/" + camera.getCameraName() + "filtering/" + "isCameraReadingPresentUpdatePoseEst", true);
 
     var cameraReading = optionalReading.get();
     EstimatedRobotPose robotPose = cameraReading.robotPose();
@@ -196,7 +196,7 @@ public class RobotContainer {
 
     // check if new estimated pose and previous pose are less than 2 meters apart (fused poseEst)
     double distance = estPose2d.getTranslation().getDistance(m_drivetrain.getState().Pose.getTranslation());
-    SmartDashboard.putBoolean("fusedVision/" + "filtering/" + "isDistanceBetweenVisionAndActualPoseLessThanMax", distance < VisionConstants.MAX_VISION_POSE_DISTANCE ? true : false);
+    SmartDashboard.putBoolean("fusedVision/" + camera.getCameraName()  + "/filtering" + "/isDistanceBetweenVisionAndActualPoseLessThanMax", distance < VisionConstants.MAX_VISION_POSE_DISTANCE ? true : false);
 
 
     SmartDashboard.putNumber("fusedVision/" + camera.getCameraName() + "/distanceBetweenVisionAndActualPose", distance);

@@ -135,7 +135,8 @@ public class LocalizationCamera {
           SmartDashboard.putString(m_logString + "/filtering/" + "poseAmbiguity", "discarded on pose ambiguity");
           return Optional.empty();
         }
-
+        
+        SmartDashboard.putString(m_logString + "/filtering/" + "poseAmbiguity", "pose ambiguity happy");
         return Optional.of(newReading);
       }
     }
