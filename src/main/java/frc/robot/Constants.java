@@ -194,13 +194,17 @@ public final class Constants {
     // Conversions - Indexer
     public static final double INDEXER_DEGREES_PER_ROTATION = 0;
 
-    // Influencer motor velocities
+    // Influencer motor velocities + voltages
     public static double INFLUENCER_OUTTAKE_MOTOR_VELOCITY = 0;
-    public static final double INFLUENCER_SHOOTER_BACK_VELOCITY = 0;
 
-    // Follower motor velocities
+    public static double INFLUENCER_OUTTAKE_MOTOR_VOLTAGE = 0;
+    public static final double INFLUENCER_SHOOTER_BACK_VOLTAGE = 0;
+
+    // Follower motor velocities + voltages
     public static double FOLLOWER_OUTTAKE_MOTOR_VELOCITY = 0;
-    public static final double FOLLOWER_SHOOTER_BACK_VELOCITY = 0;
+
+    public static double FOLLOWER_OUTTAKE_MOTOR_VOLTAGE = 0;
+    public static final double FOLLOWER_SHOOTER_BACK_VOLTAGE = 0;
 
     // Influencer PID/FF gains
     public static double INFLUENCER_kP = 0.1;

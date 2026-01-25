@@ -12,22 +12,22 @@ public class ScorerCommandFactory {
 
   public Command runShooter() {
     return m_subsystem.runShooter(
-      ScorerConstants.INFLUENCER_OUTTAKE_MOTOR_VELOCITY,
-      ScorerConstants.FOLLOWER_OUTTAKE_MOTOR_VELOCITY
+      ScorerConstants.INFLUENCER_OUTTAKE_MOTOR_VOLTAGE,
+      ScorerConstants.FOLLOWER_OUTTAKE_MOTOR_VOLTAGE
     ).withName("run shooter");
   }
 
   public Command runShooterBack() {
     return m_subsystem.runShooter(
-      ScorerConstants.INFLUENCER_SHOOTER_BACK_VELOCITY,
-      ScorerConstants.FOLLOWER_SHOOTER_BACK_VELOCITY
+      ScorerConstants.INFLUENCER_SHOOTER_BACK_VOLTAGE,
+      ScorerConstants.FOLLOWER_SHOOTER_BACK_VOLTAGE
     ).withName("run shooter back");
   }
 
   public Command runShooterWithTimeout() {
     return m_subsystem.runShooter(
-      ScorerConstants.INFLUENCER_OUTTAKE_MOTOR_VELOCITY,
-      ScorerConstants.FOLLOWER_OUTTAKE_MOTOR_VELOCITY
+      ScorerConstants.INFLUENCER_OUTTAKE_MOTOR_VOLTAGE,
+      ScorerConstants.FOLLOWER_OUTTAKE_MOTOR_VOLTAGE
     ).withTimeout(ScorerConstants.RUN_SHOOTER_TIME).withName("run shooter timeout");
   }
 
