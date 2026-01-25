@@ -9,6 +9,7 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainCommandFactory;
 import frc.robot.subsystems.intake.IntakeCommandFactory;
+import frc.robot.subsystems.scorer.IndexerSubsystem;
 import frc.robot.subsystems.scorer.ScorerCommandFactory;
 import frc.robot.subsystems.vision.LocalizationCamera;
 import frc.robot.subsystems.vision.VisionSubsystem;
@@ -57,6 +58,7 @@ public class RobotContainer {
   public final CommandSwerveDrivetrain m_drivetrain = TunerConstants.createDrivetrain();
   public final RollerSubsystem m_roller = new RollerSubsystem();
   public final ShooterSubsystem m_shooter = new ShooterSubsystem();
+  public final IndexerSubsystem m_indexer = new IndexerSubsystem();
   public final VisionSubsystem m_vision = new VisionSubsystem();
   
   // Command factories
@@ -106,6 +108,12 @@ public class RobotContainer {
     m_driverJoystick.a().whileTrue(
       m_drivetrainCommandFactory.snapToAngle(m_driverJoystick, 0)
     );
+
+    m_driverJoystick.x().whileTrue(m_shooterCommandFactory.runShooter());
+    m_driverJoystick.y().whileTrue(m_indexer.runIndexer(3));
+
+    m_shooter.setDefaultCommand(m_shooter.runShooterOff());
+    m_indexer.setDefaultCommand(m_indexer.runIndexerOff());
 
     m_driverJoystick.povCenter().negate().onTrue(new InstantCommand(() -> resetControllerConstantsSmartDashboard()));
 
