@@ -202,15 +202,21 @@ public final class Constants {
     public static double FOLLOWER_OUTTAKE_MOTOR_VELOCITY = 0;
     public static final double FOLLOWER_SHOOTER_BACK_VELOCITY = 0;
 
-    // Influencer PID gains
-    public static double INFLUENCER_kP = 0;
+    // Influencer PID/FF gains
+    public static double INFLUENCER_kP = 0.1;
     public static double INFLUENCER_kI = 0;
     public static double INFLUENCER_kD = 0;
+    public static double INFLUENCER_kS = 0.2;
+    public static double INFLUENCER_kV = 0.115;
+    public static double INFLUENCER_kA = 0;
 
-    // Follower PID gains
+    // Follower PID/FF gains
     public static double FOLLOWER_kP = 0;
     public static double FOLLOWER_kI = 0;
     public static double FOLLOWER_kD = 0;
+    public static double FOLLOWER_kS = 0;
+    public static double FOLLOWER_kV = 0;
+    public static double FOLLOWER_kA = 0;
 
     // Timing
     public static final double RUN_SHOOTER_TIME = 0;

@@ -56,6 +56,11 @@ public class ShooterFollowerIOHardware {
     slot0Configs.kP = ScorerConstants.FOLLOWER_kP;
     slot0Configs.kI = ScorerConstants.FOLLOWER_kI;
     slot0Configs.kD = ScorerConstants.FOLLOWER_kD;
+
+    slot0Configs.kS = ScorerConstants.FOLLOWER_kS;
+    slot0Configs.kV = ScorerConstants.FOLLOWER_kV;
+    slot0Configs.kA = ScorerConstants.FOLLOWER_kA;
+
     m_shooterMotor.getConfigurator().apply(talonFXConfigs);
   }
 
