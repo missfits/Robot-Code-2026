@@ -35,6 +35,8 @@ public class LocalizationCamera {
   private final Field2d m_estPoseField = new Field2d(); // field pose estimator
   private PhotonPoseEstimator poseEstimator;
 
+  private LocalVisionFilterPipeline m_filterPipeline; // filtering pipeline for each camera
+
   private LinkedList<CameraReading> m_lastReadings = new LinkedList<>();
 
   private Optional<CameraReading> m_currentReading = Optional.empty();
@@ -71,9 +73,14 @@ public class LocalizationCamera {
   public LinkedList<CameraReading> getLastCameraReadings() {
     return m_lastReadings;
   }
-  
+
   public Field2d getEstField(){
     return m_estPoseField;
+  }
+
+  // --- filtering methods ---
+  public void setFilterPipeline(LocalVisionFilterPipeline filterPipeline) {
+    m_filterPipeline = filterPipeline;
   }
 
   // Updates the field simulation in elastic
