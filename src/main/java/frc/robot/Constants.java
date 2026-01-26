@@ -277,22 +277,22 @@ public final class Constants {
         case CLEO:
           // TODO: Measure and update these values for Cleo
 
-          CAMERA1_NAME = "camera1";
-          CAMERA2_NAME = "camera2";
+          CAMERA1_NAME = "right_camera";
+          CAMERA2_NAME = "left_camera";
 
           // Cleo camera positions
-          ROBOT_TO_CAM1_X = 0;
-          ROBOT_TO_CAM1_Y = 0;
-          ROBOT_TO_CAM1_Z = 0;
+          ROBOT_TO_CAM1_X = Units.inchesToMeters(21/2-1.5);
+          ROBOT_TO_CAM1_Y = Units.inchesToMeters(-33/2+5);
+          ROBOT_TO_CAM1_Z = Units.inchesToMeters(9);
           ROBOT_TO_CAM1_ROLL = 0;
-          ROBOT_TO_CAM1_PITCH = 0;
+          ROBOT_TO_CAM1_PITCH = Units.degreesToRadians(-45);
           ROBOT_TO_CAM1_YAW = 0;
 
-          ROBOT_TO_CAM2_X = 0;
-          ROBOT_TO_CAM2_Y = 0;
-          ROBOT_TO_CAM2_Z = 0;
+          ROBOT_TO_CAM2_X = Units.inchesToMeters(21/2-1);
+          ROBOT_TO_CAM2_Y = Units.inchesToMeters(33/2-5.5);
+          ROBOT_TO_CAM2_Z = Units.inchesToMeters(8);
           ROBOT_TO_CAM2_ROLL = 0;
-          ROBOT_TO_CAM2_PITCH = 0;
+          ROBOT_TO_CAM2_PITCH = Units.degreesToRadians(-45);
           ROBOT_TO_CAM2_YAW = 0;
           break;
 
