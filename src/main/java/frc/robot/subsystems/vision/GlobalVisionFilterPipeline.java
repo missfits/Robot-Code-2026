@@ -28,6 +28,10 @@ public class GlobalVisionFilterPipeline {
       return allFilters.stream().map(Filter::name).toList();
   }
 
+  public int getNumFilters() {
+    return allFilters.size();
+  }
+
   // Adds a new filter to the pipeline
   public void addFilter(String name, GlobalVisionFilter filter) {
       allFilters.add(new Filter(name, filter));
