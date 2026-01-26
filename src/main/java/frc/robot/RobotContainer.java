@@ -10,8 +10,14 @@ import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainCommandFactory;
 import frc.robot.subsystems.intake.IntakeCommandFactory;
 import frc.robot.subsystems.scorer.ScorerCommandFactory;
+import frc.robot.subsystems.vision.LocalVisionFilterPipeline;
+import frc.robot.subsystems.vision.GlobalVisionFilterPipeline;
 import frc.robot.subsystems.vision.LocalizationCamera;
 import frc.robot.subsystems.vision.VisionSubsystem;
+import frc.robot.subsystems.vision.filtering.GlobalCrossCameraConsensusFilter;
+import frc.robot.subsystems.vision.filtering.LocalCameraPoseConsistencyFilter;
+import frc.robot.subsystems.vision.filtering.LocalDistanceToFusedPoseFilter;
+import frc.robot.subsystems.vision.filtering.LocalPoseZRollPitchFilter;
 import frc.robot.subsystems.drivetrain.Telemetry;
 import frc.robot.subsystems.intake.RollerSubsystem;
 import frc.robot.subsystems.scorer.ShooterSubsystem;
@@ -111,6 +117,21 @@ public class RobotContainer {
 
 
     m_drivetrain.registerTelemetry(logger::telemeterize);
+
+    // --- CONFIGURE VISION FILTERING ---
+    GlobalVisionFilterPipeline globalPipeline = new GlobalVisionFilterPipeline();
+    LocalVisionFilterPipeline localPipeline = new LocalVisionFilterPipeline();
+
+    // Add global filters
+    globalPipeline.addFilter("crossCameraConsensus", new GlobalCrossCameraConsensusFilter());
+
+     // Add local filters
+    localPipeline.addFilter("poseZRollPitch", new LocalPoseZRollPitchFilter());
+    localPipeline.addFilter("cameraPoseConsistency", new LocalCameraPoseConsistencyFilter());
+    localPipeline.addFilter("distanceToFusedPose", new LocalDistanceToFusedPoseFilter(m_drivetrain));
+
+    m_vision.setGlobalFilterPipeline(globalPipeline);
+    m_vision.setLocalFilteringPipeline(localPipeline);
   }
 
   private void logToSmartDashboard() {
@@ -151,6 +172,7 @@ public class RobotContainer {
 
     m_roller.resetControllers();
     m_shooter.resetControllers();
+
   }
 
   /**

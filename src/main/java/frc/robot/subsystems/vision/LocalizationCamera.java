@@ -35,6 +35,8 @@ public class LocalizationCamera {
   private final Field2d m_estPoseField = new Field2d(); // field pose estimator
   private PhotonPoseEstimator poseEstimator;
 
+  private LocalVisionFilterPipeline m_filterPipeline = new LocalVisionFilterPipeline(); // filtering pipeline for each camera, initalizes as empty pipeline
+
   private LinkedList<CameraReading> m_lastReadings = new LinkedList<>();
 
   private Optional<CameraReading> m_currentReading = Optional.empty();
@@ -49,6 +51,7 @@ public class LocalizationCamera {
     m_cameraName = cameraName;
     m_camera = new PhotonCamera(m_cameraName);
     m_logString = "vision/" + m_cameraName;
+
     poseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, robotToCam);
 
     pose2dPublisher = NetworkTableInstance.getDefault()
@@ -71,9 +74,14 @@ public class LocalizationCamera {
   public LinkedList<CameraReading> getLastCameraReadings() {
     return m_lastReadings;
   }
-  
+
   public Field2d getEstField(){
     return m_estPoseField;
+  }
+
+  // --- filtering methods ---
+  public void setFilterPipeline(LocalVisionFilterPipeline filterPipeline) {
+    m_filterPipeline = filterPipeline;
   }
 
   // Updates the field simulation in elastic
