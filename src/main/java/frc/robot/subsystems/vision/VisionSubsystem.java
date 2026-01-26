@@ -98,7 +98,7 @@ public class VisionSubsystem extends SubsystemBase {
       cam.updateCameraReading();
 
       // If no camera reading, skip filtering.
-      if (cam.getCameraReading().isEmpty()) {
+      if (!cam.getCameraReading().isPresent()) {
         continue;
       }
 
@@ -121,7 +121,8 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   // Returns true if the given camera reading is newer than the last timestamp
-  public boolean isReadingTimestampValid(LocalizationCamera cam) {
+  // NOTE: cam.getCameraReading().get() will never be .empty() bc of periodic() failsafe.
+  private boolean isReadingTimestampValid(LocalizationCamera cam) {
     return cam.getCameraReading().get().timestampSeconds() > m_lastTimestamp;
   }
 
