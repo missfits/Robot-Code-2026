@@ -40,6 +40,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 
 import java.util.List;
 import java.util.Optional;
@@ -118,6 +119,8 @@ public class RobotContainer {
     // reset the field-centric heading on a button press
     m_driverJoystick.a().onTrue(m_drivetrain.runOnce(() -> m_drivetrain.resetRotation(new Rotation2d(DriverStation.getAlliance().equals(Alliance.Blue) ? 0 : Math.PI))));
   
+    m_driverJoystick.b().onTrue(m_drivetrainCommandFactory.snapToTarget(m_driverJoystick, () -> new Pose2d(Units.inchesToMeters(182), Units.inchesToMeters(182), new Rotation2d())));
+
 
     m_driverJoystick.povCenter().negate().onTrue(new InstantCommand(() -> resetControllerConstantsSmartDashboard()));
 
