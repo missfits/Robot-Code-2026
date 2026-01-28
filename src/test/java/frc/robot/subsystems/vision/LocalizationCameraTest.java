@@ -68,10 +68,10 @@ class LocalizationCameraTest {
   // ==================== areRecentCameraPosesConsistent Tests ====================
 
   @Test
-  void testareRecentCameraPosesConsistent_NotEnoughReadings() {
-    // With no readings added, should return true (jumpy)
-    assertTrue(m_camera.areRecentCameraPosesConsistent(), 
-        "Should be jumpy when fewer than NUM_LAST_EST_POSES readings exist");
+  void testAreRecentCameraPosesConsistent_NoReadings() throws Exception {
+    // With no readings added, should return false (not enough data)
+    assertFalse(m_camera.areRecentCameraPosesConsistent(),
+        "Should return false when fewer than NUM_LAST_EST_POSES readings exist");
   }
 
     @Test
@@ -82,7 +82,7 @@ class LocalizationCameraTest {
   } //ABOVE TEST work in progress
 
   @Test
-  void testareRecentCameraPosesConsistent_StablePoses() throws Exception {
+  void testAreRecentCameraPosesConsistent_StablePoses() throws Exception {
     // Inject stable poses that are close together with reasonable time intervals
     LinkedList<CameraReading> stableReadings = new LinkedList<>();
 
@@ -100,6 +100,7 @@ class LocalizationCameraTest {
       double timestamp = baseTime + i * timeInterval;
       EstimatedRobotPose estPose = new EstimatedRobotPose(pose, timestamp, List.of(), null);
       stableReadings.add(new CameraReading(
+          "test_camera",
           estPose,
           VisionConstants.kSingleTagStdDevs,
           timestamp,
@@ -109,12 +110,12 @@ class LocalizationCameraTest {
 
     injectLastReadings(stableReadings);
 
-    assertFalse(m_camera.areRecentCameraPosesConsistent(),
-        "Should NOT be jumpy when poses are stable and close together");
+    assertTrue(m_camera.areRecentCameraPosesConsistent(),
+        "Should return true when poses are stable and close together");
   }
 
   @Test
-  void testareRecentCameraPosesConsistent_JumpyPoses() throws Exception {
+  void testAreRecentCameraPosesConsistent_JumpyPoses() throws Exception {
     // Inject poses that jump around significantly
     LinkedList<CameraReading> jumpyReadings = new LinkedList<>();
 
@@ -133,6 +134,7 @@ class LocalizationCameraTest {
       double timestamp = baseTime + i * timeInterval;
       EstimatedRobotPose estPose = new EstimatedRobotPose(pose, timestamp, List.of(), null);
       jumpyReadings.add(new CameraReading(
+          "test_camera",
           estPose,
           VisionConstants.kSingleTagStdDevs,
           timestamp,
@@ -142,13 +144,13 @@ class LocalizationCameraTest {
 
     injectLastReadings(jumpyReadings);
 
-    assertTrue(m_camera.areRecentCameraPosesConsistent(),
-        "Should be jumpy when poses move too fast");
+    assertFalse(m_camera.areRecentCameraPosesConsistent(),
+        "Should return false when poses move too fast (inconsistent)");
   }
 
   @Test
-  void testareRecentCameraPosesConsistent_ZeroTimeInterval() throws Exception {
-    // Edge case: all poses have the same timestamp - should return true (jumpy)
+  void testAreRecentCameraPosesConsistent_ZeroTimeInterval() throws Exception {
+    // Edge case: all poses have the same timestamp - should return false (inconsistent)
     LinkedList<CameraReading> sameTimeReadings = new LinkedList<>();
 
     double sameTime = 1.0;
@@ -156,13 +158,13 @@ class LocalizationCameraTest {
     for (int i = 0; i < NUM_TEST_EST_POSES; i++) {
       Pose3d pose = new Pose3d(1.0 + i * 0.01, 2.0, 0.0, new Rotation3d(0, 0, 0));
       EstimatedRobotPose estPose = new EstimatedRobotPose(pose, sameTime, List.of(), null);
-      sameTimeReadings.add(new CameraReading(estPose, VisionConstants.kSingleTagStdDevs, sameTime, 1));
+      sameTimeReadings.add(new CameraReading("test_camera", estPose, VisionConstants.kSingleTagStdDevs, sameTime, 1));
     }
 
     injectLastReadings(sameTimeReadings);
 
-    assertTrue(m_camera.areRecentCameraPosesConsistent(),
-        "Should be jumpy when time interval is zero (division by zero protection)");
+    assertFalse(m_camera.areRecentCameraPosesConsistent(),
+        "Should return false when time interval is zero (inconsistent)");
   }
 
   // ==================== Helper Methods ====================
