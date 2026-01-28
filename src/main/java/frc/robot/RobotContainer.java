@@ -29,6 +29,7 @@ import frc.robot.Constants.VisionConstants;
 
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -38,6 +39,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 
 import java.util.List;
 import java.util.Optional;
@@ -103,15 +106,23 @@ public class RobotContainer {
       m_drivetrainCommandFactory.defaultDrive(m_driverJoystick, () -> false)
     );
 
-    // Drive in slowmode while right trigger is pressed
-    m_driverJoystick.rightTrigger().whileTrue(
+    // Drive in slowmode while right bumper is pressed
+    m_driverJoystick.rightBumper().whileTrue(
       m_drivetrainCommandFactory.defaultDrive(m_driverJoystick, () -> true)
     );
 
     // TODO: change -- this is for testing 
-    m_driverJoystick.a().whileTrue(
+    m_driverJoystick.y().whileTrue(
       m_drivetrainCommandFactory.snapToAngle(m_driverJoystick, 0)
     );
+
+    // TODO: change -- this is for testing 
+    m_driverJoystick.b().onTrue(m_drivetrainCommandFactory.snapToTarget(m_driverJoystick, () -> new Pose2d(Units.inchesToMeters(182), Units.inchesToMeters(182), new Rotation2d())));
+
+
+    // reset the field-centric heading on a button press
+    m_driverJoystick.a().onTrue(m_drivetrain.runOnce(() -> m_drivetrain.resetRotation(new Rotation2d(DriverStation.getAlliance().equals(Alliance.Blue) ? 0 : Math.PI))));
+
 
     m_driverJoystick.povCenter().negate().onTrue(new InstantCommand(() -> resetControllerConstantsSmartDashboard()));
 
