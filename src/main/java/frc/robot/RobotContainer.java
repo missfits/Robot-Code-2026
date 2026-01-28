@@ -106,7 +106,7 @@ public class RobotContainer {
       m_drivetrainCommandFactory.defaultDrive(m_driverJoystick, () -> false)
     );
 
-    // Drive in slowmode while right trigger is pressed
+    // Drive in slowmode while right bumper is pressed
     m_driverJoystick.rightBumper().whileTrue(
       m_drivetrainCommandFactory.defaultDrive(m_driverJoystick, () -> true)
     );
@@ -116,10 +116,12 @@ public class RobotContainer {
       m_drivetrainCommandFactory.snapToAngle(m_driverJoystick, 0)
     );
 
+    // TODO: change -- this is for testing 
+    m_driverJoystick.b().onTrue(m_drivetrainCommandFactory.snapToTarget(m_driverJoystick, () -> new Pose2d(Units.inchesToMeters(182), Units.inchesToMeters(182), new Rotation2d())));
+
+
     // reset the field-centric heading on a button press
     m_driverJoystick.a().onTrue(m_drivetrain.runOnce(() -> m_drivetrain.resetRotation(new Rotation2d(DriverStation.getAlliance().equals(Alliance.Blue) ? 0 : Math.PI))));
-  
-    m_driverJoystick.b().onTrue(m_drivetrainCommandFactory.snapToTarget(m_driverJoystick, () -> new Pose2d(Units.inchesToMeters(182), Units.inchesToMeters(182), new Rotation2d())));
 
 
     m_driverJoystick.povCenter().negate().onTrue(new InstantCommand(() -> resetControllerConstantsSmartDashboard()));
