@@ -74,12 +74,27 @@ class LocalizationCameraTest {
         "Should return false when fewer than NUM_LAST_EST_POSES readings exist");
   }
 
-    @Test
-  void testareRecentCameraPosesConsistent_NotEnoughReadingsWithOneOrTwoReadings() {
-    // With no readings added, should return true (jumpy)
-    assertTrue(m_camera.areRecentCameraPosesConsistent(), 
-        "Should be jumpy when fewer than NUM_LAST_EST_POSES readings exist");
-  } //ABOVE TEST work in progress
+  @Test
+  void testAreRecentCameraPosesConsistent_NotEnoughReadings() throws Exception {
+    LinkedList<CameraReading> stableReadings = new LinkedList<>();
+    Pose3d pose = new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0));
+    EstimatedRobotPose estPose = new EstimatedRobotPose(pose, 0, List.of(), null);
+
+    // With one reading added, should return false (not enough data)
+    stableReadings.add(new CameraReading("test_camera", estPose, VisionConstants.kSingleTagStdDevs, 0, 1));
+
+    injectLastReadings(stableReadings);
+    assertFalse(m_camera.areRecentCameraPosesConsistent(),
+        "Should return false when fewer than NUM_LAST_EST_POSES readings exist");
+
+    // With two readings added, should return false (still not enough data)
+    stableReadings.remove(0);
+    stableReadings.add(new CameraReading("test_camera", estPose, VisionConstants.kSingleTagStdDevs, 0, 1));
+
+    injectLastReadings(stableReadings);
+    assertFalse(m_camera.areRecentCameraPosesConsistent(),
+        "Should return false when fewer than NUM_LAST_EST_POSES readings exist");
+  }
 
   @Test
   void testAreRecentCameraPosesConsistent_StablePoses() throws Exception {
