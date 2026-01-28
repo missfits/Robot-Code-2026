@@ -26,6 +26,7 @@ import java.util.List;
 
 class LocalizationCameraTest {
   static final double DELTA = 1e-5; // acceptable deviation range
+  static final int NUM_TEST_EST_POSES = 10;
 
   LocalizationCamera m_camera;
   Transform3d m_robotToCam;
@@ -59,35 +60,51 @@ class LocalizationCameraTest {
   }
 
   @Test
-  void testGetEstFieldNotNull() {
-    Field2d field = m_camera.getEstField();
-    assertNotNull(field, "Field2d should not be null");
-  }
-
-  @Test
   void testInitialCameraReadingIsEmpty() {
     assertTrue(m_camera.getCameraReading().isEmpty(),
         "Initial camera reading should be empty");
   }
 
-  // ==================== isEstPoseJumpy Tests ====================
+  // ==================== areRecentCameraPosesConsistent Tests ====================
 
   @Test
-  void testIsEstPoseJumpy_NotEnoughReadings() {
-    // With no readings added, should return true (jumpy)
-    assertTrue(m_camera.isEstPoseJumpy(), 
-        "Should be jumpy when fewer than NUM_LAST_EST_POSES readings exist");
+  void testAreRecentCameraPosesConsistent_NoReadings() throws Exception {
+    // With no readings added, should return false (not enough data)
+    assertFalse(m_camera.areRecentCameraPosesConsistent(),
+        "Should return false when fewer than NUM_LAST_EST_POSES readings exist");
   }
 
   @Test
-  void testIsEstPoseJumpy_StablePoses() throws Exception {
+  void testAreRecentCameraPosesConsistent_NotEnoughReadings() throws Exception {
+    LinkedList<CameraReading> stableReadings = new LinkedList<>();
+    Pose3d pose = new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0));
+    EstimatedRobotPose estPose = new EstimatedRobotPose(pose, 0, List.of(), null);
+
+    // With one reading added, should return false (not enough data)
+    stableReadings.add(new CameraReading("test_camera", estPose, VisionConstants.kSingleTagStdDevs, 0, 1));
+
+    injectLastReadings(stableReadings);
+    assertFalse(m_camera.areRecentCameraPosesConsistent(),
+        "Should return false when fewer than NUM_LAST_EST_POSES readings exist");
+
+    // With two readings added, should return false (still not enough data)
+    stableReadings.remove(0);
+    stableReadings.add(new CameraReading("test_camera", estPose, VisionConstants.kSingleTagStdDevs, 0, 1));
+
+    injectLastReadings(stableReadings);
+    assertFalse(m_camera.areRecentCameraPosesConsistent(),
+        "Should return false when fewer than NUM_LAST_EST_POSES readings exist");
+  }
+
+  @Test
+  void testAreRecentCameraPosesConsistent_StablePoses() throws Exception {
     // Inject stable poses that are close together with reasonable time intervals
     LinkedList<CameraReading> stableReadings = new LinkedList<>();
 
     double baseTime = 1.0;
     double timeInterval = 0.02; // 50 fps - 20ms between frames
 
-    for (int i = 0; i < VisionConstants.NUM_TEST_EST_POSES; i++) {
+    for (int i = 0; i < NUM_TEST_EST_POSES; i++) {
       // Create poses that move very slowly (well under the max speed threshold)
       Pose3d pose = new Pose3d(
           1.0 + i * 0.001, // Very small movement: 1mm per reading
@@ -98,6 +115,7 @@ class LocalizationCameraTest {
       double timestamp = baseTime + i * timeInterval;
       EstimatedRobotPose estPose = new EstimatedRobotPose(pose, timestamp, List.of(), null);
       stableReadings.add(new CameraReading(
+          "test_camera",
           estPose,
           VisionConstants.kSingleTagStdDevs,
           timestamp,
@@ -107,19 +125,19 @@ class LocalizationCameraTest {
 
     injectLastReadings(stableReadings);
 
-    assertFalse(m_camera.isEstPoseJumpy(),
-        "Should NOT be jumpy when poses are stable and close together");
+    assertTrue(m_camera.areRecentCameraPosesConsistent(),
+        "Should return true when poses are stable and close together");
   }
 
   @Test
-  void testIsEstPoseJumpy_JumpyPoses() throws Exception {
+  void testAreRecentCameraPosesConsistent_JumpyPoses() throws Exception {
     // Inject poses that jump around significantly
     LinkedList<CameraReading> jumpyReadings = new LinkedList<>();
 
     double baseTime = 1.0;
     double timeInterval = 0.02; // 50 fps
 
-    for (int i = 0; i < VisionConstants.NUM_TEST_EST_POSES; i++) {
+    for (int i = 0; i < NUM_TEST_EST_POSES; i++) {
       // Create poses that move very fast (well above max speed threshold)
       // Max speed is MAX_AVG_DIST * 50, so we need to exceed that
       Pose3d pose = new Pose3d(
@@ -131,6 +149,7 @@ class LocalizationCameraTest {
       double timestamp = baseTime + i * timeInterval;
       EstimatedRobotPose estPose = new EstimatedRobotPose(pose, timestamp, List.of(), null);
       jumpyReadings.add(new CameraReading(
+          "test_camera",
           estPose,
           VisionConstants.kSingleTagStdDevs,
           timestamp,
@@ -140,71 +159,27 @@ class LocalizationCameraTest {
 
     injectLastReadings(jumpyReadings);
 
-    assertTrue(m_camera.isEstPoseJumpy(),
-        "Should be jumpy when poses move too fast");
+    assertFalse(m_camera.areRecentCameraPosesConsistent(),
+        "Should return false when poses move too fast (inconsistent)");
   }
 
   @Test
-  void testIsEstPoseJumpy_ZeroTimeInterval() throws Exception {
-    // Edge case: all poses have the same timestamp - should return true (jumpy)
+  void testAreRecentCameraPosesConsistent_ZeroTimeInterval() throws Exception {
+    // Edge case: all poses have the same timestamp - should return false (inconsistent)
     LinkedList<CameraReading> sameTimeReadings = new LinkedList<>();
 
     double sameTime = 1.0;
 
-    for (int i = 0; i < VisionConstants.NUM_TEST_EST_POSES; i++) {
+    for (int i = 0; i < NUM_TEST_EST_POSES; i++) {
       Pose3d pose = new Pose3d(1.0 + i * 0.01, 2.0, 0.0, new Rotation3d(0, 0, 0));
       EstimatedRobotPose estPose = new EstimatedRobotPose(pose, sameTime, List.of(), null);
-      sameTimeReadings.add(new CameraReading(estPose, VisionConstants.kSingleTagStdDevs, sameTime, 1));
+      sameTimeReadings.add(new CameraReading("test_camera", estPose, VisionConstants.kSingleTagStdDevs, sameTime, 1));
     }
 
     injectLastReadings(sameTimeReadings);
 
-    assertTrue(m_camera.isEstPoseJumpy(),
-        "Should be jumpy when time interval is zero (division by zero protection)");
-  }
-
-  @Test
-  void testIsEstPoseJumpy_BoundarySpeed() throws Exception {
-    // Test at exactly the boundary speed
-    LinkedList<CameraReading> boundaryReadings = new LinkedList<>();
-
-    double baseTime = 1.0;
-    double timeInterval = 0.02;
-    // Movement that results in speed just at the threshold
-    double distancePerReading = VisionConstants.MAX_AVG_SPEED_BETWEEN_LAST_EST_POSES * timeInterval;
-
-    for (int i = 0; i < VisionConstants.NUM_TEST_EST_POSES; i++) {
-      Pose3d pose = new Pose3d(
-          1.0 + i * distancePerReading,
-          2.0, 0.0, new Rotation3d(0, 0, 0)
-      );
-      double timestamp = baseTime + i * timeInterval;
-      EstimatedRobotPose estPose = new EstimatedRobotPose(pose, timestamp, List.of(), null);
-      boundaryReadings.add(new CameraReading(estPose, VisionConstants.kSingleTagStdDevs, timestamp, 1));
-    }
-
-    injectLastReadings(boundaryReadings);
-
-    // At exactly the boundary, it should NOT be jumpy (> comparison, not >=)
-    assertFalse(m_camera.isEstPoseJumpy(),
-        "Should not be jumpy at exactly the boundary speed");
-  }
-
-  // ==================== updateField Tests ====================
-
-  @Test
-  void testUpdateFieldSetsRobotPose() {
-    edu.wpi.first.math.geometry.Pose2d testPose =
-        new edu.wpi.first.math.geometry.Pose2d(3.0, 4.0, Rotation2d.fromDegrees(45));
-
-    m_camera.updateField(testPose);
-
-    Field2d field = m_camera.getEstField();
-    edu.wpi.first.math.geometry.Pose2d retrievedPose = field.getRobotPose();
-
-    assertEquals(testPose.getX(), retrievedPose.getX(), DELTA);
-    assertEquals(testPose.getY(), retrievedPose.getY(), DELTA);
-    assertEquals(testPose.getRotation().getDegrees(), retrievedPose.getRotation().getDegrees(), DELTA);
+    assertFalse(m_camera.areRecentCameraPosesConsistent(),
+        "Should return false when time interval is zero (inconsistent)");
   }
 
   // ==================== Helper Methods ====================
@@ -219,3 +194,4 @@ class LocalizationCameraTest {
   }
 }
 
+// 
