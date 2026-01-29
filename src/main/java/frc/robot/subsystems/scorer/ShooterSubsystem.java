@@ -26,21 +26,12 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
     m_followerIO.setVelocityVoltage(velocity);
   }
 
-  public Command runMechanism(double motor1, double motor2) {
+  public Command runMechanism(double influencerVelocity, double followerVelocity) {
     return loggedCommand("runShooter",
         this.run(() -> {
-            setVoltage(motor1);
-            setVoltage(motor2);
+            setVoltage(influencerVelocity);
+            setVoltage(followerVelocity);
         }));
-      }
-
-  public Command runShooter(double influencerVelocity, double followerVelocity) {
-    return this.run(() -> {
-        m_influencerIO.setVoltage(influencerVelocity);
-        m_followerIO.setVoltage(followerVelocity);
-        SmartDashboard.putNumber("shooter/influencer input velocity", influencerVelocity);
-        SmartDashboard.putNumber("shooter/follower input velocity", followerVelocity);
-    });
   }
   
   public Command runShooterPID(double influencerVelocity, double followerVelocity) {
@@ -51,7 +42,7 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
         SmartDashboard.putNumber("shooter/influencer_velocity", influencerVelocity);
         SmartDashboard.putNumber("shooter/follower_velocity", followerVelocity);
     });
-}
+  }
 
   public Command runShooterOff() {
     return new RunCommand(() -> {
