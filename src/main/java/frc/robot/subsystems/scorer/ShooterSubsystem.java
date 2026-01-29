@@ -13,7 +13,7 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
   private final ShooterFollowerIOHardware m_followerIO = new ShooterFollowerIOHardware(ScorerConstants.FOLLOWER_MOTOR_ID);
 
   public ShooterSubsystem() {
-    super("shooter", "shooter");
+    super("shooter");
     m_influencerIO.resetPosition();
     m_followerIO.resetPosition();
   }

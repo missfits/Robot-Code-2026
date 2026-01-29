@@ -13,7 +13,7 @@ public class IndexerSubsystem extends MechanismsSubsystemBase {
   private final IndexerIOHardware m_IO = new IndexerIOHardware(ScorerConstants.INDEXER_MOTOR_ID);
 
   public IndexerSubsystem() {
-    super("indexer", "indexer");
+    super("indexer");
     m_IO.resetPosition();
   }
 

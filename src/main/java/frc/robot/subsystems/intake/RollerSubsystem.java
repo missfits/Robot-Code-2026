@@ -13,7 +13,7 @@ public class RollerSubsystem extends MechanismsSubsystemBase {
   private final RollerIOHardware m_IO = new RollerIOHardware(IntakeConstants.ROLLER_MOTOR_ID);
 
   public RollerSubsystem() {
-    super("roller", "roller");
+    super("roller");
     m_IO.resetPosition();
   }
 

@@ -13,7 +13,7 @@ public class ClimberSubsystem extends MechanismsSubsystemBase {
   private final ClimberIOHardware m_IO = new ClimberIOHardware(ClimberConstants.CLIMBER_MOTOR_ID);
 
   public ClimberSubsystem() {
-    super("climber", "climber");
+    super("climber");
     m_IO.resetPosition();
   }
 

@@ -13,7 +13,7 @@ public class PivotSubsystem extends MechanismsSubsystemBase {
   private final PivotIOHardware m_IO = new PivotIOHardware(IntakeConstants.PIVOT_MOTOR_ID);
 
   public PivotSubsystem() {
-    super("pivot", "pivot");
+    super("pivot");
     m_IO.resetPosition();
   }
 
