@@ -38,9 +38,6 @@ public class IndexerIOHardware {
     var talonFXConfigurator = m_indexerMotor.getConfigurator();
     var limitConfigs = new CurrentLimitsConfigs();
 
-    limitConfigs.StatorCurrentLimit = ScorerConstants.INDEXER_MOTOR_ID;
-    limitConfigs.StatorCurrentLimitEnable = true;
-
     limitConfigs.StatorCurrentLimit = ScorerConstants.INDEXER_MOTOR_STATOR_LIMIT;
     limitConfigs.StatorCurrentLimitEnable = true;
 
@@ -72,7 +69,7 @@ public class IndexerIOHardware {
     return m_currentSignal.refresh().getValue().in(Amps);
   }
 
-    // setters
+  // setters
   public void motorOff() {
     m_indexerMotor.stopMotor();
   }

@@ -21,6 +21,10 @@ public class ClimberSubsystem extends MechanismsSubsystemBase {
     m_IO.setVelocityVoltage(velocity);
   }
 
+  protected void resetPosition() {
+    m_IO.resetPosition();
+  }
+
   @Override
   public void periodic() {
     super.periodic();
