@@ -84,4 +84,8 @@ public class ClimberIOHardware {
   public void setVelocityVoltage(double velocity) {
     m_climberMotor.setControl(new VelocityVoltage(velocity));
   }
+
+  public void setVelocityVoltage(VelocityVoltage request) {
+    m_climberMotor.setControl(request);
+  }
 }

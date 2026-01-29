@@ -1,5 +1,7 @@
 package frc.robot.subsystems.scorer;
 
+import com.ctre.phoenix6.controls.VelocityVoltage;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -21,9 +23,21 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
     m_followerIO.setVoltage(volts);
   }
 
+  @Override
   protected void applyVelocityVoltage(double velocity) {
-    m_influencerIO.setVelocityVoltage(velocity);
-    m_followerIO.setVelocityVoltage(velocity);
+    VelocityVoltage influencerRequest = new VelocityVoltage(velocity)
+    .withEnableFOC(ScorerConstants.INFLUENCER_ENABLE_FOC)
+    .withFeedForward(ScorerConstants.INFLUENCER_FEED_FORWARD)
+    .withSlot(ScorerConstants.INFLUENCER_SLOT)
+    .withOverrideBrakeDurNeutral(ScorerConstants.INFLUENCER_OVERRIDE_BRAKE_DUR_NEUTRAL);
+    m_influencerIO.setVelocityVoltage(influencerRequest);
+
+    VelocityVoltage followerRequest = new VelocityVoltage(velocity)
+    .withEnableFOC(ScorerConstants.FOLLOWER_ENABLE_FOC)
+    .withFeedForward(ScorerConstants.FOLLOWER_FEED_FORWARD)
+    .withSlot(ScorerConstants.FOLLOWER_SLOT)
+    .withOverrideBrakeDurNeutral(ScorerConstants.FOLLOWER_OVERRIDE_BRAKE_DUR_NEUTRAL);
+    m_followerIO.setVelocityVoltage(followerRequest);
   }
 
   public Command runMechanism(double influencerVelocity, double followerVelocity) {

@@ -23,7 +23,7 @@ import frc.robot.Constants.ScorerConstants;
 
 
 public class ShooterInfluencerIOHardware {
-  private final TalonFX m_shooterMotor;
+  private final TalonFX m_shooterInfluencerMotor;
 
   private final StatusSignal<Angle> m_positionSignal;
   private final StatusSignal<AngularVelocity> m_velocitySignal;
@@ -32,13 +32,13 @@ public class ShooterInfluencerIOHardware {
 
   // constructor
   public ShooterInfluencerIOHardware(int motorID) {
-    m_shooterMotor = new TalonFX(motorID);
-    m_positionSignal = m_shooterMotor.getPosition();
-    m_velocitySignal = m_shooterMotor.getVelocity();
-    m_voltageSignal = m_shooterMotor.getMotorVoltage();
-    m_currentSignal = m_shooterMotor.getStatorCurrent();
+    m_shooterInfluencerMotor = new TalonFX(motorID);
+    m_positionSignal = m_shooterInfluencerMotor.getPosition();
+    m_velocitySignal = m_shooterInfluencerMotor.getVelocity();
+    m_voltageSignal = m_shooterInfluencerMotor.getMotorVoltage();
+    m_currentSignal = m_shooterInfluencerMotor.getStatorCurrent();
 
-    var talonFXConfigurator = m_shooterMotor.getConfigurator();
+    var talonFXConfigurator = m_shooterInfluencerMotor.getConfigurator();
     var limitConfigs = new CurrentLimitsConfigs();
 
     limitConfigs.StatorCurrentLimit = ScorerConstants.INFLUENCER_MOTOR_STATOR_LIMIT;
@@ -54,7 +54,7 @@ public class ShooterInfluencerIOHardware {
     slot0Configs.kP = ScorerConstants.INFLUENCER_kP;
     slot0Configs.kI = ScorerConstants.INFLUENCER_kI;
     slot0Configs.kD = ScorerConstants.INFLUENCER_kD;
-    m_shooterMotor.getConfigurator().apply(talonFXConfigs);
+    m_shooterInfluencerMotor.getConfigurator().apply(talonFXConfigs);
   }
 
   // getters
@@ -84,24 +84,28 @@ public class ShooterInfluencerIOHardware {
 
   // setters
   public void motorOff() {
-    m_shooterMotor.stopMotor();
+    m_shooterInfluencerMotor.stopMotor();
   }
 
   public void setVoltage(double value) {
-    m_shooterMotor.setControl(new VoltageOut(value));
+    m_shooterInfluencerMotor.setControl(new VoltageOut(value));
     SmartDashboard.putNumber("shooter influencer/voltage", value);
   }
 
   public void setPosition(double value){
-    m_shooterMotor.setPosition(value);
+    m_shooterInfluencerMotor.setPosition(value);
   }
 
   public void resetPosition() {
-        setPosition(0);
-    }
+    setPosition(0);
+  }
   
   public void setVelocityVoltage(double velocity) {
-    m_shooterMotor.setControl(new VelocityVoltage(velocity));
+    m_shooterInfluencerMotor.setControl(new VelocityVoltage(velocity));
     SmartDashboard.putNumber("shooter influencer/velocity voltage", velocity);
+  }
+
+  public void setVelocityVoltage(VelocityVoltage request){
+    m_shooterInfluencerMotor.setControl(request);
   }
 }

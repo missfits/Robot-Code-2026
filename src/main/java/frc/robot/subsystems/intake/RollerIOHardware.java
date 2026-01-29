@@ -93,7 +93,11 @@ public class RollerIOHardware {
 
   public void setVelocityVoltage(double velocity) {
     m_intakeMotor.setControl(new VelocityVoltage(velocity));
-  }  
+  }
+
+  public void setVelocityVoltage(VelocityVoltage request) {
+    m_intakeMotor.setControl(request);
+  }
 
   public void setPosition(double value){
     m_intakeMotor.setPosition(value);

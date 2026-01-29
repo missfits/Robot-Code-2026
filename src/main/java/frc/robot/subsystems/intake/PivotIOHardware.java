@@ -84,4 +84,8 @@ public class PivotIOHardware {
   public void setVoltage(double value) {
     m_pivotMotor.setControl(new VoltageOut(value));
   }
+
+  public void setVelocityVoltage(VelocityVoltage request) {
+    m_pivotMotor.setControl(request);
+  }
 }

@@ -194,7 +194,7 @@ public final class Constants {
     public static final boolean INDEXER_ENABLE_FOC = false;
 
     public static final double INFLUENCER_FEED_FORWARD = 0.0;
-    public static final double FOLLOWER_FORWARD = 0.0;
+    public static final double FOLLOWER_FEED_FORWARD = 0.0;
     public static final double INDEXER_FEED_FORWARD = 0.0;
 
     public static final int INFLUENCER_SLOT = 0;
@@ -202,7 +202,7 @@ public final class Constants {
     public static final int INDEXER_SLOT = 0;
 
     public static final boolean INFLUENCER_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
-    public static final boolean FOLLOWER = false;
+    public static final boolean FOLLOWER_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
     public static final boolean INDEXER_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
 
     // Motor IDs
