@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.controls.VelocityVoltage;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -23,8 +21,8 @@ public abstract class MechanismsSubsystemBase extends SubsystemBase {
 
   protected abstract void setVoltage(double volts);
 
-  public Command runMechanism(double speed){
-    return loggedCommand("run"+mechanismDashboardName, this.run(() -> setVoltage(speed)));
+  public Command runMechanism(double volts){
+    return loggedCommand("run"+mechanismDashboardName, this.run(() -> setVoltage(volts)));
   }
 
   public Command runMechanismOff() {
@@ -33,12 +31,7 @@ public abstract class MechanismsSubsystemBase extends SubsystemBase {
 
   protected abstract void applyVelocityVoltage(double velocity);
 
-  protected Command velocityVoltage(double velocity, boolean enableFOC, double feedForward, int slot, boolean overrideBrakeDurNeutral) {
-    new VelocityVoltage(velocity)
-    .withEnableFOC(enableFOC)
-    .withFeedForward(feedForward)   
-    .withSlot(slot)
-    .withOverrideBrakeDurNeutral(overrideBrakeDurNeutral);
+  protected Command velocityVoltage(double velocity) {
     return loggedCommand("velocityVoltage", this.run(() -> applyVelocityVoltage(velocity)));
   }
 

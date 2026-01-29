@@ -2,8 +2,10 @@ package frc.robot.subsystems.scorer;
 
 import edu.wpi.first.wpilibj2.command.Command;
 
+import com.ctre.phoenix6.controls.VelocityVoltage;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants.MechanismsSubsystemBaseConstants;
 import frc.robot.Constants.ScorerConstants;
 import frc.robot.subsystems.MechanismsSubsystemBase;
 
@@ -20,8 +22,14 @@ public class IndexerSubsystem extends MechanismsSubsystemBase {
     m_IO.setVoltage(volts);
   }
 
+  @Override
   protected void applyVelocityVoltage(double velocity) {
-    m_IO.setVelocityVoltage(velocity);
+    VelocityVoltage request = new VelocityVoltage(velocity)
+    .withEnableFOC(MechanismsSubsystemBaseConstants.ENABLE_FOC)
+    .withFeedForward(MechanismsSubsystemBaseConstants.FEED_FORWARD)
+    .withSlot(MechanismsSubsystemBaseConstants.SLOT)
+    .withOverrideBrakeDurNeutral(MechanismsSubsystemBaseConstants.OVERRIDE_BRAKE_DUR_NEUTRAL);
+    m_IO.setVelocityVoltage(request);
   }
   
   public Command runIndexerPID(double velocity) {
