@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants.MechanismsSubsystemBaseConstants;
 import frc.robot.Constants.ScorerConstants;
 import frc.robot.subsystems.MechanismsSubsystemBase;
 
@@ -25,10 +24,10 @@ public class IndexerSubsystem extends MechanismsSubsystemBase {
   @Override
   protected void applyVelocityVoltage(double velocity) {
     VelocityVoltage request = new VelocityVoltage(velocity)
-    .withEnableFOC(MechanismsSubsystemBaseConstants.ENABLE_FOC)
-    .withFeedForward(MechanismsSubsystemBaseConstants.FEED_FORWARD)
-    .withSlot(MechanismsSubsystemBaseConstants.SLOT)
-    .withOverrideBrakeDurNeutral(MechanismsSubsystemBaseConstants.OVERRIDE_BRAKE_DUR_NEUTRAL);
+    .withEnableFOC(ScorerConstants.INDEXER_ENABLE_FOC)
+    .withFeedForward(ScorerConstants.INDEXER_FEED_FORWARD)
+    .withSlot(ScorerConstants.INDEXER_SLOT)
+    .withOverrideBrakeDurNeutral(ScorerConstants.INDEXER_OVERRIDE_BRAKE_DUR_NEUTRAL);
     m_IO.setVelocityVoltage(request);
   }
   
