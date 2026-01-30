@@ -44,13 +44,16 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 
 import frc.robot.Constants;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.subsystems.vision.LocalizationCamera.CameraReading;
 import frc.robot.subsystems.vision.VisionUtils;
 
 
 
 public class VisionSubsystem extends SubsystemBase {
   private ArrayList<LocalizationCamera> cameras = new ArrayList<>();
-  private List<LocalizationCamera> camerasWithValidPose = new ArrayList<>();
+
+  // all valid readings from all cameras in the same periodic loop
+  private List<CameraReading> allValidReadings = new ArrayList<>();
 
   // filtering pipeline for logic that requires ALL cameras
   private GlobalVisionFilterPipeline globalFilterPipeline = new GlobalVisionFilterPipeline();
@@ -63,8 +66,8 @@ public class VisionSubsystem extends SubsystemBase {
     cameras.add(new LocalizationCamera(VisionConstants.CAMERA2_NAME, VisionConstants.ROBOT_TO_CAM2_3D));
   }
 
-  public List<LocalizationCamera> getLocalizationCameras(){
-    return camerasWithValidPose;
+  public List<CameraReading> getValidCameraReadings(){
+    return allValidReadings;
   }
 
   // --- filtering methods ---
@@ -82,26 +85,47 @@ public class VisionSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    for (LocalizationCamera cam : cameras){
-      cam.updateCameraReading();
+    // clear allValidReadings at the beginning of every loop
+    allValidReadings.clear();
+
+    // --- FILTERING ---
+    if (globalFilterPipeline.getNumFilters() > 0) {
+      // Get most recent filter toggle states from SmartDashboard
+      globalFilterPipeline.updateSmartDashboardToggles();
     }
 
-    // sorts the camera readings by time (care less about older readings)
-    camerasWithValidPose = cameras.stream() // turn the list into a stream
-    .filter((camera) -> { // only get the cameras with a valid EstimatedRobotPose
-         return camera.getCameraReading().isPresent() && camera.getCameraReading().get().timestampSeconds() > m_lastTimestamp;
-    })
-    .sorted((camera_a, camera_b) -> { // simplified comparator because we've filtered out invalid readings.
-         return Double.compare(camera_a.getCameraReading().get().timestampSeconds(), 
-                              camera_b.getCameraReading().get().timestampSeconds());
-     })
-    .toList();
+    for (LocalizationCamera cam : cameras){
+      cam.updateCameraReading();
+
+      // If no camera reading, skip filtering.
+      if (!cam.getCameraReading().isPresent()) {
+        continue;
+      }
+
+      CameraReading newReading = cam.getCameraReading().get();
+
+      // Filter by timestamp: if camera reading more recent than last recorded reading,
+      //    AND passes ALL GlobalFilterPipeline filters, add to allValidReadings.
+      if (isReadingTimestampValid(cam) && globalFilterPipeline.runAll(newReading, allValidReadings)) {
+        allValidReadings.add(newReading);
+      }
+    }
+
+    // Sort allValidReadings by timestamp (oldest first)
+    allValidReadings.sort(Comparator.comparingDouble(CameraReading::timestampSeconds));
     
-    if (camerasWithValidPose.size() > 0){
-      // update last timestamp
-      m_lastTimestamp = camerasWithValidPose.get(camerasWithValidPose.size() - 1).getCameraReading().get().timestampSeconds();
+    // Periodically update m_lastTimestamp!
+    if (allValidReadings.size() > 0){
+      m_lastTimestamp = allValidReadings.get(allValidReadings.size() - 1).timestampSeconds();
     }
   }
+
+  // Returns true if the given camera reading is newer than the last timestamp
+  // NOTE: cam.getCameraReading().get() will never be .empty() bc of periodic() failsafe.
+  private boolean isReadingTimestampValid(LocalizationCamera cam) {
+    return cam.getCameraReading().get().timestampSeconds() > m_lastTimestamp;
+  }
+
 
   @Override
   public void simulationPeriodic() {
