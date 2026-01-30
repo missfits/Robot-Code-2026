@@ -18,8 +18,6 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.IntakeConstants;
 
@@ -90,12 +88,15 @@ public class RollerIOHardware {
 
   public void setVoltage(double value) {
     m_intakeMotor.setControl(new VoltageOut(value));
-    SmartDashboard.putNumber("intake/voltage", value);
+    SmartDashboard.putNumber("roller/voltage", value);
   }
 
-  public void setVelocityVoltage(double value) {
-    m_intakeMotor.setControl(new VelocityVoltage(value));
-    SmartDashboard.putNumber("intake/velocity voltage", value);
+  public void setVelocityVoltage(double velocity) {
+    m_intakeMotor.setControl(new VelocityVoltage(velocity));
+  }
+
+  public void setVelocityVoltage(VelocityVoltage request) {
+    m_intakeMotor.setControl(request);
   }
 
   public void setPosition(double value){
@@ -103,6 +104,6 @@ public class RollerIOHardware {
   }
 
   public void resetPosition() {
-        setPosition(0);
-    }
+    setPosition(0);
+  }
 }

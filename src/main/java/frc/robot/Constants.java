@@ -147,6 +147,19 @@ public final class Constants {
   }
 
   public static class IntakeConstants {
+    //Velocity voltage constants
+    public static final boolean ROLLER_ENABLE_FOC = false;
+    public static final boolean PIVOT_ENABLE_FOC = false;
+
+    public static final double ROLLER_FEED_FORWARD = 0.0;
+    public static final double PIVOT_FEED_FORWARD = 0.0;
+
+    public static final int ROLLER_SLOT = 0;
+    public static final int PIVOT_SLOT = 0;
+
+    public static final boolean ROLLER_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
+    public static final boolean PIVOT_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
+
     // Motor IDs
     public static final int ROLLER_MOTOR_ID = 50;
     public static final int PIVOT_MOTOR_ID = 0;
@@ -175,6 +188,23 @@ public final class Constants {
   }
 
   public static class ScorerConstants {
+    //Velocity voltage constants
+    public static final boolean INFLUENCER_ENABLE_FOC = false;
+    public static final boolean FOLLOWER_ENABLE_FOC = false;
+    public static final boolean INDEXER_ENABLE_FOC = false;
+
+    public static final double INFLUENCER_FEED_FORWARD = 0.0;
+    public static final double FOLLOWER_FEED_FORWARD = 0.0;
+    public static final double INDEXER_FEED_FORWARD = 0.0;
+
+    public static final int INFLUENCER_SLOT = 0;
+    public static final int FOLLOWER_SLOT = 0;
+    public static final int INDEXER_SLOT = 0;
+
+    public static final boolean INFLUENCER_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
+    public static final boolean FOLLOWER_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
+    public static final boolean INDEXER_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
+
     // Motor IDs
     public static final int INFLUENCER_MOTOR_ID = 51;
     public static final int FOLLOWER_MOTOR_ID = 52;
@@ -217,10 +247,16 @@ public final class Constants {
   }
 
   public static class ClimberConstants {
-    public static final int MECHANISM_MOTOR_ID = 0;
-    public static final int MOTOR_STATOR_LIMIT = 0;
+    //Velocity voltage constants
+    public static final boolean CLIMBER_ENABLE_FOC = false;
+    public static final double CLIMBER_FEED_FORWARD = 0.0;
+    public static final int CLIMBER_SLOT = 0;
+    public static final boolean CLIMBER_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
 
-    public static final double METERS_PER_ROTATION = 0;
+    public static final int CLIMBER_MOTOR_ID = 0;
+    public static final int CLIMBER_MOTOR_STATOR_LIMIT = 0;
+
+    public static final double CLIMBER_METERS_PER_ROTATION = 0;
   }
   
   public static class VisionConstants {
