@@ -15,6 +15,7 @@ import frc.robot.subsystems.vision.GlobalVisionFilterPipeline;
 import frc.robot.subsystems.vision.LocalizationCamera;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.robot.subsystems.vision.filtering.GlobalCrossCameraConsensusFilter;
+import frc.robot.subsystems.vision.filtering.LocalCameraPoseConsistencyDistanceToFusedPoseFilter;
 import frc.robot.subsystems.vision.filtering.LocalCameraPoseConsistencyFilter;
 import frc.robot.subsystems.vision.filtering.LocalDistanceToFusedPoseFilter;
 import frc.robot.subsystems.vision.filtering.LocalPoseZRollPitchFilter;
@@ -138,8 +139,7 @@ public class RobotContainer {
 
      // Add local filters
     localPipeline.addFilter("poseZRollPitch", new LocalPoseZRollPitchFilter());
-    localPipeline.addFilter("cameraPoseConsistency", new LocalCameraPoseConsistencyFilter());
-    localPipeline.addFilter("distanceToFusedPose", new LocalDistanceToFusedPoseFilter(m_drivetrain));
+    localPipeline.addFilter("LocalCameraPoseConsistencyDistanceToFusedPose", new LocalCameraPoseConsistencyDistanceToFusedPoseFilter(m_drivetrain));
 
     m_vision.setGlobalFilterPipeline(globalPipeline);
     m_vision.setLocalFilteringPipeline(localPipeline);
