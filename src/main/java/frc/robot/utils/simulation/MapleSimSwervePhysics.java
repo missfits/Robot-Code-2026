@@ -26,6 +26,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.measure.*;
 import edu.wpi.first.wpilibj.RobotBase;
+import frc.robot.Constants;
+
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.COTS;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
@@ -248,12 +250,12 @@ public class MapleSimSwervePhysics {
                 .withEncoderInverted(false)
                 // Adjust steer motor PID gains for simulation
                 .withSteerMotorGains(new Slot0Configs()
-                        .withKP(70)
-                        .withKI(0)
-                        .withKD(4.5)
-                        .withKS(0)
-                        .withKV(1.91)
-                        .withKA(0)
+                        .withKP(Constants.DrivetrainConstants.STEER_KP)
+                        .withKI(Constants.DrivetrainConstants.STEER_KI)
+                        .withKD(Constants.DrivetrainConstants.STEER_KD)
+                        .withKS(Constants.DrivetrainConstants.STEER_KS)
+                        .withKV(Constants.DrivetrainConstants.STEER_KV)
+                        .withKA(Constants.DrivetrainConstants.STEER_KA)
                         .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign))
                 .withSteerMotorGearRatio(21.428571428571427)
                 // Adjust friction voltages
