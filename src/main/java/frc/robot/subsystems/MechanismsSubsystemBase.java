@@ -35,7 +35,9 @@ public abstract class MechanismsSubsystemBase extends SubsystemBase {
     return loggedCommand("run" + mechanismName + "off", new RunCommand(() -> setVoltage(0), this));
   }
 
-  protected abstract void runClosedLoopVelocity(double velocity);
+  protected void runClosedLoopVelocity(double velocity) {
+    throw new UnsupportedOperationException(getName() + " does not support single-motor velocity control");
+  }
 
   public Command runMechanismPID(double velocity) {
     return loggedCommand("run" + mechanismName + "PID", this.run(() -> runClosedLoopVelocity(velocity)));
