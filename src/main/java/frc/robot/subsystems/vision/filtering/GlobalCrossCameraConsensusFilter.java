@@ -1,6 +1,7 @@
 package frc.robot.subsystems.vision.filtering;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -41,9 +42,10 @@ public class GlobalCrossCameraConsensusFilter implements GlobalVisionFilter{
     Pose2d avgPose = new Pose2d(sumX / numPoses, sumY / numPoses, new Rotation2d());
 
     // Return all readings that are within a certain distance of the average pose. 
+    // .collect returns a modifiable list
     return allReadings.stream()
       .filter(read -> isReadingWithinDistanceOfAvgPose(read, avgPose))
-      .toList();
+      .collect(Collectors.toList());
   }
 
   private static boolean isReadingWithinDistanceOfAvgPose(CameraReading reading, Pose2d avgPose) {

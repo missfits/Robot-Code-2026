@@ -43,7 +43,7 @@ public class GlobalVisionFilterPipeline {
    * Logs each filter's result to SmartDashboard.
    *
    * @param allReadings All camera readings to compare against
-   * @return true if reading passes ALL enabled filters, false otherwise
+   * @return new list of all valid camera readings!
    */
   public List<CameraReading> runAll(List<CameraReading> allReadings) {
     List<CameraReading> validReadings = allReadings;
