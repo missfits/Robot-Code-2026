@@ -4,8 +4,19 @@
 
 package frc.robot;
 
-import org.ironmaple.simulation.SimulatedArena;
+import java.util.List;
 
+import org.ironmaple.simulation.SimulatedArena;
+import org.ironmaple.simulation.gamepieces.GamePiece;
+import org.ironmaple.simulation.seasonspecific.crescendo2024.CrescendoNoteOnField;
+import org.ironmaple.simulation.seasonspecific.rebuilt2026.RebuiltFuelOnField;
+import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeAlgaeOnField;
+import org.json.simple.parser.Yytoken;
+
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -117,12 +128,31 @@ public class Robot extends TimedRobot {
 
   /** This function is called once when the robot is first started up. */
   @Override
-  public void simulationInit() {}
+  public void simulationInit() {
+    for (int xCnt = 0; xCnt < 4; xCnt++){
+      double x = 3 + xCnt * 0.15;
+      for (int yCnt = 0; yCnt < 6; yCnt++){
+        double y = 3 + yCnt * 0.15;
+        SimulatedArena.getInstance().addGamePiece(new RebuiltFuelOnField(new Translation2d(x, y)));
+
+    }
+  }
+    
+
+  }
   
 
   /** This function is called periodically whilst in simulation. */
+  StructArrayPublisher<Pose3d> fuelPoses = NetworkTableInstance.getDefault()
+      .getStructArrayTopic("MyPoseArray", Pose3d.struct)
+      .publish();
   @Override
   public void simulationPeriodic() {
     SimulatedArena.getInstance().simulationPeriodic();
+  
+    fuelPoses.accept(SimulatedArena.getInstance()
+            .getGamePiecesArrayByType("Fuel"));
   }
+
+
 }
