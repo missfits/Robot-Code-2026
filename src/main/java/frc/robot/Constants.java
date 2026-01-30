@@ -260,7 +260,7 @@ public final class Constants {
     public static final boolean CLIMBER_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
 
     public static final int CLIMBER_MOTOR_ID = 0;
-    public static final int CLIMBER_MOTOR_STATOR_LIMIT = 0;
+    public static final int CLIMBER_MOTOR_STATOR_LIMIT = 40;
 
     public static final double CLIMBER_METERS_PER_ROTATION = 0;
   }
