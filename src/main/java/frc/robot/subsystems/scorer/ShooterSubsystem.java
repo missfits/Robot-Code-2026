@@ -54,6 +54,11 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
     m_followerIO.resetSlot0Gains();
   }
 
+  public void resetPosition() {
+    m_influencerIO.resetPosition();
+    m_followerIO.resetPosition();
+  }
+
   @Override
   public void periodic() {
     super.periodic();

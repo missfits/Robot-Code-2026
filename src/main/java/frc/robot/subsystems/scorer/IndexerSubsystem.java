@@ -29,6 +29,10 @@ public class IndexerSubsystem extends MechanismsSubsystemBase {
     m_IO.setVelocityVoltage(request);
   }
 
+  public void resetPosition() {
+    m_IO.resetPosition();
+  }
+
   @Override
   public void periodic() {
     super.periodic();

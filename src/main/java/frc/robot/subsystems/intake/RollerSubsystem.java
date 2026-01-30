@@ -33,6 +33,10 @@ public class RollerSubsystem extends MechanismsSubsystemBase {
     m_IO.resetSlot0Gains();
   }
 
+  public void resetPosition() {
+    m_IO.resetPosition();
+  }
+
   @Override
   public void periodic() {
     super.periodic();
