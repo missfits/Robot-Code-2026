@@ -35,10 +35,20 @@ public abstract class MechanismsSubsystemBase extends SubsystemBase {
     return loggedCommand("run" + mechanismName + "off", new RunCommand(() -> setVoltage(0), this));
   }
 
-  protected abstract void applyVelocityVoltage(double velocity);
+  protected abstract void runClosedLoopVelocity(double velocity);
 
-  protected Command velocityVoltage(double velocity) {
-    return loggedCommand("velocityVoltage", this.run(() -> applyVelocityVoltage(velocity)));
+  public Command runMechanismPID(double velocity) {
+    return loggedCommand("run" + mechanismName + "PID", this.run(() -> runClosedLoopVelocity(velocity)));
+  }
+
+  //need a second runClosedLoopVelocity command for subsystems with two motors
+  protected void runClosedLoopVelocity(double velocityOne, double velocityTwo) {
+    throw new UnsupportedOperationException(getName() + " does not support dual-motor velocity control");
+  }
+
+  //need a second runMechanismPID command for subsystems with two motors
+  public Command runMechanismPID(double velocityOne, double velocityTwo) {
+    return loggedCommand("run" + mechanismName + "PID", this.run(() -> runClosedLoopVelocity(velocityOne, velocityTwo)));
   }
 
   @Override

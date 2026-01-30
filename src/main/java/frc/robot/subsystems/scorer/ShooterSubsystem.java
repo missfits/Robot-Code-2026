@@ -24,7 +24,7 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
   }
 
   @Override
-  protected void applyVelocityVoltage(double velocity) {
+  protected void runClosedLoopVelocity(double velocity) {
     VelocityVoltage influencerRequest = new VelocityVoltage(velocity)
     .withEnableFOC(ScorerConstants.INFLUENCER_ENABLE_FOC)
     .withFeedForward(ScorerConstants.INFLUENCER_FEED_FORWARD)
@@ -38,24 +38,6 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
     .withSlot(ScorerConstants.FOLLOWER_SLOT)
     .withOverrideBrakeDurNeutral(ScorerConstants.FOLLOWER_OVERRIDE_BRAKE_DUR_NEUTRAL);
     m_followerIO.setVelocityVoltage(followerRequest);
-  }
-
-  public Command runMechanism(double influencerVelocity, double followerVelocity) {
-    return loggedCommand("runShooter",
-        this.run(() -> {
-            setVoltage(influencerVelocity);
-            setVoltage(followerVelocity);
-        }));
-  }
-  
-  public Command runShooterPID(double influencerVelocity, double followerVelocity) {
-    return this.run(() -> {
-        m_influencerIO.setVelocityVoltage(influencerVelocity);
-        m_followerIO.setVelocityVoltage(followerVelocity);
-
-        SmartDashboard.putNumber("shooter/influencer_velocity", influencerVelocity);
-        SmartDashboard.putNumber("shooter/follower_velocity", followerVelocity);
-    });
   }
 
   public Command runShooterOff() {

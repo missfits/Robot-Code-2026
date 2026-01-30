@@ -25,7 +25,7 @@ public class IntakeCommandFactory {
   }
 
   public Command runIntakePID() { 
-    return m_roller.runRollerPID(IntakeConstants.OUTTAKE_MOTOR_VELOCITY)
+    return m_roller.runMechanismPID(IntakeConstants.OUTTAKE_MOTOR_VELOCITY)
       .withName("run intake PID");
   }
 
