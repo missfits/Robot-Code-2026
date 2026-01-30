@@ -2,7 +2,6 @@ package frc.robot.subsystems.scorer;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 
-import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ScorerConstants;
 import frc.robot.subsystems.MechanismsIOHardwareBase;
 
@@ -16,9 +15,9 @@ public class ShooterFollowerIOHardware extends MechanismsIOHardwareBase {
     var talonFXConfigs = new TalonFXConfiguration();
     var slot0Configs = talonFXConfigs.Slot0;
     
-    slot0Configs.kP = IntakeConstants.ROLLER_kP;
-    slot0Configs.kI = IntakeConstants.ROLLER_kI;
-    slot0Configs.kD = IntakeConstants.ROLLER_kD;
+    slot0Configs.kP = ScorerConstants.FOLLOWER_kP;
+    slot0Configs.kI = ScorerConstants.FOLLOWER_kI;
+    slot0Configs.kD = ScorerConstants.FOLLOWER_kD;
     
     motor.getConfigurator().apply(talonFXConfigs);
   }
