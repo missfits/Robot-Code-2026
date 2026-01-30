@@ -28,7 +28,7 @@ public class ShooterInfluencerIOHardware extends MechanismsIOHardwareBase {
   }
 
   public double getPositionDegrees() {
-    return Math.toDegrees(getRotation() * ScorerConstants.INFLUENCER_DEGREES_PER_ROTATION);
+    return getRotation() * ScorerConstants.INFLUENCER_DEGREES_PER_ROTATION;
   }
 
   public double getVelocityRadiansPerSecond() {
@@ -36,7 +36,7 @@ public class ShooterInfluencerIOHardware extends MechanismsIOHardwareBase {
   }
 
   public double getVelocityDegreesPerSecond() {
-    return Math.toDegrees(getMotorVelocityRPS() * ScorerConstants.INFLUENCER_DEGREES_PER_ROTATION);
+    return getMotorVelocityRPS() * ScorerConstants.INFLUENCER_DEGREES_PER_ROTATION;
   }
 
   public void setPositionRadians(double radians) {

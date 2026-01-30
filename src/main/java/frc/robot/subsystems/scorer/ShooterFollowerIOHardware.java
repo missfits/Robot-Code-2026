@@ -27,7 +27,7 @@ public class ShooterFollowerIOHardware extends MechanismsIOHardwareBase {
   }
 
   public double getPositionDegrees() {
-    return Math.toDegrees(getRotation() * ScorerConstants.FOLLOWER_DEGREES_PER_ROTATION);
+    return getRotation() * ScorerConstants.FOLLOWER_DEGREES_PER_ROTATION;
   }
 
   public double getVelocityRadiansPerSecond() {
@@ -35,7 +35,7 @@ public class ShooterFollowerIOHardware extends MechanismsIOHardwareBase {
   }
 
   public double getVelocityDegreesPerSecond() {
-    return Math.toDegrees(getMotorVelocityRPS() * ScorerConstants.FOLLOWER_DEGREES_PER_ROTATION);
+    return getMotorVelocityRPS() * ScorerConstants.FOLLOWER_DEGREES_PER_ROTATION;
   }
 
   public void setPositionRadians(double radians) {

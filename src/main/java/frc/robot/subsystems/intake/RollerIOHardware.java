@@ -27,7 +27,7 @@ public class RollerIOHardware extends MechanismsIOHardwareBase {
   }
 
   public double getPositionDegrees() {
-    return Math.toDegrees(getRotation() * IntakeConstants.ROLLER_DEGREES_PER_ROTATION);
+    return getRotation() * IntakeConstants.ROLLER_DEGREES_PER_ROTATION;
   }
 
   public double getVelocityRadiansPerSecond() {
@@ -35,7 +35,7 @@ public class RollerIOHardware extends MechanismsIOHardwareBase {
   }
 
   public double getVelocityDegreesPerSecond() {
-    return Math.toDegrees(getMotorVelocityRPS() * IntakeConstants.ROLLER_DEGREES_PER_ROTATION);
+    return getMotorVelocityRPS() * IntakeConstants.ROLLER_DEGREES_PER_ROTATION;
   }
 
   public void setPositionRadians(double radians) {

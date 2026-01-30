@@ -14,7 +14,7 @@ public class PivotIOHardware extends MechanismsIOHardwareBase {
   }
 
   public double getPositionDegrees() {
-    return Math.toDegrees(getRotation() * IntakeConstants.PIVOT_DEGREES_PER_ROTATION);
+    return getRotation() * IntakeConstants.PIVOT_DEGREES_PER_ROTATION;
   }
 
   public double getVelocityRadiansPerSecond() {
@@ -22,7 +22,7 @@ public class PivotIOHardware extends MechanismsIOHardwareBase {
   }
 
   public double getVelocityDegreesPerSecond() {
-    return Math.toDegrees(getMotorVelocityRPS() * IntakeConstants.PIVOT_DEGREES_PER_ROTATION);
+    return getMotorVelocityRPS() * IntakeConstants.PIVOT_DEGREES_PER_ROTATION;
   }
 
   public void setPositionRadians(double radians) {
