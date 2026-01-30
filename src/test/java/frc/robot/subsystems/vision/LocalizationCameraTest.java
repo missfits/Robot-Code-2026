@@ -322,6 +322,66 @@ class LocalizationCameraTest {
         "Should return false for pose with all values above maximum");
   }
 
+  @Test
+  void testLocalPoseZRollPitchFilter_NegativeRoll() {
+    LocalPoseZRollPitchFilter filter = new LocalPoseZRollPitchFilter();
+
+    // Create a pose with large negative roll (should be invalid - magnitude exceeds threshold)
+    Pose3d negativeRollPose = new Pose3d(
+        1.0, 2.0, 0.0,
+        new Rotation3d(
+            -0.1, // Negative roll with magnitude above MAX_VISION_POSE_ROLL (0.05 rad)
+            0.0,
+            0.0
+        )
+    );
+
+    EstimatedRobotPose estPose = new EstimatedRobotPose(negativeRollPose, 1.0, List.of(), null);
+    CameraReading reading = new CameraReading("test_camera", estPose, VisionConstants.kSingleTagStdDevs, 1.0, 1);
+
+    assertFalse(filter.isValid(reading, m_camera),
+        "Should return false for pose with negative roll magnitude above maximum");
+  }
+
+  @Test
+  void testLocalPoseZRollPitchFilter_NegativePitch() {
+    LocalPoseZRollPitchFilter filter = new LocalPoseZRollPitchFilter();
+
+    // Create a pose with large negative pitch (should be invalid - magnitude exceeds threshold)
+    Pose3d negativePitchPose = new Pose3d(
+        1.0, 2.0, 0.0,
+        new Rotation3d(
+            0.0,
+            -0.1, // Negative pitch with magnitude above MAX_VISION_POSE_PITCH (0.05 rad)
+            0.0
+        )
+    );
+
+    EstimatedRobotPose estPose = new EstimatedRobotPose(negativePitchPose, 1.0, List.of(), null);
+    CameraReading reading = new CameraReading("test_camera", estPose, VisionConstants.kSingleTagStdDevs, 1.0, 1);
+
+    assertFalse(filter.isValid(reading, m_camera),
+        "Should return false for pose with negative pitch magnitude above maximum");
+  }
+
+  @Test
+  void testLocalPoseZRollPitchFilter_NegativeZ() {
+    LocalPoseZRollPitchFilter filter = new LocalPoseZRollPitchFilter();
+
+    // Create a pose with large negative Z (robot below ground - should be invalid)
+    Pose3d negativeZPose = new Pose3d(
+        1.0, 2.0,
+        -0.2, // Negative Z with magnitude above MAX_VISION_POSE_Z (0.1)
+        new Rotation3d(0, 0, 0)
+    );
+
+    EstimatedRobotPose estPose = new EstimatedRobotPose(negativeZPose, 1.0, List.of(), null);
+    CameraReading reading = new CameraReading("test_camera", estPose, VisionConstants.kSingleTagStdDevs, 1.0, 1);
+
+    assertFalse(filter.isValid(reading, m_camera),
+        "Should return false for pose with negative Z magnitude above maximum (robot below ground)");
+  }
+
   // ==================== Helper Methods ====================
 
   /**
