@@ -20,6 +20,8 @@ import org.photonvision.EstimatedRobotPose;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.vision.LocalizationCamera;
 import frc.robot.subsystems.vision.LocalizationCamera.CameraReading;
+import frc.robot.subsystems.vision.filtering.LocalCameraPoseConsistencyFilter;
+import frc.robot.subsystems.vision.filtering.LocalPoseZRollPitchFilter;
 
 import java.lang.reflect.Field;
 import java.util.LinkedList;
@@ -66,42 +68,46 @@ class LocalizationCameraTest {
         "Initial camera reading should be empty");
   }
 
-  // ==================== areRecentCameraPosesConsistent Tests ====================
-
+  // ==================== LocalCameraPoseConsistencyFilter Tests ====================
   @Test
-  void testAreRecentCameraPosesConsistent_NoReadings() throws Exception {
-    // With no readings added, should return false (not enough data)
-    assertFalse(m_camera.areRecentCameraPosesConsistent(),
-        "Should return false when no readings exist");
-  }
+  void testLocalCameraPoseConsistencyFilter_NotEnoughReadings() throws Exception {
+    LocalCameraPoseConsistencyFilter filter = new LocalCameraPoseConsistencyFilter();
 
-  @Test
-  void testAreRecentCameraPosesConsistent_NotEnoughReadings() throws Exception {
-    LinkedList<CameraReading> stableReadings = new LinkedList<>();
+    // Test with fewer than NUM_LAST_EST_POSES readings - filter should return true (skip/pass)
+    for (int i = 0; i < VisionConstants.NUM_LAST_EST_POSES - 1; i++) {
+      LinkedList<CameraReading> readings = new LinkedList<>();
 
-    for (int i = 0; i < NUM_TEST_EST_POSES-1; i++) {
-      Pose3d pose = new Pose3d(0 + i * 0.001, 0, 0, new Rotation3d(0, 0, 0));
-      EstimatedRobotPose estPose = new EstimatedRobotPose(pose, i * 0.02, List.of(), null);
-      stableReadings.add(new CameraReading("test_camera", estPose, VisionConstants.kSingleTagStdDevs,i * 0.02,1));
-      injectLastReadings(stableReadings);
+      for (int j = 0; j <= i; j++) {
+        Pose3d pose = new Pose3d(j * 0.001, 0, 0, new Rotation3d(0, 0, 0));
+        EstimatedRobotPose estPose = new EstimatedRobotPose(pose, j * 0.02, List.of(), null);
+        readings.add(new CameraReading("test_camera", estPose, VisionConstants.kSingleTagStdDevs, j * 0.02, 1));
+      }
 
-      // With less than NUM_LAST_EST_POSES reading added, should return false (not enough data)
-      assertFalse(m_camera.areRecentCameraPosesConsistent(),
-          "Should return false when fewer than NUM_LAST_EST_POSES readings exist");
+      injectLastReadings(readings);
 
-      stableReadings.remove(0);
+      // Create a new reading to validate
+      Pose3d newPose = new Pose3d((i + 1) * 0.001, 0, 0, new Rotation3d(0, 0, 0));
+      EstimatedRobotPose newEstPose = new EstimatedRobotPose(newPose, (i + 1) * 0.02, List.of(), null);
+      CameraReading newReading = new CameraReading("test_camera", newEstPose, VisionConstants.kSingleTagStdDevs, (i + 1) * 0.02, 1);
+
+      // With less than NUM_LAST_EST_POSES readings, filter should return true (skip filter)
+      assertTrue(filter.isValid(newReading, m_camera),
+          "Should return true (skip filter) when fewer than NUM_LAST_EST_POSES readings exist");
     }
   }
 
   @Test
-  void testAreRecentCameraPosesConsistent_StablePoses() throws Exception {
+  void testLocalCameraPoseConsistencyFilter_StablePoses() throws Exception {
+    LocalCameraPoseConsistencyFilter filter = new LocalCameraPoseConsistencyFilter();
+
     // Inject stable poses that are close together with reasonable time intervals
     LinkedList<CameraReading> stableReadings = new LinkedList<>();
 
     double baseTime = 1.0;
     double timeInterval = 0.02; // 50 fps - 20ms between frames
 
-    for (int i = 0; i < NUM_TEST_EST_POSES; i++) {
+    // Create history readings (NUM_LAST_EST_POSES readings)
+    for (int i = 0; i < VisionConstants.NUM_LAST_EST_POSES; i++) {
       // Create poses that move very slowly (well under the max speed threshold)
       Pose3d pose = new Pose3d(
           1.0 + i * 0.001, // Very small movement: 1mm per reading
@@ -122,19 +128,28 @@ class LocalizationCameraTest {
 
     injectLastReadings(stableReadings);
 
-    assertTrue(m_camera.areRecentCameraPosesConsistent(),
+    // Create a new stable reading to validate
+    int nextIndex = VisionConstants.NUM_LAST_EST_POSES;
+    Pose3d newPose = new Pose3d(1.0 + nextIndex * 0.001, 2.0, 0.0, new Rotation3d(0, 0, 0));
+    double newTimestamp = baseTime + nextIndex * timeInterval;
+    EstimatedRobotPose newEstPose = new EstimatedRobotPose(newPose, newTimestamp, List.of(), null);
+    CameraReading newReading = new CameraReading("test_camera", newEstPose, VisionConstants.kSingleTagStdDevs, newTimestamp, 1);
+
+    assertTrue(filter.isValid(newReading, m_camera),
         "Should return true when poses are stable and close together");
   }
 
   @Test
-  void testAreRecentCameraPosesConsistent_JumpyPoses() throws Exception {
+  void testLocalCameraPoseConsistencyFilter_JumpyPoses() throws Exception {
+    LocalCameraPoseConsistencyFilter filter = new LocalCameraPoseConsistencyFilter();
+
     // Inject poses that jump around significantly
     LinkedList<CameraReading> jumpyReadings = new LinkedList<>();
 
     double baseTime = 1.0;
     double timeInterval = 0.02; // 50 fps
 
-    for (int i = 0; i < NUM_TEST_EST_POSES; i++) {
+    for (int i = 0; i < VisionConstants.NUM_LAST_EST_POSES; i++) {
       // Create poses that move very fast (well above max speed threshold)
       // Max speed is MAX_AVG_DIST * 50, so we need to exceed that
       Pose3d pose = new Pose3d(
@@ -156,18 +171,27 @@ class LocalizationCameraTest {
 
     injectLastReadings(jumpyReadings);
 
-    assertFalse(m_camera.areRecentCameraPosesConsistent(),
+    // Create a new jumpy reading to validate
+    int nextIndex = VisionConstants.NUM_LAST_EST_POSES;
+    Pose3d newPose = new Pose3d(1.0 + nextIndex * 2.0, 2.0, 0.0, new Rotation3d(0, 0, 0));
+    double newTimestamp = baseTime + nextIndex * timeInterval;
+    EstimatedRobotPose newEstPose = new EstimatedRobotPose(newPose, newTimestamp, List.of(), null);
+    CameraReading newReading = new CameraReading("test_camera", newEstPose, VisionConstants.kSingleTagStdDevs, newTimestamp, 1);
+
+    assertFalse(filter.isValid(newReading, m_camera),
         "Should return false when poses move too fast (inconsistent)");
   }
 
   @Test
-  void testAreRecentCameraPosesConsistent_ZeroTimeInterval() throws Exception {
-    // Edge case: all poses have the same timestamp - should return false (inconsistent)
+  void testLocalCameraPoseConsistencyFilter_ZeroTimeInterval() throws Exception {
+    LocalCameraPoseConsistencyFilter filter = new LocalCameraPoseConsistencyFilter();
+
+    // Edge case: all poses have the same timestamp - should return false (division by zero protection)
     LinkedList<CameraReading> sameTimeReadings = new LinkedList<>();
 
     double sameTime = 1.0;
 
-    for (int i = 0; i < NUM_TEST_EST_POSES; i++) {
+    for (int i = 0; i < VisionConstants.NUM_LAST_EST_POSES; i++) {
       Pose3d pose = new Pose3d(1.0 + i * 0.01, 2.0, 0.0, new Rotation3d(0, 0, 0));
       EstimatedRobotPose estPose = new EstimatedRobotPose(pose, sameTime, List.of(), null);
       sameTimeReadings.add(new CameraReading("test_camera", estPose, VisionConstants.kSingleTagStdDevs, sameTime, 1));
@@ -175,8 +199,187 @@ class LocalizationCameraTest {
 
     injectLastReadings(sameTimeReadings);
 
-    assertFalse(m_camera.areRecentCameraPosesConsistent(),
-        "Should return false when time interval is zero (inconsistent)");
+    // Create a new reading with the same timestamp
+    Pose3d newPose = new Pose3d(1.0 + VisionConstants.NUM_LAST_EST_POSES * 0.01, 2.0, 0.0, new Rotation3d(0, 0, 0));
+    EstimatedRobotPose newEstPose = new EstimatedRobotPose(newPose, sameTime, List.of(), null);
+    CameraReading newReading = new CameraReading("test_camera", newEstPose, VisionConstants.kSingleTagStdDevs, sameTime, 1);
+
+    assertFalse(filter.isValid(newReading, m_camera),
+        "Should return false when time interval is zero (division by zero protection)");
+  }
+
+  // ==================== LocalDistanceToFusedPoseFilter Tests ====================
+  // NOTE: LocalDistanceToFusedPoseFilter requires a CommandSwerveDrivetrain instance,
+  // which extends CTRE's TunerSwerveDrivetrain and requires complex CAN bus hardware setup.
+  // To properly test this filter, consider one of the following approaches:
+  // 1. Refactor the filter to accept a Supplier<Pose2d> instead of CommandSwerveDrivetrain
+  // 2. Create an integration test with simulated drivetrain hardware
+  // 3. Use a mocking framework like Mockito to mock the drivetrain's getState() method
+
+  // ==================== LocalPoseZRollPitchFilter Tests ====================
+
+  @Test
+  void testLocalPoseZRollPitchFilter_ValidPose() {
+    LocalPoseZRollPitchFilter filter = new LocalPoseZRollPitchFilter();
+
+    // Create a valid pose with Z, roll, and pitch all within bounds
+    Pose3d validPose = new Pose3d(
+        1.0, 2.0,
+        0.05, // Z within MAX_VISION_POSE_Z (0.1)
+        new Rotation3d(
+            0.02, // Roll within MAX_VISION_POSE_ROLL (0.05 rad)
+            0.02, // Pitch within MAX_VISION_POSE_PITCH (0.05 rad)
+            0.0   // Yaw doesn't matter
+        )
+    );
+
+    EstimatedRobotPose estPose = new EstimatedRobotPose(validPose, 1.0, List.of(), null);
+    CameraReading reading = new CameraReading("test_camera", estPose, VisionConstants.kSingleTagStdDevs, 1.0, 1);
+
+    assertTrue(filter.isValid(reading, m_camera),
+        "Should return true for pose with valid Z, roll, and pitch");
+  }
+
+  @Test
+  void testLocalPoseZRollPitchFilter_InvalidZ() {
+    LocalPoseZRollPitchFilter filter = new LocalPoseZRollPitchFilter();
+
+    // Create a pose with Z above the maximum
+    Pose3d invalidZPose = new Pose3d(
+        1.0, 2.0,
+        0.2, // Z above MAX_VISION_POSE_Z (0.1)
+        new Rotation3d(0, 0, 0)
+    );
+
+    EstimatedRobotPose estPose = new EstimatedRobotPose(invalidZPose, 1.0, List.of(), null);
+    CameraReading reading = new CameraReading("test_camera", estPose, VisionConstants.kSingleTagStdDevs, 1.0, 1);
+
+    assertFalse(filter.isValid(reading, m_camera),
+        "Should return false for pose with Z above maximum");
+  }
+
+  @Test
+  void testLocalPoseZRollPitchFilter_InvalidRoll() {
+    LocalPoseZRollPitchFilter filter = new LocalPoseZRollPitchFilter();
+
+    // Create a pose with roll above the maximum
+    Pose3d invalidRollPose = new Pose3d(
+        1.0, 2.0, 0.0,
+        new Rotation3d(
+            0.1, // Roll above MAX_VISION_POSE_ROLL (0.05 rad)
+            0.0,
+            0.0
+        )
+    );
+
+    EstimatedRobotPose estPose = new EstimatedRobotPose(invalidRollPose, 1.0, List.of(), null);
+    CameraReading reading = new CameraReading("test_camera", estPose, VisionConstants.kSingleTagStdDevs, 1.0, 1);
+
+    assertFalse(filter.isValid(reading, m_camera),
+        "Should return false for pose with roll above maximum");
+  }
+
+  @Test
+  void testLocalPoseZRollPitchFilter_InvalidPitch() {
+    LocalPoseZRollPitchFilter filter = new LocalPoseZRollPitchFilter();
+
+    // Create a pose with pitch above the maximum
+    Pose3d invalidPitchPose = new Pose3d(
+        1.0, 2.0, 0.0,
+        new Rotation3d(
+            0.0,
+            0.1, // Pitch above MAX_VISION_POSE_PITCH (0.05 rad)
+            0.0
+        )
+    );
+
+    EstimatedRobotPose estPose = new EstimatedRobotPose(invalidPitchPose, 1.0, List.of(), null);
+    CameraReading reading = new CameraReading("test_camera", estPose, VisionConstants.kSingleTagStdDevs, 1.0, 1);
+
+    assertFalse(filter.isValid(reading, m_camera),
+        "Should return false for pose with pitch above maximum");
+  }
+
+  @Test
+  void testLocalPoseZRollPitchFilter_AllInvalid() {
+    LocalPoseZRollPitchFilter filter = new LocalPoseZRollPitchFilter();
+
+    // Create a pose with all values above maximum
+    Pose3d allInvalidPose = new Pose3d(
+        1.0, 2.0,
+        0.5, // Z way above MAX_VISION_POSE_Z
+        new Rotation3d(
+            0.2, // Roll above MAX_VISION_POSE_ROLL
+            0.2, // Pitch above MAX_VISION_POSE_PITCH
+            0.0
+        )
+    );
+
+    EstimatedRobotPose estPose = new EstimatedRobotPose(allInvalidPose, 1.0, List.of(), null);
+    CameraReading reading = new CameraReading("test_camera", estPose, VisionConstants.kSingleTagStdDevs, 1.0, 1);
+
+    assertFalse(filter.isValid(reading, m_camera),
+        "Should return false for pose with all values above maximum");
+  }
+
+  @Test
+  void testLocalPoseZRollPitchFilter_NegativeRoll() {
+    LocalPoseZRollPitchFilter filter = new LocalPoseZRollPitchFilter();
+
+    // Create a pose with large negative roll (should be invalid - magnitude exceeds threshold)
+    Pose3d negativeRollPose = new Pose3d(
+        1.0, 2.0, 0.0,
+        new Rotation3d(
+            -0.1, // Negative roll with magnitude above MAX_VISION_POSE_ROLL (0.05 rad)
+            0.0,
+            0.0
+        )
+    );
+
+    EstimatedRobotPose estPose = new EstimatedRobotPose(negativeRollPose, 1.0, List.of(), null);
+    CameraReading reading = new CameraReading("test_camera", estPose, VisionConstants.kSingleTagStdDevs, 1.0, 1);
+
+    assertFalse(filter.isValid(reading, m_camera),
+        "Should return false for pose with negative roll magnitude above maximum");
+  }
+
+  @Test
+  void testLocalPoseZRollPitchFilter_NegativePitch() {
+    LocalPoseZRollPitchFilter filter = new LocalPoseZRollPitchFilter();
+
+    // Create a pose with large negative pitch (should be invalid - magnitude exceeds threshold)
+    Pose3d negativePitchPose = new Pose3d(
+        1.0, 2.0, 0.0,
+        new Rotation3d(
+            0.0,
+            -0.1, // Negative pitch with magnitude above MAX_VISION_POSE_PITCH (0.05 rad)
+            0.0
+        )
+    );
+
+    EstimatedRobotPose estPose = new EstimatedRobotPose(negativePitchPose, 1.0, List.of(), null);
+    CameraReading reading = new CameraReading("test_camera", estPose, VisionConstants.kSingleTagStdDevs, 1.0, 1);
+
+    assertFalse(filter.isValid(reading, m_camera),
+        "Should return false for pose with negative pitch magnitude above maximum");
+  }
+
+  @Test
+  void testLocalPoseZRollPitchFilter_NegativeZ() {
+    LocalPoseZRollPitchFilter filter = new LocalPoseZRollPitchFilter();
+
+    // Create a pose with large negative Z (robot below ground - should be invalid)
+    Pose3d negativeZPose = new Pose3d(
+        1.0, 2.0,
+        -0.2, // Negative Z with magnitude above MAX_VISION_POSE_Z (0.1)
+        new Rotation3d(0, 0, 0)
+    );
+
+    EstimatedRobotPose estPose = new EstimatedRobotPose(negativeZPose, 1.0, List.of(), null);
+    CameraReading reading = new CameraReading("test_camera", estPose, VisionConstants.kSingleTagStdDevs, 1.0, 1);
+
+    assertFalse(filter.isValid(reading, m_camera),
+        "Should return false for pose with negative Z magnitude above maximum (robot below ground)");
   }
 
   // ==================== Helper Methods ====================
@@ -190,5 +393,3 @@ class LocalizationCameraTest {
     field.set(m_camera, readings);
   }
 }
-
-// 
