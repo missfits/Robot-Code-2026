@@ -106,9 +106,16 @@ public class VisionSubsystem extends SubsystemBase {
 
       // Filter by timestamp: if camera reading more recent than last recorded reading,
       //    AND passes ALL GlobalFilterPipeline filters, add to allValidReadings.
-      if (isReadingTimestampValid(cam) && globalFilterPipeline.runAll(newReading, allValidReadings)) {
+      if (isReadingTimestampValid(cam)) {
         allValidReadings.add(newReading);
       }
+    }
+
+    // Run all enabled global filters on allValidReadings
+    // NOTE: upates allValidReadings into readings that have passed all the filters
+    //       --> runAll() returns a list of readings that passed all the filters
+    if (globalFilterPipeline.getNumFilters() > 0) {
+      allValidReadings = globalFilterPipeline.runAll(allValidReadings);
     }
 
     // Sort allValidReadings by timestamp (oldest first)

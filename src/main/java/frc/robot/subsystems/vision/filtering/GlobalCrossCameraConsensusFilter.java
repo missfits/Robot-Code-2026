@@ -20,11 +20,11 @@ public class GlobalCrossCameraConsensusFilter implements GlobalVisionFilter{
   public GlobalCrossCameraConsensusFilter() {}
 
   @Override
-  public boolean isValid(CameraReading reading, List<CameraReading> allReadings) {
+  public List<CameraReading> validReadings(List<CameraReading> allReadings) {
     // If we don't have enough readings, return true to skip this filter.
     //  NOTE: returning false will cause the entire filter pipeline to stop.
     if (allReadings.size() < VisionConstants.MIN_NUM_CAMERA_READINGS) {
-      return true;
+      return allReadings;
     }
 
     // Calculate the average estimated Pose2d of across all readings w/ (sum || sumY) / numposes
@@ -39,8 +39,14 @@ public class GlobalCrossCameraConsensusFilter implements GlobalVisionFilter{
 
     // NOTE: Don't need to check for division by zero because MIN_NUM_CAMERA_READINGS > 0.
     Pose2d avgPose = new Pose2d(sumX / numPoses, sumY / numPoses, new Rotation2d());
-    Pose2d readingPose = reading.robotPose().estimatedPose.toPose2d();
 
-    return readingPose.getTranslation().getDistance(avgPose.getTranslation()) < VisionConstants.MAX_VISION_READING_DISTANCE;
-  }    
+    // Return all readings that are within a certain distance of the average pose. 
+    return allReadings.stream()
+      .filter(read -> isReadingWithinDistanceOfAvgPose(read, avgPose))
+      .toList();
+  }
+
+  private static boolean isReadingWithinDistanceOfAvgPose(CameraReading reading, Pose2d avgPose) {
+    return reading.robotPose().estimatedPose.toPose2d().getTranslation().getDistance(avgPose.getTranslation()) < VisionConstants.MAX_VISION_READING_DISTANCE;
+  }
 }
