@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.photonvision.EstimatedRobotPose;
 
 import frc.robot.Constants.VisionConstants;
+import frc.robot.subsystems.vision.LocalizationCamera;
 import frc.robot.subsystems.vision.LocalizationCamera.CameraReading;
 
 import java.lang.reflect.Field;
@@ -85,8 +86,8 @@ class LocalizationCameraTest {
       injectLastReadings(stableReadings);
 
       // With less than NUM_LAST_EST_POSES reading added, should return false (not enough data)
-      // assertFalse(m_camera.areRecentCameraPosesConsistent(),
-          // "Should return false when fewer than NUM_LAST_EST_POSES readings exist");
+      assertFalse(m_camera.areRecentCameraPosesConsistent(),
+          "Should return false when fewer than NUM_LAST_EST_POSES readings exist");
 
       stableReadings.remove(0);
     }
