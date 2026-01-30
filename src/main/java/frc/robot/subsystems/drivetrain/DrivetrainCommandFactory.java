@@ -3,6 +3,7 @@ package frc.robot.subsystems.drivetrain;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
 
+import java.util.function.Supplier;
 import java.util.function.BooleanSupplier;
 
 import com.ctre.phoenix6.SignalLogger;
@@ -15,7 +16,9 @@ import com.ctre.phoenix6.swerve.SwerveRequest.FieldCentricFacingAngle;
 import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 import com.ctre.phoenix6.swerve.SwerveRequest.PointWheelsAt;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -37,6 +40,8 @@ public class DrivetrainCommandFactory {
 
     public DrivetrainCommandFactory(CommandSwerveDrivetrain drivetrain) {
         m_drivetrain = drivetrain;
+
+        setHeadingController();
     }
 
     // ----- DEFAULT DRIVE -----
@@ -62,6 +67,7 @@ public class DrivetrainCommandFactory {
     }
 
     // ----- SNAP TO ANGLE -----
+    // Drives the robot while automatically rotating to face a specified angle
     public Command snapToAngle(CommandXboxController joystick, double angle) {
         return m_drivetrain.getCommandFromRequest(() -> {
             SmartDashboard.putNumber("drivetrain/snap to angle", angle);
@@ -70,6 +76,44 @@ public class DrivetrainCommandFactory {
             return m_driveFacingAngle.withVelocityX(-shapedValues.y() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive forward with negative Y (forward)
             .withVelocityY(-shapedValues.x() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive left with negative X (left)
             .withTargetDirection(Rotation2d.fromDegrees(angle));
+        });
+    }
+
+    /**
+     * Calculates the angle from a reference pose to a target pose
+     * @param referencePose The reference pose (typically robot pose)
+     * @param targetPose The target pose
+     * @return The angle from reference to target, or the current heading if already at the target
+     */
+    private static Rotation2d calculateAngleToTarget(Pose2d referencePose, Pose2d targetPose) {
+        Translation2d translationToTarget = targetPose.getTranslation().minus(referencePose.getTranslation());
+
+        // If we're already at the target (zero distance), keep the current heading
+        if (translationToTarget.getNorm() < DrivetrainConstants.SNAP_TO_TARGET_DISTANCE_THRESHOLD) {
+            return referencePose.getRotation();
+        }
+
+        return translationToTarget.getAngle();
+    }
+
+    // ---- SNAP TO TARGET -----
+    // Drives the robot while automatically rotating to face a target pose
+    public Command snapToTarget(CommandXboxController joystick, Supplier<Pose2d> targetPoseSupplier) {
+        return m_drivetrain.getCommandFromRequest(() -> {
+
+            JoystickVals shapedValues = Controls.inputShape(joystick.getLeftX(), joystick.getLeftY(), true, false);
+
+            Pose2d targetPose = targetPoseSupplier.get(); // target pose
+
+            Rotation2d angleToTarget = calculateAngleToTarget(m_drivetrain.getState().Pose, targetPose);
+
+            SmartDashboard.putNumber("drivetrain/snap to target/target x", targetPose.getX());
+            SmartDashboard.putNumber("drivetrain/snap to target/target y", targetPose.getY());
+            SmartDashboard.putNumber("drivetrain/snap to target/angle", angleToTarget.getRadians());
+
+            return m_driveFacingAngle.withVelocityX(-shapedValues.y() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive forward with negative Y (forward)
+                .withVelocityY(-shapedValues.x() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive left with negative X (left)
+                .withTargetDirection(angleToTarget);
         });
     }
 
