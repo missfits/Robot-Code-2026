@@ -6,7 +6,13 @@ package frc.robot;
 
 import org.ironmaple.simulation.SimulatedArena;
 
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -20,6 +26,11 @@ public class Robot extends TimedRobot {
 
   private final RobotContainer m_robotContainer;
 
+  private final Encoder m_intakeEncoder = new Encoder(0, 1);
+  private final AnalogPotentiometer m_intakePot = new AnalogPotentiometer(1, 90);
+  private final MechanismLigament2d m_intake;
+
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -28,6 +39,13 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    Mechanism2d mech = new Mechanism2d(3, 3);
+    MechanismRoot2d root = mech.getRoot("intake", 2, 0);
+
+    m_intake = root.append(new MechanismLigament2d("intake", 1, 0));
+    SmartDashboard.putData("Mech2D", mech);
+
+
   }
 
   /**
@@ -44,6 +62,7 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    m_intake.setAngle(m_intakePot.get());
 
     // Update pose estimate with vision measurements
     m_robotContainer.updatePoseEst();

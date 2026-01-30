@@ -255,10 +255,10 @@ public class MapleSimSwervePhysics {
                         .withKV(1.91)
                         .withKA(0)
                         .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign))
-                .withSteerMotorGearRatio(16.0)
+                .withSteerMotorGearRatio(21.428571428571427)
                 // Adjust friction voltages
                 .withDriveFrictionVoltage(Volts.of(0.1))
-                .withSteerFrictionVoltage(Volts.of(0.05))
+                .withSteerFrictionVoltage(Volts.of(0.15))
                 // Adjust steer inertia
                 .withSteerInertia(KilogramSquareMeters.of(0.05));
     }
