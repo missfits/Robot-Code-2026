@@ -32,16 +32,20 @@ public abstract class MechanismsIOHardwareBase {
     motor.getConfigurator().apply(limits);
   }
 
-  protected double getRotations() {
+  protected double getRotation() {
     return positionSignal.refresh().getValue().in(Revolutions);
   }
 
-  protected double getRotationsPerSecond() {
+  protected double getRotationPerSecond() {
     return velocitySignal.refresh().getValue().in(RevolutionsPerSecond);
   }
 
   public double getVoltage() {
     return voltageSignal.refresh().getValue().in(Volts);
+  }
+
+  public double getMotorVelocityRPS() {
+    return velocitySignal.refresh().getValue().in(RevolutionsPerSecond);
   }
 
   public double getCurrent() {

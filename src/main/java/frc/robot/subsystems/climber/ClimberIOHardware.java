@@ -10,10 +10,16 @@ public class ClimberIOHardware extends MechanismsIOHardwareBase {
   }
 
   public double getPositionMeters() {
-    return getRotations() * ClimberConstants.CLIMBER_METERS_PER_ROTATION;
+    return getRotation() * ClimberConstants.CLIMBER_METERS_PER_ROTATION;
   }
 
   public double getVelocityMetersPerSecond() {
-    return getRotationsPerSecond() * ClimberConstants.CLIMBER_METERS_PER_ROTATION;
+    return getMotorVelocityRPS() * ClimberConstants.CLIMBER_METERS_PER_ROTATION;
   }
+
+  public void setPositionMeters(double meters) {
+    double rotations = meters / ClimberConstants.CLIMBER_METERS_PER_ROTATION;
+    setPositionRotations(rotations);
+  }
+
 }
