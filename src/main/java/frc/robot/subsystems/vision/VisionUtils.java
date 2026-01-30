@@ -31,17 +31,17 @@ public class VisionUtils {
     }
 
     public static boolean zIsSane(Pose3d pose) {
-        return pose.getZ() < VisionConstants.MAX_VISION_POSE_Z;
+        return Math.abs(pose.getZ()) < VisionConstants.MAX_VISION_POSE_Z;
 
     }
 
     public static boolean rollIsSane(Pose3d pose) {
-        return pose.getRotation().getX() < VisionConstants.MAX_VISION_POSE_ROLL;
+        return Math.abs(pose.getRotation().getX()) < VisionConstants.MAX_VISION_POSE_ROLL;
 
     }
 
     public static boolean pitchIsSane(Pose3d pose) {
-        return pose.getRotation().getY() < VisionConstants.MAX_VISION_POSE_PITCH;
+        return Math.abs(pose.getRotation().getY()) < VisionConstants.MAX_VISION_POSE_PITCH;
 
     }
 
