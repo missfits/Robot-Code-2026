@@ -54,6 +54,11 @@ public class ShooterInfluencerIOHardware {
     slot0Configs.kP = ScorerConstants.INFLUENCER_kP;
     slot0Configs.kI = ScorerConstants.INFLUENCER_kI;
     slot0Configs.kD = ScorerConstants.INFLUENCER_kD;
+
+    slot0Configs.kS = ScorerConstants.INFLUENCER_kS;
+    slot0Configs.kV = ScorerConstants.INFLUENCER_kV;
+    slot0Configs.kA = ScorerConstants.INFLUENCER_kA;
+    
     m_shooterInfluencerMotor.getConfigurator().apply(talonFXConfigs);
   }
 
