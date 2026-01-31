@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.commands.Autos;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
+import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrainSim;
 import frc.robot.subsystems.drivetrain.DrivetrainCommandFactory;
 import frc.robot.subsystems.intake.IntakeCommandFactory;
 import frc.robot.subsystems.scorer.ScorerCommandFactory;
@@ -46,10 +47,13 @@ import edu.wpi.first.math.util.Units;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
+import org.ironmaple.simulation.SimulatedArena;
 import org.photonvision.EstimatedRobotPose;
 
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 /**
@@ -85,6 +89,7 @@ public class RobotContainer {
     // Configure trigger bindings
     configureBindings();
 
+
     // Configure auto builder
     createNamedCommands();
     m_autoChooser = AutoBuilder.buildAutoChooser("drive forward 1m");
@@ -113,6 +118,15 @@ public class RobotContainer {
       m_drivetrainCommandFactory.defaultDrive(m_driverJoystick, () -> true)
     );
 
+    if (Utils.isSimulation()){
+      Consumer<SwerveDriveState> telemetry =  ((CommandSwerveDrivetrainSim) m_drivetrain)
+          .getSimTelemetryConsumer().andThen(logger::telemeterize);
+      m_drivetrain.registerTelemetry(telemetry);
+    }
+    else{
+       m_drivetrain.registerTelemetry(logger::telemeterize);
+    }
+   
     // TODO: change -- this is for testing 
     m_driverJoystick.y().whileTrue(
       m_drivetrainCommandFactory.snapToAngle(m_driverJoystick, 0)
@@ -128,8 +142,6 @@ public class RobotContainer {
 
     m_driverJoystick.povCenter().negate().onTrue(new InstantCommand(() -> resetControllerConstantsSmartDashboard()));
 
-
-    m_drivetrain.registerTelemetry(logger::telemeterize);
 
     // --- CONFIGURE VISION FILTERING ---
     GlobalVisionFilterPipeline globalPipeline = new GlobalVisionFilterPipeline();
@@ -224,4 +236,13 @@ public class RobotContainer {
     m_actualField.setRobotPose(m_drivetrain.getState().Pose);
     SmartDashboard.putData("fusedVision/" + "actual field/", m_actualField);
   }
+/*   public void displaySimFieldToAdvantageScope() {
+    if (Constants.currentMode != Constants.Mode.SIM) return;
+
+    SimulatedArena.getInstance().simulationPeriodic();
+    Pose3d(driveSimulation.getSimulatedDriveTrainPose()));
+    // The pose by maplesim, including collisions with the field. 
+    // See https://www.chiefdelphi.com/t/simulated-robot-goes-through-walls-with-maplesim/508663.
+
+  } */
 }
