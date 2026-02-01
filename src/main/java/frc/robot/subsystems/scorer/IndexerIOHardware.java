@@ -26,7 +26,7 @@ public class IndexerIOHardware extends MechanismsIOHardwareBase {
   }
 
   public void setPositionRadians(double radians) {
-    double revolutions = Math.toRadians(radians / ScorerConstants.INDEXER_DEGREES_PER_REVOLUTION);
+    double revolutions = Math.toDegrees(radians) / ScorerConstants.INDEXER_DEGREES_PER_REVOLUTION;
     setPositionRevolutions(revolutions);
   }
 

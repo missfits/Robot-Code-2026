@@ -46,7 +46,7 @@ public class RollerIOHardware extends MechanismsIOHardwareBase {
   }
 
   public void setPositionRadians(double radians) {
-    double revolutions = Math.toRadians(radians / IntakeConstants.ROLLER_DEGREES_PER_REVOLUTION);
+    double revolutions = Math.toDegrees(radians) / IntakeConstants.ROLLER_DEGREES_PER_REVOLUTION;
     setPositionRevolutions(revolutions);
   }
 

@@ -26,7 +26,7 @@ public class PivotIOHardware extends MechanismsIOHardwareBase {
   }
 
   public void setPositionRadians(double radians) {
-    double revolutions = Math.toRadians(radians / IntakeConstants.PIVOT_DEGREES_PER_REVOLUTION);
+    double revolutions = Math.toDegrees(radians) / IntakeConstants.PIVOT_DEGREES_PER_REVOLUTION;
     setPositionRevolutions(revolutions);
   }
 
