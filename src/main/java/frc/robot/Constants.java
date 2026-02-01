@@ -169,8 +169,8 @@ public final class Constants {
     public static final int PIVOT_MOTOR_STATOR_LIMIT = 40;
 
     // Conversions
-    public static final double ROLLER_DEGREES_PER_REVOLUTION = 0;
-    public static final double PIVOT_DEGREES_PER_REVOLUTION = 0;
+    public static final double ROLLER_DEGREES_PER_REVOLUTION = 360*3;
+    public static final double PIVOT_DEGREES_PER_REVOLUTION = 360*50;
 
     // Intake motor velocities
     public static double OUTTAKE_MOTOR_VELOCITY = 0;
@@ -223,11 +223,11 @@ public final class Constants {
     public static final int INDEXER_MOTOR_STATOR_LIMIT = 40;
 
     // Conversions - Influencer
-    public static final double INFLUENCER_DEGREES_PER_REVOLUTION = 0;
+    public static final double INFLUENCER_DEGREES_PER_REVOLUTION = 360;
     // Conversions - Follower
-    public static final double FOLLOWER_DEGREES_PER_REVOLUTION = 0;
+    public static final double FOLLOWER_DEGREES_PER_REVOLUTION = 360;
     // Conversions - Indexer
-    public static final double INDEXER_DEGREES_PER_REVOLUTION = 0;
+    public static final double INDEXER_DEGREES_PER_REVOLUTION = 360;
 
     // Influencer motor velocities
     public static double INFLUENCER_OUTTAKE_MOTOR_VELOCITY = 0;
@@ -267,7 +267,7 @@ public final class Constants {
     public static final int CLIMBER_MOTOR_ID = 0;
     public static final int CLIMBER_MOTOR_STATOR_LIMIT = 40;
 
-    public static final double CLIMBER_METERS_PER_REVOLUTION = 0;
+    public static final double CLIMBER_METERS_PER_REVOLUTION = 360*10;
   }
   
   public static class VisionConstants {
