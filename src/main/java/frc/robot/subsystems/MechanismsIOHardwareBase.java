@@ -1,0 +1,85 @@
+package frc.robot.subsystems;
+
+import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.Revolutions;
+import static edu.wpi.first.units.Units.RevolutionsPerSecond;
+import static edu.wpi.first.units.Units.Volts;
+
+import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.hardware.TalonFX;
+
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+public abstract class MechanismsIOHardwareBase {
+  protected final TalonFX motor;
+  protected final String logPrefix;
+
+  protected final StatusSignal<Angle> positionSignal;
+  protected final StatusSignal<AngularVelocity> velocitySignal;
+  protected final StatusSignal<Voltage> voltageSignal;
+  protected final StatusSignal<Current> currentSignal;
+
+  protected MechanismsIOHardwareBase(int motorID, double statorCurrentLimit, String logPrefix) {
+    motor = new TalonFX(motorID);
+    this.logPrefix = logPrefix;
+
+    positionSignal = motor.getPosition();
+    velocitySignal = motor.getVelocity();
+    voltageSignal = motor.getMotorVoltage();
+    currentSignal = motor.getStatorCurrent();
+
+    var limits = new CurrentLimitsConfigs();
+    limits.StatorCurrentLimit = statorCurrentLimit;
+    limits.StatorCurrentLimitEnable = true;
+    motor.getConfigurator().apply(limits);
+  }
+
+  protected double getPositionRevolutions() {
+    return positionSignal.refresh().getValue().in(Revolutions);
+  }
+
+  public double getVoltage() {
+    return voltageSignal.refresh().getValue().in(Volts);
+  }
+
+  protected double getMotorVelocityRevolutionsPerSecond() {
+    return velocitySignal.refresh().getValue().in(RevolutionsPerSecond);
+  }
+
+  public double getCurrent() {
+    return currentSignal.refresh().getValue().in(Amps);
+  }
+
+  public void motorOff() {
+    motor.stopMotor();
+  }
+
+  protected void setPositionRevolutions(double revolutions) {
+    motor.setPosition(revolutions);
+  }
+
+  public void resetPosition() {
+    setPositionRevolutions(0);
+  }
+
+  public void setVoltage(double volts) {
+    SmartDashboard.putNumber(logPrefix + "commandedVoltage", volts);
+    motor.setControl(new VoltageOut(volts));
+  }
+
+  public void setVelocityVoltage(double velocityRevolutionsPerSecond) {
+    SmartDashboard.putNumber(logPrefix + "targetVelocityRevolutionsPerSecond", velocityRevolutionsPerSecond);
+    motor.setControl(new VelocityVoltage(velocityRevolutionsPerSecond));
+  }
+
+  public void setVelocityVoltage(VelocityVoltage request) {
+    motor.setControl(request);
+  }
+}
