@@ -9,33 +9,40 @@ public class ShooterFollowerIOHardware extends MechanismsIOHardwareBase {
 
   public ShooterFollowerIOHardware(int motorID) {
     super(motorID, ScorerConstants.FOLLOWER_MOTOR_STATOR_LIMIT);
+    resetSlot0Gains();
   }
 
   public void resetSlot0Gains() {
     var talonFXConfigs = new TalonFXConfiguration();
     var slot0Configs = talonFXConfigs.Slot0;
     
+    //PID
     slot0Configs.kP = ScorerConstants.FOLLOWER_kP;
     slot0Configs.kI = ScorerConstants.FOLLOWER_kI;
     slot0Configs.kD = ScorerConstants.FOLLOWER_kD;
+
+    //feed forward values
+    slot0Configs.kS = ScorerConstants.FOLLOWER_kS;
+    slot0Configs.kV = ScorerConstants.FOLLOWER_kV;
+    slot0Configs.kA = ScorerConstants.FOLLOWER_kA;
     
     motor.getConfigurator().apply(talonFXConfigs);
   }
 
   public double getPositionRadians() {
-    return Math.toRadians(getRotation() * ScorerConstants.FOLLOWER_DEGREES_PER_ROTATION);
+    return Math.toRadians(getPositionRevolutions() * ScorerConstants.FOLLOWER_DEGREES_PER_ROTATION);
   }
 
   public double getPositionDegrees() {
-    return getRotation() * ScorerConstants.FOLLOWER_DEGREES_PER_ROTATION;
+    return getPositionRevolutions() * ScorerConstants.FOLLOWER_DEGREES_PER_ROTATION;
   }
 
   public double getVelocityRadiansPerSecond() {
-    return Math.toRadians(getMotorVelocityRPS() * ScorerConstants.FOLLOWER_DEGREES_PER_ROTATION);
+    return Math.toRadians(getMotorVelocityRevolutionsPerSecond() * ScorerConstants.FOLLOWER_DEGREES_PER_ROTATION);
   }
 
   public double getVelocityDegreesPerSecond() {
-    return getMotorVelocityRPS() * ScorerConstants.FOLLOWER_DEGREES_PER_ROTATION;
+    return getMotorVelocityRevolutionsPerSecond() * ScorerConstants.FOLLOWER_DEGREES_PER_ROTATION;
   }
 
   public void setPositionRadians(double radians) {

@@ -10,19 +10,19 @@ public class PivotIOHardware extends MechanismsIOHardwareBase {
   }
 
   public double getPositionRadians() {
-    return Math.toRadians(getRotation() * IntakeConstants.PIVOT_DEGREES_PER_ROTATION);
+    return Math.toRadians(getPositionRevolutions() * IntakeConstants.PIVOT_DEGREES_PER_ROTATION);
   }
 
   public double getPositionDegrees() {
-    return getRotation() * IntakeConstants.PIVOT_DEGREES_PER_ROTATION;
+    return getPositionRevolutions() * IntakeConstants.PIVOT_DEGREES_PER_ROTATION;
   }
 
   public double getVelocityRadiansPerSecond() {
-    return Math.toRadians(getMotorVelocityRPS() * IntakeConstants.PIVOT_DEGREES_PER_ROTATION);
+    return Math.toRadians(getMotorVelocityRevolutionsPerSecond() * IntakeConstants.PIVOT_DEGREES_PER_ROTATION);
   }
 
   public double getVelocityDegreesPerSecond() {
-    return getMotorVelocityRPS() * IntakeConstants.PIVOT_DEGREES_PER_ROTATION;
+    return getMotorVelocityRevolutionsPerSecond() * IntakeConstants.PIVOT_DEGREES_PER_ROTATION;
   }
 
   public void setPositionRadians(double radians) {

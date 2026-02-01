@@ -10,19 +10,19 @@ public class IndexerIOHardware extends MechanismsIOHardwareBase {
   }
 
   public double getPositionRadians() {
-    return Math.toRadians(getRotation() * ScorerConstants.INDEXER_DEGREES_PER_ROTATION);
+    return Math.toRadians(getPositionRevolutions() * ScorerConstants.INDEXER_DEGREES_PER_ROTATION);
   }
 
   public double getPositionDegrees() {
-    return getRotation() * ScorerConstants.INDEXER_DEGREES_PER_ROTATION;
+    return getPositionRevolutions() * ScorerConstants.INDEXER_DEGREES_PER_ROTATION;
   }
 
   public double getVelocityRadiansPerSecond() {
-    return Math.toRadians(getMotorVelocityRPS() * ScorerConstants.INDEXER_DEGREES_PER_ROTATION);
+    return Math.toRadians(getMotorVelocityRevolutionsPerSecond() * ScorerConstants.INDEXER_DEGREES_PER_ROTATION);
   }
 
   public double getVelocityDegreesPerSecond() {
-    return getMotorVelocityRPS() * ScorerConstants.INDEXER_DEGREES_PER_ROTATION;
+    return getMotorVelocityRevolutionsPerSecond() * ScorerConstants.INDEXER_DEGREES_PER_ROTATION;
   }
 
   public void setPositionRadians(double radians) {

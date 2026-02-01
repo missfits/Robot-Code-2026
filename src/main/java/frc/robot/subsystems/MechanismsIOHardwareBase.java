@@ -1,6 +1,9 @@
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.*;
+import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.Revolutions;
+import static edu.wpi.first.units.Units.RevolutionsPerSecond;
+import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
@@ -8,7 +11,10 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import edu.wpi.first.units.measure.*;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Voltage;
 
 public abstract class MechanismsIOHardwareBase {
   protected final TalonFX motor;
@@ -32,19 +38,15 @@ public abstract class MechanismsIOHardwareBase {
     motor.getConfigurator().apply(limits);
   }
 
-  protected double getRotation() {
+  protected double getPositionRevolutions() {
     return positionSignal.refresh().getValue().in(Revolutions);
-  }
-
-  protected double getRotationPerSecond() {
-    return velocitySignal.refresh().getValue().in(RevolutionsPerSecond);
   }
 
   public double getVoltage() {
     return voltageSignal.refresh().getValue().in(Volts);
   }
 
-  public double getMotorVelocityRPS() {
+  protected double getMotorVelocityRevolutionsPerSecond() {
     return velocitySignal.refresh().getValue().in(RevolutionsPerSecond);
   }
 
@@ -56,7 +58,7 @@ public abstract class MechanismsIOHardwareBase {
     motor.stopMotor();
   }
 
-  public void setPositionRotations(double rotations) {
+  protected void setPositionRotations(double rotations) {
     motor.setPosition(rotations);
   }
 
@@ -68,8 +70,8 @@ public abstract class MechanismsIOHardwareBase {
     motor.setControl(new VoltageOut(volts));
   }
 
-  public void setVelocityVoltage(double velocityRPS) {
-    motor.setControl(new VelocityVoltage(velocityRPS));
+  public void setVelocityVoltage(double velocityRotationsPerSecond) {
+    motor.setControl(new VelocityVoltage(velocityRotationsPerSecond));
   }
 
   public void setVelocityVoltage(VelocityVoltage request) {
