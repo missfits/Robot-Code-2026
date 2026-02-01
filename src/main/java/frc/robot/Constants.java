@@ -183,6 +183,11 @@ public final class Constants {
     public static double ROLLER_kI = 0;
     public static double ROLLER_kD = 0;
 
+    //Roller feed forward values
+    public static double ROLLER_kS = 0;
+    public static double ROLLER_kV = 0;
+    public static double ROLLER_kA = 0;
+
     // Timing
     public static final double RUN_INTAKE_TIME = 0;
   }
