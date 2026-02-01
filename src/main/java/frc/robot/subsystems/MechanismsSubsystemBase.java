@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -19,16 +21,50 @@ public abstract class MechanismsSubsystemBase extends SubsystemBase {
     -> SmartDashboard.putString(mechanismName + "/lastRunningInnerCommand", name)
     );
   }
+  /*
+   * --------------------------------------------------------------
+   * Command creation wrappers
+   * 
+   * Created logged commands to make it easier to not keep repeating code?
+   */
+
+  public Command run(Runnable action, String name){
+    Command superClassCommand = super.run(action);
+    return this.loggedCommand(name, superClassCommand);
+  }
+
+  public Command startEnd(Runnable start, Runnable end, String name){
+    Command superClassCommand = super.startEnd(start, end);
+    return this.loggedCommand(name, superClassCommand);
+  }
+
+  public Command runEnd(Runnable run, Runnable end, String name){
+    Command superClassCommand = super.runEnd(run, end);
+    return this.loggedCommand(name, superClassCommand);
+  }
+ 
+  public Command startRun(Runnable start, Runnable run, String name){
+    Command superClassCommand = super.startRun(start,run);
+    return this.loggedCommand(name, superClassCommand);
+  }
+
+  public Command defer(Supplier <Command> supplier, String name){
+    Command superClassCommand = super.defer(supplier);
+    return this.loggedCommand(name, superClassCommand);
+  }
+
+  /*
+   * -----------------------------------------------------------------
+   */
 
   protected abstract void setVoltage(double volts);
 
   public Command runMechanism(double volts) {
-    return loggedCommand("run" + mechanismName, this.run(() -> setVoltage(volts)));
+    return this.run(() -> setVoltage(volts), "run" + mechanismName);
   }
 
   public Command runMechanismWithTimeout(double volts, double time) {
-    return loggedCommand("run" + mechanismName + "with " + time + "second timeout", this.run(() -> {setVoltage(volts);})
-    .withTimeout(time));
+    return this.run(() -> {setVoltage(volts);}, "run" + mechanismName + "with " + time + "second timeout");
   }
 
   public Command runMechanismOff() {
@@ -40,7 +76,7 @@ public abstract class MechanismsSubsystemBase extends SubsystemBase {
   }
 
   public Command runMechanismPID(double velocity) {
-    return loggedCommand("run" + mechanismName + "PID", this.run(() -> runClosedLoopVelocity(velocity)));
+    return this.run(() -> runClosedLoopVelocity(velocity), "run" + mechanismName + "PID");
   }
 
   //need a second runClosedLoopVelocity command for subsystems with two motors
@@ -50,7 +86,7 @@ public abstract class MechanismsSubsystemBase extends SubsystemBase {
 
   //need a second runMechanismPID command for subsystems with two motors
   public Command runMechanismPID(double velocityOne, double velocityTwo) {
-    return loggedCommand("run" + mechanismName + "PID", this.run(() -> runClosedLoopVelocity(velocityOne, velocityTwo)));
+    return this.run(()-> runClosedLoopVelocity(velocityOne, velocityTwo),"run" + mechanismName + "PID");
   }
 
   @Override
@@ -62,4 +98,4 @@ public abstract class MechanismsSubsystemBase extends SubsystemBase {
     SmartDashboard.putString(mechanismName + "/currentlyRunningOuterCommand",
     current != null ? current.getName() : "None");
   }
-}
+}  
