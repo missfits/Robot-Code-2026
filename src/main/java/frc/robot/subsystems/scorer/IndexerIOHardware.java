@@ -1,3 +1,7 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package frc.robot.subsystems.scorer;
 
 import static edu.wpi.first.units.Units.*;
@@ -12,9 +16,6 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.ScorerConstants;
 
@@ -36,7 +37,6 @@ public class IndexerIOHardware {
 
     var talonFXConfigurator = m_indexerMotor.getConfigurator();
     var limitConfigs = new CurrentLimitsConfigs();
-
 
     limitConfigs.StatorCurrentLimit = ScorerConstants.INDEXER_MOTOR_STATOR_LIMIT;
     limitConfigs.StatorCurrentLimitEnable = true;
@@ -74,21 +74,19 @@ public class IndexerIOHardware {
     m_indexerMotor.stopMotor();
   }
 
-  public void setVoltage(double value) {
-    m_indexerMotor.setControl(new VoltageOut(value));
-    SmartDashboard.putNumber("indexer/voltage", value);
+  public void setVoltage(double volts) {
+    m_indexerMotor.setControl(new VoltageOut(volts));
   }
 
-  public void setVelocityVoltage(double value) {
-    m_indexerMotor.setControl(new VelocityVoltage(value));
-    SmartDashboard.putNumber("indexer/velocity voltage", value);
-  }
-
-  public void setPosition(double value){
-    m_indexerMotor.setPosition(value);
-  }
+  public void setVelocityVoltage(double velocity) {
+    m_indexerMotor.setControl(new VelocityVoltage(velocity));
+  }  
 
   public void resetPosition() {
-    setPosition(0);
+    m_indexerMotor.setPosition(0);
+  }
+
+  public void setVelocityVoltage(VelocityVoltage request) {
+    m_indexerMotor.setControl(request);
   }
 }

@@ -17,8 +17,6 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.ClimberConstants;
 
@@ -42,7 +40,7 @@ public class ClimberIOHardware {
     var talonFXConfigurator = m_climberMotor.getConfigurator();
     var limitConfigs = new CurrentLimitsConfigs();
 
-    limitConfigs.StatorCurrentLimit = ClimberConstants.MOTOR_STATOR_LIMIT;
+    limitConfigs.StatorCurrentLimit = ClimberConstants.CLIMBER_MOTOR_STATOR_LIMIT;
     limitConfigs.StatorCurrentLimitEnable = true;
 
     talonFXConfigurator.apply(limitConfigs);
@@ -50,11 +48,11 @@ public class ClimberIOHardware {
 
   // getters
   public double getPosition() {
-    return m_positionSignal.refresh().getValue().in(Revolutions)*ClimberConstants.METERS_PER_ROTATION;
+    return m_positionSignal.refresh().getValue().in(Revolutions)*ClimberConstants.CLIMBER_METERS_PER_ROTATION;
   }
 
   public double getVelocity() {
-    return m_velocitySignal.refresh().getValue().in(RevolutionsPerSecond)*ClimberConstants.METERS_PER_ROTATION;
+    return m_velocitySignal.refresh().getValue().in(RevolutionsPerSecond)*ClimberConstants.CLIMBER_METERS_PER_ROTATION;
   }
 
   public double getVoltage() {
@@ -83,8 +81,11 @@ public class ClimberIOHardware {
     SmartDashboard.putNumber("climber/voltage", value);
   }
 
-  public void setVelocityVoltage(double value) {
-    m_climberMotor.setControl(new VelocityVoltage(value));
-    SmartDashboard.putNumber("climber/velocity voltage", value);
+  public void setVelocityVoltage(double velocity) {
+    m_climberMotor.setControl(new VelocityVoltage(velocity));
+  }
+
+  public void setVelocityVoltage(VelocityVoltage request) {
+    m_climberMotor.setControl(request);
   }
 }

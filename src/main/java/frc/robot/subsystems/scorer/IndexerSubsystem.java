@@ -2,48 +2,40 @@ package frc.robot.subsystems.scorer;
 
 import com.ctre.phoenix6.controls.VelocityVoltage;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import frc.robot.Constants.ScorerConstants;
+import frc.robot.subsystems.MechanismsSubsystemBase;
 
-public class IndexerSubsystem extends SubsystemBase {
+
+public class IndexerSubsystem extends MechanismsSubsystemBase {
   private final IndexerIOHardware m_IO = new IndexerIOHardware(ScorerConstants.INDEXER_MOTOR_ID);
 
   public IndexerSubsystem() {
+    super("indexer");
     m_IO.resetPosition();
   }
 
-  public Command runIndexer(double velocity) {
-    return this.run(() -> {
-        m_IO.setVoltage(velocity);
-        SmartDashboard.putNumber("indexer/input velocity", velocity);
-    });
+  protected void setVoltage(double volts) {
+    m_IO.setVoltage(volts);
   }
 
-  public Command runIndexerPID(double velocity) {
-    return this.run(() -> {
-        m_IO.setVelocityVoltage(velocity);
-        SmartDashboard.putNumber("indexer/input velocity", velocity);
-    });
+  @Override
+  protected void runClosedLoopVelocity(double velocity) {
+    VelocityVoltage request = new VelocityVoltage(velocity)
+    .withEnableFOC(ScorerConstants.INDEXER_ENABLE_FOC)
+    .withFeedForward(ScorerConstants.INDEXER_FEED_FORWARD)
+    .withSlot(ScorerConstants.INDEXER_SLOT)
+    .withOverrideBrakeDurNeutral(ScorerConstants.INDEXER_OVERRIDE_BRAKE_DUR_NEUTRAL);
+    m_IO.setVelocityVoltage(request);
   }
 
-  public Command runIndexerOff() {
-    return new RunCommand(() -> {
-        m_IO.setVoltage(0);
-        SmartDashboard.putBoolean("indexer/off", true);
-      },
-      this
-    );
+  public void resetPosition() {
+    m_IO.resetPosition();
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putData("indexer/subsystem", this);
+    super.periodic();
     SmartDashboard.putNumber("indexer/current", m_IO.getCurrent());
   }
 }

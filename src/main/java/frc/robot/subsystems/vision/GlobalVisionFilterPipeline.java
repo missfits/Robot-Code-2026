@@ -28,6 +28,10 @@ public class GlobalVisionFilterPipeline {
       return allFilters.stream().map(Filter::name).toList();
   }
 
+  public int getNumFilters() {
+    return allFilters.size();
+  }
+
   // Adds a new filter to the pipeline
   public void addFilter(String name, GlobalVisionFilter filter) {
       allFilters.add(new Filter(name, filter));
@@ -38,12 +42,11 @@ public class GlobalVisionFilterPipeline {
    * Runs all enabled filters on a reading.
    * Logs each filter's result to SmartDashboard.
    *
-   * @param reading The camera reading to validate
    * @param allReadings All camera readings to compare against
-   * @return true if reading passes ALL enabled filters, false otherwise
+   * @return new list of all valid camera readings!
    */
-  public boolean runAll(CameraReading reading, List<CameraReading> allReadings) {
-    String cameraName = reading.cameraName();
+  public List<CameraReading> runAll(List<CameraReading> allReadings) {
+    List<CameraReading> validReadings = allReadings;
 
     // loop through all filterMethods + runs on reading
     for (Filter filterMethod : allFilters) {
@@ -53,21 +56,21 @@ public class GlobalVisionFilterPipeline {
       // If filter not enabled skip
       if (!isEnabled(filterName)) {
         // posts "skipped" to SmartDashboard (NOTE: this is DIFFERENT from the filter "enabled" toggles)
-        SmartDashboard.putString(m_logPrefix + cameraName + "/" + filterName + "/result", "skipped");
+        SmartDashboard.putString(m_logPrefix + "allCameras/" + filterName + "/result", "skipped");
         continue;
       }
 
-      boolean passed = filter.isValid(reading, allReadings);
+      validReadings = filter.validReadings(validReadings);
 
       // log result to SmartDashboard
-      SmartDashboard.putString(m_logPrefix + cameraName + "/" + filterName + "/result", (passed ? "passed" : "failed"));
+      SmartDashboard.putString(m_logPrefix + "allCameras/" + filterName + "/result", (validReadings.size() > 0 ? "valid readings" : "no valid readings"));
 
       // short circuit if ANY filter fails
-      if (!passed) {
-          return false;
+      if (validReadings.size() == 0) {
+          return validReadings;
       }
     }
-    return true;
+    return validReadings;
   }
 
 

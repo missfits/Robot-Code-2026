@@ -7,11 +7,20 @@ package frc.robot;
 import frc.robot.commands.Autos;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
+import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrainSim;
 import frc.robot.subsystems.drivetrain.DrivetrainCommandFactory;
 import frc.robot.subsystems.intake.IntakeCommandFactory;
 import frc.robot.subsystems.scorer.ScorerCommandFactory;
+import frc.robot.subsystems.vision.LocalVisionFilterPipeline;
+import frc.robot.subsystems.vision.GlobalVisionFilterPipeline;
 import frc.robot.subsystems.vision.LocalizationCamera;
+import frc.robot.subsystems.vision.LocalizationCamera.CameraReading;
 import frc.robot.subsystems.vision.VisionSubsystem;
+import frc.robot.subsystems.vision.filtering.GlobalCrossCameraConsensusFilter;
+import frc.robot.subsystems.vision.filtering.LocalCameraPoseConsistencyDistanceToFusedPoseFilter;
+import frc.robot.subsystems.vision.filtering.LocalCameraPoseConsistencyFilter;
+import frc.robot.subsystems.vision.filtering.LocalDistanceToFusedPoseFilter;
+import frc.robot.subsystems.vision.filtering.LocalPoseZRollPitchFilter;
 import frc.robot.subsystems.drivetrain.Telemetry;
 import frc.robot.subsystems.intake.RollerSubsystem;
 import frc.robot.subsystems.scorer.ShooterSubsystem;
@@ -38,10 +47,13 @@ import edu.wpi.first.math.util.Units;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
+import org.ironmaple.simulation.SimulatedArena;
 import org.photonvision.EstimatedRobotPose;
 
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import com.pathplanner.lib.auto.NamedCommands;
@@ -87,6 +99,7 @@ public class RobotContainer {
     // Configure trigger bindings
     configureBindings();
 
+
     // Configure auto builder
     createNamedCommands();
     m_autoChooser = AutoBuilder.buildAutoChooser("drive forward 1m");
@@ -110,26 +123,49 @@ public class RobotContainer {
       m_drivetrainCommandFactory.defaultDrive(m_driverJoystick, () -> false)
     );
 
-    // Drive in slowmode while right trigger is pressed
+    // Drive in slowmode while right bumper is pressed
     m_driverJoystick.rightBumper().whileTrue(
       m_drivetrainCommandFactory.defaultDrive(m_driverJoystick, () -> true)
     );
 
+    if (Utils.isSimulation()){
+      Consumer<SwerveDriveState> telemetry =  ((CommandSwerveDrivetrainSim) m_drivetrain)
+          .getSimTelemetryConsumer().andThen(logger::telemeterize);
+      m_drivetrain.registerTelemetry(telemetry);
+    }
+    else{
+       m_drivetrain.registerTelemetry(logger::telemeterize);
+    }
+   
     // TODO: change -- this is for testing 
     m_driverJoystick.y().whileTrue(
       m_drivetrainCommandFactory.snapToAngle(m_driverJoystick, 0)
     );
 
+    // TODO: change -- this is for testing 
+    m_driverJoystick.b().onTrue(m_drivetrainCommandFactory.snapToTarget(m_driverJoystick, () -> new Pose2d(Units.inchesToMeters(182), Units.inchesToMeters(182), new Rotation2d())));
+
+
     // reset the field-centric heading on a button press
     m_driverJoystick.a().onTrue(m_drivetrain.runOnce(() -> m_drivetrain.resetRotation(new Rotation2d(DriverStation.getAlliance().equals(Alliance.Blue) ? 0 : Math.PI))));
-  
-    m_driverJoystick.b().onTrue(m_drivetrainCommandFactory.snapToTarget(m_driverJoystick, () -> new Pose2d(Units.inchesToMeters(182), Units.inchesToMeters(182), new Rotation2d())));
 
 
     m_driverJoystick.povCenter().negate().onTrue(new InstantCommand(() -> resetControllerConstantsSmartDashboard()));
 
 
-    m_drivetrain.registerTelemetry(logger::telemeterize);
+    // --- CONFIGURE VISION FILTERING ---
+    GlobalVisionFilterPipeline globalPipeline = new GlobalVisionFilterPipeline();
+    LocalVisionFilterPipeline localPipeline = new LocalVisionFilterPipeline();
+
+    // Add global filters
+    globalPipeline.addFilter("crossCameraConsensus", new GlobalCrossCameraConsensusFilter());
+
+     // Add local filters
+    localPipeline.addFilter("poseZRollPitch", new LocalPoseZRollPitchFilter());
+    localPipeline.addFilter("LocalCameraPoseConsistencyDistanceToFusedPose", new LocalCameraPoseConsistencyDistanceToFusedPoseFilter(m_drivetrain));
+
+    m_vision.setGlobalFilterPipeline(globalPipeline);
+    m_vision.setLocalFilteringPipeline(localPipeline);
   }
 
   private void logToSmartDashboard() {
@@ -170,6 +206,7 @@ public class RobotContainer {
 
     m_roller.resetControllers();
     m_shooter.resetControllers();
+
   }
 
   /**
@@ -188,78 +225,34 @@ public class RobotContainer {
 
 
   public void updatePoseEst() {
-    List<LocalizationCamera> cameras = m_vision.getLocalizationCameras();
+    List<CameraReading> allReadings = m_vision.getValidCameraReadings();
 
-    for (LocalizationCamera cam : cameras){
-      updatePoseEst(cam);
+    for (CameraReading reading : allReadings){
+      EstimatedRobotPose robotPose = reading.robotPose();
+
+      // Sample drivetrain fusedPose before updating
+      SmartDashboard.putNumberArray("fusedVision/" + reading.cameraName() + "/drivetrainBeforeUpdate", new double [] {
+      m_drivetrain.getState().Pose.getX(), m_drivetrain.getState().Pose.getY(), m_drivetrain.getState().Pose.getRotation().getRadians()});
+
+      // Update fusedPose
+      m_drivetrain.setVisionMeasurementStdDevs(reading.stdDevs());
+      m_drivetrain.addVisionMeasurement(robotPose.estimatedPose.toPose2d(), robotPose.timestampSeconds);
+
+      // sample drivetrain fusedPose after updating
+      SmartDashboard.putNumberArray("fusedVision/" + reading.cameraName() + "/drivetrainAfterUpdate", new double [] {
+        m_drivetrain.getState().Pose.getX(), m_drivetrain.getState().Pose.getY(), m_drivetrain.getState().Pose.getRotation().getRadians()});
     }
     
     m_actualField.setRobotPose(m_drivetrain.getState().Pose);
     SmartDashboard.putData("fusedVision/" + "actual field/", m_actualField);
   }
+/*   public void displaySimFieldToAdvantageScope() {
+    if (Constants.currentMode != Constants.Mode.SIM) return;
 
-  public void updatePoseEst(LocalizationCamera camera){
-    var optionalReading = camera.getCameraReading();
-    if (!optionalReading.isPresent()) {
-      SmartDashboard.putBoolean("fusedVision/" + camera.getCameraName() + "filtering/" + "isCameraReadingPresentUpdatePoseEst", false);
-      return;
-    }
+    SimulatedArena.getInstance().simulationPeriodic();
+    Pose3d(driveSimulation.getSimulatedDriveTrainPose()));
+    // The pose by maplesim, including collisions with the field. 
+    // See https://www.chiefdelphi.com/t/simulated-robot-goes-through-walls-with-maplesim/508663.
 
-    SmartDashboard.putBoolean("fusedVision/" + camera.getCameraName() + "filtering/" + "isCameraReadingPresentUpdatePoseEst", true);
-
-    var cameraReading = optionalReading.get();
-    EstimatedRobotPose robotPose = cameraReading.robotPose();
-
-    Pose3d estPose3d = robotPose.estimatedPose; // estimated robot pose of vision
-    Pose2d estPose2d = estPose3d.toPose2d();
-
-    // check if new estimated pose and previous pose are less than 2 meters apart (fused poseEst)
-    double distance = estPose2d.getTranslation().getDistance(m_drivetrain.getState().Pose.getTranslation());
-    SmartDashboard.putBoolean("fusedVision/" + camera.getCameraName()  + "/filtering" + "/isDistanceBetweenVisionAndActualPoseLessThanMax", distance < VisionConstants.MAX_VISION_POSE_DISTANCE);
-
-
-    SmartDashboard.putNumber("fusedVision/" + camera.getCameraName() + "/distanceBetweenVisionAndActualPose", distance);
-    SmartDashboard.putBoolean("fusedVision/" + camera.getCameraName() + "/areRecentCameraPosesConsistent", camera.areRecentCameraPosesConsistent());
-    SmartDashboard.putString("fusedVision/" + camera.getCameraName() + "/filterState", "distance-filtering");
-
-    /*
-     * Only accepts vision measurement from ONE CAMERA if distance between estimated vision pose
-     *  and previous fused pose is less than MAX_VISION_POSE_DISTANCE
-     * OR if the last three vision poses from ONE CAMERA are consistent with each other.
-     */
-    if (distance < VisionConstants.MAX_VISION_POSE_DISTANCE || camera.areRecentCameraPosesConsistent()) {
-      m_drivetrain.setVisionMeasurementStdDevs(cameraReading.stdDevs());
-
-      // sample drivetrain fusedPose before updating
-      Optional<Pose2d> samplePose = m_drivetrain.samplePoseAt(Utils.fpgaToCurrentTime(robotPose.timestampSeconds));
-
-      if (samplePose.isPresent()){
-        SmartDashboard.putNumberArray("fusedVision/" + camera.getCameraName() + "/samplePose",  new double [] {
-          samplePose.get().getX(), samplePose.get().getY(), samplePose.get().getRotation().getRadians()});
-      }
-    
-      SmartDashboard.putNumberArray("fusedVision/" + camera.getCameraName() + "/drivetrainBeforeUpdate", new double [] {
-      m_drivetrain.getState().Pose.getX(), m_drivetrain.getState().Pose.getY(), m_drivetrain.getState().Pose.getRotation().getRadians()});
-
-    
-      m_drivetrain.addVisionMeasurement(estPose2d, robotPose.timestampSeconds);
-      camera.updateField(estPose2d);
-
-      // sample drivetrain fusedPose after updating
-      SmartDashboard.putNumberArray("fusedVision/" + camera.getCameraName() + "/drivetrainAfterUpdate", new double [] {
-        m_drivetrain.getState().Pose.getX(), m_drivetrain.getState().Pose.getY(), m_drivetrain.getState().Pose.getRotation().getRadians()});
-        
-      SmartDashboard.putNumberArray("fusedVision/" + camera.getCameraName() + "/visionPose2dFiltered" + camera.getCameraName(), new double[] {estPose2d.getX(), estPose2d.getY(), estPose2d.getRotation().getRadians()});
-
-      SmartDashboard.putNumberArray("fusedVision/" + camera.getCameraName() + "/visionPose3D", new double[] {
-        estPose3d.getX(),
-        estPose3d.getY(),
-        estPose3d.getZ(),
-        estPose3d.getRotation().toRotation2d().getRadians()
-      }); // post vision 3d to smartdashboard
-      SmartDashboard.putString("fusedVision/" + camera.getCameraName() + "/filterState", "success");
-    } else {
-        SmartDashboard.putString("fusedVision/" + camera.getCameraName() + "/filterState", "failed-distance-filtering");
-    }
-  }
+  } */
 }

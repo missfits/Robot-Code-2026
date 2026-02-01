@@ -1,51 +1,45 @@
 package frc.robot.subsystems.intake;
 
-import edu.wpi.first.math.MathUtil;
+import com.ctre.phoenix6.controls.VelocityVoltage;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.subsystems.MechanismsSubsystemBase;
 
-public class RollerSubsystem extends SubsystemBase {
+public class RollerSubsystem extends MechanismsSubsystemBase {
   private final RollerIOHardware m_IO = new RollerIOHardware(IntakeConstants.ROLLER_MOTOR_ID);
 
   public RollerSubsystem() {
+    super("roller");
     m_IO.resetPosition();
   }
 
-  public Command runRoller(double velocity) {
-    return this.run(() -> {
-        m_IO.setVoltage(velocity);
-        SmartDashboard.putNumber("roller/input velocity", velocity);
-    });
+  protected void setVoltage(double volts) {
+    m_IO.setVoltage(volts);
   }
 
-  public Command runRollerPID(double velocity) {
-    return this.run(() -> {
-        m_IO.setVelocityVoltage(velocity);
-        SmartDashboard.putNumber("roller/input velocity", velocity);
-    });
-  }
-
-  public Command runRollerOff() {
-    return new RunCommand(() -> {
-        m_IO.setVoltage(0);
-      },
-      this
-    );
+  @Override
+  protected void runClosedLoopVelocity(double velocity) {
+    VelocityVoltage request = new VelocityVoltage(velocity)
+    .withEnableFOC(IntakeConstants.PIVOT_ENABLE_FOC)
+    .withFeedForward(IntakeConstants.PIVOT_FEED_FORWARD)
+    .withSlot(IntakeConstants.PIVOT_SLOT)
+    .withOverrideBrakeDurNeutral(IntakeConstants.PIVOT_OVERRIDE_BRAKE_DUR_NEUTRAL);
+    m_IO.setVelocityVoltage(request);
   }
 
   public void resetControllers() {
     m_IO.resetSlot0Gains();
   }
 
-  @Override
-  public void periodic() {
-    SmartDashboard.putData("roller/subsystem", this);
-    SmartDashboard.putNumber("roller/current", m_IO.getCurrent());
+  public void resetPosition() {
+    m_IO.resetPosition();
   }
 
+  @Override
+  public void periodic() {
+    super.periodic();
+    SmartDashboard.putNumber("roller/current", m_IO.getCurrent());
+  }
 }

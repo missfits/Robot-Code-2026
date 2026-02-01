@@ -147,6 +147,19 @@ public final class Constants {
   }
 
   public static class IntakeConstants {
+    //Velocity voltage constants
+    public static final boolean ROLLER_ENABLE_FOC = false;
+    public static final boolean PIVOT_ENABLE_FOC = false;
+
+    public static final double ROLLER_FEED_FORWARD = 0.0;
+    public static final double PIVOT_FEED_FORWARD = 0.0;
+
+    public static final int ROLLER_SLOT = 0;
+    public static final int PIVOT_SLOT = 0;
+
+    public static final boolean ROLLER_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
+    public static final boolean PIVOT_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
+
     // Motor IDs
     public static final int ROLLER_MOTOR_ID = 50;
     public static final int PIVOT_MOTOR_ID = 0;
@@ -175,6 +188,23 @@ public final class Constants {
   }
 
   public static class ScorerConstants {
+    //Velocity voltage constants
+    public static final boolean INFLUENCER_ENABLE_FOC = false;
+    public static final boolean FOLLOWER_ENABLE_FOC = false;
+    public static final boolean INDEXER_ENABLE_FOC = false;
+
+    public static final double INFLUENCER_FEED_FORWARD = 0.0;
+    public static final double FOLLOWER_FEED_FORWARD = 0.0;
+    public static final double INDEXER_FEED_FORWARD = 0.0;
+
+    public static final int INFLUENCER_SLOT = 0;
+    public static final int FOLLOWER_SLOT = 0;
+    public static final int INDEXER_SLOT = 0;
+
+    public static final boolean INFLUENCER_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
+    public static final boolean FOLLOWER_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
+    public static final boolean INDEXER_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
+
     // Motor IDs
     public static final int INFLUENCER_MOTOR_ID = 51;
     public static final int FOLLOWER_MOTOR_ID = 52;
@@ -202,25 +232,37 @@ public final class Constants {
     public static double FOLLOWER_OUTTAKE_MOTOR_VELOCITY = 0;
     public static final double FOLLOWER_SHOOTER_BACK_VELOCITY = 0;
 
-    // Influencer PID gains
-    public static double INFLUENCER_kP = 0;
+    // Influencer PID/FF gains
+    public static double INFLUENCER_kP = 0.1;
     public static double INFLUENCER_kI = 0;
     public static double INFLUENCER_kD = 0;
+    public static double INFLUENCER_kS = 0.2;
+    public static double INFLUENCER_kV = 0.115;
+    public static double INFLUENCER_kA = 0;
 
-    // Follower PID gains
+    // Follower PID/FF gains
     public static double FOLLOWER_kP = 0;
     public static double FOLLOWER_kI = 0;
     public static double FOLLOWER_kD = 0;
+    public static double FOLLOWER_kS = 0;
+    public static double FOLLOWER_kV = 0;
+    public static double FOLLOWER_kA = 0;
 
     // Timing
     public static final double RUN_SHOOTER_TIME = 0;
   }
 
   public static class ClimberConstants {
-    public static final int MECHANISM_MOTOR_ID = 0;
-    public static final int MOTOR_STATOR_LIMIT = 0;
+    //Velocity voltage constants
+    public static final boolean CLIMBER_ENABLE_FOC = false;
+    public static final double CLIMBER_FEED_FORWARD = 0.0;
+    public static final int CLIMBER_SLOT = 0;
+    public static final boolean CLIMBER_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
 
-    public static final double METERS_PER_ROTATION = 0;
+    public static final int CLIMBER_MOTOR_ID = 0;
+    public static final int CLIMBER_MOTOR_STATOR_LIMIT = 40;
+
+    public static final double CLIMBER_METERS_PER_ROTATION = 0;
   }
   
   public static class VisionConstants {
@@ -234,7 +276,9 @@ public final class Constants {
     // max average distance and speed to use for local filters
     public static final double MAX_AVG_DIST_BETWEEN_LAST_EST_POSES = 0.3; // in meters 
     public static final double MAX_AVG_SPEED_BETWEEN_LAST_EST_POSES = MAX_AVG_DIST_BETWEEN_LAST_EST_POSES * 50.;
+    
     public static final double MAX_VISION_READING_DISTANCE = 0.5; // in meters
+
 
     // min number of camera readings to use for global filters
     public static final int MIN_NUM_CAMERA_READINGS = 2; // NEEDS TO BE CONFIRMED W/ LOGIC 1/24

@@ -35,6 +35,8 @@ public class LocalizationCamera {
   private final Field2d m_estPoseField = new Field2d(); // field pose estimator
   private PhotonPoseEstimator poseEstimator;
 
+  private LocalVisionFilterPipeline m_filterPipeline = new LocalVisionFilterPipeline(); // filtering pipeline for each camera, initalizes as empty pipeline
+
   private LinkedList<CameraReading> m_lastReadings = new LinkedList<>();
 
   private Optional<CameraReading> m_currentReading = Optional.empty();
@@ -49,6 +51,7 @@ public class LocalizationCamera {
     m_cameraName = cameraName;
     m_camera = new PhotonCamera(m_cameraName);
     m_logString = "vision/" + m_cameraName;
+
     poseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, robotToCam);
 
     pose2dPublisher = NetworkTableInstance.getDefault()
@@ -71,9 +74,14 @@ public class LocalizationCamera {
   public LinkedList<CameraReading> getLastCameraReadings() {
     return m_lastReadings;
   }
-  
+
   public Field2d getEstField(){
     return m_estPoseField;
+  }
+
+  // --- filtering methods ---
+  public void setFilterPipeline(LocalVisionFilterPipeline filterPipeline) {
+    m_filterPipeline = filterPipeline;
   }
 
   // Updates the field simulation in elastic
@@ -118,23 +126,42 @@ public class LocalizationCamera {
   private Optional<CameraReading> calculateNewCameraReading() {
     var results = m_camera.getAllUnreadResults(); // raw camera data
 
+    /*
+     * NOTE: minor inefficiency by updating the toggles for each camera even though they share
+     *       the same pipeline instance. BUT this ensures pipeline isn't leaked outside of
+     *       this class.
+     */
+    if (m_filterPipeline.getNumFilters() > 0) {
+      // Get most recent filter toggle states from SmartDashboard
+      m_filterPipeline.updateSmartDashboardToggles();
+    }
+
     if (!results.isEmpty()) {
       var result = results.get(results.size() - 1); // latest camera reading
 
       var poseEstimatorOutput = poseEstimator.update(result);
       
-      // if present + not jumpy when compared to last 3 camera readings,
-      // update instance var m_currentReading and add to m_lastReadings
+      // If present, create new CameraReading and run through pose ambiguity + local filter pipeline.
       if (poseEstimatorOutput.isPresent()) {
+
         // update std devs (will account for multi + single tag)
         var stdDevs = calculateEstimationStdDevs(poseEstimatorOutput.get(), result.getTargets());
         var newReading = new CameraReading(m_cameraName, poseEstimatorOutput.get(), stdDevs, result.getTimestampSeconds(), result.getTargets().size());
 
         // return empty if single tag has high pose ambiguity
+        // NOTE: doesn't make sense as a LocalVisionFilter bc pose ambiguity is attached to target, not camera reading
         if (newReading.numTargets() == 1 && result.getBestTarget().getPoseAmbiguity() > VisionConstants.MAX_POSE_AMBIGUITY) {
           SmartDashboard.putString(m_logString + "/filtering/" + "poseAmbiguity", "sad");
           return Optional.empty();
         }
+
+        // Run all filters on newReading, return empty reading if any fail
+        if (!m_filterPipeline.runAll(newReading, this)) {
+          return Optional.empty();
+        }
+
+        // Passed all filters --> update field simulation for single camera
+        updateField(newReading.robotPose().estimatedPose.toPose2d());
         
         SmartDashboard.putString(m_logString + "/filtering/" + "poseAmbiguity", "happy");
         return Optional.of(newReading);
@@ -177,47 +204,6 @@ public class LocalizationCamera {
       SmartDashboard.putString("vision/" + m_cameraName + "/standardDeviation-state", "good :)");
       return unscaledStdDevs.times(1 + (avgDist * avgDist / VisionConstants.STD_DEV_SCALER));
     }
-  }
-
-  /*
-   * returns true if the average speed between the last 3 camera readings (FROM ONE CAMREA)
-   * is less than the max average speed.
-   * goal is to check if the last three readings are smooth + consistent. 
-   */
-  public boolean areRecentCameraPosesConsistent() {
-    if (m_lastReadings.size() < VisionConstants.NUM_LAST_EST_POSES) {
-      SmartDashboard.putString(m_logString + "/filtering/" + "areRecentCameraPosesConsistent", "skipped");
-      return false;
-    }
-
-    double totalDistance = 0;
-    double totalTime = 0;
-
-    for (int i = 0; i < m_lastReadings.size() - 1; i++) {
-      // add distance between ith pose and i+1th pose
-      Pose2d pose1 = m_lastReadings.get(i).robotPose.estimatedPose.toPose2d();
-      Pose2d pose2 = m_lastReadings.get(i + 1).robotPose.estimatedPose.toPose2d();
-      
-      totalDistance += Math.abs(pose1.minus(pose2).getTranslation().getNorm());
-      totalTime += Math.abs(m_lastReadings.get(i).timestampSeconds - m_lastReadings.get(i+1).timestampSeconds);
-    }
-
-    // divide by number of intervals (n-1)
-    double avgDist = totalDistance / (m_lastReadings.size() - 1);
-    double avgTime = totalTime / (m_lastReadings.size() - 1);
-    if (avgTime == 0){
-      SmartDashboard.putString(m_logString + "/filtering/" + "areRecentCameraPosesConsistent", "discard");
-      return false;
-    }
-    double avgSpeed = avgDist/avgTime;
-
-    SmartDashboard.putNumber("vision/" + m_cameraName + "/avgDistBetweenLastEstPoses", avgDist);
-    SmartDashboard.putNumber("vision/" + m_cameraName + "/avgSpeedBetweenLastEstPoses", avgSpeed);
-    SmartDashboard.putNumber("vision/" + m_cameraName + "/avgTimeBetweenLastEstPoses", avgTime);
-
-    SmartDashboard.putString(m_logString + "/filtering/" + "areRecentCameraPosesConsistent", avgSpeed < VisionConstants.MAX_AVG_SPEED_BETWEEN_LAST_EST_POSES ? "good" : "bad");
-
-    return avgSpeed < VisionConstants.MAX_AVG_SPEED_BETWEEN_LAST_EST_POSES;
   }
 }
 

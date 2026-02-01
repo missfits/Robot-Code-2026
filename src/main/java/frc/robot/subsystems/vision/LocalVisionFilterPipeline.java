@@ -28,6 +28,10 @@ public class LocalVisionFilterPipeline {
       return allFilters.stream().map(Filter::name).toList();
   }
 
+  public int getNumFilters() {
+    return allFilters.size();
+  }
+
   // Adds a new filter to the pipeline
   public void addFilter(String name, LocalVisionFilter filter) {
       allFilters.add(new Filter(name, filter));
@@ -88,8 +92,8 @@ public class LocalVisionFilterPipeline {
     for (Filter filter : allFilters) {
         String filterName = filter.name();
 
-        // read toggle enabled data from SmartDashboard
-        // if it doesn't find the filter, it defaults to true (enabled)
+        // Read toggle enabled data from SmartDashboard
+        // If it doesn't find the filter, it defaults to true (enabled)
         // (^^ important so that new filters default to on)
         boolean currentState = SmartDashboard.getBoolean(m_logPrefix + filterName + "/enabled", true);
         enabledFilters.put(filterName, currentState);

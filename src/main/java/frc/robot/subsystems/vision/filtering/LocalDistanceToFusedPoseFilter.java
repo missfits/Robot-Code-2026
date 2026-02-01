@@ -10,7 +10,7 @@ import frc.robot.subsystems.vision.LocalVisionFilter;
 import frc.robot.subsystems.vision.LocalizationCamera;
 import frc.robot.subsystems.vision.LocalizationCamera.CameraReading;
 
-public class LocalDistanceFilter implements LocalVisionFilter{
+public class LocalDistanceToFusedPoseFilter implements LocalVisionFilter{
     
   private final CommandSwerveDrivetrain drivetrain;
 
@@ -18,7 +18,7 @@ public class LocalDistanceFilter implements LocalVisionFilter{
    * Filter to check if the distance between the estimaed pose of a given camera
    *    and the current robot pose (fused drivetrain pose) is less than max distance constant.
    */
-  public LocalDistanceFilter(CommandSwerveDrivetrain drivetrain) {
+  public LocalDistanceToFusedPoseFilter(CommandSwerveDrivetrain drivetrain) {
     this.drivetrain = drivetrain; 
   }
 
@@ -29,12 +29,9 @@ public class LocalDistanceFilter implements LocalVisionFilter{
     EstimatedRobotPose robotPose = reading.robotPose();
     Pose2d estPose2d = robotPose.estimatedPose.toPose2d();
 
-    // check if new estimated pose and previous pose are less than 2 meters apart (fused poseEst)
+    // check if new estimated pose and latest drivetrainpose are less than MAX_VISION_POSE_DISTANCE
     double distance = estPose2d.getTranslation().getDistance(drivetrain.getState().Pose.getTranslation());
 
-    if (distance > VisionConstants.MAX_VISION_POSE_DISTANCE) {
-      return false;
-    }
-    return true;
+    return distance <= VisionConstants.MAX_VISION_POSE_DISTANCE;
   }
 }
