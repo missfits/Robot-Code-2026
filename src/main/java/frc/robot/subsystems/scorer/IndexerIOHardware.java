@@ -10,28 +10,28 @@ public class IndexerIOHardware extends MechanismsIOHardwareBase {
   }
 
   public double getPositionRadians() {
-    return Math.toRadians(getPositionRevolutions() * ScorerConstants.INDEXER_DEGREES_PER_ROTATION);
+    return Math.toRadians(getPositionRevolutions() * ScorerConstants.INDEXER_DEGREES_PER_REVOLUTION);
   }
 
   public double getPositionDegrees() {
-    return getPositionRevolutions() * ScorerConstants.INDEXER_DEGREES_PER_ROTATION;
+    return getPositionRevolutions() * ScorerConstants.INDEXER_DEGREES_PER_REVOLUTION;
   }
 
   public double getVelocityRadiansPerSecond() {
-    return Math.toRadians(getMotorVelocityRevolutionsPerSecond() * ScorerConstants.INDEXER_DEGREES_PER_ROTATION);
+    return Math.toRadians(getMotorVelocityRevolutionsPerSecond() * ScorerConstants.INDEXER_DEGREES_PER_REVOLUTION);
   }
 
   public double getVelocityDegreesPerSecond() {
-    return getMotorVelocityRevolutionsPerSecond() * ScorerConstants.INDEXER_DEGREES_PER_ROTATION;
+    return getMotorVelocityRevolutionsPerSecond() * ScorerConstants.INDEXER_DEGREES_PER_REVOLUTION;
   }
 
   public void setPositionRadians(double radians) {
-    double rotations = Math.toRadians(radians / ScorerConstants.INDEXER_DEGREES_PER_ROTATION);
-    setPositionRotations(rotations);
+    double revolutions = Math.toRadians(radians / ScorerConstants.INDEXER_DEGREES_PER_REVOLUTION);
+    setPositionRevolutions(revolutions);
   }
 
   public void setPositionDegrees(double degrees) {
-    double rotations = degrees / ScorerConstants.INDEXER_DEGREES_PER_ROTATION;
-    setPositionRotations(rotations);
+    double revolutions = degrees / ScorerConstants.INDEXER_DEGREES_PER_REVOLUTION;
+    setPositionRevolutions(revolutions);
   }
 }

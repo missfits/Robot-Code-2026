@@ -30,28 +30,28 @@ public class ShooterFollowerIOHardware extends MechanismsIOHardwareBase {
   }
 
   public double getPositionRadians() {
-    return Math.toRadians(getPositionRevolutions() * ScorerConstants.FOLLOWER_DEGREES_PER_ROTATION);
+    return Math.toRadians(getPositionRevolutions() * ScorerConstants.FOLLOWER_DEGREES_PER_REVOLUTION);
   }
 
   public double getPositionDegrees() {
-    return getPositionRevolutions() * ScorerConstants.FOLLOWER_DEGREES_PER_ROTATION;
+    return getPositionRevolutions() * ScorerConstants.FOLLOWER_DEGREES_PER_REVOLUTION;
   }
 
   public double getVelocityRadiansPerSecond() {
-    return Math.toRadians(getMotorVelocityRevolutionsPerSecond() * ScorerConstants.FOLLOWER_DEGREES_PER_ROTATION);
+    return Math.toRadians(getMotorVelocityRevolutionsPerSecond() * ScorerConstants.FOLLOWER_DEGREES_PER_REVOLUTION);
   }
 
   public double getVelocityDegreesPerSecond() {
-    return getMotorVelocityRevolutionsPerSecond() * ScorerConstants.FOLLOWER_DEGREES_PER_ROTATION;
+    return getMotorVelocityRevolutionsPerSecond() * ScorerConstants.FOLLOWER_DEGREES_PER_REVOLUTION;
   }
 
   public void setPositionRadians(double radians) {
-    double rotations = Math.toRadians(radians / ScorerConstants.FOLLOWER_DEGREES_PER_ROTATION);
-    setPositionRotations(rotations);
+    double revolutions = Math.toRadians(radians / ScorerConstants.FOLLOWER_DEGREES_PER_REVOLUTION);
+    setPositionRevolutions(revolutions);
   }
 
   public void setPositionDegrees(double degrees) {
-    double rotations = degrees / ScorerConstants.FOLLOWER_DEGREES_PER_ROTATION;
-    setPositionRotations(rotations);
+    double revolutions = degrees / ScorerConstants.FOLLOWER_DEGREES_PER_REVOLUTION;
+    setPositionRevolutions(revolutions);
   }
 }

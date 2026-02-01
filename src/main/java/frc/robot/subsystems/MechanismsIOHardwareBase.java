@@ -61,12 +61,12 @@ public abstract class MechanismsIOHardwareBase {
     motor.stopMotor();
   }
 
-  protected void setPositionRotations(double rotations) {
-    motor.setPosition(rotations);
+  protected void setPositionRevolutions(double revolutions) {
+    motor.setPosition(revolutions);
   }
 
   public void resetPosition() {
-    setPositionRotations(0);
+    setPositionRevolutions(0);
   }
 
   public void setVoltage(double volts) {
@@ -74,9 +74,9 @@ public abstract class MechanismsIOHardwareBase {
     motor.setControl(new VoltageOut(volts));
   }
 
-  public void setVelocityVoltage(double velocityRotationsPerSecond) {
-    SmartDashboard.putNumber(logPrefix + "targetVelocityRevolutionsPerSecond", velocityRotationsPerSecond);
-    motor.setControl(new VelocityVoltage(velocityRotationsPerSecond));
+  public void setVelocityVoltage(double velocityRevolutionsPerSecond) {
+    SmartDashboard.putNumber(logPrefix + "targetVelocityRevolutionsPerSecond", velocityRevolutionsPerSecond);
+    motor.setControl(new VelocityVoltage(velocityRevolutionsPerSecond));
   }
 
   public void setVelocityVoltage(VelocityVoltage request) {

@@ -31,28 +31,28 @@ public class ShooterInfluencerIOHardware extends MechanismsIOHardwareBase {
   }
 
   public double getPositionRadians() {
-    return Math.toRadians(getPositionRevolutions() * ScorerConstants.INFLUENCER_DEGREES_PER_ROTATION);
+    return Math.toRadians(getPositionRevolutions() * ScorerConstants.INFLUENCER_DEGREES_PER_REVOLUTION);
   }
 
   public double getPositionDegrees() {
-    return getPositionRevolutions() * ScorerConstants.INFLUENCER_DEGREES_PER_ROTATION;
+    return getPositionRevolutions() * ScorerConstants.INFLUENCER_DEGREES_PER_REVOLUTION;
   }
 
   public double getVelocityRadiansPerSecond() {
-    return Math.toRadians(getMotorVelocityRevolutionsPerSecond() * ScorerConstants.INFLUENCER_DEGREES_PER_ROTATION);
+    return Math.toRadians(getMotorVelocityRevolutionsPerSecond() * ScorerConstants.INFLUENCER_DEGREES_PER_REVOLUTION);
   }
 
   public double getVelocityDegreesPerSecond() {
-    return getMotorVelocityRevolutionsPerSecond() * ScorerConstants.INFLUENCER_DEGREES_PER_ROTATION;
+    return getMotorVelocityRevolutionsPerSecond() * ScorerConstants.INFLUENCER_DEGREES_PER_REVOLUTION;
   }
 
   public void setPositionRadians(double radians) {
-    double rotations = Math.toRadians(radians / ScorerConstants.INFLUENCER_DEGREES_PER_ROTATION);
-    setPositionRotations(rotations);
+    double revolutions = Math.toRadians(radians / ScorerConstants.INFLUENCER_DEGREES_PER_REVOLUTION);
+    setPositionRevolutions(revolutions);
   }
 
   public void setPositionDegrees(double degrees) {
-    double rotations = degrees / ScorerConstants.INFLUENCER_DEGREES_PER_ROTATION;
-    setPositionRotations(rotations);
+    double revolutions = degrees / ScorerConstants.INFLUENCER_DEGREES_PER_REVOLUTION;
+    setPositionRevolutions(revolutions);
   }
 }
