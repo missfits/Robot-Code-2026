@@ -147,7 +147,7 @@ public class RobotContainer {
 
 
     // reset the field-centric heading on a button press
-    m_driverJoystick.a().onTrue(m_drivetrain.runOnce(() -> m_drivetrain.resetRotation(new Rotation2d(DriverStation.getAlliance().equals(Alliance.Blue) ? 0 : Math.PI))));
+    m_driverJoystick.a().onTrue(m_drivetrain.runOnce(() -> m_drivetrain.resetRotation(new Rotation2d(DriverStation.getAlliance().get().equals(Alliance.Blue) ? 0 : Math.PI))));
 
 
     m_driverJoystick.povCenter().negate().onTrue(new InstantCommand(() -> resetControllerConstantsSmartDashboard()));
