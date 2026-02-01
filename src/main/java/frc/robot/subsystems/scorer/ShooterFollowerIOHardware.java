@@ -8,7 +8,7 @@ import frc.robot.subsystems.MechanismsIOHardwareBase;
 public class ShooterFollowerIOHardware extends MechanismsIOHardwareBase {
 
   public ShooterFollowerIOHardware(int motorID) {
-    super(motorID, ScorerConstants.FOLLOWER_MOTOR_STATOR_LIMIT);
+    super(motorID, ScorerConstants.FOLLOWER_MOTOR_STATOR_LIMIT, "shooter/follower/");
     resetSlot0Gains();
   }
 

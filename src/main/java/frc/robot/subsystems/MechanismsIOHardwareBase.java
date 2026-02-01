@@ -15,17 +15,20 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public abstract class MechanismsIOHardwareBase {
   protected final TalonFX motor;
+  protected final String logPrefix;
 
   protected final StatusSignal<Angle> positionSignal;
   protected final StatusSignal<AngularVelocity> velocitySignal;
   protected final StatusSignal<Voltage> voltageSignal;
   protected final StatusSignal<Current> currentSignal;
 
-  protected MechanismsIOHardwareBase(int motorID, double statorCurrentLimit) {
+  protected MechanismsIOHardwareBase(int motorID, double statorCurrentLimit, String logPrefix) {
     motor = new TalonFX(motorID);
+    this.logPrefix = logPrefix;
 
     positionSignal = motor.getPosition();
     velocitySignal = motor.getVelocity();
@@ -67,10 +70,12 @@ public abstract class MechanismsIOHardwareBase {
   }
 
   public void setVoltage(double volts) {
+    SmartDashboard.putNumber(logPrefix + "commandedVoltage", volts);
     motor.setControl(new VoltageOut(volts));
   }
 
   public void setVelocityVoltage(double velocityRotationsPerSecond) {
+    SmartDashboard.putNumber(logPrefix + "targetVelocityRevolutionsPerSecond", velocityRotationsPerSecond);
     motor.setControl(new VelocityVoltage(velocityRotationsPerSecond));
   }
 

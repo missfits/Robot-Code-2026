@@ -8,7 +8,7 @@ import frc.robot.subsystems.MechanismsIOHardwareBase;
 public class RollerIOHardware extends MechanismsIOHardwareBase {
 
   public RollerIOHardware(int motorID) {
-    super(motorID, IntakeConstants.ROLLER_MOTOR_STATOR_LIMIT);
+    super(motorID, IntakeConstants.ROLLER_MOTOR_STATOR_LIMIT, "roller/");
     resetSlot0Gains();
   }
 

@@ -6,7 +6,7 @@ import frc.robot.subsystems.MechanismsIOHardwareBase;
 public class PivotIOHardware extends MechanismsIOHardwareBase {
 
   public PivotIOHardware(int motorID) {
-    super(motorID, IntakeConstants.PIVOT_MOTOR_STATOR_LIMIT);
+    super(motorID, IntakeConstants.PIVOT_MOTOR_STATOR_LIMIT, "pivot/");
   }
 
   public double getPositionRadians() {
