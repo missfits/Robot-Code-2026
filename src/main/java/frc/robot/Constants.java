@@ -91,7 +91,7 @@ public final class Constants {
 
           WHEEL_RADIUS_FUDGE_FACTOR = 1.0;
 
-          ROTATION_KP = -5.0;
+          ROTATION_KP = 5.0;
           ROTATION_KI = 0.0;
           ROTATION_KD = 0.0;
 
