@@ -120,12 +120,20 @@ public class RobotContainer {
     // Default drive
     m_drivetrain.setDefaultCommand(
       // Drivetrain will execute this command periodically
-      m_drivetrainCommandFactory.defaultDrive(m_driverJoystick, () -> false)
+      m_drivetrainCommandFactory.defaultDrive(
+        () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
+        () -> new JoystickVals(m_driverJoystick.getRightX(), m_driverJoystick.getRightY()),
+        () -> false
+      )
     );
 
     // Drive in slowmode while right bumper is pressed
     m_driverJoystick.rightBumper().whileTrue(
-      m_drivetrainCommandFactory.defaultDrive(m_driverJoystick, () -> true)
+      m_drivetrainCommandFactory.defaultDrive(
+        () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
+        () -> new JoystickVals(m_driverJoystick.getRightX(), m_driverJoystick.getRightY()),
+        () -> true
+      )
     );
 
     if (Utils.isSimulation()){
@@ -137,13 +145,21 @@ public class RobotContainer {
        m_drivetrain.registerTelemetry(logger::telemeterize);
     }
    
-    // TODO: change -- this is for testing 
+    // TODO: change -- this is for testing
     m_driverJoystick.y().whileTrue(
-      m_drivetrainCommandFactory.snapToAngle(m_driverJoystick, 0)
+      m_drivetrainCommandFactory.snapToAngle(
+        () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
+        0
+      )
     );
 
-    // TODO: change -- this is for testing 
-    m_driverJoystick.b().onTrue(m_drivetrainCommandFactory.snapToTarget(m_driverJoystick, () -> new Pose2d(Units.inchesToMeters(182), Units.inchesToMeters(182), new Rotation2d())));
+    // TODO: change -- this is for testing
+    m_driverJoystick.b().onTrue(
+      m_drivetrainCommandFactory.snapToTarget(
+        () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
+        () -> new Pose2d(Units.inchesToMeters(182), Units.inchesToMeters(182), new Rotation2d())
+      )
+    );
 
 
     // reset the field-centric heading on a button press

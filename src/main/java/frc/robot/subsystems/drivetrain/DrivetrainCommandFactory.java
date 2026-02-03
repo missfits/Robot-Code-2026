@@ -1,20 +1,13 @@
 package frc.robot.subsystems.drivetrain;
 
-import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
 
 import java.util.function.Supplier;
 import java.util.function.BooleanSupplier;
 
-import com.ctre.phoenix6.SignalLogger;
-import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
-import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import com.ctre.phoenix6.swerve.SwerveRequest.FieldCentric;
-import com.ctre.phoenix6.swerve.SwerveRequest.FieldCentricFacingAngle;
 import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
-import com.ctre.phoenix6.swerve.SwerveRequest.PointWheelsAt;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -22,8 +15,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.RobotContainer.JoystickVals;
 
@@ -47,12 +38,15 @@ public class DrivetrainCommandFactory {
     // ----- DEFAULT DRIVE -----
     // Note that X is defined as forward according to WPILib convention,
     // and Y is defined as to the left according to WPILib convention.
-    public Command defaultDrive(CommandXboxController controller, BooleanSupplier slowmodeSupplier) {
+    public Command defaultDrive(Supplier<JoystickVals> translationSupplier, Supplier<JoystickVals> rotationSupplier, BooleanSupplier slowmodeSupplier) {
 
         return m_drivetrain.getCommandFromRequest(() -> {
 
-            JoystickVals shapedTrans = Controls.inputShape(controller.getLeftX(), controller.getLeftY(), true, slowmodeSupplier.getAsBoolean());
-            JoystickVals shapedRot = Controls.inputShape(controller.getRightX(), controller.getRightY(), false, slowmodeSupplier.getAsBoolean());
+            JoystickVals translation = translationSupplier.get();
+            JoystickVals rotation = rotationSupplier.get();
+
+            JoystickVals shapedTrans = Controls.inputShape(translation, true, slowmodeSupplier.getAsBoolean());
+            JoystickVals shapedRot = Controls.inputShape(rotation, false, slowmodeSupplier.getAsBoolean());
 
             SmartDashboard.putNumber("controller/translation x", -shapedTrans.y());
             SmartDashboard.putNumber("controller/translation y", -shapedTrans.x());
@@ -68,11 +62,12 @@ public class DrivetrainCommandFactory {
 
     // ----- SNAP TO ANGLE -----
     // Drives the robot while automatically rotating to face a specified angle
-    public Command snapToAngle(CommandXboxController joystick, double angle) {
+    public Command snapToAngle(Supplier<JoystickVals> translationSupplier, double angle) {
         return m_drivetrain.getCommandFromRequest(() -> {
             SmartDashboard.putNumber("drivetrain/snap to angle", angle);
-            JoystickVals shapedValues = Controls.inputShape(joystick.getLeftX(), joystick.getLeftY(), true, false);
-            
+            JoystickVals translation = translationSupplier.get();
+            JoystickVals shapedValues = Controls.inputShape(translation, true, false);
+
             return m_driveFacingAngle.withVelocityX(-shapedValues.y() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive forward with negative Y (forward)
             .withVelocityY(-shapedValues.x() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive left with negative X (left)
             .withTargetDirection(Rotation2d.fromDegrees(angle));
@@ -98,10 +93,11 @@ public class DrivetrainCommandFactory {
 
     // ---- SNAP TO TARGET -----
     // Drives the robot while automatically rotating to face a target pose
-    public Command snapToTarget(CommandXboxController joystick, Supplier<Pose2d> targetPoseSupplier) {
+    public Command snapToTarget(Supplier<JoystickVals> translationSupplier, Supplier<Pose2d> targetPoseSupplier) {
         return m_drivetrain.getCommandFromRequest(() -> {
 
-            JoystickVals shapedValues = Controls.inputShape(joystick.getLeftX(), joystick.getLeftY(), true, false);
+            JoystickVals translation = translationSupplier.get();
+            JoystickVals shapedValues = Controls.inputShape(translation, true, false);
 
             Pose2d targetPose = targetPoseSupplier.get(); // target pose
 
@@ -132,8 +128,10 @@ public class DrivetrainCommandFactory {
     }
 
     // ----- POINT -----
-    public Command pointWheelsAt(JoystickVals vals) {
-        return m_drivetrain.getCommandFromRequest(() -> 
-            m_point.withModuleDirection(new Rotation2d(-vals.y(), -vals.x())));
+    public Command pointWheelsAt(Supplier<JoystickVals> joystickSupplier) {
+        return m_drivetrain.getCommandFromRequest(() -> {
+            JoystickVals vals = joystickSupplier.get();
+            return m_point.withModuleDirection(new Rotation2d(-vals.y(), -vals.x()));
+        });
     }
 }
