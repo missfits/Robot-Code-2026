@@ -44,9 +44,10 @@ public class DrivetrainCommandFactory {
 
             JoystickVals translation = translationSupplier.get();
             JoystickVals rotation = rotationSupplier.get();
+            boolean slowmode = slowmodeSupplier.getAsBoolean();
 
-            JoystickVals shapedTrans = Controls.inputShape(translation, true, slowmodeSupplier.getAsBoolean());
-            JoystickVals shapedRot = Controls.inputShape(rotation, false, slowmodeSupplier.getAsBoolean());
+            JoystickVals shapedTrans = Controls.inputShape(translation, true, slowmode);
+            JoystickVals shapedRot = Controls.inputShape(rotation, false, slowmode);
 
             SmartDashboard.putNumber("controller/translation x", -shapedTrans.y());
             SmartDashboard.putNumber("controller/translation y", -shapedTrans.x());
