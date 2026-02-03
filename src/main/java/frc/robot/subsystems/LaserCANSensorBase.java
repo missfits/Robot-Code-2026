@@ -39,6 +39,9 @@ public class LaserCANSensorBase extends SubsystemBase {
     if (m_intakeSensorMeasurement != null) {
       SmartDashboard.putNumber("" + m_logPrefix + "/distance", m_intakeSensorMeasurement.distance_mm);
       SmartDashboard.putBoolean("" + m_logPrefix + "/isValid", m_intakeSensorMeasurement.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT);
+      SmartDashboard.putBoolean("" + m_logPrefix + "/hasMeasurement", true);
+    } else {
+      SmartDashboard.putBoolean("" + m_logPrefix + "/hasMeasurement", false);
     }
 
     SmartDashboard.putBoolean("" + m_logPrefix + "/beamBroken", beamBroken());
