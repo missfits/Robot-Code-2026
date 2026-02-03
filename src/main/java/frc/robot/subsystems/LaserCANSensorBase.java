@@ -10,16 +10,23 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 // Class for a LaserCAN sensor
 // acting as a beam break sensor.
 public class LaserCANSensorBase extends SubsystemBase {
+  private static boolean s_tcpBridgeInitialized = false;
+
   private LaserCan m_intakeSensor;
   private LaserCan.Measurement m_intakeSensorMeasurement;
   private String m_logPrefix;
   private double m_minDistance;
 
   public LaserCANSensorBase(int canID, String logPrefix, double minDistanceForBeamBreak) {
-    CanBridge.runTCP(); // allow grapplehook to communicate w/ lasercan:)
+    // Initialize TCP bridge only once for all LaserCAN sensors
+    if (!s_tcpBridgeInitialized) {
+      CanBridge.runTCP(); // allow grapplehook to communicate w/ lasercan:)
+      s_tcpBridgeInitialized = true;
+    }
+
     m_intakeSensor = new LaserCan(canID);
     m_logPrefix = logPrefix;
-    m_minDistance = minDistanceForBeamBreak; 
+    m_minDistance = minDistanceForBeamBreak;
   }
 
   public Trigger beamBrokenTrigger() {
