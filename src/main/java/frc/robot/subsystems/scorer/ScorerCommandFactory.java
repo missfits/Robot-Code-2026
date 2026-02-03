@@ -2,12 +2,15 @@ package frc.robot.subsystems.scorer;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ScorerConstants;
+import frc.robot.subsystems.LaserCANSensorBase;
 
 public class ScorerCommandFactory {
   private ShooterSubsystem m_subsystem;
+  private LaserCANSensorBase m_feederSensor;
 
-  public ScorerCommandFactory(ShooterSubsystem shooter) {
+  public ScorerCommandFactory(ShooterSubsystem shooter, LaserCANSensorBase feederSensor) {
     m_subsystem = shooter;
+    m_feederSensor = feederSensor;
   }
 
   public Command runShooter() {
