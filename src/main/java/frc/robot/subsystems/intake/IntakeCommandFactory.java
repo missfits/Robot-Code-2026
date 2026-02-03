@@ -2,12 +2,15 @@ package frc.robot.subsystems.intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.subsystems.LaserCANSensorBase;
 
 public class IntakeCommandFactory {
   private RollerSubsystem m_roller;
+  private LaserCANSensorBase m_intakeSensor;
 
-  public IntakeCommandFactory(RollerSubsystem roller) {
+  public IntakeCommandFactory(RollerSubsystem roller, LaserCANSensorBase intakeSensor) {
     m_roller = roller;
+    m_intakeSensor = intakeSensor;
   }
 
   public Command runIntake() {

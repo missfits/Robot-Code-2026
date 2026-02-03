@@ -389,4 +389,14 @@ public final class Constants {
 
     public static final double BLINK_TIME = 1; // in seconds for after intake/outtake
   }
+
+  public static class SensorConstants { // placeholder constants 
+    // LaserCAN sensor CAN IDs
+    public static final int INTAKE_SENSOR_CAN_ID = 60;
+    public static final int FEEDER_SENSOR_CAN_ID = 61;
+
+    // LaserCAN sensor beam break distances (in mm)
+    public static final double INTAKE_SENSOR_MIN_DISTANCE = 100.0;
+    public static final double FEEDER_SENSOR_MIN_DISTANCE = 100.0;
+  }
 }

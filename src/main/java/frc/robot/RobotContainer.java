@@ -24,11 +24,13 @@ import frc.robot.subsystems.vision.filtering.LocalPoseZRollPitchFilter;
 import frc.robot.subsystems.drivetrain.Telemetry;
 import frc.robot.subsystems.intake.RollerSubsystem;
 import frc.robot.subsystems.scorer.ShooterSubsystem;
+import frc.robot.subsystems.LaserCANSensorBase;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.ScorerConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.Constants.SensorConstants;
 
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -77,11 +79,23 @@ public class RobotContainer {
   public final RollerSubsystem m_roller = new RollerSubsystem();
   public final ShooterSubsystem m_shooter = new ShooterSubsystem();
   public final VisionSubsystem m_vision = new VisionSubsystem();
-  
+
+  // Sensors
+  private final LaserCANSensorBase m_intakeSensor = new LaserCANSensorBase(
+    SensorConstants.INTAKE_SENSOR_CAN_ID,
+    "intake/sensor",
+    SensorConstants.INTAKE_SENSOR_MIN_DISTANCE
+  );
+  private final LaserCANSensorBase m_shooterSensor = new LaserCANSensorBase(
+    SensorConstants.FEEDER_SENSOR_CAN_ID,
+    "shooter/sensor",
+    SensorConstants.FEEDER_SENSOR_MIN_DISTANCE
+  );
+
   // Command factories
   private final DrivetrainCommandFactory m_drivetrainCommandFactory = new DrivetrainCommandFactory(m_drivetrain);
-  private final IntakeCommandFactory m_intakeCommandFactory = new IntakeCommandFactory(m_roller);
-  private final ScorerCommandFactory m_shooterCommandFactory = new ScorerCommandFactory(m_shooter);
+  private final IntakeCommandFactory m_intakeCommandFactory = new IntakeCommandFactory(m_roller, m_intakeSensor);
+  private final ScorerCommandFactory m_shooterCommandFactory = new ScorerCommandFactory(m_shooter, m_shooterSensor);
 
   private final CommandXboxController m_driverJoystick =
     new CommandXboxController(OperatorConstants.kDriverControllerPort);
