@@ -21,6 +21,12 @@
           "data": {
             "pathName": "outpost shooting to climb"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "climb"
+          }
         }
       ]
     }
