@@ -168,7 +168,7 @@ public class RobotContainer {
     }
    
     // TODO: change -- this is for testing
-    m_driverJoystick.y().whileTrue(
+    m_driverJoystick.y().and(m_driverJoystick.leftBumper().negate()).whileTrue(
       m_drivetrainCommandFactory.snapToAngle(
         () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
         0
@@ -176,13 +176,24 @@ public class RobotContainer {
     );
 
     // TODO: change -- this is for testing
-    m_driverJoystick.b().onTrue(
+    m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).onTrue(
       m_drivetrainCommandFactory.snapToTarget(
         () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
         () -> new Pose2d(Units.inchesToMeters(182), Units.inchesToMeters(182), new Rotation2d())
       )
     );
 
+    m_driverJoystick.leftBumper().and(m_driverJoystick.y()).onTrue(
+      new InstantCommand(() -> setRobotMode(RobotMode.INTAKE))
+    );
+
+    m_driverJoystick.leftBumper().and(m_driverJoystick.x()).onTrue(
+      new InstantCommand(() -> setRobotMode(RobotMode.SHOOT))
+    );
+
+    m_driverJoystick.leftBumper().and(m_driverJoystick.b()).onTrue(
+      new InstantCommand(() -> setRobotMode(RobotMode.NEUTRAL))
+    );
 
     // reset the field-centric heading on a button press
     m_driverJoystick.a().onTrue(m_drivetrain.runOnce(() -> m_drivetrain.resetRotation(new Rotation2d(DriverStation.getAlliance().get().equals(Alliance.Blue) ? 0 : Math.PI))));
