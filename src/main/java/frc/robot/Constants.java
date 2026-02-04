@@ -37,53 +37,237 @@ public final class Constants {
 
   public static class DrivetrainConstants {
     // Steer motor PID and feedforward gains
-    public static final double STEER_KP = 100;
-    public static final double STEER_KI = 0;
-    public static final double STEER_KD = 0.5;
-    public static final double STEER_KS = 0.1;
-    public static final double STEER_KV = 2.66;
-    public static final double STEER_KA = 0;
+    public static double STEER_KP = 100;
+    public static double STEER_KI = 0;
+    public static double STEER_KD = 0.5;
+    public static double STEER_KS = 0.1;
+    public static double STEER_KV = 2.66;
+    public static double STEER_KA = 0;
 
     // Drive motor PID and feedforward gains
-    public static final double DRIVE_KP = 0.1;
-    public static final double DRIVE_KI = 0;
-    public static final double DRIVE_KD = 0;
-    public static final double DRIVE_KS = 0;
-    public static final double DRIVE_KV = 0.124;
-    public static final double DRIVE_KA = 0;
+    public static double DRIVE_KP = 0.1;
+    public static double DRIVE_KI = 0;
+    public static double DRIVE_KD = 0;
+    public static double DRIVE_KS = 0;
+    public static double DRIVE_KV = 0.124;
+    public static double DRIVE_KA = 0;
 
-    public static final double WHEEL_RADIUS_FUDGE_FACTOR = 1.0;
+    public static double WHEEL_RADIUS_FUDGE_FACTOR = 1.0;
+
 
     // Max speeds for drivetrain
     public static final double MAX_TRANSLATION_SPEED = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
-    public static final double MAX_ROTATION_SPEED = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+    public static final double MAX_ROTATION_SPEED = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a revolution per second max angular velocity
 
     // Rotation heading controller PID gains
-    public static final double ROTATION_KP = 10.0;
-    public static final double ROTATION_KI = 0.0;
-    public static final double ROTATION_KD = 0.0;
+    public static double ROTATION_KP = 5.0;
+    public static double ROTATION_KI = 0.0;
+    public static double ROTATION_KD = 0.0;
 
     // PID constants for PathPlanner AutoBuilder
-    public static final double ROBOT_POSITION_P = 5.0;
-    public static final double ROBOT_POSITION_I = 0;
-    public static final double ROBOT_POSITION_D = 0;
-    public static final double ROBOT_ROTATION_P = 5.0;
-    public static final double ROBOT_ROTATION_I = 0;
-    public static final double ROBOT_ROTATION_D = 0;
+    public static double ROBOT_POSITION_P = 5.0;
+    public static double ROBOT_POSITION_I = 0;
+    public static double ROBOT_POSITION_D = 0;
+    public static double ROBOT_ROTATION_P = 5.0;
+    public static double ROBOT_ROTATION_I = 0;
+    public static double ROBOT_ROTATION_D = 0;
+
+    static {
+      switch (RobotConfig.getRobot()) {
+        case CLEO:
+          STEER_KP = 100;
+          STEER_KI = 0;
+          STEER_KD = 0.5;
+          STEER_KS = 0.1;
+          STEER_KV = 2.66;
+          STEER_KA = 0;
+
+          DRIVE_KP = 0.1;
+          DRIVE_KI = 0;
+          DRIVE_KD = 0;
+          DRIVE_KS = 0;
+          DRIVE_KV = 0.124;
+          DRIVE_KA = 0;
+
+          WHEEL_RADIUS_FUDGE_FACTOR = 1.0;
+
+          ROTATION_KP = 5.0;
+          ROTATION_KI = 0.0;
+          ROTATION_KD = 0.0;
+
+          ROBOT_POSITION_P = 5.0;
+          ROBOT_POSITION_I = 0;
+          ROBOT_POSITION_D = 0;
+          ROBOT_ROTATION_P = 5.0;
+          ROBOT_ROTATION_I = 0;
+          ROBOT_ROTATION_D = 0;
+          break;
+
+        case CERIDWEN:
+          // TODO: Tune these values for Ceridwen
+          STEER_KP = 100;
+          STEER_KI = 0;
+          STEER_KD = 0.5;
+          STEER_KS = 0.1;
+          STEER_KV = 2.66;
+          STEER_KA = 0;
+
+          DRIVE_KP = 0.1;
+          DRIVE_KI = 0;
+          DRIVE_KD = 0;
+          DRIVE_KS = 0;
+          DRIVE_KV = 0.124;
+          DRIVE_KA = 0;
+
+          WHEEL_RADIUS_FUDGE_FACTOR = 1.0;
+
+          ROTATION_KP = 5.0;
+          ROTATION_KI = 0.0;
+          ROTATION_KD = 0.0;
+
+          ROBOT_POSITION_P = 5.0;
+          ROBOT_POSITION_I = 0;
+          ROBOT_POSITION_D = 0;
+          ROBOT_ROTATION_P = 5.0;
+          ROBOT_ROTATION_I = 0;
+          ROBOT_ROTATION_D = 0;
+          break;
+
+        default:
+          throw new IllegalStateException("Unknown robot type: " + RobotConfig.getRobot());
+      }
+    }
+
+    /* Universal drivetrain constants (not robot-dependent) */
+
+    // Snap to target distance threshold (meters)
+    // If robot is within this distance of target, maintain current heading
+    public static final double SNAP_TO_TARGET_DISTANCE_THRESHOLD = 0.05; // 5cm
+
   }
 
-  public static class AngularMechanismConstants {
-    public static final int MECHANISM_MOTOR_ID = 0;
-    public static final int MOTOR_STATOR_LIMIT = 0;
+  public static class IntakeConstants {
+    //Velocity voltage constants
+    public static final boolean ROLLER_ENABLE_FOC = false;
+    public static final boolean PIVOT_ENABLE_FOC = false;
 
-    public static final double DEGREES_PER_ROTATION = 0;
+    public static final double ROLLER_FEED_FORWARD = 0.0;
+    public static final double PIVOT_FEED_FORWARD = 0.0;
+
+    public static final int ROLLER_SLOT = 0;
+    public static final int PIVOT_SLOT = 0;
+
+    public static final boolean ROLLER_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
+    public static final boolean PIVOT_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
+
+    // Motor IDs
+    public static final int ROLLER_MOTOR_ID = 50;
+    public static final int PIVOT_MOTOR_ID = 0;
+
+    // Motor limitss
+    public static final int ROLLER_MOTOR_STATOR_LIMIT = 40;
+    public static final int PIVOT_MOTOR_STATOR_LIMIT = 40;
+
+    // Conversions
+    public static final double ROLLER_DEGREES_PER_REVOLUTION = 360*3;
+    public static final double PIVOT_DEGREES_PER_REVOLUTION = 360*50;
+
+    // Intake motor velocities
+    public static double OUTTAKE_MOTOR_VELOCITY = 0;
+    public static final double INTAKE_BACK_VELOCITY = 0;
+    public static final double PIVOT_UP_VELOCITY = 0;
+    public static final double PIVOT_DOWN_VELOCITY = 0;
+
+    // Roller PID gains
+    public static double ROLLER_kP = 0;
+    public static double ROLLER_kI = 0;
+    public static double ROLLER_kD = 0;
+
+    //Roller feed forward values
+    public static double ROLLER_kS = 0;
+    public static double ROLLER_kV = 0;
+    public static double ROLLER_kA = 0;
+
+    // Timing
+    public static final double RUN_INTAKE_TIME = 0;
   }
 
-  public static class LinearMechanismConstants {
-    public static final int MECHANISM_MOTOR_ID = 0;
-    public static final int MOTOR_STATOR_LIMIT = 0;
+  public static class ScorerConstants {
+    //Velocity voltage constants
+    public static final boolean INFLUENCER_ENABLE_FOC = false;
+    public static final boolean FOLLOWER_ENABLE_FOC = false;
+    public static final boolean INDEXER_ENABLE_FOC = false;
 
-    public static final double METERS_PER_ROTATION = 0;
+    public static final double INFLUENCER_FEED_FORWARD = 0.0;
+    public static final double FOLLOWER_FEED_FORWARD = 0.0;
+    public static final double INDEXER_FEED_FORWARD = 0.0;
+
+    public static final int INFLUENCER_SLOT = 0;
+    public static final int FOLLOWER_SLOT = 0;
+    public static final int INDEXER_SLOT = 0;
+
+    public static final boolean INFLUENCER_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
+    public static final boolean FOLLOWER_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
+    public static final boolean INDEXER_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
+
+    // Motor IDs
+    public static final int INFLUENCER_MOTOR_ID = 51;
+    public static final int FOLLOWER_MOTOR_ID = 52;
+    public static final int INDEXER_MOTOR_ID = 0;
+
+    // Motor limits - Influencer
+    public static final int INFLUENCER_MOTOR_STATOR_LIMIT = 40;
+    // Motor limits - Follower
+    public static final int FOLLOWER_MOTOR_STATOR_LIMIT = 40;
+    // Motor limits - Indexer
+    public static final int INDEXER_MOTOR_STATOR_LIMIT = 40;
+
+    // Conversions - Influencer
+    public static final double INFLUENCER_DEGREES_PER_REVOLUTION = 360;
+    // Conversions - Follower
+    public static final double FOLLOWER_DEGREES_PER_REVOLUTION = 360;
+    // Conversions - Indexer
+    public static final double INDEXER_DEGREES_PER_REVOLUTION = 360;
+
+    // Influencer motor velocities
+    public static double INFLUENCER_OUTTAKE_MOTOR_VELOCITY = 0;
+    public static final double INFLUENCER_SHOOTER_BACK_VELOCITY = 0;
+
+    // Follower motor velocities
+    public static double FOLLOWER_OUTTAKE_MOTOR_VELOCITY = 0;
+    public static final double FOLLOWER_SHOOTER_BACK_VELOCITY = 0;
+
+    // Influencer PID/FF gains
+    public static double INFLUENCER_kP = 0.1;
+    public static double INFLUENCER_kI = 0;
+    public static double INFLUENCER_kD = 0;
+    public static double INFLUENCER_kS = 0.2;
+    public static double INFLUENCER_kV = 0.115;
+    public static double INFLUENCER_kA = 0;
+
+    // Follower PID/FF gains
+    public static double FOLLOWER_kP = 0;
+    public static double FOLLOWER_kI = 0;
+    public static double FOLLOWER_kD = 0;
+    public static double FOLLOWER_kS = 0;
+    public static double FOLLOWER_kV = 0;
+    public static double FOLLOWER_kA = 0;
+
+    // Timing
+    public static final double RUN_SHOOTER_TIME = 0;
+  }
+
+  public static class ClimberConstants {
+    //Velocity voltage constants
+    public static final boolean CLIMBER_ENABLE_FOC = false;
+    public static final double CLIMBER_FEED_FORWARD = 0.0;
+    public static final int CLIMBER_SLOT = 0;
+    public static final boolean CLIMBER_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
+
+    public static final int CLIMBER_MOTOR_ID = 0;
+    public static final int CLIMBER_MOTOR_STATOR_LIMIT = 40;
+
+    public static final double CLIMBER_METERS_PER_REVOLUTION = 360*10;
   }
   
   public static class VisionConstants {
@@ -93,6 +277,17 @@ public final class Constants {
     public static final double MAX_VISION_POSE_ROLL = 0.05; // in radians
     public static final double MAX_VISION_POSE_PITCH = 0.05; // in radians
 
+    // --- filtering constants ---
+    // max average distance and speed to use for local filters
+    public static final double MAX_AVG_DIST_BETWEEN_LAST_EST_POSES = 0.3; // in meters 
+    public static final double MAX_AVG_SPEED_BETWEEN_LAST_EST_POSES = MAX_AVG_DIST_BETWEEN_LAST_EST_POSES * 50.;
+    
+    public static final double MAX_VISION_READING_DISTANCE = 0.5; // in meters
+
+
+    // min number of camera readings to use for global filters
+    public static final int MIN_NUM_CAMERA_READINGS = 2; // NEEDS TO BE CONFIRMED W/ LOGIC 1/24
+
     // --- localization camera ---
     // default vision standard deviation
     public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(6, 6, 4);
@@ -100,48 +295,92 @@ public final class Constants {
 
     public static final double VISION_DISTANCE_DISCARD = 10; 
     public static final double MAX_POSE_AMBIGUITY = 0.2;
-    public static final double MAX_AVG_DIST_BETWEEN_LAST_EST_POSES = 0.3; // in meters 
-    public static final double MAX_AVG_SPEED_BETWEEN_LAST_EST_POSES = MAX_AVG_DIST_BETWEEN_LAST_EST_POSES * 50.;
     public static final int NUM_LAST_EST_POSES = 3;
     public static final double STD_DEV_SCALER = 30;
 
     // --- vision subsystem ---
     // (camera setup)
-    public static final String CAMERA1_NAME = "camera1";
-    public static final String CAMERA2_NAME = "camera2";
+    public static final String CAMERA1_NAME;
+    public static final String CAMERA2_NAME;
 
-    // Camera 1 position (translation in inches, converted to meters)
-    public static final double ROBOT_TO_CAM1_X = Units.inchesToMeters(2);
-    public static final double ROBOT_TO_CAM1_Y = Units.inchesToMeters(-7);
-    public static final double ROBOT_TO_CAM1_Z = Units.inchesToMeters(8);
+    // Camera 1 position - robot-specific because camera mounting may differ
+    public static final double ROBOT_TO_CAM1_X;
+    public static final double ROBOT_TO_CAM1_Y;
+    public static final double ROBOT_TO_CAM1_Z;
+    public static final double ROBOT_TO_CAM1_ROLL;
+    public static final double ROBOT_TO_CAM1_PITCH;
+    public static final double ROBOT_TO_CAM1_YAW;
+    public static final Transform3d ROBOT_TO_CAM1_3D;
 
-    // Camera 1 rotation (in degrees, converted to radians)
-    // yaw = 45; angle of mount is 45 upwards. chatgpt did the math 
-    public static final double ROBOT_TO_CAM1_ROLL = Units.degreesToRadians(-35.26);
-    public static final double ROBOT_TO_CAM1_PITCH = Units.degreesToRadians(30);
-    public static final double ROBOT_TO_CAM1_YAW = Units.degreesToRadians(45); 
+    // Camera 2 position - robot-specific
+    public static final double ROBOT_TO_CAM2_X;
+    public static final double ROBOT_TO_CAM2_Y;
+    public static final double ROBOT_TO_CAM2_Z;
+    public static final double ROBOT_TO_CAM2_ROLL;
+    public static final double ROBOT_TO_CAM2_PITCH;
+    public static final double ROBOT_TO_CAM2_YAW;
+    public static final Transform3d ROBOT_TO_CAM2_3D;
 
-    public static final Transform3d ROBOT_TO_CAM1_3D =
-      new Transform3d(
+    static {
+      switch (RobotConfig.getRobot()) {
+        case CLEO:
+          // TODO: Measure and update these values for Cleo
+
+          CAMERA1_NAME = "right_camera";
+          CAMERA2_NAME = "left_camera";
+
+          // Cleo camera positions
+          ROBOT_TO_CAM1_X = Units.inchesToMeters(21.0/2-1.5);
+          ROBOT_TO_CAM1_Y = Units.inchesToMeters(-33.0/2+5);
+          ROBOT_TO_CAM1_Z = Units.inchesToMeters(9);
+          ROBOT_TO_CAM1_ROLL = 0;
+          ROBOT_TO_CAM1_PITCH = Units.degreesToRadians(-45);
+          ROBOT_TO_CAM1_YAW = 0;
+
+          ROBOT_TO_CAM2_X = Units.inchesToMeters(21.0/2-1);
+          ROBOT_TO_CAM2_Y = Units.inchesToMeters(33.0/2-5.5);
+          ROBOT_TO_CAM2_Z = Units.inchesToMeters(8);
+          ROBOT_TO_CAM2_ROLL = 0;
+          ROBOT_TO_CAM2_PITCH = Units.degreesToRadians(-45);
+          ROBOT_TO_CAM2_YAW = 0;
+          break;
+
+        case CERIDWEN:
+          // Ceridwen camera positions
+
+          CAMERA1_NAME = "camera1";
+          CAMERA2_NAME = "camera2";
+
+          ROBOT_TO_CAM1_X = Units.inchesToMeters(2);
+          ROBOT_TO_CAM1_Y = Units.inchesToMeters(-7);
+          ROBOT_TO_CAM1_Z = Units.inchesToMeters(8);
+          ROBOT_TO_CAM1_ROLL = Units.degreesToRadians(-35.26);
+          ROBOT_TO_CAM1_PITCH = Units.degreesToRadians(30);
+          ROBOT_TO_CAM1_YAW = Units.degreesToRadians(45);
+
+          ROBOT_TO_CAM2_X = 0;
+          ROBOT_TO_CAM2_Y = 0;
+          ROBOT_TO_CAM2_Z = 0;
+          ROBOT_TO_CAM2_ROLL = 0;
+          ROBOT_TO_CAM2_PITCH = 0;
+          ROBOT_TO_CAM2_YAW = 0;
+          break;
+
+        default:
+          throw new IllegalStateException("Unknown robot type: " + RobotConfig.getRobot());
+      }
+
+      // Compute Transform3d after switch (same for all robots)
+      ROBOT_TO_CAM1_3D = new Transform3d(
         new Translation3d(ROBOT_TO_CAM1_X, ROBOT_TO_CAM1_Y, ROBOT_TO_CAM1_Z),
         new Rotation3d(ROBOT_TO_CAM1_ROLL, ROBOT_TO_CAM1_PITCH, ROBOT_TO_CAM1_YAW)
       );
 
-    // Camera 2 position (translation in inches, converted to meters)
-    public static final double ROBOT_TO_CAM2_X = 0;
-    public static final double ROBOT_TO_CAM2_Y = 0;
-    public static final double ROBOT_TO_CAM2_Z = 0;
-
-    // Camera 2 rotation (in degrees, converted to radians)
-    public static final double ROBOT_TO_CAM2_ROLL = 0;
-    public static final double ROBOT_TO_CAM2_PITCH = 0;
-    public static final double ROBOT_TO_CAM2_YAW = 0;
-
-    public static final Transform3d ROBOT_TO_CAM2_3D =
-      new Transform3d(
+      ROBOT_TO_CAM2_3D = new Transform3d(
         new Translation3d(ROBOT_TO_CAM2_X, ROBOT_TO_CAM2_Y, ROBOT_TO_CAM2_Z),
         new Rotation3d(ROBOT_TO_CAM2_ROLL, ROBOT_TO_CAM2_PITCH, ROBOT_TO_CAM2_YAW)
       );
+    }
   }
   
   public static class LEDConstants { // placeholder constants
@@ -149,5 +388,15 @@ public final class Constants {
     public static final int KLENGTH = 60;
 
     public static final double BLINK_TIME = 1; // in seconds for after intake/outtake
+  }
+
+  public static class SensorConstants { // placeholder constants 
+    // LaserCAN sensor CAN IDs
+    public static final int INTAKE_SENSOR_CAN_ID = 60;
+    public static final int FEEDER_SENSOR_CAN_ID = 61;
+
+    // LaserCAN sensor beam break distances (in mm)
+    public static final double INTAKE_SENSOR_MIN_DISTANCE = 100.0;
+    public static final double FEEDER_SENSOR_MIN_DISTANCE = 100.0;
   }
 }
