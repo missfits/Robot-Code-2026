@@ -71,7 +71,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 public class RobotContainer {
   public static record JoystickVals(double x, double y) {}
 
-  private enum RobotMode {
+  public enum RobotMode {
     NEUTRAL,
     INTAKE,
     SHOOT
@@ -79,7 +79,7 @@ public class RobotContainer {
 
   private final SendableChooser<Command> m_autoChooser; // Sendable chooser that holds the autos
   private final Telemetry logger = new Telemetry(DrivetrainConstants.MAX_TRANSLATION_SPEED);
-  private RobotMode m_robotMode = RobotMode.NEUTRAL;
+  private RobotMode m_robotMode;
 
   // Subsystems
   public final CommandSwerveDrivetrain m_drivetrain = TunerConstants.createDrivetrain();
@@ -120,7 +120,7 @@ public class RobotContainer {
 
     // Configure trigger bindings
     configureBindings();
-
+    setRobotMode(RobotMode.NEUTRAL);
 
     // Configure auto builder
     createNamedCommands();
