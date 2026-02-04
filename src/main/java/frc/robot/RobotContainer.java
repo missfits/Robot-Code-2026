@@ -71,8 +71,15 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 public class RobotContainer {
   public static record JoystickVals(double x, double y) {}
 
+  public enum RobotMode {
+    NEUTRAL,
+    INTAKE,
+    SHOOT
+  }
+
   private final SendableChooser<Command> m_autoChooser; // Sendable chooser that holds the autos
   private final Telemetry logger = new Telemetry(DrivetrainConstants.MAX_TRANSLATION_SPEED);
+  private RobotMode m_robotMode;
 
   // Subsystems
   public final CommandSwerveDrivetrain m_drivetrain = TunerConstants.createDrivetrain();
@@ -113,7 +120,7 @@ public class RobotContainer {
 
     // Configure trigger bindings
     configureBindings();
-
+    setRobotMode(RobotMode.NEUTRAL);
 
     // Configure auto builder
     createNamedCommands();
@@ -161,7 +168,7 @@ public class RobotContainer {
     }
    
     // TODO: change -- this is for testing
-    m_driverJoystick.y().whileTrue(
+    m_driverJoystick.y().and(m_driverJoystick.leftBumper().negate()).whileTrue(
       m_drivetrainCommandFactory.snapToAngle(
         () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
         0
@@ -169,13 +176,24 @@ public class RobotContainer {
     );
 
     // TODO: change -- this is for testing
-    m_driverJoystick.b().onTrue(
+    m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).onTrue(
       m_drivetrainCommandFactory.snapToTarget(
         () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
         () -> new Pose2d(Units.inchesToMeters(182), Units.inchesToMeters(182), new Rotation2d())
       )
     );
 
+    m_driverJoystick.leftBumper().and(m_driverJoystick.y()).onTrue(
+      new InstantCommand(() -> setRobotMode(RobotMode.INTAKE))
+    );
+
+    m_driverJoystick.leftBumper().and(m_driverJoystick.x()).onTrue(
+      new InstantCommand(() -> setRobotMode(RobotMode.SHOOT))
+    );
+
+    m_driverJoystick.leftBumper().and(m_driverJoystick.b()).onTrue(
+      new InstantCommand(() -> setRobotMode(RobotMode.NEUTRAL))
+    );
 
     // reset the field-centric heading on a button press
     m_driverJoystick.a().onTrue(m_drivetrain.runOnce(() -> m_drivetrain.resetRotation(new Rotation2d(DriverStation.getAlliance().get().equals(Alliance.Blue) ? 0 : Math.PI))));
@@ -254,6 +272,22 @@ public class RobotContainer {
     return m_autoChooser.getSelected();
   }
 
+  private void configureDefaultCommands() {
+    switch (m_robotMode) {
+      case NEUTRAL:
+        break;
+      case INTAKE:
+        break;
+      case SHOOT:
+        break;
+    }
+  }
+
+  public void setRobotMode(RobotMode newMode) {
+    m_robotMode = newMode;
+    configureDefaultCommands();
+    SmartDashboard.putString("robot/mode", m_robotMode.toString());
+  }
 
   public void updatePoseEst() {
     List<CameraReading> allReadings = m_vision.getValidCameraReadings();
