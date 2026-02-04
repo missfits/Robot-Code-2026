@@ -104,17 +104,11 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems and commands. */
   public RobotContainer() {
-    //Pathplanner register named commands
-    //TO-DO -- REPLACE WITH PROPER COMMAND ONCE IT HAS BEEN WRITTEN 
-    NamedCommands.registerCommand("trigger intake", new WaitCommand(1));
-    NamedCommands.registerCommand("orient to hub", new WaitCommand(1));
-    NamedCommands.registerCommand("climb", new WaitCommand(1));
-    NamedCommands.registerCommand("shoot", new WaitCommand(1));
 
     // Configure trigger bindings
     configureBindings();
 
-
+    registerNamedCommands();
     // Configure auto builder
     createNamedCommands();
     m_autoChooser = AutoBuilder.buildAutoChooser("drive forward 1m");
@@ -127,6 +121,16 @@ public class RobotContainer {
 
     logToSmartDashboard();
   }
+
+  private void registerNamedCommands() {
+    //Pathplanner register named commands
+    // TODO -- REPLACE WITH PROPER COMMAND ONCE IT HAS BEEN WRITTEN 
+    NamedCommands.registerCommand("trigger intake", new WaitCommand(1));
+    NamedCommands.registerCommand("orient to hub", new WaitCommand(1));
+    NamedCommands.registerCommand("climb", new WaitCommand(1));
+    NamedCommands.registerCommand("shoot", new WaitCommand(1));
+  }
+
 
   /**
    * Define trigger -> command mappings
