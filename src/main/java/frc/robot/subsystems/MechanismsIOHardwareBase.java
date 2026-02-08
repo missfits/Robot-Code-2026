@@ -7,6 +7,7 @@ import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -29,7 +30,8 @@ public abstract class MechanismsIOHardwareBase {
   protected final StatusSignal<Voltage> voltageSignal;
   protected final StatusSignal<Current> currentSignal;
 
-  protected MechanismsIOHardwareBase(int motorID, double statorCurrentLimit, String logPrefix) {
+  protected MechanismsIOHardwareBase(int motorID, double statorCurrentLimit,
+      double peakForwardDutyCycle, double peakReverseDutyCycle, String logPrefix) {
     motor = new TalonFX(motorID);
     this.logPrefix = logPrefix;
 
@@ -42,6 +44,11 @@ public abstract class MechanismsIOHardwareBase {
     limits.StatorCurrentLimit = statorCurrentLimit;
     limits.StatorCurrentLimitEnable = true;
     motor.getConfigurator().apply(limits);
+
+    var motorOutput = new MotorOutputConfigs();
+    motorOutput.PeakForwardDutyCycle = peakForwardDutyCycle;
+    motorOutput.PeakReverseDutyCycle = peakReverseDutyCycle;
+    motor.getConfigurator().apply(motorOutput);
   }
 
   protected double getPositionRevolutions() {

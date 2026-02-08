@@ -8,7 +8,8 @@ import frc.robot.subsystems.MechanismsIOHardwareBase;
 public class RollerIOHardware extends MechanismsIOHardwareBase {
 
   public RollerIOHardware(int motorID) {
-    super(motorID, IntakeConstants.ROLLER_MOTOR_STATOR_LIMIT, "roller/");
+    super(motorID, IntakeConstants.ROLLER_MOTOR_STATOR_LIMIT,
+        IntakeConstants.PEAK_FORWARD_DUTY_CYCLE, IntakeConstants.PEAK_REVERSE_DUTY_CYCLE, "roller/");
     resetSlot0Gains();
   }
 
@@ -25,7 +26,11 @@ public class RollerIOHardware extends MechanismsIOHardwareBase {
     slot0Configs.kS = IntakeConstants.ROLLER_kS;
     slot0Configs.kV = IntakeConstants.ROLLER_kV;
     slot0Configs.kA = IntakeConstants.ROLLER_kA;
-    
+
+    var motorOutputConfigs = talonFXConfigs.MotorOutput;
+    motorOutputConfigs.PeakForwardDutyCycle = IntakeConstants.PEAK_FORWARD_DUTY_CYCLE;
+    motorOutputConfigs.PeakReverseDutyCycle = IntakeConstants.PEAK_REVERSE_DUTY_CYCLE;
+
     motor.getConfigurator().apply(talonFXConfigs);
   }
 

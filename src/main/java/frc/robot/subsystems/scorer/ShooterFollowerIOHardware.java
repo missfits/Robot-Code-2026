@@ -8,7 +8,8 @@ import frc.robot.subsystems.MechanismsIOHardwareBase;
 public class ShooterFollowerIOHardware extends MechanismsIOHardwareBase {
 
   public ShooterFollowerIOHardware(int motorID) {
-    super(motorID, ScorerConstants.FOLLOWER_MOTOR_STATOR_LIMIT, "shooter/follower/");
+    super(motorID, ScorerConstants.FOLLOWER_MOTOR_STATOR_LIMIT,
+        ScorerConstants.PEAK_FORWARD_DUTY_CYCLE, ScorerConstants.PEAK_REVERSE_DUTY_CYCLE, "shooter/follower/");
     resetSlot0Gains();
   }
 
@@ -25,7 +26,11 @@ public class ShooterFollowerIOHardware extends MechanismsIOHardwareBase {
     slot0Configs.kS = ScorerConstants.FOLLOWER_kS;
     slot0Configs.kV = ScorerConstants.FOLLOWER_kV;
     slot0Configs.kA = ScorerConstants.FOLLOWER_kA;
-    
+
+    var motorOutputConfigs = talonFXConfigs.MotorOutput;
+    motorOutputConfigs.PeakForwardDutyCycle = ScorerConstants.PEAK_FORWARD_DUTY_CYCLE;
+    motorOutputConfigs.PeakReverseDutyCycle = ScorerConstants.PEAK_REVERSE_DUTY_CYCLE;
+
     motor.getConfigurator().apply(talonFXConfigs);
   }
 

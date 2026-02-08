@@ -9,7 +9,8 @@ import frc.robot.subsystems.MechanismsIOHardwareBase;
 public class ShooterInfluencerIOHardware extends MechanismsIOHardwareBase {
 
   public ShooterInfluencerIOHardware(int motorID) {
-    super(motorID, ScorerConstants.INFLUENCER_MOTOR_STATOR_LIMIT, "shooter/influencer/");
+    super(motorID, ScorerConstants.INFLUENCER_MOTOR_STATOR_LIMIT,
+        ScorerConstants.PEAK_FORWARD_DUTY_CYCLE, ScorerConstants.PEAK_REVERSE_DUTY_CYCLE, "shooter/influencer/");
     resetSlot0Gains();
   }
 
@@ -26,6 +27,10 @@ public class ShooterInfluencerIOHardware extends MechanismsIOHardwareBase {
     slot0Configs.kS = ScorerConstants.INFLUENCER_kS;
     slot0Configs.kV = ScorerConstants.INFLUENCER_kV;
     slot0Configs.kA = ScorerConstants.INFLUENCER_kA;
+
+    var motorOutputConfigs = talonFXConfigs.MotorOutput;
+    motorOutputConfigs.PeakForwardDutyCycle = ScorerConstants.PEAK_FORWARD_DUTY_CYCLE;
+    motorOutputConfigs.PeakReverseDutyCycle = ScorerConstants.PEAK_REVERSE_DUTY_CYCLE;
 
     motor.getConfigurator().apply(talonFXConfigs);
   }
