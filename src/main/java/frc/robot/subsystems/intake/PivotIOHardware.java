@@ -1,5 +1,7 @@
 package frc.robot.subsystems.intake;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.MechanismsIOHardwareBase;
 
@@ -7,6 +9,7 @@ public class PivotIOHardware extends MechanismsIOHardwareBase {
 
   public PivotIOHardware(int motorID) {
     super(motorID, IntakeConstants.PIVOT_MOTOR_STATOR_LIMIT, "pivot/");
+    resetSlot0Gains();
   }
 
   public double getPositionRadians() {
@@ -33,5 +36,31 @@ public class PivotIOHardware extends MechanismsIOHardwareBase {
   public void setPositionDegrees(double degrees) {
     double revolutions = degrees / IntakeConstants.PIVOT_DEGREES_PER_REVOLUTION;
     setPositionRevolutions(revolutions);
+  }
+
+  public double degreesToMotorRevolutions(double degrees) {
+    return degrees / IntakeConstants.PIVOT_DEGREES_PER_REVOLUTION;
+  }
+
+  public void resetSlot0Gains() {
+    var talonFXConfigs = new TalonFXConfiguration();
+    var slot0Configs = talonFXConfigs.Slot0;
+    
+    //PID
+    slot0Configs.kP = IntakeConstants.PIVOT_kP;
+    slot0Configs.kI = IntakeConstants.PIVOT_kI;
+    slot0Configs.kD = IntakeConstants.PIVOT_kD;
+
+    //feed forward values
+    slot0Configs.kS = IntakeConstants.PIVOT_kS;
+    slot0Configs.kV = IntakeConstants.PIVOT_kV;
+    slot0Configs.kA = IntakeConstants.PIVOT_kA;
+
+    var motionMagicConfigs = talonFXConfigs.MotionMagic;
+    motionMagicConfigs.MotionMagicCruiseVelocity = IntakeConstants.PIVOT_CRUISE_VELOCITY;
+    motionMagicConfigs.MotionMagicAcceleration = IntakeConstants.PIVOT_ACCELERATION;
+    motionMagicConfigs.MotionMagicJerk = IntakeConstants.PIVOT_JERK;
+
+    motor.getConfigurator().apply(talonFXConfigs);
   }
 }

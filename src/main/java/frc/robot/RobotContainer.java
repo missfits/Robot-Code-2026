@@ -10,6 +10,8 @@ import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrainSim;
 import frc.robot.subsystems.drivetrain.DrivetrainCommandFactory;
 import frc.robot.subsystems.intake.IntakeCommandFactory;
+import frc.robot.subsystems.intake.PivotSubsystem;
+import frc.robot.subsystems.scorer.IndexerSubsystem;
 import frc.robot.subsystems.scorer.ScorerCommandFactory;
 import frc.robot.subsystems.vision.LocalVisionFilterPipeline;
 import frc.robot.subsystems.vision.GlobalVisionFilterPipeline;
@@ -86,6 +88,8 @@ public class RobotContainer {
   public final RollerSubsystem m_roller = new RollerSubsystem();
   public final ShooterSubsystem m_shooter = new ShooterSubsystem();
   public final VisionSubsystem m_vision = new VisionSubsystem();
+  public final IndexerSubsystem m_indexer = new IndexerSubsystem();
+  public final PivotSubsystem m_pivot = new PivotSubsystem();
 
   // Sensors
   private final LaserCANSensorBase m_intakeSensor = new LaserCANSensorBase(
@@ -223,6 +227,11 @@ public class RobotContainer {
 
   private void configureTestBindings() {
     m_testJoystick.x().whileTrue(m_shooterCommandFactory.runShooterSmartDashboard());
+    m_testJoystick.y().whileTrue(m_indexer.runIndexerFactory());
+    m_testJoystick.a().whileTrue(m_roller.runRollerFactory());
+    m_testJoystick.rightBumper().whileTrue(m_pivot.deployIntakeFactory());
+    m_testJoystick.leftBumper().whileTrue(m_pivot.storeIntakeFactory());
+
   }
 
   private void logToSmartDashboard() {
@@ -230,36 +239,25 @@ public class RobotContainer {
     SmartDashboard.putNumber("roller IO/kP", SmartDashboard.getNumber("roller IO/kP", IntakeConstants.ROLLER_kP));
     SmartDashboard.putNumber("roller IO/kI", SmartDashboard.getNumber("roller IO/kI", IntakeConstants.ROLLER_kI));
     SmartDashboard.putNumber("roller IO/kD", SmartDashboard.getNumber("roller IO/kD", IntakeConstants.ROLLER_kD));
-    SmartDashboard.putNumber("roller IO/velocity", SmartDashboard.getNumber("roller IO/velocity", IntakeConstants.OUTTAKE_MOTOR_VELOCITY));
+    SmartDashboard.putNumber("roller IO/velocity", SmartDashboard.getNumber("roller IO/velocity", IntakeConstants.ROLLER_INTAKE_VELOCITY));
 
     // Shooter Influencer 
     SmartDashboard.putNumber("shooter influencer IO/kP", SmartDashboard.getNumber("shooter influencer IO/kP", ScorerConstants.INFLUENCER_kP));
     SmartDashboard.putNumber("shooter influencer IO/kI", SmartDashboard.getNumber("shooter influencer IO/kI", ScorerConstants.INFLUENCER_kI));
     SmartDashboard.putNumber("shooter influencer IO/kD", SmartDashboard.getNumber("shooter influencer IO/kD", ScorerConstants.INFLUENCER_kD));
     SmartDashboard.putNumber("shooter influencer IO/velocity", SmartDashboard.getNumber("shooter influencer IO/velocity", ScorerConstants.INFLUENCER_OUTTAKE_MOTOR_VELOCITY));
-
-    // Shooter Follower 
-    SmartDashboard.putNumber("shooter follower IO/kP", SmartDashboard.getNumber("shooter follower IO/kP", ScorerConstants.FOLLOWER_kP));
-    SmartDashboard.putNumber("shooter follower IO/kI", SmartDashboard.getNumber("shooter follower IO/kI", ScorerConstants.FOLLOWER_kI));
-    SmartDashboard.putNumber("shooter follower IO/kD", SmartDashboard.getNumber("shooter follower IO/kD", ScorerConstants.FOLLOWER_kD));
-    SmartDashboard.putNumber("shooter follower IO/velocity", SmartDashboard.getNumber("shooter follower IO/velocity", ScorerConstants.FOLLOWER_OUTTAKE_MOTOR_VELOCITY));
   }
 
   private void resetControllerConstantsSmartDashboard() {
     IntakeConstants.ROLLER_kP = SmartDashboard.getNumber("roller IO/kP", 0);
     IntakeConstants.ROLLER_kI = SmartDashboard.getNumber("roller IO/kI", 0);
     IntakeConstants.ROLLER_kD = SmartDashboard.getNumber("roller IO/kD", 0);
-    IntakeConstants.OUTTAKE_MOTOR_VELOCITY = SmartDashboard.getNumber("roller IO/velocity", 0);
-
+    IntakeConstants.ROLLER_INTAKE_VELOCITY = SmartDashboard.getNumber("roller IO/intake velocity",0);
+    
     ScorerConstants.INFLUENCER_kP = SmartDashboard.getNumber("shooter influencer IO/kP", 0);
     ScorerConstants.INFLUENCER_kI = SmartDashboard.getNumber("shooter influencer IO/kI", 0);
     ScorerConstants.INFLUENCER_kD = SmartDashboard.getNumber("shooter influencer IO/kD", 0);
     ScorerConstants.INFLUENCER_OUTTAKE_MOTOR_VELOCITY = SmartDashboard.getNumber("shooter influencer IO/velocity", 0);
-
-    ScorerConstants.FOLLOWER_kP = SmartDashboard.getNumber("shooter follower IO/kP", 0);
-    ScorerConstants.FOLLOWER_kI = SmartDashboard.getNumber("shooter follower IO/kI", 0);
-    ScorerConstants.FOLLOWER_kD = SmartDashboard.getNumber("shooter follower IO/kD", 0);
-    ScorerConstants.FOLLOWER_OUTTAKE_MOTOR_VELOCITY = SmartDashboard.getNumber("shooter follower IO/velocity", 0);
 
     m_roller.resetControllers();
     m_shooter.resetControllers();

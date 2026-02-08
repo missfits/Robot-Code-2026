@@ -14,7 +14,7 @@ public class IntakeCommandFactory {
   }
 
   public Command runIntake() {
-    return m_roller.runMechanism(IntakeConstants.OUTTAKE_MOTOR_VELOCITY).withName("run intake");
+    return m_roller.runMechanism(IntakeConstants.ROLLER_INTAKE_VELOCITY).withName("run intake");
   }
 
   public Command runIntakeBack() {
@@ -22,13 +22,13 @@ public class IntakeCommandFactory {
   }
 
   public Command runIntakeWithTimeout() {
-    return m_roller.runMechanism(IntakeConstants.OUTTAKE_MOTOR_VELOCITY)
+    return m_roller.runMechanism(IntakeConstants.ROLLER_INTAKE_VELOCITY)
     .withTimeout(IntakeConstants.RUN_INTAKE_TIME)
     .withName("run intake timeout");
   }
 
   public Command runIntakePID() { 
-    return m_roller.runMechanismPID(IntakeConstants.OUTTAKE_MOTOR_VELOCITY)
+    return m_roller.runMechanismPID(IntakeConstants.ROLLER_INTAKE_VELOCITY)
       .withName("run intake PID");
   }
 

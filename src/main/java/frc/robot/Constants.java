@@ -162,8 +162,8 @@ public final class Constants {
     public static final boolean PIVOT_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
 
     // Motor IDs
-    public static final int ROLLER_MOTOR_ID = 50;
-    public static final int PIVOT_MOTOR_ID = 0;
+    public static final int ROLLER_MOTOR_ID = 20;
+    public static final int PIVOT_MOTOR_ID = 21;
 
     // Motor limitss
     public static final int ROLLER_MOTOR_STATOR_LIMIT = 40;
@@ -174,10 +174,10 @@ public final class Constants {
     public static final double PIVOT_DEGREES_PER_REVOLUTION = 360*50;
 
     // Intake motor velocities
-    public static double OUTTAKE_MOTOR_VELOCITY = 0;
+    public static double ROLLER_INTAKE_VELOCITY = 0;
     public static final double INTAKE_BACK_VELOCITY = 0;
-    public static final double PIVOT_UP_VELOCITY = 0;
-    public static final double PIVOT_DOWN_VELOCITY = 0;
+    public static final double PIVOT_STORE_POSITION_DEGREES = 0;
+    public static final double PIVOT_DEPLOY_POSITION_DEGREES = 70;
 
     // Roller PID gains
     public static double ROLLER_kP = 0;
@@ -188,6 +188,21 @@ public final class Constants {
     public static double ROLLER_kS = 0;
     public static double ROLLER_kV = 0;
     public static double ROLLER_kA = 0;
+
+    // Pivot PID gains
+    public static double PIVOT_kP = 4.8;
+    public static double PIVOT_kI = 0;
+    public static double PIVOT_kD = 0.1;
+
+    // Pivot feed forward values
+    public static double PIVOT_kS = 0.25;
+    public static double PIVOT_kV = 0.12;
+    public static double PIVOT_kA = 0.01;
+
+    // Pivot Motion Magic values
+    public static double PIVOT_CRUISE_VELOCITY = 10;
+    public static double PIVOT_ACCELERATION = 50;
+    public static double PIVOT_JERK = 1600;
 
     // Timing
     public static final double RUN_INTAKE_TIME = 0;
@@ -212,9 +227,9 @@ public final class Constants {
     public static final boolean INDEXER_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
 
     // Motor IDs
-    public static final int INFLUENCER_MOTOR_ID = 51;
-    public static final int FOLLOWER_MOTOR_ID = 52;
-    public static final int INDEXER_MOTOR_ID = 0;
+    public static final int INFLUENCER_MOTOR_ID = 31;
+    public static final int FOLLOWER_MOTOR_ID = 32;
+    public static final int INDEXER_MOTOR_ID = 30;
 
     // Motor limits - Influencer
     public static final int INFLUENCER_MOTOR_STATOR_LIMIT = 40;
@@ -234,9 +249,8 @@ public final class Constants {
     public static double INFLUENCER_OUTTAKE_MOTOR_VELOCITY = 0;
     public static final double INFLUENCER_SHOOTER_BACK_VELOCITY = 0;
 
-    // Follower motor velocities
-    public static double FOLLOWER_OUTTAKE_MOTOR_VELOCITY = 0;
-    public static final double FOLLOWER_SHOOTER_BACK_VELOCITY = 0;
+    // Indexer motor velocity
+    public static final double INDEXER_MOTOR_VELOCITY = 0;
 
     // Influencer PID/FF gains
     public static double INFLUENCER_kP = 0.1;
@@ -265,7 +279,7 @@ public final class Constants {
     public static final int CLIMBER_SLOT = 0;
     public static final boolean CLIMBER_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
 
-    public static final int CLIMBER_MOTOR_ID = 0;
+    public static final int CLIMBER_MOTOR_ID = 40;
     public static final int CLIMBER_MOTOR_STATOR_LIMIT = 40;
 
     public static final double CLIMBER_METERS_PER_REVOLUTION = 360*10;

@@ -3,6 +3,7 @@ package frc.robot.subsystems.scorer;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ScorerConstants;
 import frc.robot.subsystems.MechanismsSubsystemBase;
 
@@ -37,5 +38,9 @@ public class IndexerSubsystem extends MechanismsSubsystemBase {
   public void periodic() {
     super.periodic();
     SmartDashboard.putNumber("indexer/current", m_IO.getCurrent());
+  }
+
+  public Command runIndexerFactory() {
+    return this.run(() -> runClosedLoopVelocity(ScorerConstants.INDEXER_MOTOR_VELOCITY));
   }
 }
