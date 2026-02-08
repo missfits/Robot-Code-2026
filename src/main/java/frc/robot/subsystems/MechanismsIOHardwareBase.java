@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.Volts;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -85,8 +86,12 @@ public abstract class MechanismsIOHardwareBase {
     motor.setControl(request);
   }
 
-   public void followMotor(MechanismsIOHardwareBase influencerIO, boolean aligned){
+  public void followMotor(MechanismsIOHardwareBase influencerIO, boolean aligned){
     motor.setControl(new Follower(influencerIO.motor.getDeviceID(), 
       aligned ? MotorAlignmentValue.Aligned : MotorAlignmentValue.Opposed));
+  }
+
+  public void goToPositionProfiled(MotionMagicVoltage request) {
+    motor.setControl(request);
   }
 }
