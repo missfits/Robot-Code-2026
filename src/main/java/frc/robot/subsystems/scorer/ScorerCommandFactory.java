@@ -1,5 +1,6 @@
 package frc.robot.subsystems.scorer;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ScorerConstants;
 import frc.robot.subsystems.LaserCANSensorBase;
@@ -15,30 +16,26 @@ public class ScorerCommandFactory {
 
   public Command runShooter() {
     return m_subsystem.runMechanismPID(
-      ScorerConstants.INFLUENCER_OUTTAKE_MOTOR_VELOCITY,
-      ScorerConstants.FOLLOWER_OUTTAKE_MOTOR_VELOCITY
+      ScorerConstants.INFLUENCER_OUTTAKE_MOTOR_VELOCITY
     ).withName("run shooter");
   }
 
   public Command runShooterBack() {
     return m_subsystem.runMechanismPID(
-      ScorerConstants.INFLUENCER_SHOOTER_BACK_VELOCITY,
-      ScorerConstants.FOLLOWER_SHOOTER_BACK_VELOCITY
+      ScorerConstants.INFLUENCER_SHOOTER_BACK_VELOCITY
     ).withName("run shooter back");
   }
 
   public Command runShooterWithTimeout() {
     return m_subsystem.runMechanismPID(
-      ScorerConstants.INFLUENCER_OUTTAKE_MOTOR_VELOCITY,
-      ScorerConstants.FOLLOWER_OUTTAKE_MOTOR_VELOCITY
+      ScorerConstants.INFLUENCER_OUTTAKE_MOTOR_VELOCITY
     ).withTimeout(ScorerConstants.RUN_SHOOTER_TIME).withName("run shooter timeout");
   }
 
-  public Command runShooterPID() { 
+  public Command runShooterSmartDashboard() {
     return m_subsystem.runMechanismPID(
-      ScorerConstants.INFLUENCER_OUTTAKE_MOTOR_VELOCITY,
-      ScorerConstants.FOLLOWER_OUTTAKE_MOTOR_VELOCITY
-    ).withName("run shooter PID");
+      () -> SmartDashboard.getNumber("shooter influencer IO/velocity", ScorerConstants.INFLUENCER_OUTTAKE_MOTOR_VELOCITY)
+    ).withName("run shooter smart dashboard");
   }
 
   public Command shooterOff() {
