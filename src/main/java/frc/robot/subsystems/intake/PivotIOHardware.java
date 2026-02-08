@@ -9,6 +9,7 @@ public class PivotIOHardware extends MechanismsIOHardwareBase {
 
   public PivotIOHardware(int motorID) {
     super(motorID, IntakeConstants.PIVOT_MOTOR_STATOR_LIMIT, "pivot/");
+    resetSlot0Gains();
   }
 
   public double getPositionRadians() {

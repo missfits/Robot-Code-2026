@@ -162,8 +162,8 @@ public final class Constants {
     public static final boolean PIVOT_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
 
     // Motor IDs
-    public static final int ROLLER_MOTOR_ID = 50;
-    public static final int PIVOT_MOTOR_ID = 0;
+    public static final int ROLLER_MOTOR_ID = 20;
+    public static final int PIVOT_MOTOR_ID = 21;
 
     // Motor limitss
     public static final int ROLLER_MOTOR_STATOR_LIMIT = 40;
@@ -227,9 +227,9 @@ public final class Constants {
     public static final boolean INDEXER_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
 
     // Motor IDs
-    public static final int INFLUENCER_MOTOR_ID = 51;
-    public static final int FOLLOWER_MOTOR_ID = 52;
-    public static final int INDEXER_MOTOR_ID = 0;
+    public static final int INFLUENCER_MOTOR_ID = 31;
+    public static final int FOLLOWER_MOTOR_ID = 32;
+    public static final int INDEXER_MOTOR_ID = 30;
 
     // Motor limits - Influencer
     public static final int INFLUENCER_MOTOR_STATOR_LIMIT = 40;
@@ -279,7 +279,7 @@ public final class Constants {
     public static final int CLIMBER_SLOT = 0;
     public static final boolean CLIMBER_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
 
-    public static final int CLIMBER_MOTOR_ID = 0;
+    public static final int CLIMBER_MOTOR_ID = 40;
     public static final int CLIMBER_MOTOR_STATOR_LIMIT = 40;
 
     public static final double CLIMBER_METERS_PER_REVOLUTION = 360*10;
