@@ -64,7 +64,7 @@ public abstract class MechanismsSubsystemBase extends SubsystemBase {
   }
 
   public Command runMechanismWithTimeout(double volts, double time) {
-    return this.run(() -> {setVoltage(volts);}, "run" + mechanismName + "with " + time + "second timeout");
+    return this.run(() -> {setVoltage(volts);}, "run" + mechanismName + "with " + time + "second timeout").withTimeout(time);
   }
 
   public Command runMechanismOff() {
