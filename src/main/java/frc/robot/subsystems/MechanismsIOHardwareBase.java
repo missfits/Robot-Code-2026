@@ -7,9 +7,11 @@ import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -81,5 +83,10 @@ public abstract class MechanismsIOHardwareBase {
 
   public void setVelocityVoltage(VelocityVoltage request) {
     motor.setControl(request);
+  }
+
+   public void followMotor(MechanismsIOHardwareBase influencerIO, boolean aligned){
+    motor.setControl(new Follower(influencerIO.motor.getDeviceID(), 
+      aligned ? MotorAlignmentValue.Aligned : MotorAlignmentValue.Opposed));
   }
 }

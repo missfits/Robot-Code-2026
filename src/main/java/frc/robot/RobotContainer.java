@@ -107,6 +107,9 @@ public class RobotContainer {
   private final CommandXboxController m_driverJoystick =
     new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
+  private final CommandXboxController m_testJoystick =
+    new CommandXboxController(OperatorConstants.kTestControllerPort);
+
   private final Field2d m_actualField = new Field2d(); // field simulation
 
   /** The container for the robot. Contains subsystems and commands. */
@@ -200,7 +203,8 @@ public class RobotContainer {
 
 
     m_driverJoystick.povCenter().negate().onTrue(new InstantCommand(() -> resetControllerConstantsSmartDashboard()));
-
+    
+    configureTestBindings();
 
     // --- CONFIGURE VISION FILTERING ---
     GlobalVisionFilterPipeline globalPipeline = new GlobalVisionFilterPipeline();
@@ -215,6 +219,10 @@ public class RobotContainer {
 
     m_vision.setGlobalFilterPipeline(globalPipeline);
     m_vision.setLocalFilteringPipeline(localPipeline);
+  }
+
+  private void configureTestBindings() {
+    m_testJoystick.x().whileTrue(m_shooterCommandFactory.runShooterSmartDashboard());
   }
 
   private void logToSmartDashboard() {

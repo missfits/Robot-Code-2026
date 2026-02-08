@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -51,6 +53,10 @@ public abstract class MechanismsSubsystemBase extends SubsystemBase {
   //need a second runMechanismPID command for subsystems with two motors
   public Command runMechanismPID(double velocityOne, double velocityTwo) {
     return loggedCommand("run" + mechanismName + "PID", this.run(() -> runClosedLoopVelocity(velocityOne, velocityTwo)));
+  }
+
+  public Command runMechanismPID(Supplier<Double> velocitySupplier) {
+    return loggedCommand("run" + mechanismName + "PID Supplier 2", this.run(() -> runClosedLoopVelocity(velocitySupplier.get())));
   }
 
   @Override
