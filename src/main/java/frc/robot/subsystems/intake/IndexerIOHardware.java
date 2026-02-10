@@ -6,7 +6,8 @@ import frc.robot.subsystems.MechanismsIOHardwareBase;
 public class IndexerIOHardware extends MechanismsIOHardwareBase {
 
   public IndexerIOHardware(int motorID) {
-    super(motorID, ScorerConstants.INDEXER_MOTOR_STATOR_LIMIT, "indexer/");
+    super(motorID, ScorerConstants.INDEXER_MOTOR_STATOR_LIMIT,
+        ScorerConstants.PEAK_FORWARD_DUTY_CYCLE, ScorerConstants.PEAK_REVERSE_DUTY_CYCLE, "indexer/");
   }
 
   public double getPositionRadians() {

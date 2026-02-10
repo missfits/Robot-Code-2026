@@ -55,7 +55,6 @@ public final class Constants {
 
     public static double WHEEL_RADIUS_FUDGE_FACTOR = 1.0;
 
-
     // Max speeds for drivetrain
     public static final double MAX_TRANSLATION_SPEED = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     public static final double MAX_ROTATION_SPEED = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a revolution per second max angular velocity
@@ -175,10 +174,14 @@ public final class Constants {
     public static final int PIVOT_MOTOR_STATOR_LIMIT = 40;
     public static final int COLUMN_MOTOR_STATOR_LIMIT = 40;
 
+    // Duty cycle limits
+    public static final double PEAK_FORWARD_DUTY_CYCLE = 0.5;
+    public static final double PEAK_REVERSE_DUTY_CYCLE = -0.5;
+
     // Conversions
-    public static final double ROLLER_DEGREES_PER_REVOLUTION = 360*3;
-    public static final double PIVOT_DEGREES_PER_REVOLUTION = 360*50;
-    public static final double COLUMN_DEGREES_PER_REVOLUTION = 360*3;
+    public static final double ROLLER_DEGREES_PER_REVOLUTION = 360./3.;
+    public static final double PIVOT_DEGREES_PER_REVOLUTION = 360./50.;
+    public static final double COLUMN_DEGREES_PER_REVOLUTION = 360;
 
     // Intake motor velocities
     public static double ROLLER_INTAKE_VELOCITY = 0;
@@ -257,6 +260,10 @@ public final class Constants {
     // Motor limits - Indexer
     public static final int INDEXER_MOTOR_STATOR_LIMIT = 40;
 
+    // Duty cycle limits
+    public static final double PEAK_FORWARD_DUTY_CYCLE = 0.5;
+    public static final double PEAK_REVERSE_DUTY_CYCLE = -0.5;
+
     // Conversions - Influencer
     public static final double INFLUENCER_DEGREES_PER_REVOLUTION = 360;
     // Conversions - Follower
@@ -301,7 +308,11 @@ public final class Constants {
     public static final int CLIMBER_MOTOR_ID = 40;
     public static final int CLIMBER_MOTOR_STATOR_LIMIT = 40;
 
-    public static final double CLIMBER_METERS_PER_REVOLUTION = 360*10;
+    // Duty cycle limits
+    public static final double PEAK_FORWARD_DUTY_CYCLE = 0.5;
+    public static final double PEAK_REVERSE_DUTY_CYCLE = -0.5;
+
+    public static final double CLIMBER_METERS_PER_REVOLUTION = 360./10.;
   }
   
   public static class VisionConstants {

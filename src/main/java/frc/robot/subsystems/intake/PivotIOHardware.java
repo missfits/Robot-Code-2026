@@ -8,7 +8,8 @@ import frc.robot.subsystems.MechanismsIOHardwareBase;
 public class PivotIOHardware extends MechanismsIOHardwareBase {
 
   public PivotIOHardware(int motorID) {
-    super(motorID, IntakeConstants.PIVOT_MOTOR_STATOR_LIMIT, "pivot/");
+    super(motorID, IntakeConstants.PIVOT_MOTOR_STATOR_LIMIT,
+        IntakeConstants.PEAK_FORWARD_DUTY_CYCLE, IntakeConstants.PEAK_REVERSE_DUTY_CYCLE, "pivot/");
     resetSlot0Gains();
   }
 
@@ -60,6 +61,10 @@ public class PivotIOHardware extends MechanismsIOHardwareBase {
     motionMagicConfigs.MotionMagicCruiseVelocity = IntakeConstants.PIVOT_CRUISE_VELOCITY;
     motionMagicConfigs.MotionMagicAcceleration = IntakeConstants.PIVOT_ACCELERATION;
     motionMagicConfigs.MotionMagicJerk = IntakeConstants.PIVOT_JERK;
+
+    var motorOutputConfigs = talonFXConfigs.MotorOutput;
+    motorOutputConfigs.PeakForwardDutyCycle = IntakeConstants.PEAK_FORWARD_DUTY_CYCLE;
+    motorOutputConfigs.PeakReverseDutyCycle = IntakeConstants.PEAK_REVERSE_DUTY_CYCLE;
 
     motor.getConfigurator().apply(talonFXConfigs);
   }
