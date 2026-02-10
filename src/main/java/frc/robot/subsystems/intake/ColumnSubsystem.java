@@ -7,11 +7,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.MechanismsSubsystemBase;
 
-public class RollerSubsystem extends MechanismsSubsystemBase {
-  private final RollerIOHardware m_IO = new RollerIOHardware(IntakeConstants.ROLLER_MOTOR_ID);
+public class ColumnSubsystem extends MechanismsSubsystemBase {
+  private final ColumnIOHardware m_IO = new ColumnIOHardware(IntakeConstants.COLUMN_MOTOR_ID);
 
-  public RollerSubsystem() {
-    super("roller");
+  public ColumnSubsystem() {
+    super("column");
     m_IO.resetPosition();
   }
 
@@ -22,10 +22,10 @@ public class RollerSubsystem extends MechanismsSubsystemBase {
   @Override
   protected void runClosedLoopVelocity(double velocity) {
     VelocityVoltage request = new VelocityVoltage(velocity)
-    .withEnableFOC(IntakeConstants.ROLLER_ENABLE_FOC)
-    .withFeedForward(IntakeConstants.ROLLER_FEED_FORWARD)
-    .withSlot(IntakeConstants.ROLLER_SLOT)
-    .withOverrideBrakeDurNeutral(IntakeConstants.ROLLER_OVERRIDE_BRAKE_DUR_NEUTRAL);
+    .withEnableFOC(IntakeConstants.COLUMN_ENABLE_FOC)
+    .withFeedForward(IntakeConstants.COLUMN_FEED_FORWARD)
+    .withSlot(IntakeConstants.COLUMN_SLOT)
+    .withOverrideBrakeDurNeutral(IntakeConstants.COLUMN_OVERRIDE_BRAKE_DUR_NEUTRAL);
     m_IO.setVelocityVoltage(request);
   }
 
@@ -40,10 +40,10 @@ public class RollerSubsystem extends MechanismsSubsystemBase {
   @Override
   public void periodic() {
     super.periodic();
-    SmartDashboard.putNumber("roller/current", m_IO.getCurrent());
+    SmartDashboard.putNumber("column/current", m_IO.getCurrent());
   }
 
   public Command runRollerFactory() {
-    return this.run(() -> runClosedLoopVelocity(IntakeConstants.ROLLER_INTAKE_VELOCITY));
+    return this.run(() -> runClosedLoopVelocity(IntakeConstants.COLUMN_INTAKE_VELOCITY));
   }
 }
