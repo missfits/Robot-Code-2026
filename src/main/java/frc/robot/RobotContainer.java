@@ -11,7 +11,7 @@ import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrainSim;
 import frc.robot.subsystems.drivetrain.DrivetrainCommandFactory;
 import frc.robot.subsystems.intake.IntakeCommandFactory;
 import frc.robot.subsystems.intake.PivotSubsystem;
-import frc.robot.subsystems.scorer.IndexerSubsystem;
+import frc.robot.subsystems.intake.IndexerSubsystem;
 import frc.robot.subsystems.scorer.ScorerCommandFactory;
 import frc.robot.subsystems.vision.LocalVisionFilterPipeline;
 import frc.robot.subsystems.vision.GlobalVisionFilterPipeline;
@@ -118,16 +118,13 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems and commands. */
   public RobotContainer() {
-    //Pathplanner register named commands
-    //TO-DO -- REPLACE WITH PROPER COMMAND ONCE IT HAS BEEN WRITTEN 
-    NamedCommands.registerCommand("trigger intake", new WaitCommand(1));
-    NamedCommands.registerCommand("orient to hub", new WaitCommand(1));
-    NamedCommands.registerCommand("climb", new WaitCommand(1));
-    NamedCommands.registerCommand("shoot", new WaitCommand(1));
 
     // Configure trigger bindings
     configureBindings();
+    
     setRobotMode(RobotMode.NEUTRAL);
+    
+    registerNamedCommands();
 
     // Configure auto builder
     createNamedCommands();
@@ -141,6 +138,16 @@ public class RobotContainer {
 
     logToSmartDashboard();
   }
+
+  private void registerNamedCommands() {
+    //Pathplanner register named commands
+    // TODO -- REPLACE WITH PROPER COMMAND ONCE IT HAS BEEN WRITTEN 
+    NamedCommands.registerCommand("trigger intake", new WaitCommand(1));
+    NamedCommands.registerCommand("orient to hub", new WaitCommand(1));
+    NamedCommands.registerCommand("climb", new WaitCommand(1));
+    NamedCommands.registerCommand("shoot", new WaitCommand(1));
+  }
+
 
   /**
    * Define trigger -> command mappings

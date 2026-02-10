@@ -150,23 +150,29 @@ public final class Constants {
     //Velocity voltage constants
     public static final boolean ROLLER_ENABLE_FOC = false;
     public static final boolean PIVOT_ENABLE_FOC = false;
+    public static final boolean COLUMN_ENABLE_FOC = false;
 
     public static final double ROLLER_FEED_FORWARD = 0.0;
     public static final double PIVOT_FEED_FORWARD = 0.0;
+    public static final double COLUMN_FEED_FORWARD = 0.0;
 
     public static final int ROLLER_SLOT = 0;
     public static final int PIVOT_SLOT = 0;
+    public static final int COLUMN_SLOT = 0;
 
     public static final boolean ROLLER_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
     public static final boolean PIVOT_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
+    public static final boolean COLUMN_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
 
     // Motor IDs
     public static final int ROLLER_MOTOR_ID = 20;
     public static final int PIVOT_MOTOR_ID = 21;
+    public static final int COLUMN_MOTOR_ID = 22;
 
     // Motor limitss
     public static final int ROLLER_MOTOR_STATOR_LIMIT = 40;
     public static final int PIVOT_MOTOR_STATOR_LIMIT = 40;
+    public static final int COLUMN_MOTOR_STATOR_LIMIT = 40;
 
     // Duty cycle limits
     public static final double PEAK_FORWARD_DUTY_CYCLE = 0.5;
@@ -175,12 +181,15 @@ public final class Constants {
     // Conversions
     public static final double ROLLER_DEGREES_PER_REVOLUTION = 360./3.;
     public static final double PIVOT_DEGREES_PER_REVOLUTION = 360./50.;
+    public static final double COLUMN_DEGREES_PER_REVOLUTION = 360;
 
     // Intake motor velocities
     public static double ROLLER_INTAKE_VELOCITY = 0;
     public static final double INTAKE_BACK_VELOCITY = 0;
     public static final double PIVOT_STORE_POSITION_DEGREES = 0;
     public static final double PIVOT_DEPLOY_POSITION_DEGREES = 70;
+    public static final double COLUMN_INTAKE_VELOCITY = 0;
+
 
     // Roller PID gains
     public static double ROLLER_kP = 0;
@@ -201,6 +210,16 @@ public final class Constants {
     public static double PIVOT_kS = 0.25;
     public static double PIVOT_kV = 0.12;
     public static double PIVOT_kA = 0.01;
+
+    //Column PID gains
+    public static double COLUMN_kP = 0;
+    public static double COLUMN_kI = 0;
+    public static double COLUMN_kD = 0;
+
+    //Column feed forward values
+    public static double COLUMN_kS = 0;
+    public static double COLUMN_kV = 0;
+    public static double COLUMN_kA = 0;
 
     // Pivot Motion Magic values
     public static double PIVOT_CRUISE_VELOCITY = 10;

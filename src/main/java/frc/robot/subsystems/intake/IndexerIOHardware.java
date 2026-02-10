@@ -1,4 +1,4 @@
-package frc.robot.subsystems.scorer;
+package frc.robot.subsystems.intake;
 
 import frc.robot.Constants.ScorerConstants;
 import frc.robot.subsystems.MechanismsIOHardwareBase;
