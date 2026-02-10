@@ -8,7 +8,7 @@ import frc.robot.subsystems.MechanismsIOHardwareBase;
 public class ColumnIOHardware extends MechanismsIOHardwareBase {
 
   public ColumnIOHardware(int motorID) {
-    super(motorID, IntakeConstants.COLUMN_MOTOR_STATOR_LIMIT, "column/");
+    super(motorID, IntakeConstants.COLUMN_MOTOR_STATOR_LIMIT, IntakeConstants.PEAK_FORWARD_DUTY_CYCLE, IntakeConstants.PEAK_REVERSE_DUTY_CYCLE, "column/");
     resetSlot0Gains();
   }
 
