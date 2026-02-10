@@ -179,6 +179,9 @@ public final class Constants {
     public static double kS = 0;
     public static double kV = 0;
     public static double kA = 0;
+
+    // Timing
+    public static final double RUN_INTAKE_TIME = 0;
   }
 
   public static class IntakePivotConstants {
@@ -253,11 +256,6 @@ public final class Constants {
     public static double kS = 0;
     public static double kV = 0;
     public static double kA = 0;
-  }
-
-  public static class IntakeConstants {
-    // Timing
-    public static final double RUN_INTAKE_TIME = 0;
   }
 
   public static class IndexerConstants {

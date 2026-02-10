@@ -1,7 +1,6 @@
 package frc.robot.subsystems.intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.IntakeRollerConstants;
 import frc.robot.subsystems.LaserCANSensorBase;
 
@@ -24,7 +23,7 @@ public class IntakeCommandFactory {
 
   public Command runIntakeWithTimeout() {
     return m_roller.runMechanism(IntakeRollerConstants.INTAKE_VELOCITY)
-    .withTimeout(IntakeConstants.RUN_INTAKE_TIME)
+    .withTimeout(IntakeRollerConstants.RUN_INTAKE_TIME)
     .withName("run intake timeout");
   }
 
