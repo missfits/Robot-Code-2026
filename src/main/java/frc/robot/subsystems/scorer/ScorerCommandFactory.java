@@ -41,4 +41,8 @@ public class ScorerCommandFactory {
   public Command shooterOff() {
     return m_subsystem.runMechanismOff().withName("shooter off");
   }
+
+  public void setDefaultCommand() {
+    m_subsystem.setDefaultCommand(m_subsystem.runMechanismOff());
+  }
 }

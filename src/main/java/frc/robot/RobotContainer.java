@@ -197,6 +197,8 @@ public class RobotContainer {
 
     m_driverJoystick.povCenter().negate().onTrue(new InstantCommand(() -> resetControllerConstantsSmartDashboard()));
     m_drivetrain.registerTelemetry(logger::telemeterize);
+
+    configureDefaultCommandCompetition();
   }
 
   private void configureBindingsTestingMechanisms() {
@@ -223,6 +225,8 @@ public class RobotContainer {
     //     () -> new Pose2d(Units.inchesToMeters(182), Units.inchesToMeters(182), new Rotation2d())
     //   )
     // );
+
+    configureDefaultCommandTesting();
   }
 
   private void configureBindingsVision() {
@@ -265,6 +269,29 @@ public class RobotContainer {
       .getSimTelemetryConsumer().andThen(logger::telemeterize);
     m_drivetrain.registerTelemetry(telemetry);
   }
+
+  private void configureDefaultCommandCompetition() {
+    switch (m_robotMode) {
+      case NEUTRAL:
+        break;
+      case INTAKE:
+        break;
+      case SHOOT:
+        break;
+    }
+  }
+
+  private void configureDefaultCommandTesting() {
+    m_intakeCommandFactory.setDefaultCommand();
+    m_shooterCommandFactory.setDefaultCommand();
+  }
+
+  public void setRobotMode(RobotMode newMode) {
+    m_robotMode = newMode;
+    configureDefaultCommandCompetition();
+    SmartDashboard.putString("robot/mode", m_robotMode.toString());
+  }
+
 
   private void logToSmartDashboard() {
     // Roller
@@ -310,22 +337,7 @@ public class RobotContainer {
     return m_autoChooser.getSelected();
   }
 
-  private void configureDefaultCommands() {
-    switch (m_robotMode) {
-      case NEUTRAL:
-        break;
-      case INTAKE:
-        break;
-      case SHOOT:
-        break;
-    }
-  }
 
-  public void setRobotMode(RobotMode newMode) {
-    m_robotMode = newMode;
-    configureDefaultCommands();
-    SmartDashboard.putString("robot/mode", m_robotMode.toString());
-  }
 
   public void updatePoseEst() {
     List<CameraReading> allReadings = m_vision.getValidCameraReadings();
