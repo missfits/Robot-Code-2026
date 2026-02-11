@@ -122,7 +122,8 @@ public class RobotContainer {
   public RobotContainer() {
 
     // Configure trigger bindings
-    configureBindings();
+    configureBindingsTestingMechanisms();
+    configureBindingsVision();
     
     setRobotMode(RobotMode.NEUTRAL);
     
@@ -150,11 +151,10 @@ public class RobotContainer {
     NamedCommands.registerCommand("shoot", new WaitCommand(1));
   }
 
-
   /**
    * Define trigger -> command mappings
    */
-  private void configureBindings() {
+  private void configureBindingsCompetition() {
     // Default drive
     m_drivetrain.setDefaultCommand(
       // Drivetrain will execute this command periodically
@@ -182,22 +182,6 @@ public class RobotContainer {
     else{
        m_drivetrain.registerTelemetry(logger::telemeterize);
     }
-   
-    // TODO: change -- this is for testing
-    m_driverJoystick.y().and(m_driverJoystick.leftBumper().negate()).whileTrue(
-      m_drivetrainCommandFactory.snapToAngle(
-        () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
-        0
-      )
-    );
-
-    // TODO: change -- this is for testing
-    m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).onTrue(
-      m_drivetrainCommandFactory.snapToTarget(
-        () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
-        () -> new Pose2d(Units.inchesToMeters(182), Units.inchesToMeters(182), new Rotation2d())
-      )
-    );
 
     m_driverJoystick.leftBumper().and(m_driverJoystick.y()).onTrue(
       new InstantCommand(() -> setRobotMode(RobotMode.INTAKE))
@@ -214,11 +198,37 @@ public class RobotContainer {
     // reset the field-centric heading on a button press
     m_driverJoystick.a().onTrue(m_drivetrain.runOnce(() -> m_drivetrain.resetRotation(new Rotation2d(DriverStation.getAlliance().get().equals(Alliance.Blue) ? 0 : Math.PI))));
 
-
     m_driverJoystick.povCenter().negate().onTrue(new InstantCommand(() -> resetControllerConstantsSmartDashboard()));
     
-    configureTestBindings();
+  }
 
+  private void configureBindingsTestingMechanisms() {
+    m_testJoystick.x().whileTrue(m_intakeCommandFactory.runRoller());
+    m_testJoystick.y().whileTrue(m_intakeCommandFactory.runIndexer());
+    m_testJoystick.b().whileTrue(m_intakeCommandFactory.runColumn());
+    m_testJoystick.rightBumper().whileTrue(m_intakeCommandFactory.storePivot());
+    m_testJoystick.leftBumper().whileTrue(m_intakeCommandFactory.deployPivot());
+    m_testJoystick.rightTrigger().whileTrue(m_shooterCommandFactory.runShooter());
+    m_testJoystick.leftTrigger().whileTrue(m_shooterCommandFactory.runShooterBack());
+
+    // // TODO: change -- this is for testing
+    // m_testJoystick.y().and(m_testJoystick.leftBumper().negate()).whileTrue(
+    //   m_drivetrainCommandFactory.snapToAngle(
+    //     () -> new JoystickVals(m_testJoystick.getLeftX(), m_testJoystick.getLeftY()),
+    //     0
+    //   )
+    // );
+
+    // // TODO: change -- this is for testing
+    // m_testJoystick.b().and(m_testJoystick.leftBumper().negate()).onTrue(
+    //   m_drivetrainCommandFactory.snapToTarget(
+    //     () -> new JoystickVals(m_testJoystick.getLeftX(), m_testJoystick.getLeftY()),
+    //     () -> new Pose2d(Units.inchesToMeters(182), Units.inchesToMeters(182), new Rotation2d())
+    //   )
+    // );
+  }
+
+  private void configureBindingsVision() {
     // --- CONFIGURE VISION FILTERING ---
     GlobalVisionFilterPipeline globalPipeline = new GlobalVisionFilterPipeline();
     LocalVisionFilterPipeline localPipeline = new LocalVisionFilterPipeline();
@@ -232,15 +242,6 @@ public class RobotContainer {
 
     m_vision.setGlobalFilterPipeline(globalPipeline);
     m_vision.setLocalFilteringPipeline(localPipeline);
-  }
-
-  private void configureTestBindings() {
-    m_testJoystick.x().whileTrue(m_shooterCommandFactory.runShooterSmartDashboard());
-    m_testJoystick.y().whileTrue(m_indexer.runIndexerFactory());
-    m_testJoystick.a().whileTrue(m_roller.runRollerFactory());
-    m_testJoystick.rightBumper().whileTrue(m_pivot.deployIntakeFactory());
-    m_testJoystick.leftBumper().whileTrue(m_pivot.storeIntakeFactory());
-
   }
 
   private void logToSmartDashboard() {
