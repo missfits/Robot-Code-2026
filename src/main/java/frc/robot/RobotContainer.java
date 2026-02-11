@@ -122,9 +122,13 @@ public class RobotContainer {
   public RobotContainer() {
 
     // Configure trigger bindings
-    configureBindingsTestingMechanisms();
-    configureBindingsVision();
-    
+    if (Utils.isSimulation()) {
+      configureBindingsSimulation();
+    } else {
+      configureBindingsTestingMechanisms();
+      configureBindingsVision();
+    }
+
     setRobotMode(RobotMode.NEUTRAL);
     
     registerNamedCommands();
@@ -174,15 +178,6 @@ public class RobotContainer {
       )
     );
 
-    if (Utils.isSimulation()){
-      Consumer<SwerveDriveState> telemetry =  ((CommandSwerveDrivetrainSim) m_drivetrain)
-          .getSimTelemetryConsumer().andThen(logger::telemeterize);
-      m_drivetrain.registerTelemetry(telemetry);
-    }
-    else{
-       m_drivetrain.registerTelemetry(logger::telemeterize);
-    }
-
     m_driverJoystick.leftBumper().and(m_driverJoystick.x()).onTrue(
       new InstantCommand(() -> setRobotMode(RobotMode.NEUTRAL))
     );
@@ -201,7 +196,7 @@ public class RobotContainer {
     );
 
     m_driverJoystick.povCenter().negate().onTrue(new InstantCommand(() -> resetControllerConstantsSmartDashboard()));
-    
+    m_drivetrain.registerTelemetry(logger::telemeterize);
   }
 
   private void configureBindingsTestingMechanisms() {
@@ -244,6 +239,31 @@ public class RobotContainer {
 
     m_vision.setGlobalFilterPipeline(globalPipeline);
     m_vision.setLocalFilteringPipeline(localPipeline);
+  }
+
+  private void configureBindingsSimulation() {
+    // Default drive
+    m_drivetrain.setDefaultCommand(
+      // Drivetrain will execute this command periodically
+      m_drivetrainCommandFactory.defaultDrive(
+        () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
+        () -> new JoystickVals(m_driverJoystick.getRightX(), m_driverJoystick.getRightY()),
+        () -> false
+      )
+    );
+
+    // Drive in slowmode while right bumper is pressed
+    m_driverJoystick.rightBumper().whileTrue(
+      m_drivetrainCommandFactory.defaultDrive(
+        () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
+        () -> new JoystickVals(m_driverJoystick.getRightX(), m_driverJoystick.getRightY()),
+        () -> true
+      )
+    );
+
+    Consumer<SwerveDriveState> telemetry =  ((CommandSwerveDrivetrainSim) m_drivetrain)
+      .getSimTelemetryConsumer().andThen(logger::telemeterize);
+    m_drivetrain.registerTelemetry(telemetry);
   }
 
   private void logToSmartDashboard() {
