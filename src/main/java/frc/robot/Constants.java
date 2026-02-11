@@ -146,137 +146,174 @@ public final class Constants {
 
   }
 
-  public static class IntakeConstants {
-    //Velocity voltage constants
-    public static final boolean ROLLER_ENABLE_FOC = false;
-    public static final boolean PIVOT_ENABLE_FOC = false;
-    public static final boolean COLUMN_ENABLE_FOC = false;
+  public static class RollerConstants {
+    // Velocity voltage constants
+    public static final boolean ENABLE_FOC = false;
+    public static final double FEED_FORWARD = 0.0;
+    public static final int SLOT = 0;
+    public static final boolean OVERRIDE_BRAKE_DUR_NEUTRAL = false;
 
-    public static final double ROLLER_FEED_FORWARD = 0.0;
-    public static final double PIVOT_FEED_FORWARD = 0.0;
-    public static final double COLUMN_FEED_FORWARD = 0.0;
+    // Motor ID
+    public static final int MOTOR_ID = 20;
 
-    public static final int ROLLER_SLOT = 0;
-    public static final int PIVOT_SLOT = 0;
-    public static final int COLUMN_SLOT = 0;
-
-    public static final boolean ROLLER_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
-    public static final boolean PIVOT_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
-    public static final boolean COLUMN_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
-
-    // Motor IDs
-    public static final int ROLLER_MOTOR_ID = 20;
-    public static final int PIVOT_MOTOR_ID = 21;
-    public static final int COLUMN_MOTOR_ID = 22;
-
-    // Motor limitss
-    public static final int ROLLER_MOTOR_STATOR_LIMIT = 40;
-    public static final int PIVOT_MOTOR_STATOR_LIMIT = 40;
-    public static final int COLUMN_MOTOR_STATOR_LIMIT = 40;
+    // Motor limits
+    public static final int MOTOR_STATOR_LIMIT = 40;
 
     // Duty cycle limits
     public static final double PEAK_FORWARD_DUTY_CYCLE = 0.5;
     public static final double PEAK_REVERSE_DUTY_CYCLE = -0.5;
 
     // Conversions
-    public static final double ROLLER_DEGREES_PER_REVOLUTION = 360./3.;
-    public static final double PIVOT_DEGREES_PER_REVOLUTION = 360./50.;
-    public static final double COLUMN_DEGREES_PER_REVOLUTION = 360;
+    public static final double DEGREES_PER_REVOLUTION = 360./3.;
 
     // Intake motor velocities
-    public static double ROLLER_INTAKE_VELOCITY = 0;
+    public static double INTAKE_VELOCITY = 0;
     public static final double INTAKE_BACK_VELOCITY = 0;
-    public static final double PIVOT_STORE_POSITION_DEGREES = 0;
-    public static final double PIVOT_DEPLOY_POSITION_DEGREES = 70;
-    public static final double COLUMN_INTAKE_VELOCITY = 0;
 
+    // PID gains
+    public static double kP = 0;
+    public static double kI = 0;
+    public static double kD = 0;
 
-    // Roller PID gains
-    public static double ROLLER_kP = 0;
-    public static double ROLLER_kI = 0;
-    public static double ROLLER_kD = 0;
-
-    //Roller feed forward values
-    public static double ROLLER_kS = 0;
-    public static double ROLLER_kV = 0;
-    public static double ROLLER_kA = 0;
-
-    // Pivot PID gains
-    public static double PIVOT_kP = 4.8;
-    public static double PIVOT_kI = 0;
-    public static double PIVOT_kD = 0.1;
-
-    // Pivot feed forward values
-    public static double PIVOT_kS = 0.25;
-    public static double PIVOT_kV = 0.12;
-    public static double PIVOT_kA = 0.01;
-
-    //Column PID gains
-    public static double COLUMN_kP = 0;
-    public static double COLUMN_kI = 0;
-    public static double COLUMN_kD = 0;
-
-    //Column feed forward values
-    public static double COLUMN_kS = 0;
-    public static double COLUMN_kV = 0;
-    public static double COLUMN_kA = 0;
-
-    // Pivot Motion Magic values
-    public static double PIVOT_CRUISE_VELOCITY = 10;
-    public static double PIVOT_ACCELERATION = 50;
-    public static double PIVOT_JERK = 1600;
+    // Feed forward values
+    public static double kS = 0;
+    public static double kV = 0;
+    public static double kA = 0;
 
     // Timing
     public static final double RUN_INTAKE_TIME = 0;
   }
 
-  public static class ScorerConstants {
-    //Velocity voltage constants
-    public static final boolean INFLUENCER_ENABLE_FOC = false;
-    public static final boolean FOLLOWER_ENABLE_FOC = false;
-    public static final boolean INDEXER_ENABLE_FOC = false;
+  public static class PivotConstants {
+    // Velocity voltage constants
+    public static final boolean ENABLE_FOC = false;
+    public static final double FEED_FORWARD = 0.0;
+    public static final int SLOT = 0;
+    public static final boolean OVERRIDE_BRAKE_DUR_NEUTRAL = false;
 
-    public static final double INFLUENCER_FEED_FORWARD = 0.0;
-    public static final double FOLLOWER_FEED_FORWARD = 0.0;
-    public static final double INDEXER_FEED_FORWARD = 0.0;
+    // Motor ID
+    public static final int MOTOR_ID = 21;
 
-    public static final int INFLUENCER_SLOT = 0;
-    public static final int FOLLOWER_SLOT = 0;
-    public static final int INDEXER_SLOT = 0;
-
-    public static final boolean INFLUENCER_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
-    public static final boolean FOLLOWER_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
-    public static final boolean INDEXER_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
-
-    // Motor IDs
-    public static final int INFLUENCER_MOTOR_ID = 31;
-    public static final int FOLLOWER_MOTOR_ID = 32;
-    public static final int INDEXER_MOTOR_ID = 30;
-
-    // Motor limits - Influencer
-    public static final int INFLUENCER_MOTOR_STATOR_LIMIT = 40;
-    // Motor limits - Follower
-    public static final int FOLLOWER_MOTOR_STATOR_LIMIT = 40;
-    // Motor limits - Indexer
-    public static final int INDEXER_MOTOR_STATOR_LIMIT = 40;
+    // Motor limits
+    public static final int MOTOR_STATOR_LIMIT = 40;
 
     // Duty cycle limits
     public static final double PEAK_FORWARD_DUTY_CYCLE = 0.5;
     public static final double PEAK_REVERSE_DUTY_CYCLE = -0.5;
 
-    // Conversions - Influencer
+    // Conversions
+    public static final double DEGREES_PER_REVOLUTION = 360./50.;
+
+    // Pivot positions
+    public static final double STORE_POSITION_DEGREES = 0;
+    public static final double DEPLOY_POSITION_DEGREES = 70;
+
+    // PID gains
+    public static double kP = 4.8;
+    public static double kI = 0;
+    public static double kD = 0.1;
+
+    // Feed forward values
+    public static double kS = 0.25;
+    public static double kV = 0.12;
+    public static double kA = 0.01;
+
+    // Motion Magic values
+    public static double CRUISE_VELOCITY = 10;
+    public static double ACCELERATION = 50;
+    public static double JERK = 1600;
+  }
+
+  public static class ColumnConstants {
+    // Velocity voltage constants
+    public static final boolean ENABLE_FOC = false;
+    public static final double FEED_FORWARD = 0.0;
+    public static final int SLOT = 0;
+    public static final boolean OVERRIDE_BRAKE_DUR_NEUTRAL = false;
+
+    // Motor ID
+    public static final int MOTOR_ID = 22;
+
+    // Motor limits
+    public static final int MOTOR_STATOR_LIMIT = 40;
+
+    // Duty cycle limits
+    public static final double PEAK_FORWARD_DUTY_CYCLE = 0.5;
+    public static final double PEAK_REVERSE_DUTY_CYCLE = -0.5;
+
+    // Conversions
+    public static final double DEGREES_PER_REVOLUTION = 360;
+
+    // Column motor velocities
+    public static final double INTAKE_VELOCITY = 0;
+
+    // PID gains
+    public static double kP = 0;
+    public static double kI = 0;
+    public static double kD = 0;
+
+    // Feed forward values
+    public static double kS = 0;
+    public static double kV = 0;
+    public static double kA = 0;
+  }
+
+  public static class IndexerConstants {
+    // Velocity voltage constants
+    public static final boolean ENABLE_FOC = false;
+    public static final double FEED_FORWARD = 0.0;
+    public static final int SLOT = 0;
+    public static final boolean OVERRIDE_BRAKE_DUR_NEUTRAL = false;
+
+    // Motor ID
+    public static final int MOTOR_ID = 30;
+
+    // Motor limits
+    public static final int MOTOR_STATOR_LIMIT = 40;
+
+    // Duty cycle limits
+    public static final double PEAK_FORWARD_DUTY_CYCLE = 0.5;
+    public static final double PEAK_REVERSE_DUTY_CYCLE = -0.5;
+
+    // Conversions
+    public static final double DEGREES_PER_REVOLUTION = 360;
+
+    // Indexer motor velocity
+    public static final double MOTOR_VELOCITY = 0;
+  }
+
+  public static class ShooterConstants {
+    // Velocity voltage constants - Influencer
+    public static final boolean INFLUENCER_ENABLE_FOC = false;
+    public static final double INFLUENCER_FEED_FORWARD = 0.0;
+    public static final int INFLUENCER_SLOT = 0;
+    public static final boolean INFLUENCER_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
+
+    // Velocity voltage constants - Follower
+    public static final boolean FOLLOWER_ENABLE_FOC = false;
+    public static final double FOLLOWER_FEED_FORWARD = 0.0;
+    public static final int FOLLOWER_SLOT = 0;
+    public static final boolean FOLLOWER_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
+
+    // Motor IDs
+    public static final int INFLUENCER_MOTOR_ID = 31;
+    public static final int FOLLOWER_MOTOR_ID = 32;
+
+    // Motor limits
+    public static final int INFLUENCER_MOTOR_STATOR_LIMIT = 40;
+    public static final int FOLLOWER_MOTOR_STATOR_LIMIT = 40;
+
+    // Duty cycle limits
+    public static final double PEAK_FORWARD_DUTY_CYCLE = 0.5;
+    public static final double PEAK_REVERSE_DUTY_CYCLE = -0.5;
+
+    // Conversions
     public static final double INFLUENCER_DEGREES_PER_REVOLUTION = 360;
-    // Conversions - Follower
     public static final double FOLLOWER_DEGREES_PER_REVOLUTION = 360;
-    // Conversions - Indexer
-    public static final double INDEXER_DEGREES_PER_REVOLUTION = 360;
 
     // Influencer motor velocities
     public static double INFLUENCER_OUTTAKE_MOTOR_VELOCITY = 0;
     public static final double INFLUENCER_SHOOTER_BACK_VELOCITY = 0;
-
-    // Indexer motor velocity
-    public static final double INDEXER_MOTOR_VELOCITY = 0;
 
     // Influencer PID/FF gains
     public static double INFLUENCER_kP = 0.1;

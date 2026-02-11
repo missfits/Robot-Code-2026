@@ -4,12 +4,12 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.ScorerConstants;
+import frc.robot.Constants.IndexerConstants;
 import frc.robot.subsystems.MechanismsSubsystemBase;
 
 
 public class IndexerSubsystem extends MechanismsSubsystemBase {
-  private final IndexerIOHardware m_IO = new IndexerIOHardware(ScorerConstants.INDEXER_MOTOR_ID);
+  private final IndexerIOHardware m_IO = new IndexerIOHardware(IndexerConstants.MOTOR_ID);
 
   public IndexerSubsystem() {
     super("indexer");
@@ -23,10 +23,10 @@ public class IndexerSubsystem extends MechanismsSubsystemBase {
   @Override
   protected void runClosedLoopVelocity(double velocity) {
     VelocityVoltage request = new VelocityVoltage(velocity)
-    .withEnableFOC(ScorerConstants.INDEXER_ENABLE_FOC)
-    .withFeedForward(ScorerConstants.INDEXER_FEED_FORWARD)
-    .withSlot(ScorerConstants.INDEXER_SLOT)
-    .withOverrideBrakeDurNeutral(ScorerConstants.INDEXER_OVERRIDE_BRAKE_DUR_NEUTRAL);
+    .withEnableFOC(IndexerConstants.ENABLE_FOC)
+    .withFeedForward(IndexerConstants.FEED_FORWARD)
+    .withSlot(IndexerConstants.SLOT)
+    .withOverrideBrakeDurNeutral(IndexerConstants.OVERRIDE_BRAKE_DUR_NEUTRAL);
     m_IO.setVelocityVoltage(request);
   }
 
@@ -41,6 +41,6 @@ public class IndexerSubsystem extends MechanismsSubsystemBase {
   }
 
   public Command runIndexerFactory() {
-    return this.run(() -> runClosedLoopVelocity(ScorerConstants.INDEXER_MOTOR_VELOCITY));
+    return this.run(() -> runClosedLoopVelocity(IndexerConstants.MOTOR_VELOCITY));
   }
 }

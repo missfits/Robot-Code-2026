@@ -2,61 +2,61 @@ package frc.robot.subsystems.scorer;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 
-import frc.robot.Constants.ScorerConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.MechanismsIOHardwareBase;
 
 public class ShooterFollowerIOHardware extends MechanismsIOHardwareBase {
 
   public ShooterFollowerIOHardware(int motorID) {
-    super(motorID, ScorerConstants.FOLLOWER_MOTOR_STATOR_LIMIT,
-        ScorerConstants.PEAK_FORWARD_DUTY_CYCLE, ScorerConstants.PEAK_REVERSE_DUTY_CYCLE, "shooter/follower/");
+    super(motorID, ShooterConstants.FOLLOWER_MOTOR_STATOR_LIMIT,
+        ShooterConstants.PEAK_FORWARD_DUTY_CYCLE, ShooterConstants.PEAK_REVERSE_DUTY_CYCLE, "shooter/follower/");
     resetSlot0Gains();
   }
 
   public void resetSlot0Gains() {
     var talonFXConfigs = new TalonFXConfiguration();
     var slot0Configs = talonFXConfigs.Slot0;
-    
+
     //PID
-    slot0Configs.kP = ScorerConstants.FOLLOWER_kP;
-    slot0Configs.kI = ScorerConstants.FOLLOWER_kI;
-    slot0Configs.kD = ScorerConstants.FOLLOWER_kD;
+    slot0Configs.kP = ShooterConstants.FOLLOWER_kP;
+    slot0Configs.kI = ShooterConstants.FOLLOWER_kI;
+    slot0Configs.kD = ShooterConstants.FOLLOWER_kD;
 
     //feed forward values
-    slot0Configs.kS = ScorerConstants.FOLLOWER_kS;
-    slot0Configs.kV = ScorerConstants.FOLLOWER_kV;
-    slot0Configs.kA = ScorerConstants.FOLLOWER_kA;
+    slot0Configs.kS = ShooterConstants.FOLLOWER_kS;
+    slot0Configs.kV = ShooterConstants.FOLLOWER_kV;
+    slot0Configs.kA = ShooterConstants.FOLLOWER_kA;
 
     var motorOutputConfigs = talonFXConfigs.MotorOutput;
-    motorOutputConfigs.PeakForwardDutyCycle = ScorerConstants.PEAK_FORWARD_DUTY_CYCLE;
-    motorOutputConfigs.PeakReverseDutyCycle = ScorerConstants.PEAK_REVERSE_DUTY_CYCLE;
+    motorOutputConfigs.PeakForwardDutyCycle = ShooterConstants.PEAK_FORWARD_DUTY_CYCLE;
+    motorOutputConfigs.PeakReverseDutyCycle = ShooterConstants.PEAK_REVERSE_DUTY_CYCLE;
 
     motor.getConfigurator().apply(talonFXConfigs);
   }
 
   public double getPositionRadians() {
-    return Math.toRadians(getPositionRevolutions() * ScorerConstants.FOLLOWER_DEGREES_PER_REVOLUTION);
+    return Math.toRadians(getPositionRevolutions() * ShooterConstants.FOLLOWER_DEGREES_PER_REVOLUTION);
   }
 
   public double getPositionDegrees() {
-    return getPositionRevolutions() * ScorerConstants.FOLLOWER_DEGREES_PER_REVOLUTION;
+    return getPositionRevolutions() * ShooterConstants.FOLLOWER_DEGREES_PER_REVOLUTION;
   }
 
   public double getVelocityRadiansPerSecond() {
-    return Math.toRadians(getMotorVelocityRevolutionsPerSecond() * ScorerConstants.FOLLOWER_DEGREES_PER_REVOLUTION);
+    return Math.toRadians(getMotorVelocityRevolutionsPerSecond() * ShooterConstants.FOLLOWER_DEGREES_PER_REVOLUTION);
   }
 
   public double getVelocityDegreesPerSecond() {
-    return getMotorVelocityRevolutionsPerSecond() * ScorerConstants.FOLLOWER_DEGREES_PER_REVOLUTION;
+    return getMotorVelocityRevolutionsPerSecond() * ShooterConstants.FOLLOWER_DEGREES_PER_REVOLUTION;
   }
 
   public void setPositionRadians(double radians) {
-    double revolutions = Math.toDegrees(radians) / ScorerConstants.FOLLOWER_DEGREES_PER_REVOLUTION;
+    double revolutions = Math.toDegrees(radians) / ShooterConstants.FOLLOWER_DEGREES_PER_REVOLUTION;
     setPositionRevolutions(revolutions);
   }
 
   public void setPositionDegrees(double degrees) {
-    double revolutions = degrees / ScorerConstants.FOLLOWER_DEGREES_PER_REVOLUTION;
+    double revolutions = degrees / ShooterConstants.FOLLOWER_DEGREES_PER_REVOLUTION;
     setPositionRevolutions(revolutions);
   }
 }

@@ -4,11 +4,11 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.RollerConstants;
 import frc.robot.subsystems.MechanismsSubsystemBase;
 
 public class RollerSubsystem extends MechanismsSubsystemBase {
-  private final RollerIOHardware m_IO = new RollerIOHardware(IntakeConstants.ROLLER_MOTOR_ID);
+  private final RollerIOHardware m_IO = new RollerIOHardware(RollerConstants.MOTOR_ID);
 
   public RollerSubsystem() {
     super("roller");
@@ -22,10 +22,10 @@ public class RollerSubsystem extends MechanismsSubsystemBase {
   @Override
   protected void runClosedLoopVelocity(double velocity) {
     VelocityVoltage request = new VelocityVoltage(velocity)
-    .withEnableFOC(IntakeConstants.ROLLER_ENABLE_FOC)
-    .withFeedForward(IntakeConstants.ROLLER_FEED_FORWARD)
-    .withSlot(IntakeConstants.ROLLER_SLOT)
-    .withOverrideBrakeDurNeutral(IntakeConstants.ROLLER_OVERRIDE_BRAKE_DUR_NEUTRAL);
+    .withEnableFOC(RollerConstants.ENABLE_FOC)
+    .withFeedForward(RollerConstants.FEED_FORWARD)
+    .withSlot(RollerConstants.SLOT)
+    .withOverrideBrakeDurNeutral(RollerConstants.OVERRIDE_BRAKE_DUR_NEUTRAL);
     m_IO.setVelocityVoltage(request);
   }
 
@@ -44,6 +44,6 @@ public class RollerSubsystem extends MechanismsSubsystemBase {
   }
 
   public Command runRollerFactory() {
-    return this.run(() -> runClosedLoopVelocity(IntakeConstants.ROLLER_INTAKE_VELOCITY));
+    return this.run(() -> runClosedLoopVelocity(RollerConstants.INTAKE_VELOCITY));
   }
 }

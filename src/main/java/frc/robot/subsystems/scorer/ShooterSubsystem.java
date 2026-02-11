@@ -5,12 +5,12 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import frc.robot.Constants.ScorerConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.MechanismsSubsystemBase;
 
 public class ShooterSubsystem extends MechanismsSubsystemBase {
-  private final ShooterInfluencerIOHardware m_influencerIO = new ShooterInfluencerIOHardware(ScorerConstants.INFLUENCER_MOTOR_ID);
-  private final ShooterFollowerIOHardware m_followerIO = new ShooterFollowerIOHardware(ScorerConstants.FOLLOWER_MOTOR_ID);
+  private final ShooterInfluencerIOHardware m_influencerIO = new ShooterInfluencerIOHardware(ShooterConstants.INFLUENCER_MOTOR_ID);
+  private final ShooterFollowerIOHardware m_followerIO = new ShooterFollowerIOHardware(ShooterConstants.FOLLOWER_MOTOR_ID);
 
   public ShooterSubsystem() {
     super("shooter");
@@ -26,10 +26,10 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
   protected void runClosedLoopVelocity(double influencerVelocity) {
 
     VelocityVoltage influencerRequest = new VelocityVoltage(influencerVelocity)
-    .withEnableFOC(ScorerConstants.INFLUENCER_ENABLE_FOC)
-    .withFeedForward(ScorerConstants.INFLUENCER_FEED_FORWARD)
-    .withSlot(ScorerConstants.INFLUENCER_SLOT)
-    .withOverrideBrakeDurNeutral(ScorerConstants.INFLUENCER_OVERRIDE_BRAKE_DUR_NEUTRAL);
+    .withEnableFOC(ShooterConstants.INFLUENCER_ENABLE_FOC)
+    .withFeedForward(ShooterConstants.INFLUENCER_FEED_FORWARD)
+    .withSlot(ShooterConstants.INFLUENCER_SLOT)
+    .withOverrideBrakeDurNeutral(ShooterConstants.INFLUENCER_OVERRIDE_BRAKE_DUR_NEUTRAL);
     m_influencerIO.setVelocityVoltage(influencerRequest);
   }
 
