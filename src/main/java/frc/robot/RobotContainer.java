@@ -11,6 +11,7 @@ import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrainSim;
 import frc.robot.subsystems.drivetrain.DrivetrainCommandFactory;
 import frc.robot.subsystems.intake.IntakeCommandFactory;
 import frc.robot.subsystems.intake.PivotSubsystem;
+import frc.robot.subsystems.intake.ColumnSubsystem;
 import frc.robot.subsystems.intake.IndexerSubsystem;
 import frc.robot.subsystems.scorer.ScorerCommandFactory;
 import frc.robot.subsystems.vision.LocalVisionFilterPipeline;
