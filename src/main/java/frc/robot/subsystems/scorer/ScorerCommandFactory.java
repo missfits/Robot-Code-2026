@@ -38,10 +38,6 @@ public class ScorerCommandFactory {
     ).withName("run shooter smart dashboard");
   }
 
-  public void setDefaultCommand() {
-    m_subsystem.setDefaultCommand(shooterOff());
-  }
-
   public Command shooterOff() {
     return m_subsystem.runMechanismOff().withName("shooter off");
   }
