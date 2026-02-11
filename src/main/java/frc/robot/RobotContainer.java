@@ -125,6 +125,7 @@ public class RobotContainer {
     configureBindings();
     
     setRobotMode(RobotMode.NEUTRAL);
+    configureDefaultCommands();
     
     registerNamedCommands();
 
@@ -182,22 +183,27 @@ public class RobotContainer {
     else{
        m_drivetrain.registerTelemetry(logger::telemeterize);
     }
-   
-    // TODO: change -- this is for testing
-    m_driverJoystick.y().and(m_driverJoystick.leftBumper().negate()).whileTrue(
-      m_drivetrainCommandFactory.snapToAngle(
-        () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
-        0
-      )
-    );
 
-    // TODO: change -- this is for testing
-    m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).onTrue(
-      m_drivetrainCommandFactory.snapToTarget(
-        () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
-        () -> new Pose2d(Units.inchesToMeters(182), Units.inchesToMeters(182), new Rotation2d())
-      )
+    // mechanism prototype testing configuration
+    m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).whileTrue(
+      m_shooterCommandFactory.runShooter()
     );
+   
+    // // TODO: change -- this is for testing
+    // m_driverJoystick.y().and(m_driverJoystick.leftBumper().negate()).whileTrue(
+    //   m_drivetrainCommandFactory.snapToAngle(
+    //     () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
+    //     0
+    //   )
+    // );
+
+    // // TODO: change -- this is for testing
+    // m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).onTrue(
+    //   m_drivetrainCommandFactory.snapToTarget(
+    //     () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
+    //     () -> new Pose2d(Units.inchesToMeters(182), Units.inchesToMeters(182), new Rotation2d())
+    //   )
+    // );
 
     m_driverJoystick.leftBumper().and(m_driverJoystick.y()).onTrue(
       new InstantCommand(() -> setRobotMode(RobotMode.INTAKE))
@@ -212,7 +218,9 @@ public class RobotContainer {
     );
 
     // reset the field-centric heading on a button press
-    m_driverJoystick.a().onTrue(m_drivetrain.runOnce(() -> m_drivetrain.resetRotation(new Rotation2d(DriverStation.getAlliance().get().equals(Alliance.Blue) ? 0 : Math.PI))));
+    m_driverJoystick.leftBumper().and(m_driverJoystick.a()).onTrue(
+      m_drivetrain.runOnce(() -> m_drivetrain.resetRotation(new Rotation2d(DriverStation.getAlliance().get().equals(Alliance.Blue) ? 0 : Math.PI)))
+    );
 
 
     m_driverJoystick.povCenter().negate().onTrue(new InstantCommand(() -> resetControllerConstantsSmartDashboard()));
@@ -254,7 +262,7 @@ public class RobotContainer {
     SmartDashboard.putNumber("shooter influencer IO/kP", SmartDashboard.getNumber("shooter influencer IO/kP", ShooterConstants.INFLUENCER_kP));
     SmartDashboard.putNumber("shooter influencer IO/kI", SmartDashboard.getNumber("shooter influencer IO/kI", ShooterConstants.INFLUENCER_kI));
     SmartDashboard.putNumber("shooter influencer IO/kD", SmartDashboard.getNumber("shooter influencer IO/kD", ShooterConstants.INFLUENCER_kD));
-    SmartDashboard.putNumber("shooter influencer IO/velocity", SmartDashboard.getNumber("shooter influencer IO/velocity", ShooterConstants.INFLUENCER_OUTTAKE_MOTOR_VELOCITY));
+    SmartDashboard.putNumber("shooter influencer IO/velocity", SmartDashboard.getNumber("shooter influencer IO/velocity", ShooterConstants.OUTTAKE_MOTOR_VELOCITY));
   }
 
   private void resetControllerConstantsSmartDashboard() {
@@ -266,7 +274,7 @@ public class RobotContainer {
     ShooterConstants.INFLUENCER_kP = SmartDashboard.getNumber("shooter influencer IO/kP", 0);
     ShooterConstants.INFLUENCER_kI = SmartDashboard.getNumber("shooter influencer IO/kI", 0);
     ShooterConstants.INFLUENCER_kD = SmartDashboard.getNumber("shooter influencer IO/kD", 0);
-    ShooterConstants.INFLUENCER_OUTTAKE_MOTOR_VELOCITY = SmartDashboard.getNumber("shooter influencer IO/velocity", 0);
+    ShooterConstants.OUTTAKE_MOTOR_VELOCITY = SmartDashboard.getNumber("shooter influencer IO/velocity", 0);
 
     m_roller.resetControllers();
     m_shooter.resetControllers();
@@ -290,10 +298,13 @@ public class RobotContainer {
   private void configureDefaultCommands() {
     switch (m_robotMode) {
       case NEUTRAL:
+        m_shooterCommandFactory.setDefaultCommand();
         break;
       case INTAKE:
+        m_shooterCommandFactory.setDefaultCommand();
         break;
       case SHOOT:
+        m_shooterCommandFactory.setDefaultCommand();
         break;
     }
   }
