@@ -315,6 +315,9 @@ public final class Constants {
     public static double OUTTAKE_MOTOR_VELOCITY = 3.0;
     public static double BACK_MOTOR_VELOCITY = -1.0;
 
+    public static double OUTTAKE_MOTOR_VOLTAGE = 1.0;
+    public static double BACK_MOTOR_VOLTAGE = -1.0;
+
     // Influencer PID/FF gains
     public static double INFLUENCER_kP = 0.1;
     public static double INFLUENCER_kI = 0;

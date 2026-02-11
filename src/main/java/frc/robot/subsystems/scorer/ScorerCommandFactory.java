@@ -16,19 +16,19 @@ public class ScorerCommandFactory {
 
   public Command runShooter() {
     return m_subsystem.runMechanism(
-      ShooterConstants.OUTTAKE_MOTOR_VELOCITY
+      ShooterConstants.OUTTAKE_MOTOR_VOLTAGE
     ).withName("run shooter");
   }
 
   public Command runShooterBack() {
     return m_subsystem.runMechanism(
-      ShooterConstants.BACK_MOTOR_VELOCITY
+      ShooterConstants.BACK_MOTOR_VOLTAGE
     ).withName("run shooter back");
   }
 
   public Command runShooterWithTimeout() {
     return m_subsystem.runMechanism(
-      ShooterConstants.OUTTAKE_MOTOR_VELOCITY
+      ShooterConstants.OUTTAKE_MOTOR_VOLTAGE
     ).withTimeout(ShooterConstants.RUN_SHOOTER_TIME).withName("run shooter timeout");
   }
 
