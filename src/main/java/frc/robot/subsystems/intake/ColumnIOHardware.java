@@ -2,44 +2,44 @@ package frc.robot.subsystems.intake;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 
-import frc.robot.Constants.ColumnWheelsConstants;
+import frc.robot.Constants.ColumnConstants;
 import frc.robot.subsystems.MechanismsIOHardwareBase;
 
 public class ColumnIOHardware extends MechanismsIOHardwareBase {
 
   public ColumnIOHardware(int motorID) {
-    super(motorID, ColumnWheelsConstants.MOTOR_STATOR_LIMIT, ColumnWheelsConstants.PEAK_FORWARD_DUTY_CYCLE, ColumnWheelsConstants.PEAK_REVERSE_DUTY_CYCLE, "column/");
+    super(motorID, ColumnConstants.MOTOR_STATOR_LIMIT, ColumnConstants.PEAK_FORWARD_DUTY_CYCLE, ColumnConstants.PEAK_REVERSE_DUTY_CYCLE, "column/");
     resetSlot0Gains();
   }
 
   public double getPositionRadians() {
-    return Math.toRadians(getPositionRevolutions() * ColumnWheelsConstants.DEGREES_PER_REVOLUTION);
+    return Math.toRadians(getPositionRevolutions() * ColumnConstants.DEGREES_PER_REVOLUTION);
   }
 
   public double getPositionDegrees() {
-    return getPositionRevolutions() * ColumnWheelsConstants.DEGREES_PER_REVOLUTION;
+    return getPositionRevolutions() * ColumnConstants.DEGREES_PER_REVOLUTION;
   }
 
   public double getVelocityRadiansPerSecond() {
-    return Math.toRadians(getMotorVelocityRevolutionsPerSecond() * ColumnWheelsConstants.DEGREES_PER_REVOLUTION);
+    return Math.toRadians(getMotorVelocityRevolutionsPerSecond() * ColumnConstants.DEGREES_PER_REVOLUTION);
   }
 
   public double getVelocityDegreesPerSecond() {
-    return getMotorVelocityRevolutionsPerSecond() * ColumnWheelsConstants.DEGREES_PER_REVOLUTION;
+    return getMotorVelocityRevolutionsPerSecond() * ColumnConstants.DEGREES_PER_REVOLUTION;
   }
 
   public void setPositionRadians(double radians) {
-    double revolutions = Math.toDegrees(radians) / ColumnWheelsConstants.DEGREES_PER_REVOLUTION;
+    double revolutions = Math.toDegrees(radians) / ColumnConstants.DEGREES_PER_REVOLUTION;
     setPositionRevolutions(revolutions);
   }
 
   public void setPositionDegrees(double degrees) {
-    double revolutions = degrees / ColumnWheelsConstants.DEGREES_PER_REVOLUTION;
+    double revolutions = degrees / ColumnConstants.DEGREES_PER_REVOLUTION;
     setPositionRevolutions(revolutions);
   }
 
   public double degreesToMotorRevolutions(double degrees) {
-    return degrees / ColumnWheelsConstants.DEGREES_PER_REVOLUTION;
+    return degrees / ColumnConstants.DEGREES_PER_REVOLUTION;
   }
 
   public void resetSlot0Gains() {
@@ -47,14 +47,14 @@ public class ColumnIOHardware extends MechanismsIOHardwareBase {
     var slot0Configs = talonFXConfigs.Slot0;
 
     //PID
-    slot0Configs.kP = ColumnWheelsConstants.kP;
-    slot0Configs.kI = ColumnWheelsConstants.kI;
-    slot0Configs.kD = ColumnWheelsConstants.kD;
+    slot0Configs.kP = ColumnConstants.kP;
+    slot0Configs.kI = ColumnConstants.kI;
+    slot0Configs.kD = ColumnConstants.kD;
 
     //feed forward values
-    slot0Configs.kS = ColumnWheelsConstants.kS;
-    slot0Configs.kV = ColumnWheelsConstants.kV;
-    slot0Configs.kA = ColumnWheelsConstants.kA;
+    slot0Configs.kS = ColumnConstants.kS;
+    slot0Configs.kV = ColumnConstants.kV;
+    slot0Configs.kA = ColumnConstants.kA;
 
     motor.getConfigurator().apply(talonFXConfigs);
   }

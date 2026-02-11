@@ -1,7 +1,7 @@
 package frc.robot.subsystems.intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.IntakeRollerConstants;
+import frc.robot.Constants.RollerConstants;
 import frc.robot.subsystems.LaserCANSensorBase;
 
 public class IntakeCommandFactory {
@@ -14,21 +14,21 @@ public class IntakeCommandFactory {
   }
 
   public Command runIntake() {
-    return m_roller.runMechanism(IntakeRollerConstants.INTAKE_VELOCITY).withName("run intake");
+    return m_roller.runMechanism(RollerConstants.INTAKE_VELOCITY).withName("run intake");
   }
 
   public Command runIntakeBack() {
-    return m_roller.runMechanism(IntakeRollerConstants.INTAKE_BACK_VELOCITY).withName("run intake");
+    return m_roller.runMechanism(RollerConstants.INTAKE_BACK_VELOCITY).withName("run intake");
   }
 
   public Command runIntakeWithTimeout() {
-    return m_roller.runMechanism(IntakeRollerConstants.INTAKE_VELOCITY)
-    .withTimeout(IntakeRollerConstants.RUN_INTAKE_TIME)
+    return m_roller.runMechanism(RollerConstants.INTAKE_VELOCITY)
+    .withTimeout(RollerConstants.RUN_INTAKE_TIME)
     .withName("run intake timeout");
   }
 
   public Command runIntakePID() {
-    return m_roller.runMechanismPID(IntakeRollerConstants.INTAKE_VELOCITY)
+    return m_roller.runMechanismPID(RollerConstants.INTAKE_VELOCITY)
       .withName("run intake PID");
   }
 

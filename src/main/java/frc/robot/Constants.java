@@ -146,7 +146,7 @@ public final class Constants {
 
   }
 
-  public static class IntakeRollerConstants {
+  public static class RollerConstants {
     // Velocity voltage constants
     public static final boolean ENABLE_FOC = false;
     public static final double FEED_FORWARD = 0.0;
@@ -184,7 +184,7 @@ public final class Constants {
     public static final double RUN_INTAKE_TIME = 0;
   }
 
-  public static class IntakePivotConstants {
+  public static class PivotConstants {
     // Velocity voltage constants
     public static final boolean ENABLE_FOC = false;
     public static final double FEED_FORWARD = 0.0;
@@ -224,7 +224,7 @@ public final class Constants {
     public static double JERK = 1600;
   }
 
-  public static class ColumnWheelsConstants {
+  public static class ColumnConstants {
     // Velocity voltage constants
     public static final boolean ENABLE_FOC = false;
     public static final double FEED_FORWARD = 0.0;

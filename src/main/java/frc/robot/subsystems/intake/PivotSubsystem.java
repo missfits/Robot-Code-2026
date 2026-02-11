@@ -5,12 +5,12 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.IntakePivotConstants;
+import frc.robot.Constants.PivotConstants;
 import frc.robot.subsystems.MechanismsSubsystemBase;
 
 
 public class PivotSubsystem extends MechanismsSubsystemBase {
-  private final PivotIOHardware m_IO = new PivotIOHardware(IntakePivotConstants.MOTOR_ID);
+  private final PivotIOHardware m_IO = new PivotIOHardware(PivotConstants.MOTOR_ID);
 
   public PivotSubsystem() {
     super("pivot");
@@ -24,10 +24,10 @@ public class PivotSubsystem extends MechanismsSubsystemBase {
   @Override
   protected void runClosedLoopVelocity(double velocity) {
     VelocityVoltage request = new VelocityVoltage(velocity)
-    .withEnableFOC(IntakePivotConstants.ENABLE_FOC)
-    .withFeedForward(IntakePivotConstants.FEED_FORWARD)
-    .withSlot(IntakePivotConstants.SLOT)
-    .withOverrideBrakeDurNeutral(IntakePivotConstants.OVERRIDE_BRAKE_DUR_NEUTRAL);
+    .withEnableFOC(PivotConstants.ENABLE_FOC)
+    .withFeedForward(PivotConstants.FEED_FORWARD)
+    .withSlot(PivotConstants.SLOT)
+    .withOverrideBrakeDurNeutral(PivotConstants.OVERRIDE_BRAKE_DUR_NEUTRAL);
     m_IO.setVelocityVoltage(request);
   }
 
@@ -43,14 +43,14 @@ public class PivotSubsystem extends MechanismsSubsystemBase {
 
   public Command deployIntakeFactory() {
     return this.run(() ->  {
-      MotionMagicVoltage request = new MotionMagicVoltage(m_IO.degreesToMotorRevolutions(IntakePivotConstants.DEPLOY_POSITION_DEGREES));
+      MotionMagicVoltage request = new MotionMagicVoltage(m_IO.degreesToMotorRevolutions(PivotConstants.DEPLOY_POSITION_DEGREES));
       m_IO.goToPositionProfiled(request);
     });
   }
 
   public Command storeIntakeFactory() {
     return this.run(() ->  {
-      MotionMagicVoltage request = new MotionMagicVoltage(m_IO.degreesToMotorRevolutions(IntakePivotConstants.STORE_POSITION_DEGREES));
+      MotionMagicVoltage request = new MotionMagicVoltage(m_IO.degreesToMotorRevolutions(PivotConstants.STORE_POSITION_DEGREES));
       m_IO.goToPositionProfiled(request);
     });
   }

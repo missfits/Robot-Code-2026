@@ -4,11 +4,11 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.ColumnWheelsConstants;
+import frc.robot.Constants.ColumnConstants;
 import frc.robot.subsystems.MechanismsSubsystemBase;
 
 public class ColumnSubsystem extends MechanismsSubsystemBase {
-  private final ColumnIOHardware m_IO = new ColumnIOHardware(ColumnWheelsConstants.MOTOR_ID);
+  private final ColumnIOHardware m_IO = new ColumnIOHardware(ColumnConstants.MOTOR_ID);
 
   public ColumnSubsystem() {
     super("column");
@@ -22,10 +22,10 @@ public class ColumnSubsystem extends MechanismsSubsystemBase {
   @Override
   protected void runClosedLoopVelocity(double velocity) {
     VelocityVoltage request = new VelocityVoltage(velocity)
-    .withEnableFOC(ColumnWheelsConstants.ENABLE_FOC)
-    .withFeedForward(ColumnWheelsConstants.FEED_FORWARD)
-    .withSlot(ColumnWheelsConstants.SLOT)
-    .withOverrideBrakeDurNeutral(ColumnWheelsConstants.OVERRIDE_BRAKE_DUR_NEUTRAL);
+    .withEnableFOC(ColumnConstants.ENABLE_FOC)
+    .withFeedForward(ColumnConstants.FEED_FORWARD)
+    .withSlot(ColumnConstants.SLOT)
+    .withOverrideBrakeDurNeutral(ColumnConstants.OVERRIDE_BRAKE_DUR_NEUTRAL);
     m_IO.setVelocityVoltage(request);
   }
 
@@ -44,6 +44,6 @@ public class ColumnSubsystem extends MechanismsSubsystemBase {
   }
 
   public Command runRollerFactory() {
-    return this.run(() -> runClosedLoopVelocity(ColumnWheelsConstants.INTAKE_VELOCITY));
+    return this.run(() -> runClosedLoopVelocity(ColumnConstants.INTAKE_VELOCITY));
   }
 }

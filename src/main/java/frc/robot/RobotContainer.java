@@ -28,7 +28,7 @@ import frc.robot.subsystems.intake.RollerSubsystem;
 import frc.robot.subsystems.scorer.ShooterSubsystem;
 import frc.robot.subsystems.LaserCANSensorBase;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.Constants.IntakeRollerConstants;
+import frc.robot.Constants.RollerConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.VisionConstants;
@@ -243,10 +243,10 @@ public class RobotContainer {
 
   private void logToSmartDashboard() {
     // Roller
-    SmartDashboard.putNumber("roller IO/kP", SmartDashboard.getNumber("roller IO/kP", IntakeRollerConstants.kP));
-    SmartDashboard.putNumber("roller IO/kI", SmartDashboard.getNumber("roller IO/kI", IntakeRollerConstants.kI));
-    SmartDashboard.putNumber("roller IO/kD", SmartDashboard.getNumber("roller IO/kD", IntakeRollerConstants.kD));
-    SmartDashboard.putNumber("roller IO/velocity", SmartDashboard.getNumber("roller IO/velocity", IntakeRollerConstants.INTAKE_VELOCITY));
+    SmartDashboard.putNumber("roller IO/kP", SmartDashboard.getNumber("roller IO/kP", RollerConstants.kP));
+    SmartDashboard.putNumber("roller IO/kI", SmartDashboard.getNumber("roller IO/kI", RollerConstants.kI));
+    SmartDashboard.putNumber("roller IO/kD", SmartDashboard.getNumber("roller IO/kD", RollerConstants.kD));
+    SmartDashboard.putNumber("roller IO/velocity", SmartDashboard.getNumber("roller IO/velocity", RollerConstants.INTAKE_VELOCITY));
 
     // Shooter Influencer
     SmartDashboard.putNumber("shooter influencer IO/kP", SmartDashboard.getNumber("shooter influencer IO/kP", ShooterConstants.INFLUENCER_kP));
@@ -256,10 +256,10 @@ public class RobotContainer {
   }
 
   private void resetControllerConstantsSmartDashboard() {
-    IntakeRollerConstants.kP = SmartDashboard.getNumber("roller IO/kP", 0);
-    IntakeRollerConstants.kI = SmartDashboard.getNumber("roller IO/kI", 0);
-    IntakeRollerConstants.kD = SmartDashboard.getNumber("roller IO/kD", 0);
-    IntakeRollerConstants.INTAKE_VELOCITY = SmartDashboard.getNumber("roller IO/intake velocity",0);
+    RollerConstants.kP = SmartDashboard.getNumber("roller IO/kP", 0);
+    RollerConstants.kI = SmartDashboard.getNumber("roller IO/kI", 0);
+    RollerConstants.kD = SmartDashboard.getNumber("roller IO/kD", 0);
+    RollerConstants.INTAKE_VELOCITY = SmartDashboard.getNumber("roller IO/intake velocity",0);
 
     ShooterConstants.INFLUENCER_kP = SmartDashboard.getNumber("shooter influencer IO/kP", 0);
     ShooterConstants.INFLUENCER_kI = SmartDashboard.getNumber("shooter influencer IO/kI", 0);
