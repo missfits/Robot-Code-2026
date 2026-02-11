@@ -1,21 +1,64 @@
 package frc.robot.subsystems.intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import frc.robot.Constants.ColumnConstants;
+import frc.robot.Constants.IndexerConstants;
 import frc.robot.Constants.RollerConstants;
 import frc.robot.subsystems.LaserCANSensorBase;
 
 public class IntakeCommandFactory {
   private RollerSubsystem m_roller;
   private LaserCANSensorBase m_intakeSensor;
+  private PivotSubsystem m_pivot;
+  private IndexerSubsystem m_indexer;
+  private ColumnSubsystem m_column;
 
-  public IntakeCommandFactory(RollerSubsystem roller, LaserCANSensorBase intakeSensor) {
+  public IntakeCommandFactory(RollerSubsystem roller, LaserCANSensorBase intakeSensor, PivotSubsystem pivot, IndexerSubsystem indexer, ColumnSubsystem column) {
     m_roller = roller;
     m_intakeSensor = intakeSensor;
+    m_pivot = pivot;
+    m_indexer = indexer;
+    m_column = column;
   }
 
-  public Command runIntake() {
+  // add beam braker sensor to column
+  public ParallelCommandGroup runIntakeMode() {
+    return new ParallelCommandGroup(
+      deployPivot(),
+      runRoller(),
+      runIndexer(),
+      runColumn());
+  }
+
+  public ParallelCommandGroup runShooterMode() {
+    return new ParallelCommandGroup(
+      deployPivot(),
+      runIndexer(),
+      runColumn());
+  }
+
+  public ParallelCommandGroup runNeutralMode() {
+    return new ParallelCommandGroup(
+      deployPivot());
+  }
+
+  public Command deployPivot() {
+    return m_pivot.deployIntakeFactory().withName("deploy pivot");
+  }
+
+  public Command runRoller() {
     return m_roller.runMechanism(RollerConstants.INTAKE_VELOCITY).withName("run intake");
   }
+
+  public Command runIndexer() {
+    return m_indexer.runMechanism(IndexerConstants.MOTOR_VELOCITY).withName("run indexer");
+  }
+
+  public Command runColumn() {
+    return m_column.runMechanism(ColumnConstants.INTAKE_VELOCITY).withName("run column");
+  }
+
 
   public Command runIntakeBack() {
     return m_roller.runMechanism(RollerConstants.INTAKE_BACK_VELOCITY).withName("run intake");
@@ -27,7 +70,7 @@ public class IntakeCommandFactory {
     .withName("run intake timeout");
   }
 
-  public Command runIntakePID() {
+  public Command runIntakePID() { 
     return m_roller.runMechanismPID(RollerConstants.INTAKE_VELOCITY)
       .withName("run intake PID");
   }
