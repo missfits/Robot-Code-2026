@@ -180,22 +180,27 @@ public class RobotContainer {
     else{
        m_drivetrain.registerTelemetry(logger::telemeterize);
     }
-   
-    // TODO: change -- this is for testing
-    m_driverJoystick.y().and(m_driverJoystick.leftBumper().negate()).whileTrue(
-      m_drivetrainCommandFactory.snapToAngle(
-        () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
-        0
-      )
-    );
 
-    // TODO: change -- this is for testing
+    // mechanism prototype testing configuration
     m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).onTrue(
-      m_drivetrainCommandFactory.snapToTarget(
-        () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
-        () -> new Pose2d(Units.inchesToMeters(182), Units.inchesToMeters(182), new Rotation2d())
-      )
+      m_shooterCommandFactory.runShooter()
     );
+   
+    // // TODO: change -- this is for testing
+    // m_driverJoystick.y().and(m_driverJoystick.leftBumper().negate()).whileTrue(
+    //   m_drivetrainCommandFactory.snapToAngle(
+    //     () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
+    //     0
+    //   )
+    // );
+
+    // // TODO: change -- this is for testing
+    // m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).onTrue(
+    //   m_drivetrainCommandFactory.snapToTarget(
+    //     () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
+    //     () -> new Pose2d(Units.inchesToMeters(182), Units.inchesToMeters(182), new Rotation2d())
+    //   )
+    // );
 
     m_driverJoystick.leftBumper().and(m_driverJoystick.y()).onTrue(
       new InstantCommand(() -> setRobotMode(RobotMode.INTAKE))
@@ -210,7 +215,9 @@ public class RobotContainer {
     );
 
     // reset the field-centric heading on a button press
-    m_driverJoystick.a().onTrue(m_drivetrain.runOnce(() -> m_drivetrain.resetRotation(new Rotation2d(DriverStation.getAlliance().get().equals(Alliance.Blue) ? 0 : Math.PI))));
+    m_driverJoystick.leftBumper().and(m_driverJoystick.a()).onTrue(
+      m_drivetrain.runOnce(() -> m_drivetrain.resetRotation(new Rotation2d(DriverStation.getAlliance().get().equals(Alliance.Blue) ? 0 : Math.PI)))
+    );
 
 
     m_driverJoystick.povCenter().negate().onTrue(new InstantCommand(() -> resetControllerConstantsSmartDashboard()));
