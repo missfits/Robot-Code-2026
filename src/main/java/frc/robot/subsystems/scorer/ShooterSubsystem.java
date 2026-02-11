@@ -20,22 +20,32 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
 
   protected void setVoltage(double volts) {
     m_influencerIO.setVoltage(volts);
+    m_followerIO.setVoltage(volts);
   }
 
   @Override
-  protected void runClosedLoopVelocity(double influencerVelocity) {
+  protected void runClosedLoopVelocity(double velocity) {
 
-    VelocityVoltage influencerRequest = new VelocityVoltage(influencerVelocity)
+    VelocityVoltage influencerRequest = new VelocityVoltage(velocity)
     .withEnableFOC(ShooterConstants.INFLUENCER_ENABLE_FOC)
     .withFeedForward(ShooterConstants.INFLUENCER_FEED_FORWARD)
     .withSlot(ShooterConstants.INFLUENCER_SLOT)
     .withOverrideBrakeDurNeutral(ShooterConstants.INFLUENCER_OVERRIDE_BRAKE_DUR_NEUTRAL);
+
+    VelocityVoltage followerRequest = new VelocityVoltage(-velocity)
+    .withEnableFOC(ShooterConstants.FOLLOWER_ENABLE_FOC)
+    .withFeedForward(ShooterConstants.FOLLOWER_FEED_FORWARD)
+    .withSlot(ShooterConstants.FOLLOWER_SLOT)
+    .withOverrideBrakeDurNeutral(ShooterConstants.FOLLOWER_OVERRIDE_BRAKE_DUR_NEUTRAL);
+
     m_influencerIO.setVelocityVoltage(influencerRequest);
+    m_followerIO.setVelocityVoltage(followerRequest);
   }
 
   public Command runShooterOff() {
     return new RunCommand(() -> {
         m_influencerIO.setVoltage(0);
+        m_followerIO.setVoltage(0);
       },
       this
     );
@@ -43,6 +53,7 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
 
   public void resetControllers() {
     m_influencerIO.resetSlot0Gains();
+    m_followerIO.resetSlot0Gains();
   }
 
   public void resetPosition() {

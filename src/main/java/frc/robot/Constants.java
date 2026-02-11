@@ -311,9 +311,9 @@ public final class Constants {
     public static final double INFLUENCER_DEGREES_PER_REVOLUTION = 360;
     public static final double FOLLOWER_DEGREES_PER_REVOLUTION = 360;
 
-    // Influencer motor velocities
-    public static double INFLUENCER_OUTTAKE_MOTOR_VELOCITY = 0;
-    public static final double INFLUENCER_SHOOTER_BACK_VELOCITY = 0;
+    // Motor velocities
+    public static double OUTTAKE_MOTOR_VELOCITY = 3.0;
+    public static double BACK_MOTOR_VELOCITY = -1.0;
 
     // Influencer PID/FF gains
     public static double INFLUENCER_kP = 0.1;

@@ -15,26 +15,26 @@ public class ScorerCommandFactory {
   }
 
   public Command runShooter() {
-    return m_subsystem.runMechanismPID(
-      ShooterConstants.INFLUENCER_OUTTAKE_MOTOR_VELOCITY
+    return m_subsystem.runMechanism(
+      ShooterConstants.OUTTAKE_MOTOR_VELOCITY
     ).withName("run shooter");
   }
 
   public Command runShooterBack() {
-    return m_subsystem.runMechanismPID(
-      ShooterConstants.INFLUENCER_SHOOTER_BACK_VELOCITY
+    return m_subsystem.runMechanism(
+      ShooterConstants.BACK_MOTOR_VELOCITY
     ).withName("run shooter back");
   }
 
   public Command runShooterWithTimeout() {
-    return m_subsystem.runMechanismPID(
-      ShooterConstants.INFLUENCER_OUTTAKE_MOTOR_VELOCITY
+    return m_subsystem.runMechanism(
+      ShooterConstants.OUTTAKE_MOTOR_VELOCITY
     ).withTimeout(ShooterConstants.RUN_SHOOTER_TIME).withName("run shooter timeout");
   }
 
   public Command runShooterSmartDashboard() {
     return m_subsystem.runMechanismPID(
-      () -> SmartDashboard.getNumber("shooter influencer IO/velocity", ShooterConstants.INFLUENCER_OUTTAKE_MOTOR_VELOCITY)
+      () -> SmartDashboard.getNumber("shooter influencer IO/velocity", ShooterConstants.OUTTAKE_MOTOR_VELOCITY)
     ).withName("run shooter smart dashboard");
   }
 
