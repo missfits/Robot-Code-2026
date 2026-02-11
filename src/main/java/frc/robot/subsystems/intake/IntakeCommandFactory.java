@@ -47,6 +47,10 @@ public class IntakeCommandFactory {
     return m_pivot.deployIntakeFactory().withName("deploy pivot");
   }
 
+  public Command storePivot() {
+    return m_pivot.storeIntakeFactory().withName("store pivot");
+  }
+
   public Command runRoller() {
     return m_roller.runMechanism(RollerConstants.INTAKE_VELOCITY).withName("run intake");
   }
