@@ -183,20 +183,22 @@ public class RobotContainer {
        m_drivetrain.registerTelemetry(logger::telemeterize);
     }
 
+    m_driverJoystick.leftBumper().and(m_driverJoystick.x()).onTrue(
+      new InstantCommand(() -> setRobotMode(RobotMode.NEUTRAL))
+    );
+
     m_driverJoystick.leftBumper().and(m_driverJoystick.y()).onTrue(
       new InstantCommand(() -> setRobotMode(RobotMode.INTAKE))
     );
 
-    m_driverJoystick.leftBumper().and(m_driverJoystick.x()).onTrue(
+    // reset the field-centric heading on a button press
+    m_driverJoystick.leftBumper().and(m_driverJoystick.b()).onTrue(
+      m_drivetrain.runOnce(() -> m_drivetrain.resetRotation(new Rotation2d(DriverStation.getAlliance().get().equals(Alliance.Blue) ? 0 : Math.PI)))
+    );
+
+    m_driverJoystick.leftBumper().and(m_driverJoystick.a()).onTrue(
       new InstantCommand(() -> setRobotMode(RobotMode.SHOOT))
     );
-
-    m_driverJoystick.leftBumper().and(m_driverJoystick.b()).onTrue(
-      new InstantCommand(() -> setRobotMode(RobotMode.NEUTRAL))
-    );
-
-    // reset the field-centric heading on a button press
-    m_driverJoystick.a().onTrue(m_drivetrain.runOnce(() -> m_drivetrain.resetRotation(new Rotation2d(DriverStation.getAlliance().get().equals(Alliance.Blue) ? 0 : Math.PI))));
 
     m_driverJoystick.povCenter().negate().onTrue(new InstantCommand(() -> resetControllerConstantsSmartDashboard()));
     
