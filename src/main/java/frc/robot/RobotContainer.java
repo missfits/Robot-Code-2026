@@ -172,6 +172,22 @@ public class RobotContainer {
     m_driverJoystick.leftBumper().and(m_driverJoystick.x()).onTrue(
       new InstantCommand(() -> setRobotMode(RobotMode.NEUTRAL))
     );
+   
+    // // TODO: change -- this is for testing
+    // m_driverJoystick.y().and(m_driverJoystick.leftBumper().negate()).whileTrue(
+    //   m_drivetrainCommandFactory.snapToAngle(
+    //     () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
+    //     0
+    //   )
+    // );
+
+    // // TODO: change -- this is for testing
+    // m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).onTrue(
+    //   m_drivetrainCommandFactory.snapToTarget(
+    //     () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
+    //     () -> new Pose2d(Units.inchesToMeters(182), Units.inchesToMeters(182), new Rotation2d())
+    //   )
+    // );
 
     m_driverJoystick.leftBumper().and(m_driverJoystick.y()).onTrue(
       new InstantCommand(() -> setRobotMode(RobotMode.INTAKE))
@@ -296,7 +312,7 @@ public class RobotContainer {
     SmartDashboard.putNumber("shooter influencer IO/kP", SmartDashboard.getNumber("shooter influencer IO/kP", ShooterConstants.INFLUENCER_kP));
     SmartDashboard.putNumber("shooter influencer IO/kI", SmartDashboard.getNumber("shooter influencer IO/kI", ShooterConstants.INFLUENCER_kI));
     SmartDashboard.putNumber("shooter influencer IO/kD", SmartDashboard.getNumber("shooter influencer IO/kD", ShooterConstants.INFLUENCER_kD));
-    SmartDashboard.putNumber("shooter influencer IO/velocity", SmartDashboard.getNumber("shooter influencer IO/velocity", ShooterConstants.INFLUENCER_OUTTAKE_MOTOR_VELOCITY));
+    SmartDashboard.putNumber("shooter influencer IO/velocity", SmartDashboard.getNumber("shooter influencer IO/velocity", ShooterConstants.OUTTAKE_MOTOR_VELOCITY));
   }
 
   private void resetControllerConstantsSmartDashboard() {
@@ -308,7 +324,7 @@ public class RobotContainer {
     ShooterConstants.INFLUENCER_kP = SmartDashboard.getNumber("shooter influencer IO/kP", 0);
     ShooterConstants.INFLUENCER_kI = SmartDashboard.getNumber("shooter influencer IO/kI", 0);
     ShooterConstants.INFLUENCER_kD = SmartDashboard.getNumber("shooter influencer IO/kD", 0);
-    ShooterConstants.INFLUENCER_OUTTAKE_MOTOR_VELOCITY = SmartDashboard.getNumber("shooter influencer IO/velocity", 0);
+    ShooterConstants.OUTTAKE_MOTOR_VELOCITY = SmartDashboard.getNumber("shooter influencer IO/velocity", 0);
 
     m_roller.resetControllers();
     m_shooter.resetControllers();
