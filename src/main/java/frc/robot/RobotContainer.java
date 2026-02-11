@@ -112,7 +112,6 @@ public class RobotContainer {
 
   private final CommandXboxController m_driverJoystick =
     new CommandXboxController(OperatorConstants.kDriverControllerPort);
-
   private final CommandXboxController m_testJoystick =
     new CommandXboxController(OperatorConstants.kTestControllerPort);
 
@@ -130,8 +129,6 @@ public class RobotContainer {
     }
 
     setRobotMode(RobotMode.NEUTRAL);
-    
-    registerNamedCommands();
 
     // Configure auto builder
     createNamedCommands();
@@ -146,14 +143,8 @@ public class RobotContainer {
     logToSmartDashboard();
   }
 
-  private void registerNamedCommands() {
-    //Pathplanner register named commands
-    // TODO -- REPLACE WITH PROPER COMMAND ONCE IT HAS BEEN WRITTEN 
-    NamedCommands.registerCommand("trigger intake", new WaitCommand(1));
-    NamedCommands.registerCommand("orient to hub", new WaitCommand(1));
-    NamedCommands.registerCommand("climb", new WaitCommand(1));
-    NamedCommands.registerCommand("shoot", new WaitCommand(1));
-  }
+
+  // ----- CONFIGURE BINDINGS -----
 
   /**
    * Define trigger -> command mappings
@@ -293,6 +284,7 @@ public class RobotContainer {
   }
 
 
+  // ----- LOGGING -----
   private void logToSmartDashboard() {
     // Roller
     SmartDashboard.putNumber("roller IO/kP", SmartDashboard.getNumber("roller IO/kP", RollerConstants.kP));
@@ -320,13 +312,20 @@ public class RobotContainer {
 
     m_roller.resetControllers();
     m_shooter.resetControllers();
-
   }
 
+
+  // ----- AUTONOMOUS -----
   /**
    * Define named commands for autonomous paths
    */
-  private void createNamedCommands() {}
+  private void createNamedCommands() {
+    // TODO -- REPLACE WITH PROPER COMMAND ONCE IT HAS BEEN WRITTEN 
+    NamedCommands.registerCommand("trigger intake", new WaitCommand(1));
+    NamedCommands.registerCommand("orient to hub", new WaitCommand(1));
+    NamedCommands.registerCommand("climb", new WaitCommand(1));
+    NamedCommands.registerCommand("shoot", new WaitCommand(1));
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -338,6 +337,7 @@ public class RobotContainer {
   }
 
 
+  // ----- POSE ESTIMATION -----
 
   public void updatePoseEst() {
     List<CameraReading> allReadings = m_vision.getValidCameraReadings();
