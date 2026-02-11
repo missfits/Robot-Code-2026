@@ -11,6 +11,7 @@ import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrainSim;
 import frc.robot.subsystems.drivetrain.DrivetrainCommandFactory;
 import frc.robot.subsystems.intake.IntakeCommandFactory;
 import frc.robot.subsystems.intake.PivotSubsystem;
+import frc.robot.subsystems.intake.ColumnSubsystem;
 import frc.robot.subsystems.intake.IndexerSubsystem;
 import frc.robot.subsystems.scorer.ScorerCommandFactory;
 import frc.robot.subsystems.vision.LocalVisionFilterPipeline;
@@ -90,6 +91,7 @@ public class RobotContainer {
   public final VisionSubsystem m_vision = new VisionSubsystem();
   public final IndexerSubsystem m_indexer = new IndexerSubsystem();
   public final PivotSubsystem m_pivot = new PivotSubsystem();
+  public final ColumnSubsystem m_column = new ColumnSubsystem();
 
   // Sensors
   private final LaserCANSensorBase m_intakeSensor = new LaserCANSensorBase(
@@ -105,7 +107,7 @@ public class RobotContainer {
 
   // Command factories
   private final DrivetrainCommandFactory m_drivetrainCommandFactory = new DrivetrainCommandFactory(m_drivetrain);
-  private final IntakeCommandFactory m_intakeCommandFactory = new IntakeCommandFactory(m_roller, m_intakeSensor);
+  private final IntakeCommandFactory m_intakeCommandFactory = new IntakeCommandFactory(m_roller, m_intakeSensor, m_pivot, m_indexer, m_column);
   private final ScorerCommandFactory m_shooterCommandFactory = new ScorerCommandFactory(m_shooter, m_shooterSensor);
 
   private final CommandXboxController m_driverJoystick =
