@@ -123,6 +123,7 @@ public class RobotContainer {
     configureBindings();
     
     setRobotMode(RobotMode.NEUTRAL);
+    configureDefaultCommands();
     
     registerNamedCommands();
 
@@ -182,7 +183,7 @@ public class RobotContainer {
     }
 
     // mechanism prototype testing configuration
-    m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).onTrue(
+    m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).whileTrue(
       m_shooterCommandFactory.runShooter()
     );
    
@@ -295,10 +296,13 @@ public class RobotContainer {
   private void configureDefaultCommands() {
     switch (m_robotMode) {
       case NEUTRAL:
+        m_shooterCommandFactory.setDefaultCommand();
         break;
       case INTAKE:
+        m_shooterCommandFactory.setDefaultCommand();
         break;
       case SHOOT:
+        m_shooterCommandFactory.setDefaultCommand();
         break;
     }
   }
