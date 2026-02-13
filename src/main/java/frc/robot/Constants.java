@@ -208,6 +208,7 @@ public final class Constants {
 
     // Intake volts
     public static double ROLLER_VOLTAGE = 1.0;
+    public static double ROLLER_BACK_VOLTAGE = 1.0;
 
     // Intake motor velocities
     public static final double ROLLER_VOLTAGE_VELOCITY = 3.0;
