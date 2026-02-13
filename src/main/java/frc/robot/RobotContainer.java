@@ -244,8 +244,8 @@ public class RobotContainer {
 
   private void configureTestBindings() {
     m_testJoystick.x().whileTrue(m_shooterCommandFactory.runShooterSmartDashboard());
-    m_testJoystick.y().whileTrue(m_indexer.runIndexerFactory());
-    m_testJoystick.a().whileTrue(m_roller.runRollerFactory());
+    m_testJoystick.y().whileTrue(m_intakeCommandFactory.runIndexer());
+    m_testJoystick.a().whileTrue(m_intakeCommandFactory.runRoller());
     m_testJoystick.rightBumper().whileTrue(m_pivot.deployIntakeFactory());
     m_testJoystick.leftBumper().whileTrue(m_pivot.storeIntakeFactory());
 

@@ -42,8 +42,4 @@ public class ColumnSubsystem extends MechanismsSubsystemBase {
     super.periodic();
     SmartDashboard.putNumber("column/current", m_IO.getCurrent());
   }
-
-  public Command runRollerFactory() {
-    return this.run(() -> runClosedLoopVelocity(ColumnConstants.INTAKE_VELOCITY));
-  }
 }
