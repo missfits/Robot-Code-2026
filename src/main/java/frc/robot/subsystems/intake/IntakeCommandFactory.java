@@ -48,30 +48,30 @@ public class IntakeCommandFactory {
   }
 
   public Command runRoller() {
-    return m_roller.runMechanism(RollerConstants.INTAKE_VELOCITY).withName("run intake");
+    return m_roller.runMechanism(RollerConstants.ROLLER_VOLTAGE).withName("run roller");
   }
 
   public Command runIndexer() {
-    return m_indexer.runMechanism(IndexerConstants.MOTOR_VELOCITY).withName("run indexer");
+    return m_indexer.runMechanism(IndexerConstants.INDEXER_VOLTAGE).withName("run indexer");
   }
 
   public Command runColumn() {
-    return m_column.runMechanism(ColumnConstants.INTAKE_VELOCITY).withName("run column");
+    return m_column.runMechanism(ColumnConstants.COLUMN_VOLTAGE).withName("run column");
   }
 
 
   public Command runIntakeBack() {
-    return m_roller.runMechanism(RollerConstants.INTAKE_BACK_VELOCITY).withName("run intake");
+    return m_roller.runMechanism(RollerConstants.ROLLER_BACK_VELOCITY).withName("run roller");
   }
 
   public Command runIntakeWithTimeout() {
-    return m_roller.runMechanism(RollerConstants.INTAKE_VELOCITY)
+    return m_roller.runMechanism(RollerConstants.ROLLER_VOLTAGE)
     .withTimeout(RollerConstants.RUN_INTAKE_TIME)
     .withName("run intake timeout");
   }
 
   public Command runIntakePID() { 
-    return m_roller.runMechanismPID(RollerConstants.INTAKE_VELOCITY)
+    return m_roller.runMechanismPID(RollerConstants.ROLLER_VOLTAGE)
       .withName("run intake PID");
   }
 

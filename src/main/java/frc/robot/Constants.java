@@ -206,9 +206,12 @@ public final class Constants {
     // Conversions
     public static final double DEGREES_PER_REVOLUTION = 360./3.;
 
+    // Intake volts
+    public static double ROLLER_VOLTAGE = 1.0;
+
     // Intake motor velocities
-    public static double INTAKE_VELOCITY = 3.0;
-    public static final double INTAKE_BACK_VELOCITY = 3.0;
+    public static final double ROLLER_VOLTAGE_VELOCITY = 3.0;
+    public static final double ROLLER_BACK_VELOCITY = 3.0;
 
     // PID gains
     public static double kP = 0.1;
@@ -244,8 +247,11 @@ public final class Constants {
     // Conversions
     public static final double DEGREES_PER_REVOLUTION = 360;
 
+    // Indexer volts
+    public static final double INDEXER_VOLTAGE = 1.0;
+
     // Indexer motor velocity
-    public static final double MOTOR_VELOCITY = 3.0;
+    public static final double INDEXER_VELOCITY = 3.0;
   }
 
   public static class ColumnConstants {
@@ -268,8 +274,11 @@ public final class Constants {
     // Conversions
     public static final double DEGREES_PER_REVOLUTION = 360;
 
+    // Column volts
+    public static final double COLUMN_VOLTAGE = 1.0;
+
     // Column motor velocities
-    public static final double INTAKE_VELOCITY = 3.0;
+    public static final double COLUMN_VELOCITY = 3.0;
 
     // PID gains
     public static double kP = 0.1;
