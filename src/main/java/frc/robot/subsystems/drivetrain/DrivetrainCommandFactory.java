@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.RobotContainer.JoystickVals;
 
@@ -134,5 +135,22 @@ public class DrivetrainCommandFactory {
             JoystickVals vals = joystickSupplier.get();
             return m_point.withModuleDirection(new Rotation2d(-vals.y(), -vals.x()));
         });
+    }
+
+    // ----- SYSID -----
+    public Command sysIdQuasistaticTranslation() {
+        return m_drivetrain.sysIdQuasistaticTranslation(Direction.kForward);
+    }
+
+    public Command sysIdDynamicTranslation() {
+        return m_drivetrain.sysIdDynamicTranslation(Direction.kForward);
+    }
+
+    public Command sysIdQuasistaticRotation() {
+        return m_drivetrain.sysIdQuasistaticRotation(Direction.kForward);
+    }
+
+    public Command sysIdDynamicRotation() {
+        return m_drivetrain.sysIdDynamicRotation(Direction.kForward);
     }
 }

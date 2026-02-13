@@ -236,6 +236,13 @@ public class RobotContainer {
     configureDefaultCommandTesting();
   }
 
+  private void configureBindingsTestingDrivetrain() {
+    m_testJoystick.a().whileTrue(m_drivetrainCommandFactory.sysIdQuasistaticTranslation());
+    m_testJoystick.b().whileTrue(m_drivetrainCommandFactory.sysIdDynamicTranslation());
+    m_testJoystick.x().whileTrue(m_drivetrainCommandFactory.sysIdQuasistaticRotation());
+    m_testJoystick.y().whileTrue(m_drivetrainCommandFactory.sysIdDynamicRotation());
+  }
+
   private void configureBindingsVision() {
     // --- CONFIGURE VISION FILTERING ---
     GlobalVisionFilterPipeline globalPipeline = new GlobalVisionFilterPipeline();
