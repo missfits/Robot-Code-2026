@@ -39,8 +39,4 @@ public class IndexerSubsystem extends MechanismsSubsystemBase {
     super.periodic();
     SmartDashboard.putNumber("indexer/current", m_IO.getCurrent());
   }
-
-  public Command runIndexerFactory() {
-    return this.run(() -> runClosedLoopVelocity(IndexerConstants.MOTOR_VELOCITY));
-  }
 }

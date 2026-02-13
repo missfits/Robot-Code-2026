@@ -146,44 +146,6 @@ public final class Constants {
 
   }
 
-  public static class RollerConstants {
-    // Velocity voltage constants
-    public static final boolean ENABLE_FOC = false;
-    public static final double FEED_FORWARD = 0.0;
-    public static final int SLOT = 0;
-    public static final boolean OVERRIDE_BRAKE_DUR_NEUTRAL = false;
-
-    // Motor ID
-    public static final int MOTOR_ID = 20;
-
-    // Motor limits
-    public static final int MOTOR_STATOR_LIMIT = 40;
-
-    // Duty cycle limits
-    public static final double PEAK_FORWARD_DUTY_CYCLE = 0.5;
-    public static final double PEAK_REVERSE_DUTY_CYCLE = -0.5;
-
-    // Conversions
-    public static final double DEGREES_PER_REVOLUTION = 360./3.;
-
-    // Intake motor velocities
-    public static double INTAKE_VELOCITY = 0;
-    public static final double INTAKE_BACK_VELOCITY = 0;
-
-    // PID gains
-    public static double kP = 0;
-    public static double kI = 0;
-    public static double kD = 0;
-
-    // Feed forward values
-    public static double kS = 0;
-    public static double kV = 0;
-    public static double kA = 0;
-
-    // Timing
-    public static final double RUN_INTAKE_TIME = 0;
-  }
-
   public static class PivotConstants {
     // Velocity voltage constants
     public static final boolean ENABLE_FOC = false;
@@ -192,7 +154,7 @@ public final class Constants {
     public static final boolean OVERRIDE_BRAKE_DUR_NEUTRAL = false;
 
     // Motor ID
-    public static final int MOTOR_ID = 21;
+    public static final int MOTOR_ID = 20;
 
     // Motor limits
     public static final int MOTOR_STATOR_LIMIT = 40;
@@ -219,12 +181,54 @@ public final class Constants {
     public static double kA = 0.01;
 
     // Motion Magic values
-    public static double CRUISE_VELOCITY = 10;
-    public static double ACCELERATION = 50;
-    public static double JERK = 1600;
+    public static double CRUISE_VELOCITY = 2.0;
+    public static double ACCELERATION = 10;
+    public static double JERK = 100;
   }
 
-  public static class ColumnConstants {
+  public static class RollerConstants {
+    // Velocity voltage constants
+    public static final boolean ENABLE_FOC = false;
+    public static final double FEED_FORWARD = 0.0;
+    public static final int SLOT = 0;
+    public static final boolean OVERRIDE_BRAKE_DUR_NEUTRAL = false;
+
+    // Motor ID
+    public static final int MOTOR_ID = 21;
+
+    // Motor limits
+    public static final int MOTOR_STATOR_LIMIT = 40;
+
+    // Duty cycle limits
+    public static final double PEAK_FORWARD_DUTY_CYCLE = 0.5;
+    public static final double PEAK_REVERSE_DUTY_CYCLE = -0.5;
+
+    // Conversions
+    public static final double DEGREES_PER_REVOLUTION = 360./3.;
+
+    // Intake volts
+    public static double ROLLER_VOLTAGE = 1.0;
+    public static double ROLLER_BACK_VOLTAGE = 1.0;
+
+    // Intake motor velocities
+    public static final double ROLLER_VELOCITY = 3.0;
+    public static final double ROLLER_BACK_VELOCITY = 3.0;
+
+    // PID gains
+    public static double kP = 0.1;
+    public static double kI = 0;
+    public static double kD = 0;
+
+    // Feed forward values
+    public static double kS = 0.1;
+    public static double kV = 0.1;
+    public static double kA = 0;
+
+    // Timing
+    public static final double RUN_INTAKE_TIME = 2.0;
+  }
+
+  public static class IndexerConstants {
     // Velocity voltage constants
     public static final boolean ENABLE_FOC = false;
     public static final double FEED_FORWARD = 0.0;
@@ -244,21 +248,14 @@ public final class Constants {
     // Conversions
     public static final double DEGREES_PER_REVOLUTION = 360;
 
-    // Column motor velocities
-    public static final double INTAKE_VELOCITY = 0;
+    // Indexer volts
+    public static final double INDEXER_VOLTAGE = 1.0;
 
-    // PID gains
-    public static double kP = 0;
-    public static double kI = 0;
-    public static double kD = 0;
-
-    // Feed forward values
-    public static double kS = 0;
-    public static double kV = 0;
-    public static double kA = 0;
+    // Indexer motor velocity
+    public static final double INDEXER_VELOCITY = 3.0;
   }
 
-  public static class IndexerConstants {
+  public static class ColumnConstants {
     // Velocity voltage constants
     public static final boolean ENABLE_FOC = false;
     public static final double FEED_FORWARD = 0.0;
@@ -266,7 +263,7 @@ public final class Constants {
     public static final boolean OVERRIDE_BRAKE_DUR_NEUTRAL = false;
 
     // Motor ID
-    public static final int MOTOR_ID = 30;
+    public static final int MOTOR_ID = 23;
 
     // Motor limits
     public static final int MOTOR_STATOR_LIMIT = 40;
@@ -278,8 +275,21 @@ public final class Constants {
     // Conversions
     public static final double DEGREES_PER_REVOLUTION = 360;
 
-    // Indexer motor velocity
-    public static final double MOTOR_VELOCITY = 0;
+    // Column volts
+    public static final double COLUMN_VOLTAGE = 1.0;
+
+    // Column motor velocities
+    public static final double COLUMN_VELOCITY = 3.0;
+
+    // PID gains
+    public static double kP = 0.1;
+    public static double kI = 0;
+    public static double kD = 0;
+
+    // Feed forward values
+    public static double kS = 0.1;
+    public static double kV = 0.1;
+    public static double kA = 0;
   }
 
   public static class ShooterConstants {
@@ -296,8 +306,8 @@ public final class Constants {
     public static final boolean FOLLOWER_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
 
     // Motor IDs
-    public static final int INFLUENCER_MOTOR_ID = 31;
-    public static final int FOLLOWER_MOTOR_ID = 32;
+    public static final int INFLUENCER_MOTOR_ID = 24;
+    public static final int FOLLOWER_MOTOR_ID = 25;
 
     // Motor limits
     public static final int INFLUENCER_MOTOR_STATOR_LIMIT = 40;
@@ -327,15 +337,15 @@ public final class Constants {
     public static double INFLUENCER_kA = 0;
 
     // Follower PID/FF gains
-    public static double FOLLOWER_kP = 0;
+    public static double FOLLOWER_kP = 0.1;
     public static double FOLLOWER_kI = 0;
     public static double FOLLOWER_kD = 0;
-    public static double FOLLOWER_kS = 0;
-    public static double FOLLOWER_kV = 0;
+    public static double FOLLOWER_kS = 0.2;
+    public static double FOLLOWER_kV = 0.115;
     public static double FOLLOWER_kA = 0;
 
     // Timing
-    public static final double RUN_SHOOTER_TIME = 0;
+    public static final double RUN_SHOOTER_TIME = 2.0;
   }
 
   public static class ClimberConstants {
