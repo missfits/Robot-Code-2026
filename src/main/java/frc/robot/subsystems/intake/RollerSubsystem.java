@@ -42,8 +42,4 @@ public class RollerSubsystem extends MechanismsSubsystemBase {
     super.periodic();
     SmartDashboard.putNumber("roller/current", m_IO.getCurrent());
   }
-
-  public Command runRollerFactory() {
-    return this.run(() -> runClosedLoopVelocity(RollerConstants.INTAKE_VELOCITY));
-  }
 }

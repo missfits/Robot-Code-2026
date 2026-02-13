@@ -244,8 +244,8 @@ public class RobotContainer {
 
   private void configureTestBindings() {
     m_testJoystick.x().whileTrue(m_shooterCommandFactory.runShooterSmartDashboard());
-    m_testJoystick.y().whileTrue(m_indexer.runIndexerFactory());
-    m_testJoystick.a().whileTrue(m_roller.runRollerFactory());
+    m_testJoystick.y().whileTrue(m_intakeCommandFactory.runIndexer());
+    m_testJoystick.a().whileTrue(m_intakeCommandFactory.runRoller());
     m_testJoystick.rightBumper().whileTrue(m_pivot.deployIntakeFactory());
     m_testJoystick.leftBumper().whileTrue(m_pivot.storeIntakeFactory());
 
@@ -256,7 +256,7 @@ public class RobotContainer {
     SmartDashboard.putNumber("roller IO/kP", SmartDashboard.getNumber("roller IO/kP", RollerConstants.kP));
     SmartDashboard.putNumber("roller IO/kI", SmartDashboard.getNumber("roller IO/kI", RollerConstants.kI));
     SmartDashboard.putNumber("roller IO/kD", SmartDashboard.getNumber("roller IO/kD", RollerConstants.kD));
-    SmartDashboard.putNumber("roller IO/velocity", SmartDashboard.getNumber("roller IO/velocity", RollerConstants.INTAKE_VELOCITY));
+    SmartDashboard.putNumber("roller IO/velocity", SmartDashboard.getNumber("roller IO/velocity", RollerConstants.ROLLER_VOLTAGE));
 
     // Shooter Influencer
     SmartDashboard.putNumber("shooter influencer IO/kP", SmartDashboard.getNumber("shooter influencer IO/kP", ShooterConstants.INFLUENCER_kP));
@@ -269,7 +269,7 @@ public class RobotContainer {
     RollerConstants.kP = SmartDashboard.getNumber("roller IO/kP", 0);
     RollerConstants.kI = SmartDashboard.getNumber("roller IO/kI", 0);
     RollerConstants.kD = SmartDashboard.getNumber("roller IO/kD", 0);
-    RollerConstants.INTAKE_VELOCITY = SmartDashboard.getNumber("roller IO/intake velocity",0);
+    RollerConstants.ROLLER_VOLTAGE = SmartDashboard.getNumber("roller IO/intake velocity",0);
 
     ShooterConstants.INFLUENCER_kP = SmartDashboard.getNumber("shooter influencer IO/kP", 0);
     ShooterConstants.INFLUENCER_kI = SmartDashboard.getNumber("shooter influencer IO/kI", 0);
