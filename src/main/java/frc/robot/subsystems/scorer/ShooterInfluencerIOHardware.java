@@ -1,5 +1,6 @@
 package frc.robot.subsystems.scorer;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 
 import frc.robot.Constants.ShooterConstants;
@@ -11,6 +12,8 @@ public class ShooterInfluencerIOHardware extends MechanismsIOHardwareBase {
   public ShooterInfluencerIOHardware(int motorID) {
     super(motorID, ShooterConstants.INFLUENCER_MOTOR_STATOR_LIMIT,
         ShooterConstants.PEAK_FORWARD_DUTY_CYCLE, ShooterConstants.PEAK_REVERSE_DUTY_CYCLE, "shooter/influencer/");
+    
+    BaseStatusSignal.setUpdateFrequencyForAll(200, positionSignal, velocitySignal, voltageSignal, currentSignal);
     resetSlot0Gains();
   }
 
