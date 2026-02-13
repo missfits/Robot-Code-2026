@@ -112,7 +112,6 @@ public class RobotContainer {
 
   private final CommandXboxController m_driverJoystick =
     new CommandXboxController(OperatorConstants.kDriverControllerPort);
-
   private final CommandXboxController m_testJoystick =
     new CommandXboxController(OperatorConstants.kTestControllerPort);
 
@@ -122,12 +121,14 @@ public class RobotContainer {
   public RobotContainer() {
 
     // Configure trigger bindings
-    configureBindings();
-    
+    if (Utils.isSimulation()) {
+      configureBindingsSimulation();
+    } else {
+      configureBindingsTestingMechanisms();
+      configureBindingsVision();
+    }
+
     setRobotMode(RobotMode.NEUTRAL);
-    configureDefaultCommands();
-    
-    registerNamedCommands();
 
     // Configure auto builder
     createNamedCommands();
@@ -142,20 +143,13 @@ public class RobotContainer {
     logToSmartDashboard();
   }
 
-  private void registerNamedCommands() {
-    //Pathplanner register named commands
-    // TODO -- REPLACE WITH PROPER COMMAND ONCE IT HAS BEEN WRITTEN 
-    NamedCommands.registerCommand("trigger intake", new WaitCommand(1));
-    NamedCommands.registerCommand("orient to hub", new WaitCommand(1));
-    NamedCommands.registerCommand("climb", new WaitCommand(1));
-    NamedCommands.registerCommand("shoot", new WaitCommand(1));
-  }
 
+  // ----- CONFIGURE BINDINGS -----
 
   /**
    * Define trigger -> command mappings
    */
-  private void configureBindings() {
+  private void configureBindingsCompetition() {
     // Default drive
     m_drivetrain.setDefaultCommand(
       // Drivetrain will execute this command periodically
@@ -175,18 +169,8 @@ public class RobotContainer {
       )
     );
 
-    if (Utils.isSimulation()){
-      Consumer<SwerveDriveState> telemetry =  ((CommandSwerveDrivetrainSim) m_drivetrain)
-          .getSimTelemetryConsumer().andThen(logger::telemeterize);
-      m_drivetrain.registerTelemetry(telemetry);
-    }
-    else{
-       m_drivetrain.registerTelemetry(logger::telemeterize);
-    }
-
-    // mechanism prototype testing configuration
-    m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).whileTrue(
-      m_shooterCommandFactory.runShooter()
+    m_driverJoystick.leftBumper().and(m_driverJoystick.x()).onTrue(
+      new InstantCommand(() -> setRobotMode(RobotMode.NEUTRAL))
     );
    
     // // TODO: change -- this is for testing
@@ -209,24 +193,50 @@ public class RobotContainer {
       new InstantCommand(() -> setRobotMode(RobotMode.INTAKE))
     );
 
-    m_driverJoystick.leftBumper().and(m_driverJoystick.x()).onTrue(
-      new InstantCommand(() -> setRobotMode(RobotMode.SHOOT))
-    );
-
-    m_driverJoystick.leftBumper().and(m_driverJoystick.b()).onTrue(
-      new InstantCommand(() -> setRobotMode(RobotMode.NEUTRAL))
-    );
-
     // reset the field-centric heading on a button press
-    m_driverJoystick.leftBumper().and(m_driverJoystick.a()).onTrue(
+    m_driverJoystick.leftBumper().and(m_driverJoystick.b()).onTrue(
       m_drivetrain.runOnce(() -> m_drivetrain.resetRotation(new Rotation2d(DriverStation.getAlliance().get().equals(Alliance.Blue) ? 0 : Math.PI)))
     );
 
+    m_driverJoystick.leftBumper().and(m_driverJoystick.a()).onTrue(
+      new InstantCommand(() -> setRobotMode(RobotMode.SHOOT))
+    );
 
     m_driverJoystick.povCenter().negate().onTrue(new InstantCommand(() -> resetControllerConstantsSmartDashboard()));
-    
-    configureTestBindings();
+    m_drivetrain.registerTelemetry(logger::telemeterize);
 
+    configureDefaultCommandCompetition();
+  }
+
+  private void configureBindingsTestingMechanisms() {
+    m_testJoystick.x().whileTrue(m_intakeCommandFactory.runRoller());
+    m_testJoystick.y().whileTrue(m_intakeCommandFactory.runIndexer());
+    m_testJoystick.b().whileTrue(m_intakeCommandFactory.runColumn());
+    m_testJoystick.rightBumper().whileTrue(m_intakeCommandFactory.storePivot());
+    m_testJoystick.leftBumper().whileTrue(m_intakeCommandFactory.deployPivot());
+    m_testJoystick.rightTrigger().whileTrue(m_shooterCommandFactory.runShooter());
+    m_testJoystick.leftTrigger().whileTrue(m_shooterCommandFactory.runShooterBack());
+
+    // // TODO: change -- this is for testing
+    // m_testJoystick.y().and(m_testJoystick.leftBumper().negate()).whileTrue(
+    //   m_drivetrainCommandFactory.snapToAngle(
+    //     () -> new JoystickVals(m_testJoystick.getLeftX(), m_testJoystick.getLeftY()),
+    //     0
+    //   )
+    // );
+
+    // // TODO: change -- this is for testing
+    // m_testJoystick.b().and(m_testJoystick.leftBumper().negate()).onTrue(
+    //   m_drivetrainCommandFactory.snapToTarget(
+    //     () -> new JoystickVals(m_testJoystick.getLeftX(), m_testJoystick.getLeftY()),
+    //     () -> new Pose2d(Units.inchesToMeters(182), Units.inchesToMeters(182), new Rotation2d())
+    //   )
+    // );
+
+    configureDefaultCommandTesting();
+  }
+
+  private void configureBindingsVision() {
     // --- CONFIGURE VISION FILTERING ---
     GlobalVisionFilterPipeline globalPipeline = new GlobalVisionFilterPipeline();
     LocalVisionFilterPipeline localPipeline = new LocalVisionFilterPipeline();
@@ -242,15 +252,55 @@ public class RobotContainer {
     m_vision.setLocalFilteringPipeline(localPipeline);
   }
 
-  private void configureTestBindings() {
-    m_testJoystick.x().whileTrue(m_shooterCommandFactory.runShooterSmartDashboard());
-    m_testJoystick.y().whileTrue(m_intakeCommandFactory.runIndexer());
-    m_testJoystick.a().whileTrue(m_intakeCommandFactory.runRoller());
-    m_testJoystick.rightBumper().whileTrue(m_pivot.deployIntakeFactory());
-    m_testJoystick.leftBumper().whileTrue(m_pivot.storeIntakeFactory());
+  private void configureBindingsSimulation() {
+    // Default drive
+    m_drivetrain.setDefaultCommand(
+      // Drivetrain will execute this command periodically
+      m_drivetrainCommandFactory.defaultDrive(
+        () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
+        () -> new JoystickVals(m_driverJoystick.getRightX(), m_driverJoystick.getRightY()),
+        () -> false
+      )
+    );
 
+    // Drive in slowmode while right bumper is pressed
+    m_driverJoystick.rightBumper().whileTrue(
+      m_drivetrainCommandFactory.defaultDrive(
+        () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
+        () -> new JoystickVals(m_driverJoystick.getRightX(), m_driverJoystick.getRightY()),
+        () -> true
+      )
+    );
+
+    Consumer<SwerveDriveState> telemetry =  ((CommandSwerveDrivetrainSim) m_drivetrain)
+      .getSimTelemetryConsumer().andThen(logger::telemeterize);
+    m_drivetrain.registerTelemetry(telemetry);
   }
 
+  private void configureDefaultCommandCompetition() {
+    switch (m_robotMode) {
+      case NEUTRAL:
+        break;
+      case INTAKE:
+        break;
+      case SHOOT:
+        break;
+    }
+  }
+
+  private void configureDefaultCommandTesting() {
+    m_intakeCommandFactory.setDefaultCommand();
+    m_shooterCommandFactory.setDefaultCommand();
+  }
+
+  public void setRobotMode(RobotMode newMode) {
+    m_robotMode = newMode;
+    configureDefaultCommandCompetition();
+    SmartDashboard.putString("robot/mode", m_robotMode.toString());
+  }
+
+
+  // ----- LOGGING -----
   private void logToSmartDashboard() {
     // Roller
     SmartDashboard.putNumber("roller IO/kP", SmartDashboard.getNumber("roller IO/kP", RollerConstants.kP));
@@ -278,13 +328,20 @@ public class RobotContainer {
 
     m_roller.resetControllers();
     m_shooter.resetControllers();
-
   }
 
+
+  // ----- AUTONOMOUS -----
   /**
    * Define named commands for autonomous paths
    */
-  private void createNamedCommands() {}
+  private void createNamedCommands() {
+    // TODO -- REPLACE WITH PROPER COMMAND ONCE IT HAS BEEN WRITTEN 
+    NamedCommands.registerCommand("trigger intake", new WaitCommand(1));
+    NamedCommands.registerCommand("orient to hub", new WaitCommand(1));
+    NamedCommands.registerCommand("climb", new WaitCommand(1));
+    NamedCommands.registerCommand("shoot", new WaitCommand(1));
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -295,25 +352,8 @@ public class RobotContainer {
     return m_autoChooser.getSelected();
   }
 
-  private void configureDefaultCommands() {
-    switch (m_robotMode) {
-      case NEUTRAL:
-        m_shooterCommandFactory.setDefaultCommand();
-        break;
-      case INTAKE:
-        m_shooterCommandFactory.setDefaultCommand();
-        break;
-      case SHOOT:
-        m_shooterCommandFactory.setDefaultCommand();
-        break;
-    }
-  }
 
-  public void setRobotMode(RobotMode newMode) {
-    m_robotMode = newMode;
-    configureDefaultCommands();
-    SmartDashboard.putString("robot/mode", m_robotMode.toString());
-  }
+  // ----- POSE ESTIMATION -----
 
   public void updatePoseEst() {
     List<CameraReading> allReadings = m_vision.getValidCameraReadings();

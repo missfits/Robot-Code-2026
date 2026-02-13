@@ -47,6 +47,10 @@ public class IntakeCommandFactory {
     return m_pivot.deployIntakeFactory().withName("deploy pivot");
   }
 
+  public Command storePivot() {
+    return m_pivot.storeIntakeFactory().withName("store pivot");
+  }
+
   public Command runRoller() {
     return m_roller.runMechanism(RollerConstants.ROLLER_VOLTAGE).withName("run roller");
   }
@@ -76,5 +80,12 @@ public class IntakeCommandFactory {
 
   public Command intakeOff() {
     return m_roller.runMechanismOff().withName("intake off");
+  }
+
+  public void setDefaultCommand() {
+    m_roller.setDefaultCommand(m_roller.runMechanismOff());
+    m_indexer.setDefaultCommand(m_indexer.runMechanismOff());
+    m_column.setDefaultCommand(m_column.runMechanismOff());
+    m_pivot.setDefaultCommand(m_pivot.runMechanismOff());
   }
 }
