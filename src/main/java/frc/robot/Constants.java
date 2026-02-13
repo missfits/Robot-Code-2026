@@ -211,7 +211,7 @@ public final class Constants {
     public static double ROLLER_BACK_VOLTAGE = 1.0;
 
     // Intake motor velocities
-    public static final double ROLLER_VELOCITY = 3.0;
+    public static double ROLLER_VELOCITY = 3.0;
     public static final double ROLLER_BACK_VELOCITY = 3.0;
 
     // PID gains
@@ -249,10 +249,18 @@ public final class Constants {
     public static final double DEGREES_PER_REVOLUTION = 360;
 
     // Indexer volts
-    public static final double INDEXER_VOLTAGE = 1.0;
+    public static double INDEXER_VOLTAGE = 1.0;
 
     // Indexer motor velocity
-    public static final double INDEXER_VELOCITY = 3.0;
+    public static double INDEXER_VELOCITY = 3.0;
+
+    // Indexer PID/FF gains
+    public static double kP = 0.1;
+    public static double kI = 0;
+    public static double kD = 0;
+    public static double kS = 0.2;
+    public static double kV = 0.115;
+    public static double kA = 0;
   }
 
   public static class ColumnConstants {
@@ -276,10 +284,10 @@ public final class Constants {
     public static final double DEGREES_PER_REVOLUTION = 360;
 
     // Column volts
-    public static final double COLUMN_VOLTAGE = 1.0;
+    public static double COLUMN_VOLTAGE = 1.0;
 
     // Column motor velocities
-    public static final double COLUMN_VELOCITY = 3.0;
+    public static double COLUMN_VELOCITY = 3.0;
 
     // PID gains
     public static double kP = 0.1;
