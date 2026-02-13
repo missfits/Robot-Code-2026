@@ -64,7 +64,7 @@ public class IntakeCommandFactory {
   }
 
   public Command runIndexerPID() {
-    return m_indexer.runMechanismPID(IndexerConstants.INDEXER_VELOCITY).withName("run indexer");
+    return m_indexer.runMechanismPID(-IndexerConstants.INDEXER_VELOCITY).withName("run indexer");
   }
 
   public Command runColumn() {

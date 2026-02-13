@@ -252,14 +252,15 @@ public final class Constants {
     public static double INDEXER_VOLTAGE = 1.0;
 
     // Indexer motor velocity
-    public static double INDEXER_VELOCITY = 3.0;
+    public static double INDEXER_VELOCITY = 10.0;
 
     // Indexer PID/FF gains
-    public static double kP = 0.1;
-    public static double kI = 0;
+    // Tuned in shop 2/12
+    public static double kP = 0.3;
+    public static double kI = 0.3;
     public static double kD = 0;
-    public static double kS = 0.2;
-    public static double kV = 0.115;
+    public static double kS = 0;
+    public static double kV = 0.15;
     public static double kA = 0;
   }
 
@@ -287,16 +288,18 @@ public final class Constants {
     public static double COLUMN_VOLTAGE = 1.0;
 
     // Column motor velocities
-    public static double COLUMN_VELOCITY = 3.0;
+    public static double COLUMN_VELOCITY = 10.0;
 
     // PID gains
-    public static double kP = 0.1;
-    public static double kI = 0;
+    // Tuned in shop 2/12
+    public static double kP = 0.3;
+    public static double kI = 0.4;
     public static double kD = 0;
 
     // Feed forward values
-    public static double kS = 0.1;
-    public static double kV = 0.1;
+    // Tuned in shop 2/12
+    public static double kS = 0;
+    public static double kV = 0.13;
     public static double kA = 0;
   }
 
