@@ -59,8 +59,24 @@ public class IntakeCommandFactory {
     return m_indexer.runMechanism(IndexerConstants.INDEXER_VOLTAGE).withName("run indexer");
   }
 
+  public Command runIndexerBack() {
+    return m_indexer.runMechanism(-IndexerConstants.INDEXER_VOLTAGE).withName("run indexer");
+  }
+
+  public Command runIndexerPID() {
+    return m_indexer.runMechanismPID(IndexerConstants.INDEXER_VELOCITY).withName("run indexer");
+  }
+
   public Command runColumn() {
     return m_column.runMechanism(ColumnConstants.COLUMN_VOLTAGE).withName("run column");
+  }
+
+  public Command runColumnBack() {
+    return m_column.runMechanism(-ColumnConstants.COLUMN_VOLTAGE).withName("run column");
+  }
+
+  public Command runColumnPID() {
+    return m_column.runMechanismPID(ColumnConstants.COLUMN_VELOCITY).withName("run column");
   }
 
   public Command runRollerBack() {
