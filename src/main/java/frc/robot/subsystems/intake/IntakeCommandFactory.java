@@ -70,7 +70,7 @@ public class IntakeCommandFactory {
   }
 
   public Command runRollerPID() { 
-    return m_roller.runMechanismPID(RollerConstants.ROLLER_VOLTAGE)
+    return m_roller.runMechanismPID(RollerConstants.ROLLER_VELOCITY)
       .withName("run intake PID");
   }
 

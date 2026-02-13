@@ -211,7 +211,7 @@ public final class Constants {
     public static double ROLLER_BACK_VOLTAGE = 1.0;
 
     // Intake motor velocities
-    public static final double ROLLER_VOLTAGE_VELOCITY = 3.0;
+    public static final double ROLLER_VELOCITY = 3.0;
     public static final double ROLLER_BACK_VELOCITY = 3.0;
 
     // PID gains
