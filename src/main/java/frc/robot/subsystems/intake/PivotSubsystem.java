@@ -54,4 +54,8 @@ public class PivotSubsystem extends MechanismsSubsystemBase {
       m_IO.goToPositionProfiled(request);
     });
   }
+
+  public void resetControllers() {
+    m_IO.resetSlot0Gains();
+  }
 }

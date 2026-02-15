@@ -166,6 +166,14 @@ public final class Constants {
     // Conversions
     public static final double DEGREES_PER_REVOLUTION = 360./50.;
 
+    // Pivot volts
+    public static double DEPLOY_VOLTAGE = 1.0;
+    public static double STORE_VOLTAGE = -1.0*DEPLOY_VOLTAGE;
+
+    // Pivot motor velocities
+    public static double DEPLOY_VELOCITY = 1.0;
+    public static double STORE_VELOCITY = -1.0*DEPLOY_VELOCITY;
+
     // Pivot positions
     public static final double STORE_POSITION_DEGREES = 0;
     public static final double DEPLOY_POSITION_DEGREES = 70;
