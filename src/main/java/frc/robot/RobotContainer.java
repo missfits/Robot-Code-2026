@@ -323,28 +323,28 @@ public class RobotContainer {
     SmartDashboard.putNumber("indexer IO/kI", SmartDashboard.getNumber("indexer IO/kI", IndexerConstants.kI));
     SmartDashboard.putNumber("indexer IO/kD", SmartDashboard.getNumber("indexer IO/kD", IndexerConstants.kD));
     SmartDashboard.putNumber("indexer IO/velocity", SmartDashboard.getNumber("indexer IO/velocity", IndexerConstants.INDEXER_VELOCITY));
-    SmartDashboard.putNumber("indexer/voltage", SmartDashboard.getNumber("indexer/voltage", IndexerConstants.INDEXER_VOLTAGE));
+    SmartDashboard.putNumber("indexer IO/voltage", SmartDashboard.getNumber("indexer/voltage", IndexerConstants.INDEXER_VOLTAGE));
 
     // Column
     SmartDashboard.putNumber("column IO/kP", SmartDashboard.getNumber("column IO/kP", ColumnConstants.kP));
     SmartDashboard.putNumber("column IO/kI", SmartDashboard.getNumber("column IO/kI", ColumnConstants.kI));
     SmartDashboard.putNumber("column IO/kD", SmartDashboard.getNumber("column IO/kD", ColumnConstants.kD));
     SmartDashboard.putNumber("column IO/velocity", SmartDashboard.getNumber("column IO/velocity", ColumnConstants.COLUMN_VELOCITY));
-    SmartDashboard.putNumber("column/voltage", SmartDashboard.getNumber("column/voltage", ColumnConstants.COLUMN_VOLTAGE));
+    SmartDashboard.putNumber("column IO/voltage", SmartDashboard.getNumber("column/voltage", ColumnConstants.COLUMN_VOLTAGE));
 
     // Roller
     SmartDashboard.putNumber("roller IO/kP", SmartDashboard.getNumber("roller IO/kP", RollerConstants.kP));
     SmartDashboard.putNumber("roller IO/kI", SmartDashboard.getNumber("roller IO/kI", RollerConstants.kI));
     SmartDashboard.putNumber("roller IO/kD", SmartDashboard.getNumber("roller IO/kD", RollerConstants.kD));
     SmartDashboard.putNumber("roller IO/velocity", SmartDashboard.getNumber("roller IO/velocity", RollerConstants.ROLLER_VELOCITY));
-    SmartDashboard.putNumber("roller/voltage", SmartDashboard.getNumber("roller/voltage", RollerConstants.ROLLER_VOLTAGE));
+    SmartDashboard.putNumber("roller IO/voltage", SmartDashboard.getNumber("roller/voltage", RollerConstants.ROLLER_VOLTAGE));
 
     // Pivot
     SmartDashboard.putNumber("pivot IO/kP", SmartDashboard.getNumber("pivot IO/kP", PivotConstants.kP));
     SmartDashboard.putNumber("pivot IO/kI", SmartDashboard.getNumber("pivot IO/kI", PivotConstants.kI));
     SmartDashboard.putNumber("pivot IO/kD", SmartDashboard.getNumber("pivot IO/kD", PivotConstants.kD));
     SmartDashboard.putNumber("pivot IO/velocity", SmartDashboard.getNumber("pivot IO/velocity", PivotConstants.DEPLOY_VELOCITY));
-    SmartDashboard.putNumber("pivot/voltage", SmartDashboard.getNumber("pivot/voltage", PivotConstants.DEPLOY_VOLTAGE));
+    SmartDashboard.putNumber("pivot IO/voltage", SmartDashboard.getNumber("pivot/voltage", PivotConstants.DEPLOY_VOLTAGE));
 
     SmartDashboard.putNumber("pivot/store position", SmartDashboard.getNumber("pivot/store position", PivotConstants.STORE_POSITION_DEGREES));
     SmartDashboard.putNumber("pivot/deploy position", SmartDashboard.getNumber("pivot/deploy position", PivotConstants.DEPLOY_POSITION_DEGREES));
@@ -354,8 +354,8 @@ public class RobotContainer {
     SmartDashboard.putNumber("shooter influencer IO/kI", SmartDashboard.getNumber("shooter influencer IO/kI", ShooterConstants.INFLUENCER_kI));
     SmartDashboard.putNumber("shooter influencer IO/kD", SmartDashboard.getNumber("shooter influencer IO/kD", ShooterConstants.INFLUENCER_kD));
     SmartDashboard.putNumber("shooter influencer IO/velocity", SmartDashboard.getNumber("shooter influencer IO/velocity", ShooterConstants.OUTTAKE_MOTOR_VELOCITY));
-    SmartDashboard.putNumber("shooter/out voltage", SmartDashboard.getNumber("shooter/out voltage", ShooterConstants.OUTTAKE_MOTOR_VOLTAGE));
-    SmartDashboard.putNumber("shooter/back voltage", SmartDashboard.getNumber("shooter/back voltage", ShooterConstants.BACK_MOTOR_VOLTAGE));
+    SmartDashboard.putNumber("shooter influencer IO/out voltage", SmartDashboard.getNumber("shooter/out voltage", ShooterConstants.OUTTAKE_MOTOR_VOLTAGE));
+    SmartDashboard.putNumber("shooter influencer IO/back voltage", SmartDashboard.getNumber("shooter/back voltage", ShooterConstants.BACK_MOTOR_VOLTAGE));
   }
 
   private void resetControllerConstantsSmartDashboard() {
@@ -364,30 +364,30 @@ public class RobotContainer {
     IndexerConstants.kI = SmartDashboard.getNumber("indexer IO/kI", 0);
     IndexerConstants.kD = SmartDashboard.getNumber("indexer IO/kD", 0);
     IndexerConstants.INDEXER_VELOCITY = SmartDashboard.getNumber("indexer IO/velocity", 0);
-    IndexerConstants.INDEXER_VOLTAGE = SmartDashboard.getNumber("indexer/voltage", 0);
+    IndexerConstants.INDEXER_VOLTAGE = SmartDashboard.getNumber("indexer IO/voltage", 0);
 
     // Column
     ColumnConstants.kP = SmartDashboard.getNumber("column IO/kP", 0);
     ColumnConstants.kI = SmartDashboard.getNumber("column IO/kI", 0);
     ColumnConstants.kD = SmartDashboard.getNumber("column IO/kD", 0);
     ColumnConstants.COLUMN_VELOCITY = SmartDashboard.getNumber("column IO/velocity", 0);
-    ColumnConstants.COLUMN_VOLTAGE = SmartDashboard.getNumber("column/voltage", 0);
+    ColumnConstants.COLUMN_VOLTAGE = SmartDashboard.getNumber("column IO/voltage", 0);
 
     // Roller
     RollerConstants.kP = SmartDashboard.getNumber("roller IO/kP", 0);
     RollerConstants.kI = SmartDashboard.getNumber("roller IO/kI", 0);
     RollerConstants.kD = SmartDashboard.getNumber("roller IO/kD", 0);
     RollerConstants.ROLLER_VELOCITY = SmartDashboard.getNumber("roller IO/velocity",0);
-    RollerConstants.ROLLER_VOLTAGE = SmartDashboard.getNumber("roller/voltage", 0);
+    RollerConstants.ROLLER_VOLTAGE = SmartDashboard.getNumber("roller IO/voltage", 0);
 
     // Pivot
     PivotConstants.kP = SmartDashboard.getNumber("pivot IO/kP", 0);
     PivotConstants.kI = SmartDashboard.getNumber("pivot IO/kI", 0);
     PivotConstants.kD = SmartDashboard.getNumber("pivot IO/kD", 0);
     PivotConstants.DEPLOY_VELOCITY = SmartDashboard.getNumber("pivot IO/velocity",0);
-    PivotConstants.DEPLOY_VOLTAGE = SmartDashboard.getNumber("pivot/voltage", 0);
+    PivotConstants.DEPLOY_VOLTAGE = SmartDashboard.getNumber("pivot IO/voltage", 0);
     PivotConstants.STORE_VELOCITY = -1.0*SmartDashboard.getNumber("pivot IO/velocity",0);
-    PivotConstants.STORE_VOLTAGE = -1.0*SmartDashboard.getNumber("pivot/voltage", 0);
+    PivotConstants.STORE_VOLTAGE = -1.0*SmartDashboard.getNumber("pivot IO/voltage", 0);
 
     PivotConstants.STORE_POSITION_DEGREES = SmartDashboard.getNumber("pivot/store position", 0);
     PivotConstants.DEPLOY_POSITION_DEGREES = SmartDashboard.getNumber("pivot/deploy position", 0);
@@ -397,11 +397,13 @@ public class RobotContainer {
     ShooterConstants.INFLUENCER_kI = SmartDashboard.getNumber("shooter influencer IO/kI", 0);
     ShooterConstants.INFLUENCER_kD = SmartDashboard.getNumber("shooter influencer IO/kD", 0);
     ShooterConstants.OUTTAKE_MOTOR_VELOCITY = SmartDashboard.getNumber("shooter influencer IO/velocity", 0);
-    ShooterConstants.OUTTAKE_MOTOR_VOLTAGE = SmartDashboard.getNumber("shooter/out voltage", 0);
-    ShooterConstants.BACK_MOTOR_VOLTAGE = SmartDashboard.getNumber("shooter/back voltage", 0);
+    ShooterConstants.OUTTAKE_MOTOR_VOLTAGE = SmartDashboard.getNumber("shooter influencer IO/out voltage", 0);
+    ShooterConstants.BACK_MOTOR_VOLTAGE = SmartDashboard.getNumber("shooter influencer IO/back voltage", 0);
 
     m_pivot.resetControllers();
     m_roller.resetControllers();
+    m_indexer.resetControllers();
+    m_column.resetControllers();
     m_shooter.resetControllers();
   }
 

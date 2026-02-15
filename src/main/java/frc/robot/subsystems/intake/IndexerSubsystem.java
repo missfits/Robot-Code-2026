@@ -30,6 +30,10 @@ public class IndexerSubsystem extends MechanismsSubsystemBase {
     m_IO.setVelocityVoltage(request);
   }
 
+  public void resetControllers() {
+    m_IO.resetSlot0Gains();
+  }
+
   public void resetPosition() {
     m_IO.resetPosition();
   }

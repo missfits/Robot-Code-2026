@@ -175,8 +175,8 @@ public final class Constants {
     public static double STORE_VELOCITY = -1.0*DEPLOY_VELOCITY;
 
     // Pivot positions
-    public static final double STORE_POSITION_DEGREES = 0;
-    public static final double DEPLOY_POSITION_DEGREES = 70;
+    public static double STORE_POSITION_DEGREES = 0;
+    public static double DEPLOY_POSITION_DEGREES = 70;
 
     // PID gains
     public static double kP = 4.8;
