@@ -223,9 +223,7 @@ public final class Constants {
     public static double ROLLER_BACK_VOLTAGE = 1.0;
 
     // Intake motor velocities
-    public static double ROLLER_VELOCITY = 3.0;
-    public static final double ROLLER_BACK_VELOCITY = 3.0;
-    public static final double ROLLER_MAX_VELOCITY = 15.0;
+    public static double ROLLER_VELOCITY = 20.0;
 
     // Max manual volts
     public static double ROLLER_MAX_MANUAL_VOLTS = 6.0;
@@ -304,7 +302,7 @@ public final class Constants {
     public static double COLUMN_VOLTAGE = 1.0;
 
     // Column motor velocities
-    public static double COLUMN_VELOCITY = 10.0;
+    public static double COLUMN_VELOCITY = 25.0;
 
     // PID gains
     // Tuned in shop 2/12
@@ -337,7 +335,7 @@ public final class Constants {
     public static final int FOLLOWER_MOTOR_ID = 25;
 
     // Motor limits
-    public static final int INFLUENCER_MOTOR_STATOR_LIMIT = 40;
+    public static final int INFLUENCER_MOTOR_STATOR_LIMIT = 60;
     public static final int FOLLOWER_MOTOR_STATOR_LIMIT = 40;
 
     // Duty cycle limits
@@ -349,15 +347,15 @@ public final class Constants {
     public static final double FOLLOWER_DEGREES_PER_REVOLUTION = 360;
 
     // Motor velocities
-    public static double OUTTAKE_MOTOR_VELOCITY = 3.0;
+    public static double OUTTAKE_MOTOR_VELOCITY = 50.0;
     public static double BACK_MOTOR_VELOCITY = -1.0;
 
     public static double OUTTAKE_MOTOR_VOLTAGE = 1.0;
     public static double BACK_MOTOR_VOLTAGE = -1.0;
 
     // Influencer PID/FF gains
-    public static double INFLUENCER_kP = 0.1;
-    public static double INFLUENCER_kI = 0;
+    public static double INFLUENCER_kP = 0.3;
+    public static double INFLUENCER_kI = 0.3;
     public static double INFLUENCER_kD = 0;
     public static double INFLUENCER_kS = 0.2;
     public static double INFLUENCER_kV = 0.115;
