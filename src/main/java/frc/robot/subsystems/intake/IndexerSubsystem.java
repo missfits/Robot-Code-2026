@@ -14,6 +14,7 @@ public class IndexerSubsystem extends MechanismsSubsystemBase {
   public IndexerSubsystem() {
     super("indexer");
     m_IO.resetPosition();
+    m_IO.setInverted(true);
   }
 
   protected void setVoltage(double volts) {
