@@ -231,13 +231,13 @@ public final class Constants {
     public static double ROLLER_MAX_MANUAL_VOLTS = 6.0;
 
     // PID gains
-    public static double kP = 0.1;
+    public static double kP = 0.25;
     public static double kI = 0;
     public static double kD = 0;
 
     // Feed forward values
-    public static double kS = 0.1;
-    public static double kV = 0.1;
+    public static double kS = 0;
+    public static double kV = 0.12;
     public static double kA = 0;
 
     // Timing
