@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants.ColumnConstants;
 import frc.robot.Constants.IndexerConstants;
+import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.RollerConstants;
 import frc.robot.subsystems.LaserCANSensorBase;
 
@@ -49,6 +50,10 @@ public class IntakeCommandFactory {
 
   public Command storePivot() {
     return m_pivot.storeIntakeFactory().withName("store pivot");
+  }
+
+  public Command runPivotPID() {
+    return m_pivot.runMechanismPID(-PivotConstants.DEPLOY_VELOCITY).withName("run pivot");
   }
 
   public Command runRoller() {

@@ -173,11 +173,15 @@ public final class Constants {
     // Pivot motor velocities
     public static double DEPLOY_VELOCITY = 1.0;
     public static double STORE_VELOCITY = -1.0*DEPLOY_VELOCITY;
+    public static final double PIVOT_MAX_VELOCITY = 15.0;
 
     // Pivot positions
     public static double STORE_POSITION_DEGREES = 0;
     public static double DEPLOY_POSITION_DEGREES = 70;
 
+    // Max manual volts
+    public static double PIVOT_MAX_MANUAL_VOLTS = 6.0;
+    
     // PID gains
     public static double kP = 4.8;
     public static double kI = 0;
@@ -221,6 +225,10 @@ public final class Constants {
     // Intake motor velocities
     public static double ROLLER_VELOCITY = 3.0;
     public static final double ROLLER_BACK_VELOCITY = 3.0;
+    public static final double ROLLER_MAX_VELOCITY = 15.0;
+
+    // Max manual volts
+    public static double ROLLER_MAX_MANUAL_VOLTS = 6.0;
 
     // PID gains
     public static double kP = 0.1;

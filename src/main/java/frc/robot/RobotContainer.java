@@ -217,14 +217,16 @@ public class RobotContainer {
     // m_testJoystick.y().whileTrue(m_intakeCommandFactory.runIndexer());
     // m_testJoystick.b().whileTrue(m_intakeCommandFactory.runColumn());
 
+    m_testJoystick.b().whileTrue(m_intakeCommandFactory.runPivotPID());
+    m_testJoystick.a().whileTrue(m_intakeCommandFactory.runRollerPID());
     m_testJoystick.x().whileTrue(m_intakeCommandFactory.runIndexerPID());
     m_testJoystick.y().whileTrue(m_intakeCommandFactory.runColumnPID());
 
     m_testJoystick.b().whileTrue(new ParallelCommandGroup(
+      m_intakeCommandFactory.runRollerPID(),
       m_intakeCommandFactory.runIndexerPID(),
       m_intakeCommandFactory.runColumnPID()
     ));
-
 
     m_testJoystick.rightBumper().whileTrue(m_intakeCommandFactory.storePivot());
     m_testJoystick.leftBumper().whileTrue(m_intakeCommandFactory.deployPivot());
