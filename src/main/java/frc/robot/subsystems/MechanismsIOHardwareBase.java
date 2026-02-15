@@ -64,7 +64,7 @@ public abstract class MechanismsIOHardwareBase {
   protected double getMotorVelocityRevolutionsPerSecond() {
     return velocitySignal.refresh().getValue().in(RevolutionsPerSecond);
   }
-  
+
   public double getCurrent() {
     return currentSignal.refresh().getValue().in(Amps);
   }
@@ -93,6 +93,10 @@ public abstract class MechanismsIOHardwareBase {
 
   public void setVelocityVoltage(VelocityVoltage request) {
     motor.setControl(request);
+  }
+
+  public void logOutputs() {
+    SmartDashboard.putNumber(logPrefix + "velocity: ", getMotorVelocityRevolutionsPerSecond());
   }
 
   public void followMotor(MechanismsIOHardwareBase influencerIO, boolean aligned){
