@@ -13,6 +13,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
 import edu.wpi.first.units.measure.Angle;
@@ -24,6 +25,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public abstract class MechanismsIOHardwareBase {
   protected final TalonFX motor;
   protected final String logPrefix;
+  private final MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
 
   protected final StatusSignal<Angle> positionSignal;
   protected final StatusSignal<AngularVelocity> velocitySignal;
@@ -62,7 +64,7 @@ public abstract class MechanismsIOHardwareBase {
   protected double getMotorVelocityRevolutionsPerSecond() {
     return velocitySignal.refresh().getValue().in(RevolutionsPerSecond);
   }
-
+  
   public double getCurrent() {
     return currentSignal.refresh().getValue().in(Amps);
   }
@@ -101,4 +103,14 @@ public abstract class MechanismsIOHardwareBase {
   public void goToPositionProfiled(MotionMagicVoltage request) {
     motor.setControl(request);
   }
+
+
+  public void setInverted(boolean isInverted) {
+      motorOutputConfigs.Inverted = isInverted
+          ? InvertedValue.Clockwise_Positive
+          : InvertedValue.CounterClockwise_Positive;
+
+      motor.getConfigurator().apply(motorOutputConfigs);
+  }
+
 }

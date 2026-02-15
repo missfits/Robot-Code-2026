@@ -9,7 +9,7 @@ public class PivotIOHardware extends MechanismsIOHardwareBase {
 
   public PivotIOHardware(int motorID) {
     super(motorID, PivotConstants.MOTOR_STATOR_LIMIT,
-        PivotConstants.PEAK_FORWARD_DUTY_CYCLE, PivotConstants.PEAK_REVERSE_DUTY_CYCLE, "pivot/");
+        PivotConstants.PEAK_FORWARD_DUTY_CYCLE, PivotConstants.PEAK_REVERSE_DUTY_CYCLE, "pivotIO/");
     resetSlot0Gains();
   }
 
