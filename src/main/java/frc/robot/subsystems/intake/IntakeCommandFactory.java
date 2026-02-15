@@ -53,7 +53,7 @@ public class IntakeCommandFactory {
   }
 
   public Command runPivotPID() {
-    return m_pivot.runMechanismPID(-PivotConstants.DEPLOY_VELOCITY).withName("run pivot");
+    return m_pivot.runMechanismPID(PivotConstants.DEPLOY_VELOCITY).withName("run pivot");
   }
 
   public Command runRoller() {
