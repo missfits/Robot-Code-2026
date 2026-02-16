@@ -14,6 +14,7 @@ public class RollerSubsystem extends MechanismsSubsystemBase {
   public RollerSubsystem() {
     super("roller");
     m_IO.resetPosition();
+    m_IO.setInverted(true);
   }
 
   protected void setVoltage(double volts) {

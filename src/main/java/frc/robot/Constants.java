@@ -347,7 +347,7 @@ public final class Constants {
     public static final double FOLLOWER_DEGREES_PER_REVOLUTION = 360;
 
     // Motor velocities
-    public static double OUTTAKE_MOTOR_VELOCITY = 50.0;
+    public static double OUTTAKE_MOTOR_VELOCITY = 10.0;
     public static double BACK_MOTOR_VELOCITY = -1.0;
 
     public static double OUTTAKE_MOTOR_VOLTAGE = 1.0;
