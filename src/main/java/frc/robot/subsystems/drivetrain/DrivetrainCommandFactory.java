@@ -138,19 +138,35 @@ public class DrivetrainCommandFactory {
     }
 
     // ----- SYSID -----
-    public Command sysIdQuasistaticTranslation() {
+    public Command sysIdQuasistaticTranslationForward() {
         return m_drivetrain.sysIdQuasistaticTranslation(Direction.kForward);
     }
+    
+    public Command sysIdQuasistaticTranslationReverse() {
+        return m_drivetrain.sysIdQuasistaticTranslation(Direction.kReverse);
+    }
 
-    public Command sysIdDynamicTranslation() {
+    public Command sysIdDynamicTranslationForward() {
         return m_drivetrain.sysIdDynamicTranslation(Direction.kForward);
     }
 
-    public Command sysIdQuasistaticRotation() {
+    public Command sysIdDynamicTranslationReverse() {
+        return m_drivetrain.sysIdDynamicTranslation(Direction.kReverse);
+    }
+
+    public Command sysIdQuasistaticRotationForward() {
         return m_drivetrain.sysIdQuasistaticRotation(Direction.kForward);
     }
 
-    public Command sysIdDynamicRotation() {
+    public Command sysIdQuasistaticRotationReverse() {
+        return m_drivetrain.sysIdQuasistaticRotation(Direction.kReverse);
+    }
+
+    public Command sysIdDynamicRotationForward() {
         return m_drivetrain.sysIdDynamicRotation(Direction.kForward);
+    }
+
+    public Command sysIdDynamicRotationReverse() {
+        return m_drivetrain.sysIdDynamicRotation(Direction.kReverse);
     }
 }
