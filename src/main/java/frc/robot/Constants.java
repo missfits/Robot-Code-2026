@@ -336,7 +336,7 @@ public final class Constants {
 
     // Motor limits
     public static final int INFLUENCER_MOTOR_STATOR_LIMIT = 60;
-    public static final int FOLLOWER_MOTOR_STATOR_LIMIT = 40;
+    public static final int FOLLOWER_MOTOR_STATOR_LIMIT = 60;
 
     // Duty cycle limits
     public static final double PEAK_FORWARD_DUTY_CYCLE = 0.5;
