@@ -20,6 +20,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public abstract class MechanismsIOHardwareBase {
   protected final TalonFX motor;
@@ -29,6 +30,8 @@ public abstract class MechanismsIOHardwareBase {
   protected final StatusSignal<AngularVelocity> velocitySignal;
   protected final StatusSignal<Voltage> voltageSignal;
   protected final StatusSignal<Current> currentSignal;
+
+  private double targetVelocity = 0.0;
 
   protected MechanismsIOHardwareBase(int motorID, double statorCurrentLimit,
       double peakForwardDutyCycle, double peakReverseDutyCycle, String logPrefix) {
@@ -85,6 +88,7 @@ public abstract class MechanismsIOHardwareBase {
   }
 
   public void setVelocityVoltage(double velocityRevolutionsPerSecond) {
+    targetVelocity = velocityRevolutionsPerSecond;
     SmartDashboard.putNumber(logPrefix + "targetVelocityRevolutionsPerSecond", velocityRevolutionsPerSecond);
     motor.setControl(new VelocityVoltage(velocityRevolutionsPerSecond));
   }
@@ -100,5 +104,26 @@ public abstract class MechanismsIOHardwareBase {
 
   public void goToPositionProfiled(MotionMagicVoltage request) {
     motor.setControl(request);
+  }
+
+  /**
+   * Checks if the mechanism has reached the target velocity within tolerance.
+   *
+   * @param tolerance the velocity tolerance in revolutions per second
+   * @return true if the current velocity is within tolerance of the target velocity
+   */
+  public boolean atTargetVelocity(double tolerance) {
+    double currentVelocity = getMotorVelocityRevolutionsPerSecond();
+    return Math.abs(currentVelocity - targetVelocity) <= tolerance;
+  }
+
+  /**
+   * Creates a trigger that is true when the mechanism has reached the target velocity.
+   *
+   * @param tolerance the velocity tolerance in revolutions per second
+   * @return a Trigger that activates when at target velocity
+   */
+  public Trigger atTargetVelocityTrigger(double tolerance) {
+    return new Trigger(() -> atTargetVelocity(tolerance));
   }
 }
