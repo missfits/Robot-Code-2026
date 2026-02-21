@@ -1,5 +1,6 @@
 package frc.robot.subsystems.scorer;
 
+import java.util.function.Supplier;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ShooterConstants;
@@ -36,6 +37,12 @@ public class ScorerCommandFactory {
     return m_subsystem.runMechanismPID(
       () -> SmartDashboard.getNumber("shooter influencer IO/velocity", ShooterConstants.OUTTAKE_MOTOR_VELOCITY)
     ).withName("run shooter smart dashboard");
+  }
+
+  public Command runShooterVelocity(Supplier<Double> doubleSupplier) {
+    return m_subsystem.runMechanismPID(
+       doubleSupplier
+      ).withName("run shooter velocity supplier");
   }
 
   public Command shooterOff() {
