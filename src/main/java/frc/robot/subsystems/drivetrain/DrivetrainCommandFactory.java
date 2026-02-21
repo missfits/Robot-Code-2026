@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.DrivetrainConstants;
@@ -28,6 +29,8 @@ public class DrivetrainCommandFactory {
     private final SwerveRequest.SwerveDriveBrake m_brake = new SwerveRequest.SwerveDriveBrake();
 
     private final CommandSwerveDrivetrain m_drivetrain;
+
+    private Rotation2d targetAngle = new Rotation2d();
 
     public DrivetrainCommandFactory(CommandSwerveDrivetrain drivetrain) {
         m_drivetrain = drivetrain;
@@ -66,6 +69,7 @@ public class DrivetrainCommandFactory {
     public Command snapToAngle(Supplier<JoystickVals> translationSupplier, double angle) {
         return m_drivetrain.getCommandFromRequest(() -> {
             SmartDashboard.putNumber("drivetrain/snap to angle", angle);
+            targetAngle = Rotation2d.fromDegrees(angle);
             JoystickVals translation = translationSupplier.get();
             JoystickVals shapedValues = Controls.inputShape(translation, true, false);
 
@@ -116,6 +120,7 @@ public class DrivetrainCommandFactory {
             Pose2d targetPose = targetPoseSupplier.get(); // target pose
 
             Rotation2d angleToTarget = calculateAngleToTarget(m_drivetrain.getState().Pose, targetPose);
+            targetAngle = angleToTarget;
 
             SmartDashboard.putNumber("drivetrain/snap to target/target x", targetPose.getX());
             SmartDashboard.putNumber("drivetrain/snap to target/target y", targetPose.getY());
@@ -147,5 +152,13 @@ public class DrivetrainCommandFactory {
             JoystickVals vals = joystickSupplier.get();
             return m_point.withModuleDirection(new Rotation2d(-vals.y(), -vals.x()));
         });
+    }
+
+    private boolean atTargetAngle() {
+        return Math.abs(m_drivetrain.getState().Pose.getRotation().minus(targetAngle).getRadians()) < DrivetrainConstants.ANGLE_TOLERANCE;
+    }
+
+    public Trigger atTargetAngleTrigger() {
+        return new Trigger(() -> atTargetAngle());
     }
 }
