@@ -5,6 +5,7 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.MechanismsSubsystemBase;
 
@@ -50,6 +51,10 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
   public void resetPosition() {
     m_influencerIO.resetPosition();
     m_followerIO.resetPosition();
+  }
+
+  public Trigger atTargetVelocityTrigger() {
+    return new Trigger(() -> {m_influencerIO.atTargetVelocityTrigger(ShooterConstants.VELOCITY_TOLERANCE).get() && m_followerIO.atTargetVelocityTrigger(ShooterConstants.VELOCITY_TOLERANCE).get();});
   }
 
   @Override
