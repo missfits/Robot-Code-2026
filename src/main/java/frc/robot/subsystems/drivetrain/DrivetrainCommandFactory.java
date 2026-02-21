@@ -78,7 +78,7 @@ public class DrivetrainCommandFactory {
     // Drives the robot while automatically rotating to face a specified rotation2d
     public Command snapToAngle(Supplier<JoystickVals> translationSupplier, Supplier<Rotation2d> angleSupplier) {
         return m_drivetrain.getCommandFromRequest(() -> {
-            SmartDashboard.putNumber("drivetrain/snap to angle", angleSupplier.get().getRadians());
+            SmartDashboard.putNumber("drivetrain/snap to angle", angleSupplier.get().getDegrees());
             JoystickVals translation = translationSupplier.get();
             JoystickVals shapedValues = Controls.inputShape(translation, true, false);
 
