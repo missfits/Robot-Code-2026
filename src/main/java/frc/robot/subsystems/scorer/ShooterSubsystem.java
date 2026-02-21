@@ -53,8 +53,12 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
     m_followerIO.resetPosition();
   }
 
+  private boolean atTargetVelocity() {
+    return m_influencerIO.atTargetVelocityTrigger(ShooterConstants.VELOCITY_TOLERANCE).getAsBoolean() && m_followerIO.atTargetVelocityTrigger(ShooterConstants.VELOCITY_TOLERANCE).getAsBoolean();
+  }
+
   public Trigger atTargetVelocityTrigger() {
-    return new Trigger(() -> {m_influencerIO.atTargetVelocityTrigger(ShooterConstants.VELOCITY_TOLERANCE).get() && m_followerIO.atTargetVelocityTrigger(ShooterConstants.VELOCITY_TOLERANCE).get();});
+    return new Trigger(() -> atTargetVelocity());
   }
 
   @Override

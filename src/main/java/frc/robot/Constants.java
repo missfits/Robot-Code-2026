@@ -346,6 +346,9 @@ public final class Constants {
 
     // Timing
     public static final double RUN_SHOOTER_TIME = 2.0;
+
+    // Velocity tolerance for checking if shooter is at target (rotations per second)
+    public static final double VELOCITY_TOLERANCE = 10;
   }
 
   public static class ClimberConstants {
