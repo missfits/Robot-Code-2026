@@ -75,6 +75,19 @@ public class DrivetrainCommandFactory {
         });
     }
 
+    // Drives the robot while automatically rotating to face a specified rotation2d
+    public Command snapToAngle(Supplier<JoystickVals> translationSupplier, Supplier<Rotation2d> angleSupplier) {
+        return m_drivetrain.getCommandFromRequest(() -> {
+            SmartDashboard.putNumber("drivetrain/snap to angle", angleSupplier.get().getRadians());
+            JoystickVals translation = translationSupplier.get();
+            JoystickVals shapedValues = Controls.inputShape(translation, true, false);
+
+            return m_driveFacingAngle.withVelocityX(-shapedValues.y() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive forward with negative Y (forward)
+            .withVelocityY(-shapedValues.x() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive left with negative X (left)
+            .withTargetDirection(angleSupplier.get());
+        });
+    }
+
     /**
      * Calculates the angle from a reference pose to a target pose
      * @param referencePose The reference pose (typically robot pose)
