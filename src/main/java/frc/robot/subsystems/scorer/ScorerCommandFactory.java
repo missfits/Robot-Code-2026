@@ -33,7 +33,7 @@ public class ScorerCommandFactory {
   }
 
   public Command runShooterSmartDashboard() {
-    return m_subsystem.VoltageVelocityPIDCommand(
+    return m_subsystem.voltageVelocityPIDCommand(
       () -> SmartDashboard.getNumber("shooter influencer IO/velocity", ShooterConstants.OUTTAKE_MOTOR_VELOCITY)
     ).withName("run shooter smart dashboard");
   }
