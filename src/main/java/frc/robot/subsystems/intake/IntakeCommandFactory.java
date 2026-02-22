@@ -69,7 +69,7 @@ public class IntakeCommandFactory {
   }
 
   public Command runIndexerPID() {
-    return m_indexer.voltageVelocityPIDCommand(IndexerConstants.INDEXER_VELOCITY).withName("run indexer");
+    return m_indexer.voltageVelocityPIDCommand(IndexerConstants.INDEXER_VELOCITY).withName("run indexer PID");
   }
 
   public Command runColumn() {
