@@ -30,10 +30,10 @@ public class ScorerCommandFactory {
     ).withTimeout(ShooterConstants.RUN_SHOOTER_TIME).withName("run shooter timeout");
   }
 
-  public Command runShooterSmartDashboard() {
+  public Command runShooterSmartDashboard(String name, double defaultVelocity) {
     return m_subsystem.runMechanismPID(
-      () -> SmartDashboard.getNumber("shooter influencer IO/velocity", ShooterConstants.OUTTAKE_MOTOR_VELOCITY)
-    ).withName("run shooter smart dashboard");
+      () -> SmartDashboard.getNumber("shooter test speeds/" + name, defaultVelocity)
+    ).withName("run shooter smart dashboard " + name);
   }
 
   public Command shooterOff() {
