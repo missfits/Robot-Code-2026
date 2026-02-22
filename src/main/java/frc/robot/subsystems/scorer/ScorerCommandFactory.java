@@ -14,31 +14,31 @@ public class ScorerCommandFactory {
     m_feederSensor = feederSensor;
   }
 
-  public Command runShooter() {
+  public Command shooterVoltageCommand() {
     return m_subsystem.voltageCommand(
       ShooterConstants.OUTTAKE_MOTOR_VOLTAGE
     ).withName("run shooter");
   }
   
-  public Command runShooter(double velocity) {
-    return m_subsystem.velocityCommand(velocity).withName("run shooter velocity " + velocity);
+  public Command shooterVelocityCommand(double velocity) {
+    return m_subsystem.voltageVelocityPIDCommand(velocity).withName("run shooter velocity " + velocity);
   }
   
 
-  public Command runShooterBack() {
+  public Command shooterBackVoltageCommand() {
     return m_subsystem.voltageCommand(
       ShooterConstants.BACK_MOTOR_VOLTAGE
     ).withName("run shooter back");
   }
 
-  public Command runShooterWithTimeout() {
+  public Command ShooterWithTimeoutVoltageCommand() {
     return m_subsystem.voltageCommand(
       ShooterConstants.OUTTAKE_MOTOR_VOLTAGE
     ).withTimeout(ShooterConstants.RUN_SHOOTER_TIME).withName("run shooter timeout");
   }
 
   
-    public Command runShooterSmartDashboard(String name, double defaultVelocity) {
+    public Command ShooterSmartDashboardVelocityCommand(String name, double defaultVelocity) {
     return m_subsystem.velocityCommand(
       () -> SmartDashboard.getNumber("shooter test speeds/" + name, defaultVelocity)
     ).withName("run shooter smart dashboard " + name);
