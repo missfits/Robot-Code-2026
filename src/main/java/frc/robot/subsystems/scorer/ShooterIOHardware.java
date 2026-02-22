@@ -30,6 +30,10 @@ public class ShooterIOHardware extends MechanismsIOHardwareBase {
     slot0.kV = type.gains.kV();
     slot0.kA = type.gains.kA();
 
+    var motorOutputConfigs = configs.MotorOutput;
+    motorOutputConfigs.PeakForwardDutyCycle = ShooterConstants.PEAK_FORWARD_DUTY_CYCLE;
+    motorOutputConfigs.PeakReverseDutyCycle = ShooterConstants.PEAK_REVERSE_DUTY_CYCLE;
+
     motor.getConfigurator().apply(configs);
   }
 
