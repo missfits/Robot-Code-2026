@@ -11,7 +11,7 @@ public class IndexerIOHardware extends MechanismsIOHardwareBase {
 
   public IndexerIOHardware(int motorID) {
     super(motorID, IndexerConstants.MOTOR_STATOR_LIMIT,
-        IndexerConstants.PEAK_FORWARD_DUTY_CYCLE, IndexerConstants.PEAK_REVERSE_DUTY_CYCLE, "indexer/");
+        IndexerConstants.PEAK_FORWARD_DUTY_CYCLE, IndexerConstants.PEAK_REVERSE_DUTY_CYCLE, "indexerIO/");
   }
 
   public double getPositionRadians() {
