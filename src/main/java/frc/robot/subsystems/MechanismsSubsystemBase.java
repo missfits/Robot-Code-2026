@@ -59,24 +59,29 @@ public abstract class MechanismsSubsystemBase extends SubsystemBase {
 
   protected abstract void setVoltage(double volts);
 
-  public Command runMechanism(double volts) {
-    return this.run(() -> setVoltage(volts), "run" + mechanismName);
+  public Command voltageCommand(double volts) {
+    return this.run(() -> setVoltage(volts), mechanismName + "voltageCommand");
   }
 
-  public Command runMechanismWithTimeout(double volts, double time) {
-    return this.run(() -> {setVoltage(volts);}, "run" + mechanismName + "with " + time + "second timeout").withTimeout(time);
+  public Command voltageCommandWithTimeout(double volts, double time) {
+    return this.run(() -> {setVoltage(volts);}, mechanismName + "voltageCommand" + "with " + time + "second timeout").withTimeout(time);
   }
 
-  public Command runMechanismOff() {
-    return loggedCommand("run" + mechanismName + "off", new RunCommand(() -> setVoltage(0), this));
+  public Command VoltageVelocityPIDCommand(double velocity) {
+    return this.run(() -> runClosedLoopVelocity(velocity), mechanismName + "PID Command");
+  }
+
+  //need a second VoltageVelocityPIDCommand command for subsystems with two motors
+  public Command VoltageVelocityPIDCommand(double velocityOne, double velocityTwo) {
+    return this.run(()-> runClosedLoopVelocity(velocityOne, velocityTwo), mechanismName + "PID Command");
+  }
+
+  public Command offCommand() {
+    return loggedCommand(mechanismName + "off", new RunCommand(() -> setVoltage(0), this));
   }
 
   protected void runClosedLoopVelocity(double velocity) {
     throw new UnsupportedOperationException(getName() + " does not support single-motor velocity control");
-  }
-
-  public Command runVoltageVelocityMechanismPID(double velocity) {
-    return this.run(() -> runClosedLoopVelocity(velocity), "run" + mechanismName + "PID");
   }
 
   //need a second runClosedLoopVelocity command for subsystems with two motors
@@ -84,13 +89,8 @@ public abstract class MechanismsSubsystemBase extends SubsystemBase {
     throw new UnsupportedOperationException(getName() + " does not support dual-motor velocity control");
   }
 
-  //need a second runVoltageVelocityMechanismPID command for subsystems with two motors
-  public Command runVoltageVelocityMechanismPID(double velocityOne, double velocityTwo) {
-    return this.run(()-> runClosedLoopVelocity(velocityOne, velocityTwo),"run" + mechanismName + "PID");
-  }
-
-  public Command runVoltageVelocityMechanismPID(Supplier<Double> velocitySupplier) {
-    return loggedCommand("run" + mechanismName + "PID Supplier 2", this.run(() -> runClosedLoopVelocity(velocitySupplier.get())));
+  public Command VoltageVelocityPIDCommand(Supplier<Double> velocitySupplier) {
+    return loggedCommand( mechanismName + "PID Supplier 2 Command", this.run(() -> runClosedLoopVelocity(velocitySupplier.get())));
   }
 
   @Override

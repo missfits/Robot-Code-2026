@@ -15,34 +15,34 @@ public class ScorerCommandFactory {
   }
 
   public Command runShooter() {
-    return m_subsystem.runMechanism(
+    return m_subsystem.voltageCommand(
       ShooterConstants.OUTTAKE_MOTOR_VOLTAGE
     ).withName("run shooter");
   }
 
   public Command runShooterBack() {
-    return m_subsystem.runMechanism(
+    return m_subsystem.voltageCommand(
       ShooterConstants.BACK_MOTOR_VOLTAGE
     ).withName("run shooter back");
   }
 
   public Command runShooterWithTimeout() {
-    return m_subsystem.runMechanism(
+    return m_subsystem.voltageCommand(
       ShooterConstants.OUTTAKE_MOTOR_VOLTAGE
     ).withTimeout(ShooterConstants.RUN_SHOOTER_TIME).withName("run shooter timeout");
   }
 
   public Command runShooterSmartDashboard() {
-    return m_subsystem.runVoltageVelocityMechanismPID(
+    return m_subsystem.VoltageVelocityPIDCommand(
       () -> SmartDashboard.getNumber("shooter influencer IO/velocity", ShooterConstants.OUTTAKE_MOTOR_VELOCITY)
     ).withName("run shooter smart dashboard");
   }
 
   public Command shooterOff() {
-    return m_subsystem.runMechanismOff().withName("shooter off");
+    return m_subsystem.offCommand().withName("shooter off");
   }
 
   public void setDefaultCommand() {
-    m_subsystem.setDefaultCommand(m_subsystem.runMechanismOff());
+    m_subsystem.setDefaultCommand(m_subsystem.offCommand());
   }
 }

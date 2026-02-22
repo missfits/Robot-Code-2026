@@ -53,60 +53,60 @@ public class IntakeCommandFactory {
   }
 
   public Command runPivotPID() {
-    return m_pivot.runVoltageVelocityMechanismPID(PivotConstants.DEPLOY_VELOCITY).withName("run pivot");
+    return m_pivot.VoltageVelocityPIDCommand(PivotConstants.DEPLOY_VELOCITY).withName("run pivot");
   }
 
   public Command runRoller() {
-    return m_roller.runMechanism(RollerConstants.ROLLER_VOLTAGE).withName("run roller");
+    return m_roller.voltageCommand(RollerConstants.ROLLER_VOLTAGE).withName("run roller");
   }
 
   public Command runIndexer() {
-    return m_indexer.runMechanism(IndexerConstants.INDEXER_VOLTAGE).withName("run indexer");
+    return m_indexer.voltageCommand(IndexerConstants.INDEXER_VOLTAGE).withName("run indexer");
   }
 
   public Command runIndexerBack() {
-    return m_indexer.runMechanism(-IndexerConstants.INDEXER_VOLTAGE).withName("run indexer");
+    return m_indexer.voltageCommand(-IndexerConstants.INDEXER_VOLTAGE).withName("run indexer");
   }
 
   public Command runIndexerPID() {
-    return m_indexer.runVoltageVelocityMechanismPID(IndexerConstants.INDEXER_VELOCITY).withName("run indexer");
+    return m_indexer.VoltageVelocityPIDCommand(IndexerConstants.INDEXER_VELOCITY).withName("run indexer");
   }
 
   public Command runColumn() {
-    return m_column.runMechanism(ColumnConstants.COLUMN_VOLTAGE).withName("run column");
+    return m_column.voltageCommand(ColumnConstants.COLUMN_VOLTAGE).withName("run column");
   }
 
   public Command runColumnBack() {
-    return m_column.runMechanism(-ColumnConstants.COLUMN_VOLTAGE).withName("run column");
+    return m_column.voltageCommand(-ColumnConstants.COLUMN_VOLTAGE).withName("run column");
   }
 
   public Command runColumnPID() {
-    return m_column.runVoltageVelocityMechanismPID(ColumnConstants.COLUMN_VELOCITY).withName("run column");
+    return m_column.VoltageVelocityPIDCommand(ColumnConstants.COLUMN_VELOCITY).withName("run column");
   }
 
   public Command runRollerBack() {
-    return m_roller.runMechanism(RollerConstants.ROLLER_BACK_VOLTAGE).withName("run roller");
+    return m_roller.voltageCommand(RollerConstants.ROLLER_BACK_VOLTAGE).withName("run roller");
   }
 
   public Command runRollerWithTimeout() {
-    return m_roller.runMechanism(RollerConstants.ROLLER_VOLTAGE)
+    return m_roller.voltageCommand(RollerConstants.ROLLER_VOLTAGE)
     .withTimeout(RollerConstants.RUN_INTAKE_TIME)
     .withName("run intake timeout");
   }
 
   public Command runRollerPID() { 
-    return m_roller.runVoltageVelocityMechanismPID(RollerConstants.ROLLER_VELOCITY)
+    return m_roller.VoltageVelocityPIDCommand(RollerConstants.ROLLER_VELOCITY)
       .withName("run intake PID");
   }
 
   public Command intakeOff() {
-    return m_roller.runMechanismOff().withName("intake off");
+    return m_roller.offCommand().withName("intake off");
   }
 
   public void setDefaultCommand() {
-    m_roller.setDefaultCommand(m_roller.runMechanismOff());
-    m_indexer.setDefaultCommand(m_indexer.runMechanismOff());
-    m_column.setDefaultCommand(m_column.runMechanismOff());
-    m_pivot.setDefaultCommand(m_pivot.runMechanismOff());
+    m_roller.setDefaultCommand(m_roller.offCommand());
+    m_indexer.setDefaultCommand(m_indexer.offCommand());
+    m_column.setDefaultCommand(m_column.offCommand());
+    m_pivot.setDefaultCommand(m_pivot.offCommand());
   }
 }
