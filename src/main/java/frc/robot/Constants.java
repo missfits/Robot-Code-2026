@@ -343,8 +343,7 @@ public final class Constants {
     public static final double PEAK_REVERSE_DUTY_CYCLE = -0.5;
 
     // Conversions
-    public static final double INFLUENCER_DEGREES_PER_REVOLUTION = 360;
-    public static final double FOLLOWER_DEGREES_PER_REVOLUTION = 360;
+    public static final double SHOOTER_DEGREES_PER_REVOLUTION = 360;
 
     // Motor velocities
     public static double OUTTAKE_MOTOR_VELOCITY = 10.0;

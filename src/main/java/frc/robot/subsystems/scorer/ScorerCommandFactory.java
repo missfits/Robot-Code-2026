@@ -19,6 +19,11 @@ public class ScorerCommandFactory {
       ShooterConstants.OUTTAKE_MOTOR_VOLTAGE
     ).withName("run shooter");
   }
+  
+  public Command runShooter(double velocity) {
+    return m_subsystem.voltageVelocityPIDCommand(velocity).withName("run shooter velocity " + velocity);
+  }
+  
 
   public Command runShooterBack() {
     return m_subsystem.voltageCommand(
@@ -32,10 +37,11 @@ public class ScorerCommandFactory {
     ).withTimeout(ShooterConstants.RUN_SHOOTER_TIME).withName("run shooter timeout");
   }
 
-  public Command runShooterSmartDashboard() {
-    return m_subsystem.VoltageVelocityPIDCommand(
-      () -> SmartDashboard.getNumber("shooter influencer IO/velocity", ShooterConstants.OUTTAKE_MOTOR_VELOCITY)
-    ).withName("run shooter smart dashboard");
+  
+    public Command runShooterSmartDashboard(String name, double defaultVelocity) {
+    return m_subsystem.voltageVelocityPIDCommand(
+      () -> SmartDashboard.getNumber("shooter test speeds/" + name, defaultVelocity)
+    ).withName("run shooter smart dashboard " + name);
   }
 
   public Command shooterOff() {

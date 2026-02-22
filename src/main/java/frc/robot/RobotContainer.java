@@ -68,6 +68,8 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 
+import com.ctre.phoenix6.SignalLogger;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -145,6 +147,8 @@ public class RobotContainer {
     DriverStation.silenceJoystickConnectionWarning(true); // Turn off unplugged joystick errors
 
     logToSmartDashboard();
+
+    SignalLogger.start();
   }
 
 
@@ -228,10 +232,15 @@ public class RobotContainer {
       m_intakeCommandFactory.runColumnPID()
     ));
 
-    m_testJoystick.rightBumper().whileTrue(m_intakeCommandFactory.storePivot());
+   //m_testJoystick.rightBumper().whileTrue(m_intakeCommandFactory.storePivot());
     m_testJoystick.leftBumper().whileTrue(m_intakeCommandFactory.deployPivot());
-    m_testJoystick.rightTrigger().whileTrue(m_shooterCommandFactory.runShooterSmartDashboard());
+    //m_testJoystick.rightTrigger().whileTrue(m_shooterCommandFactory.runShooterSmartDashboard());
     m_testJoystick.leftTrigger().whileTrue(m_shooterCommandFactory.runShooterBack());
+
+
+    //shooter testing bindings:
+    m_testJoystick.rightTrigger().whileTrue(m_shooterCommandFactory.runShooterSmartDashboard("high speed", 80));
+    m_testJoystick.rightBumper().and(m_testJoystick.rightTrigger().negate()).whileTrue(m_shooterCommandFactory.runShooterSmartDashboard("low speed",70));
 
     m_testJoystick.povCenter().negate().onTrue(new InstantCommand(() -> resetControllerConstantsSmartDashboard()));
 
