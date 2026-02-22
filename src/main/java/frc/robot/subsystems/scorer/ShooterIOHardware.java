@@ -14,6 +14,7 @@ public class ShooterIOHardware extends MechanismsIOHardwareBase {
           ShooterConstants.PEAK_FORWARD_DUTY_CYCLE, ShooterConstants.PEAK_REVERSE_DUTY_CYCLE, 
           type.logPrefix);
     this.type = type;
+    BaseStatusSignal.setUpdateFrequencyForAll(200, positionSignal, velocitySignal, voltageSignal, currentSignal);
     resetSlot0Gains();
   }
 
