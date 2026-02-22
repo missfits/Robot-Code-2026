@@ -239,8 +239,8 @@ public class RobotContainer {
 
 
     //shooter testing bindings:
-    m_testJoystick.rightTrigger().whileTrue(m_shooterCommandFactory.ShooterSmartDashboardVelocityCommand("high speed", 80));
-    m_testJoystick.rightBumper().and(m_testJoystick.rightTrigger().negate()).whileTrue(m_shooterCommandFactory.ShooterSmartDashboardVelocityCommand("low speed",70));
+    m_testJoystick.rightTrigger().whileTrue(m_shooterCommandFactory.shooterSmartDashboardVelocityCommand("high speed", 80));
+    m_testJoystick.rightBumper().and(m_testJoystick.rightTrigger().negate()).whileTrue(m_shooterCommandFactory.shooterSmartDashboardVelocityCommand("low speed",70));
 
     m_testJoystick.povCenter().negate().onTrue(new InstantCommand(() -> resetControllerConstantsSmartDashboard()));
 

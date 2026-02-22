@@ -31,20 +31,20 @@ public class ScorerCommandFactory {
     ).withName("run shooter back");
   }
 
-  public Command ShooterWithTimeoutVoltageCommand() {
+  public Command shooterWithTimeoutVoltageCommand() {
     return m_subsystem.voltageCommand(
       ShooterConstants.OUTTAKE_MOTOR_VOLTAGE
     ).withTimeout(ShooterConstants.RUN_SHOOTER_TIME).withName("run shooter timeout");
   }
 
   
-    public Command ShooterSmartDashboardVelocityCommand(String name, double defaultVelocity) {
+    public Command shooterSmartDashboardVelocityCommand(String name, double defaultVelocity) {
     return m_subsystem.velocityCommand(
       () -> SmartDashboard.getNumber("shooter test speeds/" + name, defaultVelocity)
     ).withName("run shooter smart dashboard " + name);
   }
 
-  public Command shooterOff() {
+  public Command shooterOffCommand() {
     return m_subsystem.offCommand().withName("shooter off");
   }
 

@@ -48,7 +48,7 @@ public class IntakeCommandFactory {
     return m_pivot.deployIntakeFactory().withName("deploy pivot");
   }
 
-  public Command storePivot() {
+  public Command storePivotCommand() {
     return m_pivot.storeIntakeFactory().withName("store pivot");
   }
 
@@ -99,7 +99,7 @@ public class IntakeCommandFactory {
       .withName("run intake PID");
   }
 
-  public Command intakeOff() {
+  public Command intakeOffCommand() {
     return m_roller.offCommand().withName("intake off");
   }
 
