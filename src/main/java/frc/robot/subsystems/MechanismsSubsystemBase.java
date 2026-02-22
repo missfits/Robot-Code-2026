@@ -68,12 +68,12 @@ public abstract class MechanismsSubsystemBase extends SubsystemBase {
   }
 
   public Command velocityCommand(double velocity) {
-    return this.run(() -> runClosedLoopVelocity(velocity), mechanismName + "PID Command");
+    return this.run(() -> runClosedLoopVelocity(velocity), mechanismName + "velocityCommand");
   } 
 
   //need a second velocityCommand command for subsystems with two motors
   public Command velocityCommand(double velocityOne, double velocityTwo) {
-    return this.run(()-> runClosedLoopVelocity(velocityOne, velocityTwo), mechanismName + "PID Command");
+    return this.run(()-> runClosedLoopVelocity(velocityOne, velocityTwo), mechanismName + "velocityCommand");
   }
 
   public Command offCommand() {
@@ -90,7 +90,7 @@ public abstract class MechanismsSubsystemBase extends SubsystemBase {
   }
 
   public Command velocityCommand(Supplier<Double> velocitySupplier) {
-    return loggedCommand( mechanismName + "PID Supplier 2 Command", this.run(() -> runClosedLoopVelocity(velocitySupplier.get())));
+    return loggedCommand( mechanismName + "velocityCommand (supplier ver)", this.run(() -> runClosedLoopVelocity(velocitySupplier.get())));
   }
 
   @Override
