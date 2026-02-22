@@ -10,7 +10,9 @@ public class ShooterIOHardware extends MechanismsIOHardwareBase {
   private final ShooterMotorType type;
 
   public ShooterIOHardware(ShooterMotorType type) {
-    super(type.id, type.statorLimit, ShooterConstants.PEAK_FORWARD_DUTY_CYCLE, ShooterConstants.PEAK_REVERSE_DUTY_CYCLE, type.logPrefix);
+    super(type.id, type.statorLimit, 
+          ShooterConstants.PEAK_FORWARD_DUTY_CYCLE, ShooterConstants.PEAK_REVERSE_DUTY_CYCLE, 
+          type.logPrefix);
     this.type = type;
     resetSlot0Gains();
   }
