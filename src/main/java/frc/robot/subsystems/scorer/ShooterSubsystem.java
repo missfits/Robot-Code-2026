@@ -9,8 +9,8 @@ import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.MechanismsSubsystemBase;
 
 public class ShooterSubsystem extends MechanismsSubsystemBase {
-  private final ShooterInfluencerIOHardware m_influencerIO = new ShooterInfluencerIOHardware(ShooterConstants.INFLUENCER_MOTOR_ID);
-  private final ShooterFollowerIOHardware m_followerIO = new ShooterFollowerIOHardware(ShooterConstants.FOLLOWER_MOTOR_ID);
+  private final ShooterIOHardware m_influencerIO = new ShooterIOHardware(ShooterMotorType.INFLUENCER);
+  private final ShooterIOHardware m_followerIO = new ShooterIOHardware(ShooterMotorType.FOLLOWER);
 
   public ShooterSubsystem() {
     super("shooter");
