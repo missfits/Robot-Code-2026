@@ -21,7 +21,7 @@ public class ScorerCommandFactory {
   }
   
   public Command shooterVelocityCommand(double velocity) {
-    return m_subsystem.voltageVelocityPIDCommand(velocity).withName("run shooter velocity " + velocity);
+    return m_subsystem.velocityCommand(velocity).withName("run shooter velocity " + velocity);
   }
   
 

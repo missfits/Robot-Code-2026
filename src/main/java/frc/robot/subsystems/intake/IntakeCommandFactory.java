@@ -53,7 +53,7 @@ public class IntakeCommandFactory {
   }
 
   public Command pivotVoltageCommand() {
-    return m_pivot.voltageVelocityPIDCommand(PivotConstants.DEPLOY_VELOCITY).withName("run pivot");
+    return m_pivot.velocityCommand(PivotConstants.DEPLOY_VELOCITY).withName("run pivot");
   }
 
   public Command rollerVoltageCommand() {
@@ -69,7 +69,7 @@ public class IntakeCommandFactory {
   }
 
   public Command indexerVelocityCommand() {
-    return m_indexer.voltageVelocityPIDCommand(IndexerConstants.INDEXER_VELOCITY).withName("run indexer PID");
+    return m_indexer.velocityCommand(IndexerConstants.INDEXER_VELOCITY).withName("run indexer PID");
   }
 
   public Command columnVoltageCommand() {
@@ -81,7 +81,7 @@ public class IntakeCommandFactory {
   }
 
   public Command columnVelocityCommand() {
-    return m_column.voltageVelocityPIDCommand(ColumnConstants.COLUMN_VELOCITY).withName("run column");
+    return m_column.velocityCommand(ColumnConstants.COLUMN_VELOCITY).withName("run column");
   }
 
   public Command rollerBackVoltageCommand() {
@@ -95,7 +95,7 @@ public class IntakeCommandFactory {
   }
 
   public Command rollerVelocityCommand() { 
-    return m_roller.voltageVelocityPIDCommand(RollerConstants.ROLLER_VELOCITY)
+    return m_roller.velocityCommand(RollerConstants.ROLLER_VELOCITY)
       .withName("run intake PID");
   }
 

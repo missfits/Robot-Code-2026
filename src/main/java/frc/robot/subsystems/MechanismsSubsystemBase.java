@@ -67,7 +67,7 @@ public abstract class MechanismsSubsystemBase extends SubsystemBase {
     return this.run(() -> {setVoltage(volts);}, mechanismName + "voltageCommand with " + time + " second timeout").withTimeout(time);
   }
 
-  public Command voltageVelocityPIDCommand(double velocity) {
+  public Command velocityCommand(double velocity) {
     return this.run(() -> runClosedLoopVelocity(velocity), mechanismName + "PID Command");
   } 
 
