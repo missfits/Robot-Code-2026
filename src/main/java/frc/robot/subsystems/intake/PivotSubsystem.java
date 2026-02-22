@@ -3,6 +3,7 @@ package frc.robot.subsystems.intake;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.PivotConstants;
@@ -31,6 +32,19 @@ public class PivotSubsystem extends MechanismsSubsystemBase {
     m_IO.setVelocityVoltage(request);
   }
 
+  public Command runPivotManual(double volts) {
+    return run(() -> {
+        double clampedVolts = MathUtil.clamp(volts, -PivotConstants.PIVOT_MAX_MANUAL_VOLTS, PivotConstants.PIVOT_MAX_MANUAL_VOLTS);
+        double position = m_IO.getPositionDegrees();
+
+        if ((position <= PivotConstants.STORE_POSITION_DEGREES && clampedVolts < 0) ||
+            (position >= PivotConstants.DEPLOY_POSITION_DEGREES && clampedVolts > 0))
+            m_IO.setVoltage(0.0);
+        else
+            m_IO.setVoltage(clampedVolts);
+    });
+  }
+
   public void resetPosition() {
     m_IO.resetPosition();
   }
@@ -53,5 +67,9 @@ public class PivotSubsystem extends MechanismsSubsystemBase {
       MotionMagicVoltage request = new MotionMagicVoltage(m_IO.degreesToMotorRevolutions(PivotConstants.STORE_POSITION_DEGREES));
       m_IO.goToPositionProfiled(request);
     });
+  }
+
+  public void resetControllers() {
+    m_IO.resetSlot0Gains();
   }
 }

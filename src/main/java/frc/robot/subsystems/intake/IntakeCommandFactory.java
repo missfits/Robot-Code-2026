@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants.ColumnConstants;
 import frc.robot.Constants.IndexerConstants;
+import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.RollerConstants;
 import frc.robot.subsystems.LaserCANSensorBase;
 
@@ -51,6 +52,10 @@ public class IntakeCommandFactory {
     return m_pivot.storeIntakeFactory().withName("store pivot");
   }
 
+  public Command runPivotPID() {
+    return m_pivot.runMechanismPID(PivotConstants.DEPLOY_VELOCITY).withName("run pivot");
+  }
+
   public Command runRoller() {
     return m_roller.runMechanism(RollerConstants.ROLLER_VOLTAGE).withName("run roller");
   }
@@ -59,8 +64,24 @@ public class IntakeCommandFactory {
     return m_indexer.runMechanism(IndexerConstants.INDEXER_VOLTAGE).withName("run indexer");
   }
 
+  public Command runIndexerBack() {
+    return m_indexer.runMechanism(-IndexerConstants.INDEXER_VOLTAGE).withName("run indexer");
+  }
+
+  public Command runIndexerPID() {
+    return m_indexer.runMechanismPID(IndexerConstants.INDEXER_VELOCITY).withName("run indexer");
+  }
+
   public Command runColumn() {
     return m_column.runMechanism(ColumnConstants.COLUMN_VOLTAGE).withName("run column");
+  }
+
+  public Command runColumnBack() {
+    return m_column.runMechanism(-ColumnConstants.COLUMN_VOLTAGE).withName("run column");
+  }
+
+  public Command runColumnPID() {
+    return m_column.runMechanismPID(ColumnConstants.COLUMN_VELOCITY).withName("run column");
   }
 
   public Command runRollerBack() {

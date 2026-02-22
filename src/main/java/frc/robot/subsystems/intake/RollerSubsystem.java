@@ -2,6 +2,7 @@ package frc.robot.subsystems.intake;
 
 import com.ctre.phoenix6.controls.VelocityVoltage;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.RollerConstants;
@@ -13,6 +14,7 @@ public class RollerSubsystem extends MechanismsSubsystemBase {
   public RollerSubsystem() {
     super("roller");
     m_IO.resetPosition();
+    m_IO.setInverted(true);
   }
 
   protected void setVoltage(double volts) {

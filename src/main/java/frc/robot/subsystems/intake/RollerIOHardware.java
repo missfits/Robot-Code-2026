@@ -9,7 +9,7 @@ public class RollerIOHardware extends MechanismsIOHardwareBase {
 
   public RollerIOHardware(int motorID) {
     super(motorID, RollerConstants.MOTOR_STATOR_LIMIT,
-        RollerConstants.PEAK_FORWARD_DUTY_CYCLE, RollerConstants.PEAK_REVERSE_DUTY_CYCLE, "roller/");
+        RollerConstants.PEAK_FORWARD_DUTY_CYCLE, RollerConstants.PEAK_REVERSE_DUTY_CYCLE, "rollerIO/");
     resetSlot0Gains();
   }
 
