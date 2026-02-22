@@ -14,10 +14,8 @@ public class ScorerCommandFactory {
     m_feederSensor = feederSensor;
   }
 
-  public Command runShooter() {
-    return m_subsystem.runMechanism(
-      ShooterConstants.OUTTAKE_MOTOR_VOLTAGE
-    ).withName("run shooter");
+  public Command runShooter(double velocity) {
+    return m_subsystem.runMechanism(velocity).withName("run shooter velocity " + velocity);
   }
 
   public Command runShooterBack() {

@@ -228,10 +228,15 @@ public class RobotContainer {
       m_intakeCommandFactory.runColumnPID()
     ));
 
-    m_testJoystick.rightBumper().whileTrue(m_intakeCommandFactory.storePivot());
+   //m_testJoystick.rightBumper().whileTrue(m_intakeCommandFactory.storePivot());
     m_testJoystick.leftBumper().whileTrue(m_intakeCommandFactory.deployPivot());
-    m_testJoystick.rightTrigger().whileTrue(m_shooterCommandFactory.runShooterSmartDashboard());
+    //m_testJoystick.rightTrigger().whileTrue(m_shooterCommandFactory.runShooterSmartDashboard());
     m_testJoystick.leftTrigger().whileTrue(m_shooterCommandFactory.runShooterBack());
+
+
+    //shooter testing bindings:
+    m_testJoystick.rightTrigger().whileTrue(m_shooterCommandFactory.runShooter(80));
+    m_testJoystick.rightBumper().and(m_testJoystick.rightTrigger().negate()).whileTrue(m_shooterCommandFactory.runShooter(70));
 
     m_testJoystick.povCenter().negate().onTrue(new InstantCommand(() -> resetControllerConstantsSmartDashboard()));
 
