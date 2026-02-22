@@ -2,6 +2,7 @@ package frc.robot.subsystems.scorer;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 
+import frc.robot.Constants.ScorerConstants;
 import frc.robot.subsystems.MechanismsIOHardwareBase;
 
 public class ShooterIOHardware extends MechanismsIOHardwareBase {
@@ -29,7 +30,7 @@ public class ShooterIOHardware extends MechanismsIOHardwareBase {
   }
 
   private double getDegreesPerRevolution() {
-    return type.degreesPerRevolution;
+    return ScorerConstants.SHOOTER_DEGREES_PER_REVOLUTION;
   }
 
   public double getPositionRadians() {

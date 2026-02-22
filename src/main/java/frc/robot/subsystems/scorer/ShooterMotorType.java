@@ -14,8 +14,7 @@ public enum ShooterMotorType {
           ScorerConstants.INFLUENCER_kS,
           ScorerConstants.INFLUENCER_kV,
           ScorerConstants.INFLUENCER_kA
-      ),
-      ScorerConstants.INFLUENCER_DEGREES_PER_REVOLUTION
+      )
   ),
   FOLLOWER (
       ScorerConstants.FOLLOWER_MOTOR_ID,
@@ -28,22 +27,19 @@ public enum ShooterMotorType {
           ScorerConstants.FOLLOWER_kS,
           ScorerConstants.FOLLOWER_kV,
           ScorerConstants.FOLLOWER_kA
-      ),
-      ScorerConstants.FOLLOWER_DEGREES_PER_REVOLUTION
+      )
   );
 
   public final int id;
   public final int statorLimit;
   public final String logPrefix;
   public final Gains gains;
-  public final double degreesPerRevolution;
 
-  ShooterMotorType(int id, int statorLimit, String logPrefix, Gains gains, double degreesPerRevolution) {
+  ShooterMotorType(int id, int statorLimit, String logPrefix, Gains gains) {
     this.id = id;
     this.statorLimit = statorLimit;
     this.logPrefix = logPrefix;
     this.gains = gains;
-    this.degreesPerRevolution = degreesPerRevolution;
   }
 
   /**

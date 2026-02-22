@@ -222,10 +222,8 @@ public final class Constants {
     // Motor limits - Indexer
     public static final int INDEXER_MOTOR_STATOR_LIMIT = 40;
 
-    // Conversions - Influencer
-    public static final double INFLUENCER_DEGREES_PER_REVOLUTION = 360;
-    // Conversions - Follower
-    public static final double FOLLOWER_DEGREES_PER_REVOLUTION = 360;
+    // Conversions
+    public static final double SHOOTER_DEGREES_PER_REVOLUTION = 360;
     // Conversions - Indexer
     public static final double INDEXER_DEGREES_PER_REVOLUTION = 360;
 
