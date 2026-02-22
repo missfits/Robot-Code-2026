@@ -23,12 +23,14 @@ public class ShooterIOHardware extends MechanismsIOHardwareBase {
     var configs = new TalonFXConfiguration();
     var slot0 = configs.Slot0;
 
-    slot0.kP = type.gains.kP();
-    slot0.kI = type.gains.kI();
-    slot0.kD = type.gains.kD();
-    slot0.kS = type.gains.kS();
-    slot0.kV = type.gains.kV();
-    slot0.kA = type.gains.kA();
+    // Get current gains from ShooterConstants to support runtime tuning
+    var gains = type.gains();
+    slot0.kP = gains.kP();
+    slot0.kI = gains.kI();
+    slot0.kD = gains.kD();
+    slot0.kS = gains.kS();
+    slot0.kV = gains.kV();
+    slot0.kA = gains.kA();
 
     var motorOutputConfigs = configs.MotorOutput;
     motorOutputConfigs.PeakForwardDutyCycle = ShooterConstants.PEAK_FORWARD_DUTY_CYCLE;

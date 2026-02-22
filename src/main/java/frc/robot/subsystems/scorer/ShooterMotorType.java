@@ -6,40 +6,47 @@ public enum ShooterMotorType {
   INFLUENCER (
       ShooterConstants.INFLUENCER_MOTOR_ID,
       ShooterConstants.INFLUENCER_MOTOR_STATOR_LIMIT,
-      "shooter/influencer/",
-      new Gains(
+      "shooter/influencer/"
+  ),
+  FOLLOWER (
+      ShooterConstants.FOLLOWER_MOTOR_ID,
+      ShooterConstants.FOLLOWER_MOTOR_STATOR_LIMIT,
+      "shooter/follower/"
+  );
+
+  public final int id;
+  public final int statorLimit;
+  public final String logPrefix;
+
+  ShooterMotorType(int id, int statorLimit, String logPrefix) {
+    this.id = id;
+    this.statorLimit = statorLimit;
+    this.logPrefix = logPrefix;
+  }
+
+  /**
+   * Get the current gains for this motor type.
+   * Reads directly from ShooterConstants to support runtime tuning.
+   */
+  public Gains gains() {
+    return switch (this) {
+      case INFLUENCER -> new Gains(
           ShooterConstants.INFLUENCER_kP,
           ShooterConstants.INFLUENCER_kI,
           ShooterConstants.INFLUENCER_kD,
           ShooterConstants.INFLUENCER_kS,
           ShooterConstants.INFLUENCER_kV,
           ShooterConstants.INFLUENCER_kA
-      )
-  ),
-  FOLLOWER (
-      ShooterConstants.FOLLOWER_MOTOR_ID,
-      ShooterConstants.FOLLOWER_MOTOR_STATOR_LIMIT,
-      "shooter/follower/",
-      new Gains(
+      );
+      case FOLLOWER -> new Gains(
           ShooterConstants.FOLLOWER_kP,
           ShooterConstants.FOLLOWER_kI,
           ShooterConstants.FOLLOWER_kD,
           ShooterConstants.FOLLOWER_kS,
           ShooterConstants.FOLLOWER_kV,
           ShooterConstants.FOLLOWER_kA
-      )
-  );
-
-  public final int id;
-  public final int statorLimit;
-  public final String logPrefix;
-  public final Gains gains;
-
-  ShooterMotorType(int id, int statorLimit, String logPrefix, Gains gains) {
-    this.id = id;
-    this.statorLimit = statorLimit;
-    this.logPrefix = logPrefix;
-    this.gains = gains;
+      );
+    };
   }
 
   /**
