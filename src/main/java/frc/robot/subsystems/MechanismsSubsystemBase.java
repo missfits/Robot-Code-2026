@@ -67,12 +67,12 @@ public abstract class MechanismsSubsystemBase extends SubsystemBase {
     return this.run(() -> {setVoltage(volts);}, mechanismName + "voltageCommand with " + time + " second timeout").withTimeout(time);
   }
 
-  public Command voltageVelocityPIDCommand(double velocity) {
+  public Command velocityCommand(double velocity) {
     return this.run(() -> runClosedLoopVelocity(velocity), mechanismName + "PID Command");
   } 
 
-  //need a second VoltageVelocityPIDCommand command for subsystems with two motors
-  public Command voltageVelocityPIDCommand(double velocityOne, double velocityTwo) {
+  //need a second velocityCommand command for subsystems with two motors
+  public Command velocityCommand(double velocityOne, double velocityTwo) {
     return this.run(()-> runClosedLoopVelocity(velocityOne, velocityTwo), mechanismName + "PID Command");
   }
 
@@ -89,7 +89,7 @@ public abstract class MechanismsSubsystemBase extends SubsystemBase {
     throw new UnsupportedOperationException(getName() + " does not support dual-motor velocity control");
   }
 
-  public Command voltageVelocityPIDCommand(Supplier<Double> velocitySupplier) {
+  public Command velocityCommand(Supplier<Double> velocitySupplier) {
     return loggedCommand( mechanismName + "PID Supplier 2 Command", this.run(() -> runClosedLoopVelocity(velocitySupplier.get())));
   }
 

@@ -21,7 +21,7 @@ public class ScorerCommandFactory {
   }
   
   public Command runShooter(double velocity) {
-    return m_subsystem.voltageVelocityPIDCommand(velocity).withName("run shooter velocity " + velocity);
+    return m_subsystem.velocityCommand(velocity).withName("run shooter velocity " + velocity);
   }
   
 
@@ -39,7 +39,7 @@ public class ScorerCommandFactory {
 
   
     public Command runShooterSmartDashboard(String name, double defaultVelocity) {
-    return m_subsystem.voltageVelocityPIDCommand(
+    return m_subsystem.velocityCommand(
       () -> SmartDashboard.getNumber("shooter test speeds/" + name, defaultVelocity)
     ).withName("run shooter smart dashboard " + name);
   }
