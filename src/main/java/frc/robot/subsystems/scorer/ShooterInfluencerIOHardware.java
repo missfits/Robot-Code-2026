@@ -13,7 +13,7 @@ public class ShooterInfluencerIOHardware extends MechanismsIOHardwareBase {
   public ShooterInfluencerIOHardware(int motorID) {
     super(motorID, ShooterConstants.INFLUENCER_MOTOR_STATOR_LIMIT,
         ShooterConstants.PEAK_FORWARD_DUTY_CYCLE, ShooterConstants.PEAK_REVERSE_DUTY_CYCLE, "shooterIO/");
-        BaseStatusSignal.setUpdateFrequencyForAll(200, positionSignal, velocitySignal, voltageSignal, currentSignal);
+        BaseStatusSignal.setUpdateFrequencyForAll(200, positionSignal, velocitySignal, voltageSignal, currentSignal, motor.getClosedLoopReference());
     resetSlot0Gains();
   }
 
