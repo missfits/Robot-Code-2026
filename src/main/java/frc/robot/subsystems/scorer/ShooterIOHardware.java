@@ -2,7 +2,7 @@ package frc.robot.subsystems.scorer;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 
-import frc.robot.Constants.ScorerConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.MechanismsIOHardwareBase;
 
 public class ShooterIOHardware extends MechanismsIOHardwareBase {
@@ -10,7 +10,7 @@ public class ShooterIOHardware extends MechanismsIOHardwareBase {
   private final ShooterMotorType type;
 
   public ShooterIOHardware(ShooterMotorType type) {
-    super(type.id, type.statorLimit, type.logPrefix);
+    super(type.id, type.statorLimit, ShooterConstants.PEAK_FORWARD_DUTY_CYCLE, ShooterConstants.PEAK_REVERSE_DUTY_CYCLE, type.logPrefix);
     this.type = type;
     resetSlot0Gains();
   }
@@ -30,7 +30,7 @@ public class ShooterIOHardware extends MechanismsIOHardwareBase {
   }
 
   private double getDegreesPerRevolution() {
-    return ScorerConstants.SHOOTER_DEGREES_PER_REVOLUTION;
+    return ShooterConstants.SHOOTER_DEGREES_PER_REVOLUTION;
   }
 
   public double getPositionRadians() {
