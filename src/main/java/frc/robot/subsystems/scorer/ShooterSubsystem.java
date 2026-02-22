@@ -61,7 +61,7 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
 
     SmartDashboard.putNumber("shooter influencer/voltage", m_influencerIO.getVoltage());
     SmartDashboard.putNumber("shooter influencer/velocityDPS", m_influencerIO.getVelocityDegreesPerSecond());
-
+    SmartDashboard.putNumber("shooter influencer/velocityRPS", m_influencerIO.getVelocityRadiansPerSecond());
 
   }
 }
