@@ -5,7 +5,7 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import frc.robot.Constants.ScorerConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.MechanismsSubsystemBase;
 
 public class ShooterSubsystem extends MechanismsSubsystemBase {
@@ -14,36 +14,29 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
 
   public ShooterSubsystem() {
     super("shooter");
-    m_influencerIO.resetPosition();
-    m_followerIO.resetPosition();
+    resetPosition();
+    m_followerIO.followMotor(m_influencerIO, false);
   }
 
   protected void setVoltage(double volts) {
     m_influencerIO.setVoltage(volts);
-    m_followerIO.setVoltage(volts);
   }
 
   @Override
-  protected void runClosedLoopVelocity(double influencerVelocity, double followerVelocity) {
-    VelocityVoltage influencerRequest = new VelocityVoltage(influencerVelocity)
-    .withEnableFOC(ScorerConstants.INFLUENCER_ENABLE_FOC)
-    .withFeedForward(ScorerConstants.INFLUENCER_FEED_FORWARD)
-    .withSlot(ScorerConstants.INFLUENCER_SLOT)
-    .withOverrideBrakeDurNeutral(ScorerConstants.INFLUENCER_OVERRIDE_BRAKE_DUR_NEUTRAL);
-    m_influencerIO.setVelocityVoltage(influencerRequest);
+  protected void runClosedLoopVelocity(double velocity) {
 
-    VelocityVoltage followerRequest = new VelocityVoltage(followerVelocity)
-    .withEnableFOC(ScorerConstants.FOLLOWER_ENABLE_FOC)
-    .withFeedForward(ScorerConstants.FOLLOWER_FEED_FORWARD)
-    .withSlot(ScorerConstants.FOLLOWER_SLOT)
-    .withOverrideBrakeDurNeutral(ScorerConstants.FOLLOWER_OVERRIDE_BRAKE_DUR_NEUTRAL);
-    m_followerIO.setVelocityVoltage(followerRequest);
+    VelocityVoltage influencerRequest = new VelocityVoltage(velocity)
+    .withEnableFOC(ShooterConstants.INFLUENCER_ENABLE_FOC)
+    .withFeedForward(ShooterConstants.INFLUENCER_FEED_FORWARD)
+    .withSlot(ShooterConstants.INFLUENCER_SLOT)
+    .withOverrideBrakeDurNeutral(ShooterConstants.INFLUENCER_OVERRIDE_BRAKE_DUR_NEUTRAL);
+
+    m_influencerIO.setVelocityVoltage(influencerRequest);
   }
 
   public Command runShooterOff() {
     return new RunCommand(() -> {
         m_influencerIO.setVoltage(0);
-        m_followerIO.setVoltage(0);
       },
       this
     );

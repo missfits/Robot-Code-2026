@@ -26,6 +26,7 @@ import frc.robot.generated.TunerConstants;
 public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
+    public static final int kTestControllerPort = 1;
 
     // Joystick deadband values
     public static final double DRIVE_JOYSTICK_DEADBAND = 0.1;
@@ -53,7 +54,6 @@ public final class Constants {
     public static double DRIVE_KA = 0;
 
     public static double WHEEL_RADIUS_FUDGE_FACTOR = 1.0;
-
 
     // Max speeds for drivetrain
     public static final double MAX_TRANSLATION_SPEED = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -146,113 +146,230 @@ public final class Constants {
 
   }
 
-  public static class IntakeConstants {
-    //Velocity voltage constants
-    public static final boolean ROLLER_ENABLE_FOC = false;
-    public static final boolean PIVOT_ENABLE_FOC = false;
+  public static class PivotConstants {
+    // Velocity voltage constants
+    public static final boolean ENABLE_FOC = false;
+    public static final double FEED_FORWARD = 0.0;
+    public static final int SLOT = 0;
+    public static final boolean OVERRIDE_BRAKE_DUR_NEUTRAL = false;
 
-    public static final double ROLLER_FEED_FORWARD = 0.0;
-    public static final double PIVOT_FEED_FORWARD = 0.0;
+    // Motor ID
+    public static final int MOTOR_ID = 20;
 
-    public static final int ROLLER_SLOT = 0;
-    public static final int PIVOT_SLOT = 0;
+    // Motor limits
+    public static final int MOTOR_STATOR_LIMIT = 40;
 
-    public static final boolean ROLLER_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
-    public static final boolean PIVOT_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
-
-    // Motor IDs
-    public static final int ROLLER_MOTOR_ID = 50;
-    public static final int PIVOT_MOTOR_ID = 0;
-
-    // Motor limitss
-    public static final int ROLLER_MOTOR_STATOR_LIMIT = 40;
-    public static final int PIVOT_MOTOR_STATOR_LIMIT = 40;
+    // Duty cycle limits
+    public static final double PEAK_FORWARD_DUTY_CYCLE = 0.5;
+    public static final double PEAK_REVERSE_DUTY_CYCLE = -0.5;
 
     // Conversions
-    public static final double ROLLER_DEGREES_PER_REVOLUTION = 360*3;
-    public static final double PIVOT_DEGREES_PER_REVOLUTION = 360*50;
+    public static final double DEGREES_PER_REVOLUTION = 360./50.;
 
-    // Intake motor velocities
-    public static double OUTTAKE_MOTOR_VELOCITY = 0;
-    public static final double INTAKE_BACK_VELOCITY = 0;
-    public static final double PIVOT_UP_VELOCITY = 0;
-    public static final double PIVOT_DOWN_VELOCITY = 0;
+    // Pivot volts
+    public static double DEPLOY_VOLTAGE = 1.0;
+    public static double STORE_VOLTAGE = -1.0*DEPLOY_VOLTAGE;
 
-    // Roller PID gains
-    public static double ROLLER_kP = 0;
-    public static double ROLLER_kI = 0;
-    public static double ROLLER_kD = 0;
+    // Pivot motor velocities
+    public static double DEPLOY_VELOCITY = 1.0;
+    public static double STORE_VELOCITY = -1.0*DEPLOY_VELOCITY;
+    public static final double PIVOT_MAX_VELOCITY = 15.0;
 
-    //Roller feed forward values
-    public static double ROLLER_kS = 0;
-    public static double ROLLER_kV = 0;
-    public static double ROLLER_kA = 0;
+    // Pivot positions
+    public static double STORE_POSITION_DEGREES = 0;
+    public static double DEPLOY_POSITION_DEGREES = 70;
 
-    // Timing
-    public static final double RUN_INTAKE_TIME = 0;
+    // Max manual volts
+    public static double PIVOT_MAX_MANUAL_VOLTS = 6.0;
+    
+    // PID gains
+    public static double kP = 4.8;
+    public static double kI = 0;
+    public static double kD = 0.1;
+
+    // Feed forward values
+    public static double kS = 0.25;
+    public static double kV = 0.12;
+    public static double kA = 0.01;
+
+    // Motion Magic values
+    public static double CRUISE_VELOCITY = 2.0;
+    public static double ACCELERATION = 10;
+    public static double JERK = 100;
   }
 
-  public static class ScorerConstants {
-    //Velocity voltage constants
+  public static class RollerConstants {
+    // Velocity voltage constants
+    public static final boolean ENABLE_FOC = false;
+    public static final double FEED_FORWARD = 0.0;
+    public static final int SLOT = 0;
+    public static final boolean OVERRIDE_BRAKE_DUR_NEUTRAL = false;
+
+    // Motor ID
+    public static final int MOTOR_ID = 21;
+
+    // Motor limits
+    public static final int MOTOR_STATOR_LIMIT = 40;
+
+    // Duty cycle limits
+    public static final double PEAK_FORWARD_DUTY_CYCLE = 0.5;
+    public static final double PEAK_REVERSE_DUTY_CYCLE = -0.5;
+
+    // Conversions
+    public static final double DEGREES_PER_REVOLUTION = 360./3.;
+
+    // Intake volts
+    public static double ROLLER_VOLTAGE = 1.0;
+    public static double ROLLER_BACK_VOLTAGE = 1.0;
+
+    // Intake motor velocities
+    public static double ROLLER_VELOCITY = 20.0;
+
+    // Max manual volts
+    public static double ROLLER_MAX_MANUAL_VOLTS = 6.0;
+
+    // PID gains
+    public static double kP = 0.25;
+    public static double kI = 0;
+    public static double kD = 0;
+
+    // Feed forward values
+    public static double kS = 0;
+    public static double kV = 0.12;
+    public static double kA = 0;
+
+    // Timing
+    public static final double RUN_INTAKE_TIME = 2.0;
+  }
+
+  public static class IndexerConstants {
+    // Velocity voltage constants
+    public static final boolean ENABLE_FOC = false;
+    public static final double FEED_FORWARD = 0.0;
+    public static final int SLOT = 0;
+    public static final boolean OVERRIDE_BRAKE_DUR_NEUTRAL = false;
+
+    // Motor ID
+    public static final int MOTOR_ID = 22;
+
+    // Motor limits
+    public static final int MOTOR_STATOR_LIMIT = 40;
+
+    // Duty cycle limits
+    public static final double PEAK_FORWARD_DUTY_CYCLE = 0.5;
+    public static final double PEAK_REVERSE_DUTY_CYCLE = -0.5;
+
+    // Conversions
+    public static final double DEGREES_PER_REVOLUTION = 360;
+
+    // Indexer volts
+    public static double INDEXER_VOLTAGE = 1.0;
+
+    // Indexer motor velocity
+    public static double INDEXER_VELOCITY = 10.0;
+
+    // Indexer PID/FF gains
+    // Tuned in shop 2/12
+    public static double kP = 0.3;
+    public static double kI = 0.3;
+    public static double kD = 0;
+    public static double kS = 0;
+    public static double kV = 0.15;
+    public static double kA = 0;
+  }
+
+  public static class ColumnConstants {
+    // Velocity voltage constants
+    public static final boolean ENABLE_FOC = false;
+    public static final double FEED_FORWARD = 0.0;
+    public static final int SLOT = 0;
+    public static final boolean OVERRIDE_BRAKE_DUR_NEUTRAL = false;
+
+    // Motor ID
+    public static final int MOTOR_ID = 23;
+
+    // Motor limits
+    public static final int MOTOR_STATOR_LIMIT = 40;
+
+    // Duty cycle limits
+    public static final double PEAK_FORWARD_DUTY_CYCLE = 0.5;
+    public static final double PEAK_REVERSE_DUTY_CYCLE = -0.5;
+
+    // Conversions
+    public static final double DEGREES_PER_REVOLUTION = 360;
+
+    // Column volts
+    public static double COLUMN_VOLTAGE = 1.0;
+
+    // Column motor velocities
+    public static double COLUMN_VELOCITY = 25.0;
+
+    // PID gains
+    // Tuned in shop 2/12
+    public static double kP = 0.3;
+    public static double kI = 0.4;
+    public static double kD = 0;
+
+    // Feed forward values
+    // Tuned in shop 2/12
+    public static double kS = 0;
+    public static double kV = 0.13;
+    public static double kA = 0;
+  }
+
+  public static class ShooterConstants {
+    // Velocity voltage constants - Influencer
     public static final boolean INFLUENCER_ENABLE_FOC = false;
-    public static final boolean FOLLOWER_ENABLE_FOC = false;
-    public static final boolean INDEXER_ENABLE_FOC = false;
-
     public static final double INFLUENCER_FEED_FORWARD = 0.0;
-    public static final double FOLLOWER_FEED_FORWARD = 0.0;
-    public static final double INDEXER_FEED_FORWARD = 0.0;
-
     public static final int INFLUENCER_SLOT = 0;
-    public static final int FOLLOWER_SLOT = 0;
-    public static final int INDEXER_SLOT = 0;
-
     public static final boolean INFLUENCER_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
+
+    // Velocity voltage constants - Follower
+    public static final boolean FOLLOWER_ENABLE_FOC = false;
+    public static final double FOLLOWER_FEED_FORWARD = 0.0;
+    public static final int FOLLOWER_SLOT = 0;
     public static final boolean FOLLOWER_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
-    public static final boolean INDEXER_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
 
     // Motor IDs
-    public static final int INFLUENCER_MOTOR_ID = 51;
-    public static final int FOLLOWER_MOTOR_ID = 52;
-    public static final int INDEXER_MOTOR_ID = 0;
+    public static final int INFLUENCER_MOTOR_ID = 24;
+    public static final int FOLLOWER_MOTOR_ID = 25;
 
-    // Motor limits - Influencer
-    public static final int INFLUENCER_MOTOR_STATOR_LIMIT = 40;
-    // Motor limits - Follower
-    public static final int FOLLOWER_MOTOR_STATOR_LIMIT = 40;
-    // Motor limits - Indexer
-    public static final int INDEXER_MOTOR_STATOR_LIMIT = 40;
+    // Motor limits
+    public static final int INFLUENCER_MOTOR_STATOR_LIMIT = 60;
+    public static final int FOLLOWER_MOTOR_STATOR_LIMIT = 60;
+
+    // Duty cycle limits
+    public static final double PEAK_FORWARD_DUTY_CYCLE = 0.5;
+    public static final double PEAK_REVERSE_DUTY_CYCLE = -0.5;
 
     // Conversions
     public static final double SHOOTER_DEGREES_PER_REVOLUTION = 360;
-    // Conversions - Indexer
-    public static final double INDEXER_DEGREES_PER_REVOLUTION = 360;
 
-    // Influencer motor velocities
-    public static double INFLUENCER_OUTTAKE_MOTOR_VELOCITY = 0;
-    public static final double INFLUENCER_SHOOTER_BACK_VELOCITY = 0;
+    // Motor velocities
+    public static double OUTTAKE_MOTOR_VELOCITY = 10.0;
+    public static double BACK_MOTOR_VELOCITY = -1.0;
 
-    // Follower motor velocities
-    public static double FOLLOWER_OUTTAKE_MOTOR_VELOCITY = 0;
-    public static final double FOLLOWER_SHOOTER_BACK_VELOCITY = 0;
+    public static double OUTTAKE_MOTOR_VOLTAGE = 1.0;
+    public static double BACK_MOTOR_VOLTAGE = -1.0;
 
     // Influencer PID/FF gains
-    public static double INFLUENCER_kP = 0.1;
-    public static double INFLUENCER_kI = 0;
+    public static double INFLUENCER_kP = 0.3;
+    public static double INFLUENCER_kI = 0.3;
     public static double INFLUENCER_kD = 0;
     public static double INFLUENCER_kS = 0.2;
     public static double INFLUENCER_kV = 0.115;
     public static double INFLUENCER_kA = 0;
 
     // Follower PID/FF gains
-    public static double FOLLOWER_kP = 0;
+    public static double FOLLOWER_kP = 0.1;
     public static double FOLLOWER_kI = 0;
     public static double FOLLOWER_kD = 0;
-    public static double FOLLOWER_kS = 0;
-    public static double FOLLOWER_kV = 0;
+    public static double FOLLOWER_kS = 0.2;
+    public static double FOLLOWER_kV = 0.115;
     public static double FOLLOWER_kA = 0;
 
     // Timing
-    public static final double RUN_SHOOTER_TIME = 0;
+    public static final double RUN_SHOOTER_TIME = 2.0;
   }
 
   public static class ClimberConstants {
@@ -262,10 +379,14 @@ public final class Constants {
     public static final int CLIMBER_SLOT = 0;
     public static final boolean CLIMBER_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
 
-    public static final int CLIMBER_MOTOR_ID = 0;
+    public static final int CLIMBER_MOTOR_ID = 40;
     public static final int CLIMBER_MOTOR_STATOR_LIMIT = 40;
 
-    public static final double CLIMBER_METERS_PER_REVOLUTION = 360*10;
+    // Duty cycle limits
+    public static final double PEAK_FORWARD_DUTY_CYCLE = 0.5;
+    public static final double PEAK_REVERSE_DUTY_CYCLE = -0.5;
+
+    public static final double CLIMBER_METERS_PER_REVOLUTION = 360./10.;
   }
   
   public static class VisionConstants {

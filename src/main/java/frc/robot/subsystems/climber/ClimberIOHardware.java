@@ -6,7 +6,8 @@ import frc.robot.subsystems.MechanismsIOHardwareBase;
 public class ClimberIOHardware extends MechanismsIOHardwareBase {
 
   public ClimberIOHardware(int motorID) {
-    super(motorID, ClimberConstants.CLIMBER_MOTOR_STATOR_LIMIT, "climber/");
+    super(motorID, ClimberConstants.CLIMBER_MOTOR_STATOR_LIMIT,
+        ClimberConstants.PEAK_FORWARD_DUTY_CYCLE, ClimberConstants.PEAK_REVERSE_DUTY_CYCLE, "climberIO/");
   }
 
   public double getPositionMeters() {

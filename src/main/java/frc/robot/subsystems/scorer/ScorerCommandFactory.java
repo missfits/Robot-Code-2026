@@ -1,7 +1,8 @@
 package frc.robot.subsystems.scorer;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.ScorerConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.LaserCANSensorBase;
 
 public class ScorerCommandFactory {
@@ -13,35 +14,33 @@ public class ScorerCommandFactory {
     m_feederSensor = feederSensor;
   }
 
-  public Command runShooter() {
-    return m_subsystem.runMechanismPID(
-      ScorerConstants.INFLUENCER_OUTTAKE_MOTOR_VELOCITY,
-      ScorerConstants.FOLLOWER_OUTTAKE_MOTOR_VELOCITY
-    ).withName("run shooter");
+  public Command runShooter(double velocity) {
+    return m_subsystem.runMechanism(velocity).withName("run shooter velocity " + velocity);
   }
 
   public Command runShooterBack() {
-    return m_subsystem.runMechanismPID(
-      ScorerConstants.INFLUENCER_SHOOTER_BACK_VELOCITY,
-      ScorerConstants.FOLLOWER_SHOOTER_BACK_VELOCITY
+    return m_subsystem.runMechanism(
+      ShooterConstants.BACK_MOTOR_VOLTAGE
     ).withName("run shooter back");
   }
 
   public Command runShooterWithTimeout() {
-    return m_subsystem.runMechanismPID(
-      ScorerConstants.INFLUENCER_OUTTAKE_MOTOR_VELOCITY,
-      ScorerConstants.FOLLOWER_OUTTAKE_MOTOR_VELOCITY
-    ).withTimeout(ScorerConstants.RUN_SHOOTER_TIME).withName("run shooter timeout");
+    return m_subsystem.runMechanism(
+      ShooterConstants.OUTTAKE_MOTOR_VOLTAGE
+    ).withTimeout(ShooterConstants.RUN_SHOOTER_TIME).withName("run shooter timeout");
   }
 
-  public Command runShooterPID() { 
+  public Command runShooterSmartDashboard(String name, double defaultVelocity) {
     return m_subsystem.runMechanismPID(
-      ScorerConstants.INFLUENCER_OUTTAKE_MOTOR_VELOCITY,
-      ScorerConstants.FOLLOWER_OUTTAKE_MOTOR_VELOCITY
-    ).withName("run shooter PID");
+      () -> SmartDashboard.getNumber("shooter test speeds/" + name, defaultVelocity)
+    ).withName("run shooter smart dashboard " + name);
   }
 
   public Command shooterOff() {
     return m_subsystem.runMechanismOff().withName("shooter off");
+  }
+
+  public void setDefaultCommand() {
+    m_subsystem.setDefaultCommand(m_subsystem.runMechanismOff());
   }
 }
