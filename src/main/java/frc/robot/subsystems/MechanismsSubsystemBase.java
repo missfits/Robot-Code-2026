@@ -89,7 +89,7 @@ public abstract class MechanismsSubsystemBase extends SubsystemBase {
     throw new UnsupportedOperationException(getName() + " does not support dual-motor velocity control");
   }
 
-  public Command VoltageVelocityPIDCommand(Supplier<Double> velocitySupplier) {
+  public Command voltageVelocityPIDCommand(Supplier<Double> velocitySupplier) {
     return loggedCommand( mechanismName + "PID Supplier 2 Command", this.run(() -> runClosedLoopVelocity(velocitySupplier.get())));
   }
 
