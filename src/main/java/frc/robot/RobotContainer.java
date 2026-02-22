@@ -68,6 +68,8 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 
+import com.ctre.phoenix6.SignalLogger;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -145,6 +147,8 @@ public class RobotContainer {
     DriverStation.silenceJoystickConnectionWarning(true); // Turn off unplugged joystick errors
 
     logToSmartDashboard();
+
+    SignalLogger.start();
   }
 
 
