@@ -29,9 +29,12 @@ import frc.robot.subsystems.intake.RollerSubsystem;
 import frc.robot.subsystems.scorer.ShooterSubsystem;
 import frc.robot.subsystems.LaserCANSensorBase;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.RollerConstants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.Constants.ColumnConstants;
 import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.Constants.IndexerConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.SensorConstants;
 
@@ -43,6 +46,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -64,6 +68,8 @@ import com.pathplanner.lib.auto.AutoBuilder;
 
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+
+import com.ctre.phoenix6.SignalLogger;
 
 
 /**
@@ -211,13 +217,32 @@ public class RobotContainer {
   }
 
   private void configureBindingsTestingMechanisms() {
-    m_testJoystick.x().whileTrue(m_intakeCommandFactory.runRoller());
-    m_testJoystick.y().whileTrue(m_intakeCommandFactory.runIndexer());
-    m_testJoystick.b().whileTrue(m_intakeCommandFactory.runColumn());
-    m_testJoystick.rightBumper().whileTrue(m_intakeCommandFactory.storePivot());
+    // m_testJoystick.a().whileTrue(m_intakeCommandFactory.runRoller());
+    // m_testJoystick.y().whileTrue(m_intakeCommandFactory.runIndexer());
+    // m_testJoystick.b().whileTrue(m_intakeCommandFactory.runColumn());
+
+    // m_testJoystick.b().whileTrue(m_intakeCommandFactory.runPivotPID()); // commented for testing 2/15
+    m_testJoystick.a().whileTrue(m_intakeCommandFactory.runRollerPID());
+    m_testJoystick.x().whileTrue(m_intakeCommandFactory.runIndexerPID());
+    m_testJoystick.y().whileTrue(m_intakeCommandFactory.runColumnPID());
+
+    m_testJoystick.b().whileTrue(new ParallelCommandGroup(
+      m_intakeCommandFactory.runRollerPID(),
+      m_intakeCommandFactory.runIndexerPID(),
+      m_intakeCommandFactory.runColumnPID()
+    ));
+
+   //m_testJoystick.rightBumper().whileTrue(m_intakeCommandFactory.storePivot());
     m_testJoystick.leftBumper().whileTrue(m_intakeCommandFactory.deployPivot());
-    m_testJoystick.rightTrigger().whileTrue(m_shooterCommandFactory.runShooter());
+    //m_testJoystick.rightTrigger().whileTrue(m_shooterCommandFactory.runShooterSmartDashboard());
     m_testJoystick.leftTrigger().whileTrue(m_shooterCommandFactory.runShooterBack());
+
+
+    //shooter testing bindings:
+    m_testJoystick.rightTrigger().whileTrue(m_shooterCommandFactory.runShooterSmartDashboard("high speed", 80));
+    m_testJoystick.rightBumper().and(m_testJoystick.rightTrigger().negate()).whileTrue(m_shooterCommandFactory.runShooterSmartDashboard("low speed",70));
+
+    m_testJoystick.povCenter().negate().onTrue(new InstantCommand(() -> resetControllerConstantsSmartDashboard()));
 
     // // TODO: change -- this is for testing
     // m_testJoystick.y().and(m_testJoystick.leftBumper().negate()).whileTrue(
@@ -304,31 +329,92 @@ public class RobotContainer {
 
   // ----- LOGGING -----
   private void logToSmartDashboard() {
+    // Indexer
+    SmartDashboard.putNumber("indexer IO/kP", SmartDashboard.getNumber("indexer IO/kP", IndexerConstants.kP));
+    SmartDashboard.putNumber("indexer IO/kI", SmartDashboard.getNumber("indexer IO/kI", IndexerConstants.kI));
+    SmartDashboard.putNumber("indexer IO/kD", SmartDashboard.getNumber("indexer IO/kD", IndexerConstants.kD));
+    SmartDashboard.putNumber("indexer IO/velocity", SmartDashboard.getNumber("indexer IO/velocity", IndexerConstants.INDEXER_VELOCITY));
+    SmartDashboard.putNumber("indexer IO/voltage", SmartDashboard.getNumber("indexer/voltage", IndexerConstants.INDEXER_VOLTAGE));
+
+    // Column
+    SmartDashboard.putNumber("column IO/kP", SmartDashboard.getNumber("column IO/kP", ColumnConstants.kP));
+    SmartDashboard.putNumber("column IO/kI", SmartDashboard.getNumber("column IO/kI", ColumnConstants.kI));
+    SmartDashboard.putNumber("column IO/kD", SmartDashboard.getNumber("column IO/kD", ColumnConstants.kD));
+    SmartDashboard.putNumber("column IO/velocity", SmartDashboard.getNumber("column IO/velocity", ColumnConstants.COLUMN_VELOCITY));
+    SmartDashboard.putNumber("column IO/voltage", SmartDashboard.getNumber("column/voltage", ColumnConstants.COLUMN_VOLTAGE));
+
     // Roller
     SmartDashboard.putNumber("roller IO/kP", SmartDashboard.getNumber("roller IO/kP", RollerConstants.kP));
     SmartDashboard.putNumber("roller IO/kI", SmartDashboard.getNumber("roller IO/kI", RollerConstants.kI));
     SmartDashboard.putNumber("roller IO/kD", SmartDashboard.getNumber("roller IO/kD", RollerConstants.kD));
-    SmartDashboard.putNumber("roller IO/velocity", SmartDashboard.getNumber("roller IO/velocity", RollerConstants.ROLLER_VOLTAGE));
+    SmartDashboard.putNumber("roller IO/velocity", SmartDashboard.getNumber("roller IO/velocity", RollerConstants.ROLLER_VELOCITY));
+    SmartDashboard.putNumber("roller IO/voltage", SmartDashboard.getNumber("roller/voltage", RollerConstants.ROLLER_VOLTAGE));
+
+    // Pivot
+    SmartDashboard.putNumber("pivot IO/kP", SmartDashboard.getNumber("pivot IO/kP", PivotConstants.kP));
+    SmartDashboard.putNumber("pivot IO/kI", SmartDashboard.getNumber("pivot IO/kI", PivotConstants.kI));
+    SmartDashboard.putNumber("pivot IO/kD", SmartDashboard.getNumber("pivot IO/kD", PivotConstants.kD));
+    SmartDashboard.putNumber("pivot IO/velocity", SmartDashboard.getNumber("pivot IO/velocity", PivotConstants.DEPLOY_VELOCITY));
+    SmartDashboard.putNumber("pivot IO/voltage", SmartDashboard.getNumber("pivot/voltage", PivotConstants.DEPLOY_VOLTAGE));
+
+    SmartDashboard.putNumber("pivot/store position", SmartDashboard.getNumber("pivot/store position", PivotConstants.STORE_POSITION_DEGREES));
+    SmartDashboard.putNumber("pivot/deploy position", SmartDashboard.getNumber("pivot/deploy position", PivotConstants.DEPLOY_POSITION_DEGREES));
 
     // Shooter Influencer
     SmartDashboard.putNumber("shooter influencer IO/kP", SmartDashboard.getNumber("shooter influencer IO/kP", ShooterConstants.INFLUENCER_kP));
     SmartDashboard.putNumber("shooter influencer IO/kI", SmartDashboard.getNumber("shooter influencer IO/kI", ShooterConstants.INFLUENCER_kI));
     SmartDashboard.putNumber("shooter influencer IO/kD", SmartDashboard.getNumber("shooter influencer IO/kD", ShooterConstants.INFLUENCER_kD));
     SmartDashboard.putNumber("shooter influencer IO/velocity", SmartDashboard.getNumber("shooter influencer IO/velocity", ShooterConstants.OUTTAKE_MOTOR_VELOCITY));
+    SmartDashboard.putNumber("shooter influencer IO/out voltage", SmartDashboard.getNumber("shooter/out voltage", ShooterConstants.OUTTAKE_MOTOR_VOLTAGE));
+    SmartDashboard.putNumber("shooter influencer IO/back voltage", SmartDashboard.getNumber("shooter/back voltage", ShooterConstants.BACK_MOTOR_VOLTAGE));
   }
 
   private void resetControllerConstantsSmartDashboard() {
+    // Indexer
+    IndexerConstants.kP = SmartDashboard.getNumber("indexer IO/kP", 0);
+    IndexerConstants.kI = SmartDashboard.getNumber("indexer IO/kI", 0);
+    IndexerConstants.kD = SmartDashboard.getNumber("indexer IO/kD", 0);
+    IndexerConstants.INDEXER_VELOCITY = SmartDashboard.getNumber("indexer IO/velocity", 0);
+    IndexerConstants.INDEXER_VOLTAGE = SmartDashboard.getNumber("indexer IO/voltage", 0);
+
+    // Column
+    ColumnConstants.kP = SmartDashboard.getNumber("column IO/kP", 0);
+    ColumnConstants.kI = SmartDashboard.getNumber("column IO/kI", 0);
+    ColumnConstants.kD = SmartDashboard.getNumber("column IO/kD", 0);
+    ColumnConstants.COLUMN_VELOCITY = SmartDashboard.getNumber("column IO/velocity", 0);
+    ColumnConstants.COLUMN_VOLTAGE = SmartDashboard.getNumber("column IO/voltage", 0);
+
+    // Roller
     RollerConstants.kP = SmartDashboard.getNumber("roller IO/kP", 0);
     RollerConstants.kI = SmartDashboard.getNumber("roller IO/kI", 0);
     RollerConstants.kD = SmartDashboard.getNumber("roller IO/kD", 0);
-    RollerConstants.ROLLER_VOLTAGE = SmartDashboard.getNumber("roller IO/intake velocity",0);
+    RollerConstants.ROLLER_VELOCITY = SmartDashboard.getNumber("roller IO/velocity",0);
+    RollerConstants.ROLLER_VOLTAGE = SmartDashboard.getNumber("roller IO/voltage", 0);
 
+    // Pivot
+    PivotConstants.kP = SmartDashboard.getNumber("pivot IO/kP", 0);
+    PivotConstants.kI = SmartDashboard.getNumber("pivot IO/kI", 0);
+    PivotConstants.kD = SmartDashboard.getNumber("pivot IO/kD", 0);
+    PivotConstants.DEPLOY_VELOCITY = SmartDashboard.getNumber("pivot IO/velocity",0);
+    PivotConstants.DEPLOY_VOLTAGE = SmartDashboard.getNumber("pivot IO/voltage", 0);
+    PivotConstants.STORE_VELOCITY = -1.0*SmartDashboard.getNumber("pivot IO/velocity",0);
+    PivotConstants.STORE_VOLTAGE = -1.0*SmartDashboard.getNumber("pivot IO/voltage", 0);
+
+    PivotConstants.STORE_POSITION_DEGREES = SmartDashboard.getNumber("pivot/store position", 0);
+    PivotConstants.DEPLOY_POSITION_DEGREES = SmartDashboard.getNumber("pivot/deploy position", 0);
+
+    // Shooter
     ShooterConstants.INFLUENCER_kP = SmartDashboard.getNumber("shooter influencer IO/kP", 0);
     ShooterConstants.INFLUENCER_kI = SmartDashboard.getNumber("shooter influencer IO/kI", 0);
     ShooterConstants.INFLUENCER_kD = SmartDashboard.getNumber("shooter influencer IO/kD", 0);
     ShooterConstants.OUTTAKE_MOTOR_VELOCITY = SmartDashboard.getNumber("shooter influencer IO/velocity", 0);
+    ShooterConstants.OUTTAKE_MOTOR_VOLTAGE = SmartDashboard.getNumber("shooter influencer IO/out voltage", 0);
+    ShooterConstants.BACK_MOTOR_VOLTAGE = SmartDashboard.getNumber("shooter influencer IO/back voltage", 0);
 
+    m_pivot.resetControllers();
     m_roller.resetControllers();
+    m_indexer.resetControllers();
+    m_column.resetControllers();
     m_shooter.resetControllers();
   }
 

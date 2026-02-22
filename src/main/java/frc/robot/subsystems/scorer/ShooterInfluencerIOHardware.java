@@ -3,6 +3,8 @@ package frc.robot.subsystems.scorer;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 
+import com.ctre.phoenix6.BaseStatusSignal;
+
 import frc.robot.Constants.ShooterConstants;
 
 import frc.robot.subsystems.MechanismsIOHardwareBase;

@@ -14,6 +14,7 @@ public class IndexerSubsystem extends MechanismsSubsystemBase {
   public IndexerSubsystem() {
     super("indexer");
     m_IO.resetPosition();
+    m_IO.setInverted(true);
   }
 
   protected void setVoltage(double volts) {
@@ -28,6 +29,10 @@ public class IndexerSubsystem extends MechanismsSubsystemBase {
     .withSlot(IndexerConstants.SLOT)
     .withOverrideBrakeDurNeutral(IndexerConstants.OVERRIDE_BRAKE_DUR_NEUTRAL);
     m_IO.setVelocityVoltage(request);
+  }
+
+  public void resetControllers() {
+    m_IO.resetSlot0Gains();
   }
 
   public void resetPosition() {

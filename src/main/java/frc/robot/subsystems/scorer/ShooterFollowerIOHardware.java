@@ -9,7 +9,7 @@ public class ShooterFollowerIOHardware extends MechanismsIOHardwareBase {
 
   public ShooterFollowerIOHardware(int motorID) {
     super(motorID, ShooterConstants.FOLLOWER_MOTOR_STATOR_LIMIT,
-        ShooterConstants.PEAK_FORWARD_DUTY_CYCLE, ShooterConstants.PEAK_REVERSE_DUTY_CYCLE, "shooter/follower/");
+        ShooterConstants.PEAK_FORWARD_DUTY_CYCLE, ShooterConstants.PEAK_REVERSE_DUTY_CYCLE, "shooterIO/follower/");
     resetSlot0Gains();
   }
 
