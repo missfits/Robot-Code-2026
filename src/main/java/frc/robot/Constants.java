@@ -421,8 +421,8 @@ public final class Constants {
     // --- vision subsystem ---
     // (camera setup)
     // DEFAULT CONSTANTS (robot specific constants are below) 
-    public static String CAMERA1_NAME = "left_camera";
-    public static String CAMERA2_NAME = "right_camera";
+    public static final String CAMERA1_NAME;
+    public static final String CAMERA2_NAME;
 
     // Camera 1 position - robot-specific because camera mounting may differ
     public static final double ROBOT_TO_CAM1_X;
