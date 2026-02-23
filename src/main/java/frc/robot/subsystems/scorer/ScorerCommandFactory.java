@@ -17,7 +17,7 @@ public class ScorerCommandFactory {
   public Command shooterVoltageCommand() {
     return m_subsystem.voltageCommand(
       ShooterConstants.OUTTAKE_MOTOR_VOLTAGE
-    ).withName("run shooter");
+    ).withName("run shooter voltage");
   }
   
   public Command shooterVelocityCommand(double velocity) {
@@ -28,7 +28,7 @@ public class ScorerCommandFactory {
   public Command shooterBackVoltageCommand() {
     return m_subsystem.voltageCommand(
       ShooterConstants.BACK_MOTOR_VOLTAGE
-    ).withName("run shooter back");
+    ).withName("run shooter back voltage");
   }
 
   public Command shooterWithTimeoutVoltageCommand() {
