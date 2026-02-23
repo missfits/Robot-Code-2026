@@ -52,7 +52,7 @@ public class IntakeCommandFactory {
     return m_pivot.storeIntakeFactory().withName("store pivot");
   }
 
-  public Command pivotVoltageCommand() {
+  public Command pivotVelocityCommand() {
     return m_pivot.velocityCommand(PivotConstants.DEPLOY_VELOCITY).withName("run pivot");
   }
 
