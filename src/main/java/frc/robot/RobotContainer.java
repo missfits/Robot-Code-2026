@@ -224,12 +224,12 @@ public class RobotContainer {
     // m_testJoystick.b().whileTrue(m_intakeCommandFactory.runPivotPID()); // commented for testing 2/15
     m_testJoystick.a().whileTrue(m_intakeCommandFactory.rollerVelocityCommand());
     m_testJoystick.x().whileTrue(m_intakeCommandFactory.indexerVelocityCommand());
-    m_testJoystick.y().whileTrue(m_intakeCommandFactory.rollerVelocityCommand());
+    m_testJoystick.y().whileTrue(m_intakeCommandFactory.columnVelocityCommand());
 
     m_testJoystick.b().whileTrue(new ParallelCommandGroup(
       m_intakeCommandFactory.rollerVelocityCommand(),
       m_intakeCommandFactory.indexerVelocityCommand(),
-      m_intakeCommandFactory.rollerVelocityCommand()
+      m_intakeCommandFactory.columnVelocityCommand()
     ));
 
    //m_testJoystick.rightBumper().whileTrue(m_intakeCommandFactory.storePivot());
