@@ -14,33 +14,41 @@ public class ScorerCommandFactory {
     m_feederSensor = feederSensor;
   }
 
-  public Command runShooter(double velocity) {
-    return m_subsystem.runMechanism(velocity).withName("run shooter velocity " + velocity);
+  public Command shooterVoltageCommand() {
+    return m_subsystem.voltageCommand(
+      ShooterConstants.OUTTAKE_MOTOR_VOLTAGE
+    ).withName("run shooter voltage");
   }
+  
+  public Command shooterVelocityCommand(double velocity) {
+    return m_subsystem.velocityCommand(velocity).withName("run shooter velocity " + velocity);
+  }
+  
 
-  public Command runShooterBack() {
-    return m_subsystem.runMechanism(
+  public Command shooterBackVoltageCommand() {
+    return m_subsystem.voltageCommand(
       ShooterConstants.BACK_MOTOR_VOLTAGE
-    ).withName("run shooter back");
+    ).withName("run shooter back voltage");
   }
 
-  public Command runShooterWithTimeout() {
-    return m_subsystem.runMechanism(
+  public Command shooterWithTimeoutVoltageCommand() {
+    return m_subsystem.voltageCommand(
       ShooterConstants.OUTTAKE_MOTOR_VOLTAGE
     ).withTimeout(ShooterConstants.RUN_SHOOTER_TIME).withName("run shooter timeout");
   }
 
-  public Command runShooterSmartDashboard(String name, double defaultVelocity) {
-    return m_subsystem.runMechanismPID(
+  
+    public Command shooterSmartDashboardVelocityCommand(String name, double defaultVelocity) {
+    return m_subsystem.velocityCommand(
       () -> SmartDashboard.getNumber("shooter test speeds/" + name, defaultVelocity)
     ).withName("run shooter smart dashboard " + name);
   }
 
-  public Command shooterOff() {
-    return m_subsystem.runMechanismOff().withName("shooter off");
+  public Command shooterOffCommand() {
+    return m_subsystem.offCommand().withName("shooter off");
   }
 
   public void setDefaultCommand() {
-    m_subsystem.setDefaultCommand(m_subsystem.runMechanismOff());
+    m_subsystem.setDefaultCommand(m_subsystem.offCommand());
   }
 }

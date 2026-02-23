@@ -222,25 +222,25 @@ public class RobotContainer {
     // m_testJoystick.b().whileTrue(m_intakeCommandFactory.runColumn());
 
     // m_testJoystick.b().whileTrue(m_intakeCommandFactory.runPivotPID()); // commented for testing 2/15
-    m_testJoystick.a().whileTrue(m_intakeCommandFactory.runRollerPID());
-    m_testJoystick.x().whileTrue(m_intakeCommandFactory.runIndexerPID());
-    m_testJoystick.y().whileTrue(m_intakeCommandFactory.runColumnPID());
+    m_testJoystick.a().whileTrue(m_intakeCommandFactory.rollerVelocityCommand());
+    m_testJoystick.x().whileTrue(m_intakeCommandFactory.indexerVelocityCommand());
+    m_testJoystick.y().whileTrue(m_intakeCommandFactory.columnVelocityCommand());
 
     m_testJoystick.b().whileTrue(new ParallelCommandGroup(
-      m_intakeCommandFactory.runRollerPID(),
-      m_intakeCommandFactory.runIndexerPID(),
-      m_intakeCommandFactory.runColumnPID()
+      m_intakeCommandFactory.rollerVelocityCommand(),
+      m_intakeCommandFactory.indexerVelocityCommand(),
+      m_intakeCommandFactory.columnVelocityCommand()
     ));
 
    //m_testJoystick.rightBumper().whileTrue(m_intakeCommandFactory.storePivot());
-    m_testJoystick.leftBumper().whileTrue(m_intakeCommandFactory.deployPivot());
+    m_testJoystick.leftBumper().whileTrue(m_intakeCommandFactory.deployPivotCommand());
     //m_testJoystick.rightTrigger().whileTrue(m_shooterCommandFactory.runShooterSmartDashboard());
-    m_testJoystick.leftTrigger().whileTrue(m_shooterCommandFactory.runShooterBack());
+    m_testJoystick.leftTrigger().whileTrue(m_shooterCommandFactory.shooterBackVoltageCommand());
 
 
     //shooter testing bindings:
-    m_testJoystick.rightTrigger().whileTrue(m_shooterCommandFactory.runShooterSmartDashboard("high speed", 80));
-    m_testJoystick.rightBumper().and(m_testJoystick.rightTrigger().negate()).whileTrue(m_shooterCommandFactory.runShooterSmartDashboard("low speed",70));
+    m_testJoystick.rightTrigger().whileTrue(m_shooterCommandFactory.shooterSmartDashboardVelocityCommand("high speed", 80));
+    m_testJoystick.rightBumper().and(m_testJoystick.rightTrigger().negate()).whileTrue(m_shooterCommandFactory.shooterSmartDashboardVelocityCommand("low speed",70));
 
     m_testJoystick.povCenter().negate().onTrue(new InstantCommand(() -> resetControllerConstantsSmartDashboard()));
 
