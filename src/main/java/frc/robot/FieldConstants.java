@@ -5,7 +5,7 @@
 // license that can be found in the LICENSE file at
 // the root directory of this project.
 
-package org.littletonrobotics.frc2026;
+package frc.robot;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -341,7 +341,7 @@ public class FieldConstants {
           if (layout == null) {
             try {
               Path p =
-                  Constants.disableHAL
+                  false // in the original code, Constants.disableHAL (i.e. are we in simulation)
                       ? Path.of(
                           "src",
                           "main",

@@ -5,14 +5,11 @@
 // license that can be found in the LICENSE file at
 // the root directory of this project.
 
-package org.littletonrobotics.frc2025.util;
+package frc.robot.utils;
 
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.wpilibj.DriverStation;
-import org.littletonrobotics.frc2025.Constants;
-import org.littletonrobotics.frc2025.FieldConstants;
-import org.littletonrobotics.vehicletrajectoryservice.VehicleTrajectoryServiceOuterClass.ModuleForce;
-import org.littletonrobotics.vehicletrajectoryservice.VehicleTrajectoryServiceOuterClass.VehicleState;
+import frc.robot.FieldConstants;
 
 public class AllianceFlipUtil {
   public static double applyX(double x) {
@@ -50,31 +47,8 @@ public class AllianceFlipUtil {
     return new Pose3d(apply(pose.getTranslation()), apply(pose.getRotation()));
   }
 
-  public static VehicleState apply(VehicleState state) {
-    return shouldFlip()
-        ? VehicleState.newBuilder()
-            .setX(applyX(state.getX()))
-            .setY(applyY(state.getY()))
-            .setTheta(apply(Rotation2d.fromRadians(state.getTheta())).getRadians())
-            .setVx(-state.getVx())
-            .setVy(-state.getVy())
-            .setOmega(state.getOmega())
-            .addAllModuleForces(
-                state.getModuleForcesList().stream()
-                    .map(
-                        forces ->
-                            ModuleForce.newBuilder()
-                                .setFx(-forces.getFx())
-                                .setFy(-forces.getFy())
-                                .build())
-                    .toList())
-            .build()
-        : state;
-  }
-
   public static boolean shouldFlip() {
-    return !Constants.disableHAL
-        && DriverStation.getAlliance().isPresent()
+    return DriverStation.getAlliance().isPresent()
         && DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
   }
 }
