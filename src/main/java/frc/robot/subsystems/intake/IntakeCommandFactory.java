@@ -60,6 +60,21 @@ public class IntakeCommandFactory {
     return m_roller.voltageCommand(RollerConstants.ROLLER_VOLTAGE).withName("run roller voltage");
   }
 
+  public Command rollerBackVoltageCommand() {
+    return m_roller.voltageCommand(RollerConstants.ROLLER_BACK_VOLTAGE).withName("run roller back voltage");
+  }
+
+  public Command rollerWithTimeoutVoltageCommand() {
+    return m_roller.voltageCommand(RollerConstants.ROLLER_VOLTAGE)
+    .withTimeout(RollerConstants.RUN_INTAKE_TIME)
+    .withName("run intake voltage timeout");
+  }
+
+  public Command rollerVelocityCommand() { 
+    return m_roller.velocityCommand(RollerConstants.ROLLER_VELOCITY)
+      .withName("run intake velocity");
+  }
+
   public Command indexerVoltageCommand() {
     return m_indexer.voltageCommand(IndexerConstants.INDEXER_VOLTAGE).withName("run indexer voltage");
   }
@@ -82,21 +97,6 @@ public class IntakeCommandFactory {
 
   public Command columnVelocityCommand() {
     return m_column.velocityCommand(ColumnConstants.COLUMN_VELOCITY).withName("run column velocity");
-  }
-
-  public Command rollerBackVoltageCommand() {
-    return m_roller.voltageCommand(RollerConstants.ROLLER_BACK_VOLTAGE).withName("run roller back voltage");
-  }
-
-  public Command rollerWithTimeoutVoltageCommand() {
-    return m_roller.voltageCommand(RollerConstants.ROLLER_VOLTAGE)
-    .withTimeout(RollerConstants.RUN_INTAKE_TIME)
-    .withName("run intake voltage timeout");
-  }
-
-  public Command rollerVelocityCommand() { 
-    return m_roller.velocityCommand(RollerConstants.ROLLER_VELOCITY)
-      .withName("run intake velocity");
   }
 
   public Command intakeOffCommand() {
