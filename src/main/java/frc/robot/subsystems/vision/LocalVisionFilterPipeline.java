@@ -36,6 +36,9 @@ public class LocalVisionFilterPipeline {
   public void addFilter(String name, LocalVisionFilter filter) {
       allFilters.add(new Filter(name, filter));
       enabledFilters.put(name, true);
+
+      // Add toggle to SmartDashboard
+      SmartDashboard.putBoolean(m_logPrefix + name + "/enabled", true);
   }
 
   /**

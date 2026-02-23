@@ -36,6 +36,9 @@ public class GlobalVisionFilterPipeline {
   public void addFilter(String name, GlobalVisionFilter filter) {
       allFilters.add(new Filter(name, filter));
       enabledFilters.put(name, true);
+
+      // publish toggle to SmartDashboard
+      SmartDashboard.putBoolean(m_logPrefix + name + "/enabled", true);
   }
 
   /**

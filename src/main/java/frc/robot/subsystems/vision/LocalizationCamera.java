@@ -60,6 +60,10 @@ public class LocalizationCamera {
     pose3dPublisher = NetworkTableInstance.getDefault()
             .getStructTopic("SmartDashboard/" + m_logString + "/estimatedRobotPose3D", Pose3d.struct).publish();
 
+
+    // Initialize Field2d widget for this camera (NOT THE SAME AS FUSEDPOSE)
+    SmartDashboard.putData(m_logString + "/est pose field/" + m_cameraName, m_estPoseField);
+
     SmartDashboard.putBoolean("isConnected/" + m_cameraName, m_camera.isConnected());
   }
 
@@ -87,8 +91,6 @@ public class LocalizationCamera {
   // Updates the field simulation in elastic
   public void updateField(Pose2d newPos){
     m_estPoseField.setRobotPose(newPos);
-
-    SmartDashboard.putData(m_logString + "/est pose field/", m_estPoseField);
   }
 
   

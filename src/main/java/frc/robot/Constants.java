@@ -419,6 +419,7 @@ public final class Constants {
 
     // --- vision subsystem ---
     // (camera setup)
+    // DEFAULT CONSTANTS (robot specific constants are below) 
     public static final String CAMERA1_NAME;
     public static final String CAMERA2_NAME;
 
@@ -449,18 +450,18 @@ public final class Constants {
           CAMERA2_NAME = "left_camera";
 
           // Cleo camera positions
-          ROBOT_TO_CAM1_X = Units.inchesToMeters(21.0/2-1.5);
-          ROBOT_TO_CAM1_Y = Units.inchesToMeters(-33.0/2+5);
-          ROBOT_TO_CAM1_Z = Units.inchesToMeters(9);
+          ROBOT_TO_CAM1_X = Units.inchesToMeters(21.0/2+3.5);
+          ROBOT_TO_CAM1_Y = Units.inchesToMeters(-33.0/2+3.5);
+          ROBOT_TO_CAM1_Z = Units.inchesToMeters(8.3);
           ROBOT_TO_CAM1_ROLL = 0;
-          ROBOT_TO_CAM1_PITCH = Units.degreesToRadians(-45);
-          ROBOT_TO_CAM1_YAW = 0;
+          ROBOT_TO_CAM1_PITCH = Units.degreesToRadians(-70);
+          ROBOT_TO_CAM1_YAW = Units.degreesToRadians(-135);
 
-          ROBOT_TO_CAM2_X = Units.inchesToMeters(21.0/2-1);
-          ROBOT_TO_CAM2_Y = Units.inchesToMeters(33.0/2-5.5);
-          ROBOT_TO_CAM2_Z = Units.inchesToMeters(8);
+          ROBOT_TO_CAM2_X = Units.inchesToMeters(21.0/2-3.5);
+          ROBOT_TO_CAM2_Y = Units.inchesToMeters(33.0/2-3.5);
+          ROBOT_TO_CAM2_Z = Units.inchesToMeters(8.3);
           ROBOT_TO_CAM2_ROLL = 0;
-          ROBOT_TO_CAM2_PITCH = Units.degreesToRadians(-45);
+          ROBOT_TO_CAM2_PITCH = Units.degreesToRadians(-135);
           ROBOT_TO_CAM2_YAW = 0;
           break;
 
