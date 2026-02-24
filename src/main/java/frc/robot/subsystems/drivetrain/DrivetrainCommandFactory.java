@@ -84,6 +84,7 @@ public class DrivetrainCommandFactory {
     public Command snapToAngle(Supplier<JoystickVals> translationSupplier, Supplier<Rotation2d> angleSupplier) {
         return m_drivetrain.getCommandFromRequest(() -> {
             SmartDashboard.putNumber("drivetrain/snap to angle", angleSupplier.get().getDegrees());
+            targetAngle = angleSupplier.get();
             JoystickVals translation = translationSupplier.get();
             JoystickVals shapedValues = Controls.inputShape(translation, true, false);
 
