@@ -54,7 +54,7 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
   }
 
   private boolean atTargetVelocity() {
-    return m_influencerIO.atTargetVelocityTrigger(ShooterConstants.VELOCITY_TOLERANCE).getAsBoolean() && m_followerIO.atTargetVelocityTrigger(ShooterConstants.VELOCITY_TOLERANCE).getAsBoolean();
+    return m_influencerIO.atTargetVelocityTrigger(ShooterConstants.VELOCITY_TOLERANCE).getAsBoolean();
   }
 
   public Trigger atTargetVelocityTrigger() {
