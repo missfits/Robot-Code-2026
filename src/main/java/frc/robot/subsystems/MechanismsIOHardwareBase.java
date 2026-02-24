@@ -96,6 +96,7 @@ public abstract class MechanismsIOHardwareBase {
   }
 
   public void setVelocityVoltage(VelocityVoltage request) {
+    targetVelocity = request.Velocity;
     motor.setControl(request);
   }
 
