@@ -12,7 +12,7 @@ public class HubCalculations {
     public static Translation2d hubTranslation = AllianceFlipUtil.apply(FieldConstants.Hub.innerCenterPoint.toTranslation2d());
 
     public static Rotation2d angleToHub(Pose2d robotPose) {
-        Translation2d hub = AllianceFlipUtil.apply(hubTranslation);
+        Translation2d hub = hubTranslation;
 
         Translation2d translationToTarget = hub.minus(robotPose.getTranslation());
 
@@ -25,7 +25,7 @@ public class HubCalculations {
     }
 
     public static double distanceToHub(Pose2d robotPose) {
-        Translation2d hub = AllianceFlipUtil.apply(hubTranslation);
+        Translation2d hub = hubTranslation;
         return hub.getDistance(robotPose.getTranslation());
     }
 }
