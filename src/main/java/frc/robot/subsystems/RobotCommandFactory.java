@@ -87,10 +87,10 @@ public class RobotCommandFactory {
     return Commands.parallel(
       m_shooterCommandFactory.runShooterVelocity(m_shooterVelocitySupplier), // run shooter at velocity  
       Commands.sequence(
-        m_column.runMechanismOff() // column: wait until 
+        m_column.offCommand() // column: wait until 
           .until(m_shooter.atTargetVelocityTrigger() // shooter at target velocity 
             .and(m_drivetrainCommandFactory.atTargetAngleTrigger())), // and drivetrain at target angle
-        m_column.runMechanismPID(ColumnConstants.COLUMN_VELOCITY)),
+        m_column.velocityCommand(ColumnConstants.COLUMN_VELOCITY)),
       m_drivetrainCommandFactory.snapToAngle( // drivetrain: snap to angle 
         joystickValsSupplier,
         () -> HubCalculations.angleToHub(m_drivetrain.getState().Pose, DriverStation.getAlliance().equals(Alliance.Blue)))
