@@ -55,21 +55,26 @@ public class PivotSubsystem extends MechanismsSubsystemBase {
     SmartDashboard.putNumber("pivot/current", m_IO.getCurrent());
   }
 
-  public Command deployIntakeFactory() {
+  public void resetControllers() {
+    m_IO.resetSlot0Gains();
+  }
+
+  // Commands
+  public Command pivotVelocityCommand() {
+    return velocityCommand(PivotConstants.DEPLOY_VELOCITY).withName("run pivot velocity");
+  }
+
+  public Command deployPivotCommand() {
     return this.run(() ->  {
       MotionMagicVoltage request = new MotionMagicVoltage(m_IO.degreesToMotorRevolutions(PivotConstants.DEPLOY_POSITION_DEGREES));
       m_IO.goToPositionProfiled(request);
     });
   }
 
-  public Command storeIntakeFactory() {
+  public Command storePivotCommand() {
     return this.run(() ->  {
       MotionMagicVoltage request = new MotionMagicVoltage(m_IO.degreesToMotorRevolutions(PivotConstants.STORE_POSITION_DEGREES));
       m_IO.goToPositionProfiled(request);
     });
-  }
-
-  public void resetControllers() {
-    m_IO.resetSlot0Gains();
   }
 }
