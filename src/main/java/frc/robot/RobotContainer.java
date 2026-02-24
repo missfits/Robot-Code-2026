@@ -263,6 +263,17 @@ public class RobotContainer {
     configureDefaultCommandTesting();
   }
 
+  private void configureBindingsTestingDrivetrain() {
+    m_testJoystick.a().and(m_testJoystick.leftBumper().negate()).whileTrue(m_drivetrainCommandFactory.sysIdQuasistaticTranslationForward());
+    m_testJoystick.leftBumper().and(m_testJoystick.a()).whileTrue(m_drivetrainCommandFactory.sysIdQuasistaticTranslationReverse());
+    m_testJoystick.b().and(m_testJoystick.leftBumper().negate()).whileTrue(m_drivetrainCommandFactory.sysIdDynamicTranslationForward());
+    m_testJoystick.leftBumper().and(m_testJoystick.b()).whileTrue(m_drivetrainCommandFactory.sysIdDynamicTranslationReverse());
+    m_testJoystick.x().and(m_testJoystick.leftBumper().negate()).whileTrue(m_drivetrainCommandFactory.sysIdQuasistaticRotationForward());
+    m_testJoystick.leftBumper().and(m_testJoystick.x()).whileTrue(m_drivetrainCommandFactory.sysIdQuasistaticRotationReverse());
+    m_testJoystick.y().and(m_testJoystick.leftBumper().negate()).whileTrue(m_drivetrainCommandFactory.sysIdDynamicRotationForward());
+    m_testJoystick.leftBumper().and(m_testJoystick.y()).whileTrue(m_drivetrainCommandFactory.sysIdDynamicRotationReverse());
+  }
+
   private void configureBindingsVision() {
     // --- CONFIGURE VISION FILTERING ---
     GlobalVisionFilterPipeline globalPipeline = new GlobalVisionFilterPipeline();
