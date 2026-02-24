@@ -54,5 +54,12 @@ public class RobotCommandFactory {
     m_drivetrainCommandFactory = drivetrainCommandFactory;
   }
 
+  public void setDefaultCommand() {
+    m_pivot.setDefaultCommand(m_pivot.offCommand());
+    m_roller.setDefaultCommand(m_roller.offCommand());
+    m_indexer.setDefaultCommand(m_indexer.offCommand());
+    m_column.setDefaultCommand(m_column.offCommand());
+    m_shooter.setDefaultCommand(m_shooter.offCommand());
+  }
   
 }
