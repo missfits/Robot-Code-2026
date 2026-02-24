@@ -10,8 +10,8 @@ import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.MechanismsSubsystemBase;
 
 public class ShooterSubsystem extends MechanismsSubsystemBase {
-  private final ShooterInfluencerIOHardware m_influencerIO = new ShooterInfluencerIOHardware(ShooterConstants.INFLUENCER_MOTOR_ID);
-  private final ShooterFollowerIOHardware m_followerIO = new ShooterFollowerIOHardware(ShooterConstants.FOLLOWER_MOTOR_ID);
+  private final ShooterIOHardware m_influencerIO = new ShooterIOHardware(ShooterMotorType.INFLUENCER);
+  private final ShooterIOHardware m_followerIO = new ShooterIOHardware(ShooterMotorType.FOLLOWER);
 
   public ShooterSubsystem() {
     super("shooter");
@@ -67,5 +67,10 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
 
     SmartDashboard.putNumber("shooter follower/current", m_followerIO.getCurrent());
     SmartDashboard.putNumber("shooter influencer/current", m_influencerIO.getCurrent());
+
+    SmartDashboard.putNumber("shooter influencer/voltage", m_influencerIO.getVoltage());
+    SmartDashboard.putNumber("shooter influencer/velocityDPS", m_influencerIO.getVelocityDegreesPerSecond());
+    SmartDashboard.putNumber("shooter influencer/velocityRPS", m_influencerIO.getVelocityRadiansPerSecond());
+
   }
 }

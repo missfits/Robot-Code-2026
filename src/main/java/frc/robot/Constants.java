@@ -169,10 +169,22 @@ public final class Constants {
     // Conversions
     public static final double DEGREES_PER_REVOLUTION = 360./50.;
 
-    // Pivot positions
-    public static final double STORE_POSITION_DEGREES = 0;
-    public static final double DEPLOY_POSITION_DEGREES = 70;
+    // Pivot volts
+    public static double DEPLOY_VOLTAGE = 1.0;
+    public static double STORE_VOLTAGE = -1.0*DEPLOY_VOLTAGE;
 
+    // Pivot motor velocities
+    public static double DEPLOY_VELOCITY = 1.0;
+    public static double STORE_VELOCITY = -1.0*DEPLOY_VELOCITY;
+    public static final double PIVOT_MAX_VELOCITY = 15.0;
+
+    // Pivot positions
+    public static double STORE_POSITION_DEGREES = 0;
+    public static double DEPLOY_POSITION_DEGREES = 70;
+
+    // Max manual volts
+    public static double PIVOT_MAX_MANUAL_VOLTS = 6.0;
+    
     // PID gains
     public static double kP = 4.8;
     public static double kI = 0;
@@ -214,17 +226,19 @@ public final class Constants {
     public static double ROLLER_BACK_VOLTAGE = 1.0;
 
     // Intake motor velocities
-    public static final double ROLLER_VELOCITY = 3.0;
-    public static final double ROLLER_BACK_VELOCITY = 3.0;
+    public static double ROLLER_VELOCITY = 20.0;
+
+    // Max manual volts
+    public static double ROLLER_MAX_MANUAL_VOLTS = 6.0;
 
     // PID gains
-    public static double kP = 0.1;
+    public static double kP = 0.25;
     public static double kI = 0;
     public static double kD = 0;
 
     // Feed forward values
-    public static double kS = 0.1;
-    public static double kV = 0.1;
+    public static double kS = 0;
+    public static double kV = 0.12;
     public static double kA = 0;
 
     // Timing
@@ -252,10 +266,19 @@ public final class Constants {
     public static final double DEGREES_PER_REVOLUTION = 360;
 
     // Indexer volts
-    public static final double INDEXER_VOLTAGE = 1.0;
+    public static double INDEXER_VOLTAGE = 1.0;
 
     // Indexer motor velocity
-    public static final double INDEXER_VELOCITY = 3.0;
+    public static double INDEXER_VELOCITY = 10.0;
+
+    // Indexer PID/FF gains
+    // Tuned in shop 2/12
+    public static double kP = 0.3;
+    public static double kI = 0.3;
+    public static double kD = 0;
+    public static double kS = 0;
+    public static double kV = 0.15;
+    public static double kA = 0;
   }
 
   public static class ColumnConstants {
@@ -279,19 +302,21 @@ public final class Constants {
     public static final double DEGREES_PER_REVOLUTION = 360;
 
     // Column volts
-    public static final double COLUMN_VOLTAGE = 1.0;
+    public static double COLUMN_VOLTAGE = 1.0;
 
     // Column motor velocities
-    public static final double COLUMN_VELOCITY = 3.0;
+    public static double COLUMN_VELOCITY = 25.0;
 
     // PID gains
-    public static double kP = 0.1;
-    public static double kI = 0;
+    // Tuned in shop 2/12
+    public static double kP = 0.3;
+    public static double kI = 0.4;
     public static double kD = 0;
 
     // Feed forward values
-    public static double kS = 0.1;
-    public static double kV = 0.1;
+    // Tuned in shop 2/12
+    public static double kS = 0;
+    public static double kV = 0.13;
     public static double kA = 0;
   }
 
@@ -313,27 +338,26 @@ public final class Constants {
     public static final int FOLLOWER_MOTOR_ID = 25;
 
     // Motor limits
-    public static final int INFLUENCER_MOTOR_STATOR_LIMIT = 40;
-    public static final int FOLLOWER_MOTOR_STATOR_LIMIT = 40;
+    public static final int INFLUENCER_MOTOR_STATOR_LIMIT = 60;
+    public static final int FOLLOWER_MOTOR_STATOR_LIMIT = 60;
 
     // Duty cycle limits
     public static final double PEAK_FORWARD_DUTY_CYCLE = 0.5;
     public static final double PEAK_REVERSE_DUTY_CYCLE = -0.5;
 
     // Conversions
-    public static final double INFLUENCER_DEGREES_PER_REVOLUTION = 360;
-    public static final double FOLLOWER_DEGREES_PER_REVOLUTION = 360;
+    public static final double SHOOTER_DEGREES_PER_REVOLUTION = 360;
 
     // Motor velocities
-    public static double OUTTAKE_MOTOR_VELOCITY = 3.0;
+    public static double OUTTAKE_MOTOR_VELOCITY = 10.0;
     public static double BACK_MOTOR_VELOCITY = -1.0;
 
     public static double OUTTAKE_MOTOR_VOLTAGE = 1.0;
     public static double BACK_MOTOR_VOLTAGE = -1.0;
 
     // Influencer PID/FF gains
-    public static double INFLUENCER_kP = 0.1;
-    public static double INFLUENCER_kI = 0;
+    public static double INFLUENCER_kP = 0.3;
+    public static double INFLUENCER_kI = 0.3;
     public static double INFLUENCER_kD = 0;
     public static double INFLUENCER_kS = 0.2;
     public static double INFLUENCER_kV = 0.115;
@@ -401,6 +425,7 @@ public final class Constants {
 
     // --- vision subsystem ---
     // (camera setup)
+    // DEFAULT CONSTANTS (robot specific constants are below) 
     public static final String CAMERA1_NAME;
     public static final String CAMERA2_NAME;
 
@@ -431,18 +456,18 @@ public final class Constants {
           CAMERA2_NAME = "left_camera";
 
           // Cleo camera positions
-          ROBOT_TO_CAM1_X = Units.inchesToMeters(21.0/2-1.5);
-          ROBOT_TO_CAM1_Y = Units.inchesToMeters(-33.0/2+5);
-          ROBOT_TO_CAM1_Z = Units.inchesToMeters(9);
+          ROBOT_TO_CAM1_X = Units.inchesToMeters(21.0/2+3.5);
+          ROBOT_TO_CAM1_Y = Units.inchesToMeters(-33.0/2+3.5);
+          ROBOT_TO_CAM1_Z = Units.inchesToMeters(8.3);
           ROBOT_TO_CAM1_ROLL = 0;
-          ROBOT_TO_CAM1_PITCH = Units.degreesToRadians(-45);
-          ROBOT_TO_CAM1_YAW = 0;
+          ROBOT_TO_CAM1_PITCH = Units.degreesToRadians(-70);
+          ROBOT_TO_CAM1_YAW = Units.degreesToRadians(-135);
 
-          ROBOT_TO_CAM2_X = Units.inchesToMeters(21.0/2-1);
-          ROBOT_TO_CAM2_Y = Units.inchesToMeters(33.0/2-5.5);
-          ROBOT_TO_CAM2_Z = Units.inchesToMeters(8);
+          ROBOT_TO_CAM2_X = Units.inchesToMeters(21.0/2-3.5);
+          ROBOT_TO_CAM2_Y = Units.inchesToMeters(33.0/2-3.5);
+          ROBOT_TO_CAM2_Z = Units.inchesToMeters(8.3);
           ROBOT_TO_CAM2_ROLL = 0;
-          ROBOT_TO_CAM2_PITCH = Units.degreesToRadians(-45);
+          ROBOT_TO_CAM2_PITCH = Units.degreesToRadians(-135);
           ROBOT_TO_CAM2_YAW = 0;
           break;
 

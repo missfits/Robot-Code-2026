@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.RobotContainer.JoystickVals;
 
@@ -160,5 +161,39 @@ public class DrivetrainCommandFactory {
 
     public Trigger atTargetAngleTrigger() {
         return new Trigger(() -> atTargetAngle());
+    }
+
+
+    // ----- SYSID -----
+    public Command sysIdQuasistaticTranslationForward() {
+        return m_drivetrain.sysIdQuasistaticTranslation(Direction.kForward);
+    }
+    
+    public Command sysIdQuasistaticTranslationReverse() {
+        return m_drivetrain.sysIdQuasistaticTranslation(Direction.kReverse);
+    }
+
+    public Command sysIdDynamicTranslationForward() {
+        return m_drivetrain.sysIdDynamicTranslation(Direction.kForward);
+    }
+
+    public Command sysIdDynamicTranslationReverse() {
+        return m_drivetrain.sysIdDynamicTranslation(Direction.kReverse);
+    }
+
+    public Command sysIdQuasistaticRotationForward() {
+        return m_drivetrain.sysIdQuasistaticRotation(Direction.kForward);
+    }
+
+    public Command sysIdQuasistaticRotationReverse() {
+        return m_drivetrain.sysIdQuasistaticRotation(Direction.kReverse);
+    }
+
+    public Command sysIdDynamicRotationForward() {
+        return m_drivetrain.sysIdDynamicRotation(Direction.kForward);
+    }
+
+    public Command sysIdDynamicRotationReverse() {
+        return m_drivetrain.sysIdDynamicRotation(Direction.kReverse);
     }
 }
