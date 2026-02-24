@@ -5,17 +5,14 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.FieldConstants;
 
 public class HubCalculations {
-    
-    public static Translation2d blueAllianceHub = new Translation2d(Units.inchesToMeters(651.2-(158.6+(47./2))), 
-                                                                   Units.inchesToMeters(317.7/2));
-    public static Translation2d redAllianceHub = new Translation2d(Units.inchesToMeters(158.6+(47./2)), 
-                                                                   Units.inchesToMeters(317.7/2));
 
+    public static Translation2d hubTranslation = AllianceFlipUtil.apply(FieldConstants.Hub.innerCenterPoint.toTranslation2d());
 
-    public static Rotation2d angleToHub(Pose2d robotPose, boolean isBlueAlliance) {
-        Translation2d hub = isBlueAlliance ? blueAllianceHub : redAllianceHub;
+    public static Rotation2d angleToHub(Pose2d robotPose) {
+        Translation2d hub = AllianceFlipUtil.apply(hubTranslation);
 
         Translation2d translationToTarget = hub.minus(robotPose.getTranslation());
 
@@ -27,8 +24,8 @@ public class HubCalculations {
         return hub.minus(robotPose.getTranslation()).getAngle();
     }
 
-    public static double distanceToHub(Pose2d robotPose, boolean isBlueAlliance) {
-        Translation2d hub = isBlueAlliance ? blueAllianceHub : redAllianceHub;
+    public static double distanceToHub(Pose2d robotPose) {
+        Translation2d hub = AllianceFlipUtil.apply(hubTranslation);
         return hub.getDistance(robotPose.getTranslation());
     }
 }

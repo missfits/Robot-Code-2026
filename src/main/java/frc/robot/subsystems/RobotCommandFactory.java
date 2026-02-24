@@ -66,7 +66,7 @@ public class RobotCommandFactory {
     private Double calculateShooterVelocity() {
         // Calculate distance from hub
         Pose2d robotPose = m_drivetrain.getState().Pose;
-        double distanceToHub = HubCalculations.distanceToHub(robotPose, DriverStation.getAlliance().equals(Alliance.Blue));
+        double distanceToHub = HubCalculations.distanceToHub(robotPose);
 
         // Look up target velocity from distance
         Optional<Double> velocityOptional = ShooterLookupTable.getVelocityForDistance(distanceToHub);
@@ -93,7 +93,7 @@ public class RobotCommandFactory {
         m_column.velocityCommand(ColumnConstants.COLUMN_VELOCITY)),
       m_drivetrainCommandFactory.snapToAngle( // drivetrain: snap to angle 
         joystickValsSupplier,
-        () -> HubCalculations.angleToHub(m_drivetrain.getState().Pose, DriverStation.getAlliance().equals(Alliance.Blue)))
+        () -> HubCalculations.angleToHub(m_drivetrain.getState().Pose))
     ).withName("shootByDistance");
   }
 }
