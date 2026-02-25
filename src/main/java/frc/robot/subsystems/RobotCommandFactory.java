@@ -96,5 +96,9 @@ public class RobotCommandFactory {
         () -> HubCalculations.angleToHub(m_drivetrain.getState().Pose))
     ).withName("shootByDistance");
   }
+
+  public Command shootByDistanceTestCommand() {
+    return m_shooterCommandFactory.runShooterVelocity(m_shooterVelocitySupplier);
+  }
 }
 
