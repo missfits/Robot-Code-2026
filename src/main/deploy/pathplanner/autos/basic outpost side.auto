@@ -13,7 +13,7 @@
         {
           "type": "named",
           "data": {
-            "name": "orient to hub"
+            "name": "snap to hub"
           }
         },
         {
