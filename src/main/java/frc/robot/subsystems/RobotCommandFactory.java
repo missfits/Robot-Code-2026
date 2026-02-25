@@ -25,6 +25,8 @@ import frc.robot.subsystems.intake.PivotSubsystem;
 import frc.robot.subsystems.intake.RollerSubsystem;
 import frc.robot.subsystems.scorer.ShooterSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
+import frc.robot.utils.ShooterLookupTable;
+import frc.robot.utils.HubCalculations;
 
 public class RobotCommandFactory {
   private final CommandSwerveDrivetrain m_drivetrain;
@@ -37,6 +39,8 @@ public class RobotCommandFactory {
   private final LaserCANSensorBase m_shooterSensor;
   private final VisionSubsystem m_vision;
   private final DrivetrainCommandFactory m_drivetrainCommandFactory;
+
+  private final Supplier<Double> m_shooterVelocitySupplier = () -> calculateShooterVelocity(); 
 
   public RobotCommandFactory(CommandSwerveDrivetrain drivetrain, 
       PivotSubsystem pivot, RollerSubsystem roller, IndexerSubsystem indexer, ColumnSubsystem column, 
@@ -61,5 +65,71 @@ public class RobotCommandFactory {
     m_column.setDefaultCommand(m_column.offCommand());
     m_shooter.setDefaultCommand(m_shooter.offCommand());
   }
-  
+
+  private Double calculateShooterVelocity() {
+    // Calculate distance from hub
+    Pose2d robotPose = m_drivetrain.getState().Pose;
+    double distanceToHub = HubCalculations.distanceToHub(robotPose);
+
+    // Look up target velocity from distance
+    Optional<Double> velocityOptional = ShooterLookupTable.getVelocityForDistance(distanceToHub);
+
+    if (velocityOptional.isPresent()) {
+      return velocityOptional.get();
+    } else {
+      return 0.0; // TODO: fix, based on robot mode?? 
+    }
+  }
+
+  /**
+   * Command that shoots based on distance to hub using vision
+  */
+  public Command shootByDistanceCommand(Supplier<JoystickVals> joystickValsSupplier) {
+    return Commands.parallel(
+      m_shooter.shooterVelocityCommand(m_shooterVelocitySupplier), // run shooter at velocity  
+      m_drivetrainCommandFactory.snapToAngle( // drivetrain: snap to angle 
+        joystickValsSupplier,
+        () -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)),
+      Commands.sequence( // column: 
+        m_column.offCommand() // wait until 
+          .until(m_shooter.atTargetVelocityTrigger() // shooter at target velocity 
+            .and(m_drivetrainCommandFactory.atTargetAngleTrigger())), // and drivetrain at target angle
+        m_column.velocityCommand(ColumnConstants.COLUMN_VELOCITY))
+    ).withName("shootByDistance");
+  }
+
+  public Command shootByDistanceTestCommand() {
+    return m_shooter.shooterVelocityCommand(m_shooterVelocitySupplier);
+  }
+
+  public Command shootManualCommand(Supplier<JoystickVals> joystickValsSupplier, double velocity) {
+    return Commands.parallel(
+      m_shooter.shooterVelocityCommand(velocity), // run shooter at given velocity  
+      m_drivetrainCommandFactory.snapToAngle( // drivetrain: snap to angle 
+        joystickValsSupplier,
+        () -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)),
+      Commands.sequence( // column: 
+        m_column.offCommand() // wait until 
+          .until(m_shooter.atTargetVelocityTrigger() // shooter at target velocity 
+            .and(m_drivetrainCommandFactory.atTargetAngleTrigger())), // and drivetrain at target angle
+        m_column.velocityCommand(ColumnConstants.COLUMN_VELOCITY))
+    ).withName("shootManual");
+  }
+
+  public Command shootManualTestCommand(double velocity) {
+    return m_shooter.shooterVelocityCommand(velocity);
+  }
+
+  public double getDistanceToHub() {
+    return HubCalculations.distanceToHub(m_drivetrain.getState().Pose);
+  }
+
+  public double getAngleToHub() {
+    return HubCalculations.angleToHub(m_drivetrain.getState().Pose).getDegrees();
+  }
+
+  public double getTargetShooterVelocity() {
+    return m_shooterVelocitySupplier.get();
+  }
+
 }

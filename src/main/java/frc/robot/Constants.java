@@ -144,6 +144,9 @@ public final class Constants {
     // If robot is within this distance of target, maintain current heading
     public static final double SNAP_TO_TARGET_DISTANCE_THRESHOLD = 0.05; // 5cm
 
+    // angle tolerance (in radians) for atTargetAngle()
+    public static final double ANGLE_TOLERANCE = 0;
+
   }
 
   public static class PivotConstants {
@@ -370,6 +373,9 @@ public final class Constants {
 
     // Timing
     public static final double RUN_SHOOTER_TIME = 2.0;
+
+    // Velocity tolerance for checking if shooter is at target (rotations per second)
+    public static final double VELOCITY_TOLERANCE = 10;
   }
 
   public static class ClimberConstants {

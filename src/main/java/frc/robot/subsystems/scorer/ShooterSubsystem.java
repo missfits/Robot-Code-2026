@@ -5,8 +5,11 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.MechanismsSubsystemBase;
+import frc.robot.utils.ShooterLookupTable;
+import java.util.function.Supplier;
 
 public class ShooterSubsystem extends MechanismsSubsystemBase {
   private final ShooterIOHardware m_influencerIO = new ShooterIOHardware(ShooterMotorType.INFLUENCER);
@@ -56,7 +59,11 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
   public Command shooterVelocityCommand(double velocity) {
     return velocityCommand(velocity).withName("run shooter velocity " + velocity);
   }
-  
+
+  public Command shooterVelocityCommand(Supplier<Double> velocitySupplier) {
+    return velocityCommand(velocitySupplier.get()).withName("run shooter velocity from supplier");
+  }
+
   public Command shooterVoltageCommand() {
     return voltageCommand(
       ShooterConstants.OUTTAKE_MOTOR_VOLTAGE
@@ -80,6 +87,15 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
       .withTimeout(ShooterConstants.RUN_SHOOTER_TIME).withName("run shooter auto");
   }
 
+  // Triggers
+  private boolean atTargetVelocity() {
+    return m_influencerIO.atTargetVelocityTrigger(ShooterConstants.VELOCITY_TOLERANCE).getAsBoolean();
+  }
+
+  public Trigger atTargetVelocityTrigger() {
+    return new Trigger(() -> atTargetVelocity());
+  }
+
   @Override
   public void periodic() {
     super.periodic();
@@ -89,7 +105,9 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
 
     SmartDashboard.putNumber("shooter influencer/voltage", m_influencerIO.getVoltage());
     SmartDashboard.putNumber("shooter influencer/velocityDPS", m_influencerIO.getVelocityDegreesPerSecond());
-    SmartDashboard.putNumber("shooter influencer/velocityRPS", m_influencerIO.getVelocityRadiansPerSecond());
+    SmartDashboard.putNumber("shooter influencer/velocityRadiansPS", m_influencerIO.getVelocityRadiansPerSecond());
+    SmartDashboard.putNumber("shooter influencer/velocityRevolutionsPS", m_influencerIO.getMotorVelocityRevolutionsPerSecond());
+
 
   }
 }

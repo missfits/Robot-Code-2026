@@ -337,7 +337,7 @@ public class RobotContainer {
 
 
   // ----- LOGGING -----
-  private void logToSmartDashboard() {
+  public void logToSmartDashboard() {
     // Indexer
     SmartDashboard.putNumber("indexer IO/kP", SmartDashboard.getNumber("indexer IO/kP", IndexerConstants.kP));
     SmartDashboard.putNumber("indexer IO/kI", SmartDashboard.getNumber("indexer IO/kI", IndexerConstants.kI));
@@ -376,6 +376,11 @@ public class RobotContainer {
     SmartDashboard.putNumber("shooter influencer IO/velocity", SmartDashboard.getNumber("shooter influencer IO/velocity", ShooterConstants.OUTTAKE_MOTOR_VELOCITY));
     SmartDashboard.putNumber("shooter influencer IO/out voltage", SmartDashboard.getNumber("shooter/out voltage", ShooterConstants.OUTTAKE_MOTOR_VOLTAGE));
     SmartDashboard.putNumber("shooter influencer IO/back voltage", SmartDashboard.getNumber("shooter/back voltage", ShooterConstants.BACK_MOTOR_VOLTAGE));
+
+    // Robot Command Factory Logging 
+    SmartDashboard.putNumber("robot command factory/distance to hub", m_robotCommandFactory.getDistanceToHub());
+    SmartDashboard.putNumber("robot command factory/angle to hub", m_robotCommandFactory.getAngleToHub());
+    SmartDashboard.putNumber("robot command factory/to hub shooter velocity", m_robotCommandFactory.getTargetShooterVelocity());
   }
 
   private void resetControllerConstantsSmartDashboard() {

@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -29,6 +30,8 @@ public class DrivetrainCommandFactory {
     private final SwerveRequest.SwerveDriveBrake m_brake = new SwerveRequest.SwerveDriveBrake();
 
     private final CommandSwerveDrivetrain m_drivetrain;
+
+    private Rotation2d targetAngle = new Rotation2d();
 
     public DrivetrainCommandFactory(CommandSwerveDrivetrain drivetrain) {
         m_drivetrain = drivetrain;
@@ -67,12 +70,27 @@ public class DrivetrainCommandFactory {
     public Command snapToAngle(Supplier<JoystickVals> translationSupplier, double angle) {
         return m_drivetrain.getCommandFromRequest(() -> {
             SmartDashboard.putNumber("drivetrain/snap to angle", angle);
+            targetAngle = Rotation2d.fromDegrees(angle);
             JoystickVals translation = translationSupplier.get();
             JoystickVals shapedValues = Controls.inputShape(translation, true, false);
 
             return m_driveFacingAngle.withVelocityX(-shapedValues.y() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive forward with negative Y (forward)
             .withVelocityY(-shapedValues.x() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive left with negative X (left)
-            .withTargetDirection(Rotation2d.fromDegrees(angle));
+            .withTargetDirection(targetAngle);
+        });
+    }
+
+    // Drives the robot while automatically rotating to face a specified rotation2d
+    public Command snapToAngle(Supplier<JoystickVals> translationSupplier, Supplier<Rotation2d> angleSupplier) {
+        return m_drivetrain.getCommandFromRequest(() -> {
+            SmartDashboard.putNumber("drivetrain/snap to angle", angleSupplier.get().getDegrees());
+            targetAngle = angleSupplier.get();
+            JoystickVals translation = translationSupplier.get();
+            JoystickVals shapedValues = Controls.inputShape(translation, true, false);
+
+            return m_driveFacingAngle.withVelocityX(-shapedValues.y() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive forward with negative Y (forward)
+            .withVelocityY(-shapedValues.x() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive left with negative X (left)
+            .withTargetDirection(targetAngle);
         });
     }
 
@@ -104,6 +122,7 @@ public class DrivetrainCommandFactory {
             Pose2d targetPose = targetPoseSupplier.get(); // target pose
 
             Rotation2d angleToTarget = calculateAngleToTarget(m_drivetrain.getState().Pose, targetPose);
+            targetAngle = angleToTarget;
 
             SmartDashboard.putNumber("drivetrain/snap to target/target x", targetPose.getX());
             SmartDashboard.putNumber("drivetrain/snap to target/target y", targetPose.getY());
@@ -136,6 +155,15 @@ public class DrivetrainCommandFactory {
             return m_point.withModuleDirection(new Rotation2d(-vals.y(), -vals.x()));
         });
     }
+
+    private boolean atTargetAngle() {
+        return Math.abs(m_drivetrain.getState().Pose.getRotation().minus(targetAngle).getRadians()) < DrivetrainConstants.ANGLE_TOLERANCE;
+    }
+
+    public Trigger atTargetAngleTrigger() {
+        return new Trigger(() -> atTargetAngle());
+    }
+
 
     // ----- SYSID -----
     public Command sysIdQuasistaticTranslationForward() {
