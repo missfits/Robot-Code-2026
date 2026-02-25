@@ -9,11 +9,9 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrainSim;
 import frc.robot.subsystems.drivetrain.DrivetrainCommandFactory;
-import frc.robot.subsystems.intake.IntakeCommandFactory;
 import frc.robot.subsystems.intake.PivotSubsystem;
 import frc.robot.subsystems.intake.ColumnSubsystem;
 import frc.robot.subsystems.intake.IndexerSubsystem;
-import frc.robot.subsystems.scorer.ScorerCommandFactory;
 import frc.robot.subsystems.vision.LocalVisionFilterPipeline;
 import frc.robot.subsystems.vision.GlobalVisionFilterPipeline;
 import frc.robot.subsystems.vision.LocalizationCamera;
@@ -29,6 +27,7 @@ import frc.robot.subsystems.drivetrain.Telemetry;
 import frc.robot.subsystems.intake.RollerSubsystem;
 import frc.robot.subsystems.scorer.ShooterSubsystem;
 import frc.robot.subsystems.LaserCANSensorBase;
+import frc.robot.subsystems.RobotCommandFactory;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.RollerConstants;
@@ -114,8 +113,7 @@ public class RobotContainer {
 
   // Command factories
   private final DrivetrainCommandFactory m_drivetrainCommandFactory = new DrivetrainCommandFactory(m_drivetrain);
-  private final IntakeCommandFactory m_intakeCommandFactory = new IntakeCommandFactory(m_roller, m_intakeSensor, m_pivot, m_indexer, m_column);
-  private final ScorerCommandFactory m_shooterCommandFactory = new ScorerCommandFactory(m_shooter, m_shooterSensor);
+  private final RobotCommandFactory m_robotCommandFactory = new RobotCommandFactory(m_drivetrain, m_pivot, m_roller, m_indexer, m_column, m_shooter, m_intakeSensor, m_shooterSensor, m_vision, m_drivetrainCommandFactory);
 
   private final CommandXboxController m_driverJoystick =
     new CommandXboxController(OperatorConstants.kDriverControllerPort);
@@ -218,30 +216,30 @@ public class RobotContainer {
   }
 
   private void configureBindingsTestingMechanisms() {
-    // m_testJoystick.a().whileTrue(m_intakeCommandFactory.runRoller());
-    // m_testJoystick.y().whileTrue(m_intakeCommandFactory.runIndexer());
-    // m_testJoystick.b().whileTrue(m_intakeCommandFactory.runColumn());
+    // m_testJoystick.a().whileTrue(m_roller.rollerVelocityCommand());
+    // m_testJoystick.y().whileTrue(m_indexer.indexerVelocityCommand());
+    // m_testJoystick.b().whileTrue(m_column.columnVelocityCommand());
 
-    // m_testJoystick.b().whileTrue(m_intakeCommandFactory.runPivotPID()); // commented for testing 2/15
-    m_testJoystick.a().whileTrue(m_intakeCommandFactory.rollerVelocityCommand());
-    m_testJoystick.x().whileTrue(m_intakeCommandFactory.indexerVelocityCommand());
-    m_testJoystick.y().whileTrue(m_intakeCommandFactory.columnVelocityCommand());
+    // m_testJoystick.b().whileTrue(m_pivot.pivotVelocityCommand()); // commented for testing 2/15
+    m_testJoystick.a().whileTrue(m_roller.rollerVelocityCommand());
+    m_testJoystick.x().whileTrue(m_indexer.indexerVelocityCommand());
+    m_testJoystick.y().whileTrue(m_column.columnVelocityCommand());
 
     m_testJoystick.b().whileTrue(new ParallelCommandGroup(
-      m_intakeCommandFactory.rollerVelocityCommand(),
-      m_intakeCommandFactory.indexerVelocityCommand(),
-      m_intakeCommandFactory.columnVelocityCommand()
+      m_roller.rollerVelocityCommand(),
+      m_indexer.indexerVelocityCommand(),
+      m_column.columnVelocityCommand()
     ));
 
-   //m_testJoystick.rightBumper().whileTrue(m_intakeCommandFactory.storePivot());
-    m_testJoystick.leftBumper().whileTrue(m_intakeCommandFactory.deployPivotCommand());
-    //m_testJoystick.rightTrigger().whileTrue(m_shooterCommandFactory.runShooterSmartDashboard());
-    m_testJoystick.leftTrigger().whileTrue(m_shooterCommandFactory.shooterBackVoltageCommand());
+   //m_testJoystick.rightBumper().whileTrue(m_pivot.storePivotCommand());
+    m_testJoystick.leftBumper().whileTrue(m_pivot.deployPivotCommand());
+    //m_testJoystick.rightTrigger().whileTrue(m_shooter.shooterVelocityCommand(SmartDashboard.getNumber("shooter test speeds/high speed", 80)));
+    m_testJoystick.leftTrigger().whileTrue(m_shooter.shooterBackVoltageCommand());
 
 
     //shooter testing bindings:
-    m_testJoystick.rightTrigger().whileTrue(m_shooterCommandFactory.shooterSmartDashboardVelocityCommand("high speed", 80));
-    m_testJoystick.rightBumper().and(m_testJoystick.rightTrigger().negate()).whileTrue(m_shooterCommandFactory.shooterSmartDashboardVelocityCommand("low speed",70));
+    m_testJoystick.rightTrigger().whileTrue(m_shooter.shooterVelocityCommand(SmartDashboard.getNumber("shooter test speeds/high speed", 80)));
+    m_testJoystick.rightBumper().and(m_testJoystick.rightTrigger().negate()).whileTrue(m_shooter.shooterVelocityCommand(SmartDashboard.getNumber("shooter test speeds/low speed", 70)));
 
     m_testJoystick.povCenter().negate().onTrue(new InstantCommand(() -> resetControllerConstantsSmartDashboard()));
 
@@ -328,8 +326,7 @@ public class RobotContainer {
   }
 
   private void configureDefaultCommandTesting() {
-    m_intakeCommandFactory.setDefaultCommand();
-    m_shooterCommandFactory.setDefaultCommand();
+    m_robotCommandFactory.setDefaultCommand();
   }
 
   public void setRobotMode(RobotMode newMode) {
