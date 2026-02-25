@@ -82,6 +82,11 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
     ).withTimeout(ShooterConstants.RUN_SHOOTER_TIME).withName("run shooter timeout");
   }
 
+  public Command shooterAutoCommand() {
+    return velocityCommand(ShooterConstants.OUTTAKE_MOTOR_VELOCITY)
+      .withTimeout(ShooterConstants.RUN_SHOOTER_TIME).withName("run shooter auto");
+  }
+
   // Triggers
   private boolean atTargetVelocity() {
     return m_influencerIO.atTargetVelocityTrigger(ShooterConstants.VELOCITY_TOLERANCE).getAsBoolean();

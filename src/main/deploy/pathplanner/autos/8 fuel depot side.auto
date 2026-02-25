@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "outpost starting to outpost shooting"
+            "pathName": "depot side to depot shooting"
           }
         },
         {
@@ -20,18 +20,6 @@
           "type": "named",
           "data": {
             "name": "shoot"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "outpost shooting to climb"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "climb"
           }
         }
       ]
