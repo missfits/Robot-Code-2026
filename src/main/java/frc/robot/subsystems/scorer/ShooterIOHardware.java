@@ -51,6 +51,10 @@ public class ShooterIOHardware extends MechanismsIOHardwareBase {
     return getPositionRevolutions() * getDegreesPerRevolution();
   }
 
+  public double getVelocityRevolutionsPerSecond() {
+    return getMotorVelocityRevolutionsPerSecond();
+  }
+
   public double getVelocityRadiansPerSecond() {
     return Math.toRadians(getMotorVelocityRevolutionsPerSecond() * getDegreesPerRevolution());
   }
