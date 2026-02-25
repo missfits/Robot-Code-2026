@@ -439,7 +439,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("trigger intake", new WaitCommand(1));
     NamedCommands.registerCommand("orient to hub", new WaitCommand(1));
     NamedCommands.registerCommand("climb", new WaitCommand(1));
-    NamedCommands.registerCommand("shoot", new WaitCommand(1));
+    NamedCommands.registerCommand("shoot", m_shooterCommandFactory.shooterSmartDashboardVelocityCommand("auto shoot", ShooterConstants.OUTTAKE_MOTOR_VELOCITY).withTimeout(5));
   }
 
   /**
