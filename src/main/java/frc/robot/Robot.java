@@ -66,6 +66,7 @@ public class Robot extends TimedRobot {
 
     // Update pose estimate with vision measurements
     m_robotContainer.updatePoseEst();
+    m_robotContainer.logToSmartDashboard();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

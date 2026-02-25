@@ -337,7 +337,7 @@ public class RobotContainer {
 
 
   // ----- LOGGING -----
-  private void logToSmartDashboard() {
+  public void logToSmartDashboard() {
     // Indexer
     SmartDashboard.putNumber("indexer IO/kP", SmartDashboard.getNumber("indexer IO/kP", IndexerConstants.kP));
     SmartDashboard.putNumber("indexer IO/kI", SmartDashboard.getNumber("indexer IO/kI", IndexerConstants.kI));
