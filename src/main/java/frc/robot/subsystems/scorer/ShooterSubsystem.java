@@ -75,6 +75,11 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
     ).withTimeout(ShooterConstants.RUN_SHOOTER_TIME).withName("run shooter timeout");
   }
 
+  public Command shooterAutoCommand() {
+    return velocityCommand(ShooterConstants.OUTTAKE_MOTOR_VELOCITY)
+      .withTimeout(ShooterConstants.RUN_SHOOTER_TIME).withName("run shooter auto");
+  }
+
   @Override
   public void periodic() {
     super.periodic();
