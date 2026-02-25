@@ -56,7 +56,7 @@ public abstract class MechanismsIOHardwareBase {
     motor.getConfigurator().apply(motorOutput);
   }
 
-  protected double getPositionRevolutions() {
+  public double getPositionRevolutions() {
     return positionSignal.refresh().getValue().in(Revolutions);
   }
 
@@ -64,7 +64,7 @@ public abstract class MechanismsIOHardwareBase {
     return voltageSignal.refresh().getValue().in(Volts);
   }
 
-  protected double getMotorVelocityRevolutionsPerSecond() {
+  public double getMotorVelocityRevolutionsPerSecond() {
     return velocitySignal.refresh().getValue().in(RevolutionsPerSecond);
   }
 
@@ -76,7 +76,7 @@ public abstract class MechanismsIOHardwareBase {
     motor.stopMotor();
   }
 
-  protected void setPositionRevolutions(double revolutions) {
+  public void setPositionRevolutions(double revolutions) {
     motor.setPosition(revolutions);
   }
 
