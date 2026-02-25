@@ -76,7 +76,7 @@ public class DrivetrainCommandFactory {
 
             return m_driveFacingAngle.withVelocityX(-shapedValues.y() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive forward with negative Y (forward)
             .withVelocityY(-shapedValues.x() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive left with negative X (left)
-            .withTargetDirection(Rotation2d.fromDegrees(angle));
+            .withTargetDirection(targetAngle);
         });
     }
 
@@ -90,7 +90,7 @@ public class DrivetrainCommandFactory {
 
             return m_driveFacingAngle.withVelocityX(-shapedValues.y() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive forward with negative Y (forward)
             .withVelocityY(-shapedValues.x() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive left with negative X (left)
-            .withTargetDirection(angleSupplier.get());
+            .withTargetDirection(targetAngle);
         });
     }
 
