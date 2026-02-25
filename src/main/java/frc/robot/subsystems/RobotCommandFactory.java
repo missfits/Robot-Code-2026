@@ -102,6 +102,24 @@ public class RobotCommandFactory {
     return m_shooter.shooterVelocityCommand(m_shooterVelocitySupplier);
   }
 
+  public Command shootManualCommand(Supplier<JoystickVals> joystickValsSupplier, double velocity) {
+    return Commands.parallel(
+      m_shooter.shooterVelocityCommand(velocity), // run shooter at given velocity  
+      m_drivetrainCommandFactory.snapToAngle( // drivetrain: snap to angle 
+        joystickValsSupplier,
+        () -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)),
+      Commands.sequence( // column: 
+        m_column.offCommand() // wait until 
+          .until(m_shooter.atTargetVelocityTrigger() // shooter at target velocity 
+            .and(m_drivetrainCommandFactory.atTargetAngleTrigger())), // and drivetrain at target angle
+        m_column.velocityCommand(ColumnConstants.COLUMN_VELOCITY))
+    ).withName("shootManual");
+  }
+
+  public Command shootManualTestCommand(double velocity) {
+    return m_shooter.shooterVelocityCommand(velocity);
+  }
+
   public double getDistanceToHub() {
     return HubCalculations.distanceToHub(m_drivetrain.getState().Pose);
   }
