@@ -440,7 +440,7 @@ public class RobotContainer {
       HubCalculations.angleToHub(m_drivetrain.getState().Pose).getDegrees())
       .withTimeout(1.5));
     NamedCommands.registerCommand("climb", new WaitCommand(1));
-    NamedCommands.registerCommand("shoot", m_shooterCommandFactory.shooterSmartDashboardVelocityCommand("auto shoot", ShooterConstants.OUTTAKE_MOTOR_VELOCITY).withTimeout(5));
+    NamedCommands.registerCommand("shoot", m_shooter.shooterAutoCommand());
   }
 
   /**
