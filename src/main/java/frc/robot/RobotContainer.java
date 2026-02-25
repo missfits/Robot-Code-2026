@@ -437,7 +437,9 @@ public class RobotContainer {
   private void createNamedCommands() {
     // TODO -- REPLACE WITH PROPER COMMAND ONCE IT HAS BEEN WRITTEN 
     NamedCommands.registerCommand("trigger intake", new WaitCommand(1));
-    NamedCommands.registerCommand("orient to hub", new WaitCommand(1));
+    NamedCommands.registerCommand("snap to hub", m_drivetrainCommandFactory.snapToAngle(
+      () -> new JoystickVals(0, 0),
+      FieldConstants.Hub.nearFace.getRotation().getRadians()));
     NamedCommands.registerCommand("climb", new WaitCommand(1));
     NamedCommands.registerCommand("shoot", m_shooterCommandFactory.shooterSmartDashboardVelocityCommand("auto shoot", ShooterConstants.OUTTAKE_MOTOR_VELOCITY).withTimeout(5));
   }
