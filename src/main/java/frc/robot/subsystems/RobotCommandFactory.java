@@ -87,14 +87,14 @@ public class RobotCommandFactory {
   public Command shootByDistanceCommand(Supplier<JoystickVals> joystickValsSupplier) {
     return Commands.parallel(
       m_shooter.shooterVelocityCommand(m_shooterVelocitySupplier), // run shooter at velocity  
-      Commands.sequence(
-        m_column.offCommand() // column: wait until 
-          .until(m_shooter.atTargetVelocityTrigger() // shooter at target velocity 
-            .and(m_drivetrainCommandFactory.atTargetAngleTrigger())), // and drivetrain at target angle
-        m_column.velocityCommand(ColumnConstants.COLUMN_VELOCITY)),
       m_drivetrainCommandFactory.snapToAngle( // drivetrain: snap to angle 
         joystickValsSupplier,
-        () -> HubCalculations.angleToHub(m_drivetrain.getState().Pose))
+        () -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)),
+      Commands.sequence( // column: 
+        m_column.offCommand() // wait until 
+          .until(m_shooter.atTargetVelocityTrigger() // shooter at target velocity 
+            .and(m_drivetrainCommandFactory.atTargetAngleTrigger())), // and drivetrain at target angle
+        m_column.velocityCommand(ColumnConstants.COLUMN_VELOCITY))
     ).withName("shootByDistance");
   }
 
