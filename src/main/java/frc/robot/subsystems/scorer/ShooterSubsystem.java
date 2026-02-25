@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.MechanismsSubsystemBase;
+import frc.robot.utils.ShooterLookupTable;
+import java.util.function.Supplier;
 
 public class ShooterSubsystem extends MechanismsSubsystemBase {
   private final ShooterIOHardware m_influencerIO = new ShooterIOHardware(ShooterMotorType.INFLUENCER);
@@ -53,6 +55,34 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
     m_followerIO.resetPosition();
   }
 
+  // Commands
+  public Command shooterVelocityCommand(double velocity) {
+    return velocityCommand(velocity).withName("run shooter velocity " + velocity);
+  }
+
+  public Command shooterVelocityCommand(Supplier<Double> velocitySupplier) {
+    return velocityCommand(velocitySupplier.get()).withName("run shooter velocity from supplier");
+  }
+
+  public Command shooterVoltageCommand() {
+    return voltageCommand(
+      ShooterConstants.OUTTAKE_MOTOR_VOLTAGE
+    ).withName("run shooter voltage");
+  }
+  
+  public Command shooterBackVoltageCommand() {
+    return voltageCommand(
+      ShooterConstants.BACK_MOTOR_VOLTAGE
+    ).withName("run shooter back voltage");
+  }
+
+  public Command shooterWithTimeoutVoltageCommand() {
+    return voltageCommand(
+      ShooterConstants.OUTTAKE_MOTOR_VOLTAGE
+    ).withTimeout(ShooterConstants.RUN_SHOOTER_TIME).withName("run shooter timeout");
+  }
+
+  // Triggers
   private boolean atTargetVelocity() {
     return m_influencerIO.atTargetVelocityTrigger(ShooterConstants.VELOCITY_TOLERANCE).getAsBoolean();
   }

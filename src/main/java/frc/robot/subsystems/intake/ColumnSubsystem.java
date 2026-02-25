@@ -37,6 +37,19 @@ public class ColumnSubsystem extends MechanismsSubsystemBase {
     m_IO.resetPosition();
   }
 
+  // Commands
+  public Command columnVoltageCommand() {
+    return voltageCommand(ColumnConstants.COLUMN_VOLTAGE).withName("run column voltage");
+  }
+
+  public Command columnBackVoltageCommand() {
+    return voltageCommand(-ColumnConstants.COLUMN_VOLTAGE).withName("run column back voltage");
+  }
+
+  public Command columnVelocityCommand() {
+    return velocityCommand(ColumnConstants.COLUMN_VELOCITY).withName("run column velocity");
+  }
+
   @Override
   public void periodic() {
     super.periodic();
