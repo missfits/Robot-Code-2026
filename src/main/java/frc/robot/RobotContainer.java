@@ -28,6 +28,7 @@ import frc.robot.subsystems.drivetrain.Telemetry;
 import frc.robot.subsystems.intake.RollerSubsystem;
 import frc.robot.subsystems.scorer.ShooterSubsystem;
 import frc.robot.subsystems.LaserCANSensorBase;
+import frc.robot.subsystems.RobotCommandFactory;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.RollerConstants;
@@ -115,6 +116,7 @@ public class RobotContainer {
   private final DrivetrainCommandFactory m_drivetrainCommandFactory = new DrivetrainCommandFactory(m_drivetrain);
   private final IntakeCommandFactory m_intakeCommandFactory = new IntakeCommandFactory(m_roller, m_intakeSensor, m_pivot, m_indexer, m_column);
   private final ScorerCommandFactory m_shooterCommandFactory = new ScorerCommandFactory(m_shooter, m_shooterSensor);
+  private final RobotCommandFactory m_robotCommandFactory = new RobotCommandFactory(m_drivetrain, m_roller, m_shooter, m_vision, m_indexer, m_pivot, m_column, m_intakeSensor, m_shooterSensor, m_drivetrainCommandFactory, m_intakeCommandFactory, m_shooterCommandFactory);
 
   private final CommandXboxController m_driverJoystick =
     new CommandXboxController(OperatorConstants.kDriverControllerPort);
