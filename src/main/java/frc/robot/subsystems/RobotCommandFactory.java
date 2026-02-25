@@ -74,8 +74,6 @@ public class RobotCommandFactory {
     // Look up target velocity from distance
     Optional<Double> velocityOptional = ShooterLookupTable.getVelocityForDistance(distanceToHub);
 
-    SmartDashboard.putNumber("robot/distanceToHub", distanceToHub);
-
     if (velocityOptional.isPresent()) {
       return velocityOptional.get();
     } else {
@@ -107,4 +105,13 @@ public class RobotCommandFactory {
   public double getDistanceToHub() {
     return HubCalculations.distanceToHub(m_drivetrain.getState().Pose);
   }
+
+  public double getAngleToHub() {
+    return HubCalculations.angleToHub(m_drivetrain.getState().Pose).getDegrees();
+  }
+
+  public double getTargetShooterVelocity() {
+    return m_shooterVelocitySupplier.get();
+  }
+
 }
