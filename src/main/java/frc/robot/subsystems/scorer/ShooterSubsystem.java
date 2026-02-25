@@ -52,6 +52,29 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
     m_followerIO.resetPosition();
   }
 
+  // Commands
+  public Command shooterVelocityCommand(double velocity) {
+    return velocityCommand(velocity).withName("run shooter velocity " + velocity);
+  }
+  
+  public Command shooterVoltageCommand() {
+    return voltageCommand(
+      ShooterConstants.OUTTAKE_MOTOR_VOLTAGE
+    ).withName("run shooter voltage");
+  }
+  
+  public Command shooterBackVoltageCommand() {
+    return voltageCommand(
+      ShooterConstants.BACK_MOTOR_VOLTAGE
+    ).withName("run shooter back voltage");
+  }
+
+  public Command shooterWithTimeoutVoltageCommand() {
+    return voltageCommand(
+      ShooterConstants.OUTTAKE_MOTOR_VOLTAGE
+    ).withTimeout(ShooterConstants.RUN_SHOOTER_TIME).withName("run shooter timeout");
+  }
+
   @Override
   public void periodic() {
     super.periodic();

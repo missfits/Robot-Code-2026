@@ -39,6 +39,19 @@ public class IndexerSubsystem extends MechanismsSubsystemBase {
     m_IO.resetPosition();
   }
 
+  // Commands
+  public Command indexerVoltageCommand() {
+    return voltageCommand(IndexerConstants.INDEXER_VOLTAGE).withName("run indexer voltage");
+  }
+
+  public Command indexerBackVoltageCommand() {
+    return voltageCommand(-IndexerConstants.INDEXER_VOLTAGE).withName("run indexer back voltage");
+  }
+
+  public Command indexerVelocityCommand() {
+    return velocityCommand(IndexerConstants.INDEXER_VELOCITY).withName("run indexer velocity");
+  }
+
   @Override
   public void periodic() {
     super.periodic();
