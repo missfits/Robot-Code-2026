@@ -103,5 +103,8 @@ public class RobotCommandFactory {
   public Command shootByDistanceTestCommand() {
     return m_shooter.shooterVelocityCommand(m_shooterVelocitySupplier);
   }
-  
+
+  public double getDistanceToHub() {
+    return HubCalculations.distanceToHub(m_drivetrain.getState().Pose);
+  }
 }

@@ -376,6 +376,9 @@ public class RobotContainer {
     SmartDashboard.putNumber("shooter influencer IO/velocity", SmartDashboard.getNumber("shooter influencer IO/velocity", ShooterConstants.OUTTAKE_MOTOR_VELOCITY));
     SmartDashboard.putNumber("shooter influencer IO/out voltage", SmartDashboard.getNumber("shooter/out voltage", ShooterConstants.OUTTAKE_MOTOR_VOLTAGE));
     SmartDashboard.putNumber("shooter influencer IO/back voltage", SmartDashboard.getNumber("shooter/back voltage", ShooterConstants.BACK_MOTOR_VOLTAGE));
+
+    // Robot Command Factory Logging 
+    SmartDashboard.putNumber("robot command factory/distance to hub", m_robotCommandFactory.getDistanceToHub());
   }
 
   private void resetControllerConstantsSmartDashboard() {
