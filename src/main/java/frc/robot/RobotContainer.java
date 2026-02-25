@@ -24,6 +24,7 @@ import frc.robot.subsystems.vision.filtering.LocalCameraPoseConsistencyDistanceT
 import frc.robot.subsystems.vision.filtering.LocalCameraPoseConsistencyFilter;
 import frc.robot.subsystems.vision.filtering.LocalDistanceToFusedPoseFilter;
 import frc.robot.subsystems.vision.filtering.LocalPoseZRollPitchFilter;
+import frc.robot.utils.HubCalculations;
 import frc.robot.subsystems.drivetrain.Telemetry;
 import frc.robot.subsystems.intake.RollerSubsystem;
 import frc.robot.subsystems.scorer.ShooterSubsystem;
@@ -438,9 +439,9 @@ public class RobotContainer {
     // TODO -- REPLACE WITH PROPER COMMAND ONCE IT HAS BEEN WRITTEN 
     NamedCommands.registerCommand("trigger intake", new WaitCommand(1));
     NamedCommands.registerCommand("snap to hub", m_drivetrainCommandFactory.snapToAngle(
-      () -> new JoystickVals(0, 0),
-      () -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)
-      ).withTimeout(1.5));
+      () -> new JoystickVals(0, 0), 
+      HubCalculations.angleToHub(m_drivetrain.getState().Pose).getRadians())
+      .withTimeout(1.5));
     NamedCommands.registerCommand("climb", new WaitCommand(1));
     NamedCommands.registerCommand("shoot", m_shooterCommandFactory.shooterSmartDashboardVelocityCommand("auto shoot", ShooterConstants.OUTTAKE_MOTOR_VELOCITY).withTimeout(5));
   }
