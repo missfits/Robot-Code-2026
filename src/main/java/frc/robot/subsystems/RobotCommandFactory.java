@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.ColumnConstants;
 import frc.robot.Constants.IndexerConstants;
 import frc.robot.Constants.RollerConstants;
@@ -114,6 +114,54 @@ public class RobotCommandFactory {
             .and(m_drivetrainCommandFactory.atTargetAngleTrigger())), // and drivetrain at target angle
         m_column.velocityCommand(ColumnConstants.COLUMN_VELOCITY))
     ).withName("shootManual");
+  }
+
+  public Command shootManualCommand(double velocity) {
+    return Commands.parallel(
+      m_shooter.shooterVelocityCommand(velocity), // run shooter at given velocity  
+      Commands.sequence( // column: 
+        m_column.offCommand() // wait until 
+          .until(m_shooter.atTargetVelocityTrigger()), // shooter at target velocity 
+        new WaitCommand(1.0),
+        m_column.velocityCommand(ColumnConstants.COLUMN_VELOCITY)),
+      Commands.sequence( // column: 
+        m_indexer.offCommand() // wait until 
+          .until(m_shooter.atTargetVelocityTrigger()), // shooter at target velocity
+        new WaitCommand(1.0), 
+        m_indexer.velocityCommand(IndexerConstants.INDEXER_VELOCITY))
+    ).withName("shootManualWithoutSnap");
+  }
+
+  public Command shootManualCommand(double velocity, double cVelocity) {
+    return Commands.parallel(
+      m_shooter.shooterVelocityCommand(velocity), // run shooter at given velocity  
+      Commands.sequence( // column: 
+        m_column.offCommand() // wait until 
+          .until(m_shooter.atTargetVelocityTrigger()), // shooter at target velocity 
+        new WaitCommand(1.0),
+        m_column.velocityCommand(cVelocity)),
+      Commands.sequence( // column: 
+        m_indexer.offCommand() // wait until 
+          .until(m_shooter.atTargetVelocityTrigger()), // shooter at target velocity
+        new WaitCommand(1.0), 
+        m_indexer.velocityCommand(IndexerConstants.INDEXER_VELOCITY))
+    ).withName("shootManualWithoutSnap");
+  }
+
+  public Command shootManualCommand() {
+    return Commands.parallel(
+      m_shooter.shooterVelocityCommand(m_shooterVelocitySupplier), // run shooter at given velocity  
+      Commands.sequence( // column: 
+        m_column.offCommand() // wait until 
+          .until(m_shooter.atTargetVelocityTrigger()), // shooter at target velocity 
+        new WaitCommand(1.0),
+        m_column.velocityCommand(ColumnConstants.COLUMN_VELOCITY)),
+      Commands.sequence( // column: 
+        m_indexer.offCommand() // wait until 
+          .until(m_shooter.atTargetVelocityTrigger()), // shooter at target velocity
+        new WaitCommand(1.0), 
+        m_indexer.velocityCommand(IndexerConstants.INDEXER_VELOCITY))
+    ).withName("shootManualWithSupplier");
   }
 
   public Command shootManualTestCommand(double velocity) {
