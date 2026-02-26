@@ -269,7 +269,7 @@ public final class Constants {
     public static double INDEXER_VOLTAGE = 1.0;
 
     // Indexer motor velocity
-    public static double INDEXER_VELOCITY = 10.0;
+    public static double INDEXER_VELOCITY = 20.0;
 
     // Indexer PID/FF gains
     // Tuned in shop 2/12
@@ -306,6 +306,11 @@ public final class Constants {
 
     // Column motor velocities
     public static double COLUMN_VELOCITY = 25.0;
+
+    public static double COLUMN_TESTING_VELOCITY1 = 25.0;
+    public static double COLUMN_TESTING_VELOCITY2 = 35.0;
+    public static double COLUMN_TESTING_VELOCITY3 = 45.0;
+    public static double COLUMN_TESTING_VELOCITY4 = 55.0;
 
     // PID gains
     // Tuned in shop 2/12
@@ -354,6 +359,11 @@ public final class Constants {
 
     public static double OUTTAKE_MOTOR_VOLTAGE = 1.0;
     public static double BACK_MOTOR_VOLTAGE = -1.0;
+
+    public static double SHOOTER_TESTING_VELOCITY1 = 55.0;
+    public static double SHOOTER_TESTING_VELOCITY2 = 60.0;
+    public static double SHOOTER_TESTING_VELOCITY3 = 65.0;
+    public static double SHOOTER_TESTING_VELOCITY4 = 70.0;
 
     // Influencer PID/FF gains
     public static double INFLUENCER_kP = 0.3;
