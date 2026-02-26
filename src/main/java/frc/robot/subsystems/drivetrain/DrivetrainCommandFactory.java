@@ -80,6 +80,10 @@ public class DrivetrainCommandFactory {
         });
     }
 
+    public Command snapToAngle(Supplier<JoystickVals> translationSupplier, Rotation2d angle) {
+        return snapToAngle(translationSupplier, angle.getDegrees());
+    }
+
     // Drives the robot while automatically rotating to face a specified rotation2d
     public Command snapToAngle(Supplier<JoystickVals> translationSupplier, Supplier<Rotation2d> angleSupplier) {
         return m_drivetrain.getCommandFromRequest(() -> {
