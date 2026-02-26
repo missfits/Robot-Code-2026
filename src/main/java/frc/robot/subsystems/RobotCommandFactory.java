@@ -81,6 +81,10 @@ public class RobotCommandFactory {
     }
   }
 
+  public Double setShooterVelocity() {
+    return ShooterConstants.SHOOTER_TESTING_VELOCITY1;
+  }
+
   /**
    * Command that shoots based on distance to hub using vision
   */
