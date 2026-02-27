@@ -125,7 +125,7 @@ public class RobotCommandFactory {
    * Command that shoots at a given shooter and column velocity
    * Simultaneously runs the shooter, then runs column and indexer
    */
-  public Command shootManualCommand(double shooterVelocity, double columnVelocity) {
+  public Command shootManualWithoutSnapCommand(double shooterVelocity, double columnVelocity) {
     return Commands.parallel(
       m_shooter.shooterVelocityCommand(shooterVelocity), // run shooter at given velocity  
       Commands.sequence( // column: 
@@ -145,15 +145,15 @@ public class RobotCommandFactory {
    * Command that shoots at a given velocity
    * Simultaneously runs the shooter, then runs column and indexer
    */
-  public Command shootManualCommand(double velocity) {
-    return shootManualCommand(velocity, ColumnConstants.COLUMN_VELOCITY);
+  public Command shootManualWithoutSnapCommand(double velocity) {
+    return shootManualWithoutSnapCommand(velocity, ColumnConstants.COLUMN_VELOCITY);
   }
 
   /**
    * Command that shoots with velocity supplier
    * Simultaneously runs the shooter, then runs column and indexer
    */
-  public Command shootManualCommand() {
+  public Command shootManualWithoutSnapCommand() {
     return Commands.parallel(
       m_shooter.shooterVelocityCommand(m_shooterVelocitySupplier), // run shooter at given velocity  
       Commands.sequence( // column: 

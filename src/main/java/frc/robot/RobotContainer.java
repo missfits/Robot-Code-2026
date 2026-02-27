@@ -241,16 +241,16 @@ public class RobotContainer {
     );
 
     m_driverJoystick.leftTrigger().whileTrue(m_robotCommandFactory.shootManualTestCommand(ShooterConstants.SHOOTER_TESTING_VELOCITY1));
-    m_driverJoystick.rightTrigger().whileTrue(m_robotCommandFactory.shootManualCommand());
+    m_driverJoystick.rightTrigger().whileTrue(m_robotCommandFactory.shootManualWithoutSnapCommand());
 
     m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).whileTrue(
-      m_robotCommandFactory.shootManualCommand(ShooterConstants.SHOOTER_TESTING_VELOCITY1, ColumnConstants.COLUMN_TESTING_VELOCITY1));
+      m_robotCommandFactory.shootManualWithoutSnapCommand(ShooterConstants.SHOOTER_TESTING_VELOCITY1, ColumnConstants.COLUMN_TESTING_VELOCITY1));
     m_driverJoystick.a().and(m_driverJoystick.leftBumper().negate()).whileTrue(
-      m_robotCommandFactory.shootManualCommand(ShooterConstants.SHOOTER_TESTING_VELOCITY1, ColumnConstants.COLUMN_TESTING_VELOCITY2));
+      m_robotCommandFactory.shootManualWithoutSnapCommand(ShooterConstants.SHOOTER_TESTING_VELOCITY1, ColumnConstants.COLUMN_TESTING_VELOCITY2));
     m_driverJoystick.x().and(m_driverJoystick.leftBumper().negate()).whileTrue(
-      m_robotCommandFactory.shootManualCommand(ShooterConstants.SHOOTER_TESTING_VELOCITY1, ColumnConstants.COLUMN_TESTING_VELOCITY3));
+      m_robotCommandFactory.shootManualWithoutSnapCommand(ShooterConstants.SHOOTER_TESTING_VELOCITY1, ColumnConstants.COLUMN_TESTING_VELOCITY3));
     m_driverJoystick.y().and(m_driverJoystick.leftBumper().negate()).whileTrue(
-      m_robotCommandFactory.shootManualCommand(ShooterConstants.SHOOTER_TESTING_VELOCITY1, ColumnConstants.COLUMN_TESTING_VELOCITY4));
+      m_robotCommandFactory.shootManualWithoutSnapCommand(ShooterConstants.SHOOTER_TESTING_VELOCITY1, ColumnConstants.COLUMN_TESTING_VELOCITY4));
 
     // reset the field-centric heading on a button press
     m_driverJoystick.leftBumper().and(m_driverJoystick.b()).onTrue(
