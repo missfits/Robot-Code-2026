@@ -89,8 +89,8 @@ public class LocalizationCamera {
     m_camera.setDriverMode(driverMode);
 
     // log state of SINGLE CAMERA DRIVER MODE to SmartDashboard
-    SmartDashboard.putBoolean(m_logString + "oldDriverModeState", driverMode);
-    SmartDashboard.putBoolean(m_logString + "driverMode", driverMode);
+    SmartDashboard.putBoolean(m_logString + "/oldDriverModeState", driverMode);
+    SmartDashboard.putBoolean(m_logString + "/driverMode", driverMode);
   }
 
   // --- filtering methods ---

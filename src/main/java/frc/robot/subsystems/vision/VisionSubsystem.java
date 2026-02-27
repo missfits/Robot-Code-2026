@@ -96,7 +96,6 @@ public class VisionSubsystem extends SubsystemBase {
     for (LocalizationCamera cam : cameras) {
       cam.setDriverMode(driverMode);
     }
-    SmartDashboard.putBoolean("vision/oldDriverModeState", driverMode);
     SmartDashboard.putBoolean("vision/driverMode", driverMode);
   }
 
