@@ -257,7 +257,7 @@ public class RobotContainer {
       m_drivetrain.runOnce(() -> m_drivetrain.resetRotation(new Rotation2d(DriverStation.getAlliance().get().equals(Alliance.Blue) ? 0 : Math.PI)))
     );
     // snap to angle
-    m_driverJoystick.leftBumper().and(m_driverJoystick.a().negate()).whileTrue(
+    m_driverJoystick.leftBumper().and(m_driverJoystick.a()).whileTrue(
       m_drivetrainCommandFactory.snapToAngle(
         m_driverJoystickValsSupplier,
         HubCalculations.angleToHub(m_drivetrain.getState().Pose)
@@ -436,11 +436,10 @@ public class RobotContainer {
     SmartDashboard.putNumber("shooter influencer IO/kP", SmartDashboard.getNumber("shooter influencer IO/kP", ShooterConstants.INFLUENCER_kP));
     SmartDashboard.putNumber("shooter influencer IO/kI", SmartDashboard.getNumber("shooter influencer IO/kI", ShooterConstants.INFLUENCER_kI));
     SmartDashboard.putNumber("shooter influencer IO/kD", SmartDashboard.getNumber("shooter influencer IO/kD", ShooterConstants.INFLUENCER_kD));
-    SmartDashboard.putNumber("shooter influencer IO/velocity", SmartDashboard.getNumber("shooter influencer IO/velocity", ShooterConstants.OUTTAKE_MOTOR_VELOCITY));
-    SmartDashboard.putNumber("shooter influencer IO/testing velocity", SmartDashboard.getNumber("shooter/testing velocity", ShooterConstants.SHOOTER_TESTING_VELOCITY1));
+    SmartDashboard.putNumber("shooter influencer IO/velocity", SmartDashboard.getNumber("shooter influencer IO/velocity", ShooterConstants.SHOOTER_VELOCITY));
 
-    SmartDashboard.putNumber("shooter influencer IO/out voltage", SmartDashboard.getNumber("shooter/out voltage", ShooterConstants.OUTTAKE_MOTOR_VOLTAGE));
-    SmartDashboard.putNumber("shooter influencer IO/back voltage", SmartDashboard.getNumber("shooter/back voltage", ShooterConstants.BACK_MOTOR_VOLTAGE));
+    SmartDashboard.putNumber("shooter influencer IO/out voltage", SmartDashboard.getNumber("shooter/out voltage", ShooterConstants.SHOOTER_VOLTAGE));
+    SmartDashboard.putNumber("shooter influencer IO/back voltage", SmartDashboard.getNumber("shooter/back voltage", ShooterConstants.SHOOTER_BACK_VOLTAGE));
 
     // Robot Command Factory Logging 
     SmartDashboard.putNumber("robot command factory/distance to hub", m_robotCommandFactory.getDistanceToHub());
@@ -486,11 +485,11 @@ public class RobotContainer {
     ShooterConstants.INFLUENCER_kP = SmartDashboard.getNumber("shooter influencer IO/kP", 0);
     ShooterConstants.INFLUENCER_kI = SmartDashboard.getNumber("shooter influencer IO/kI", 0);
     ShooterConstants.INFLUENCER_kD = SmartDashboard.getNumber("shooter influencer IO/kD", 0);
-    ShooterConstants.OUTTAKE_MOTOR_VELOCITY = SmartDashboard.getNumber("shooter influencer IO/velocity", 0);
+    ShooterConstants.SHOOTER_VELOCITY = SmartDashboard.getNumber("shooter influencer IO/velocity", 0);
     ShooterConstants.SHOOTER_TESTING_VELOCITY1 = SmartDashboard.getNumber("shooter influencer IO/testing velocity", 0);
 
-    ShooterConstants.OUTTAKE_MOTOR_VOLTAGE = SmartDashboard.getNumber("shooter influencer IO/out voltage", 0);
-    ShooterConstants.BACK_MOTOR_VOLTAGE = SmartDashboard.getNumber("shooter influencer IO/back voltage", 0);
+    ShooterConstants.SHOOTER_VOLTAGE = SmartDashboard.getNumber("shooter influencer IO/out voltage", 0);
+    ShooterConstants.SHOOTER_BACK_VOLTAGE = SmartDashboard.getNumber("shooter influencer IO/back voltage", 0);
 
     m_pivot.resetControllers();
     m_roller.resetControllers();
