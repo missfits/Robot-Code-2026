@@ -66,6 +66,121 @@ public class RobotCommandFactory {
     m_shooter.setDefaultCommand(m_shooter.offCommand());
   }
 
+  // --- SCORE COMMANDS ---
+
+  /**
+   * Command that shoots based on distance to hub using vision
+   * Simultaneously runs the shooter and snap to angle, then runs column and indexer
+  */
+  public Command shootByDistanceCommand(Supplier<JoystickVals> joystickValsSupplier) {
+    return Commands.parallel(
+      m_shooter.shooterVelocityCommand(m_shooterVelocitySupplier), // run shooter at velocity  
+      m_drivetrainCommandFactory.snapToAngle( // drivetrain: snap to angle 
+        joystickValsSupplier,
+        () -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)),
+      Commands.sequence( // column: 
+        m_column.offCommand() // wait until 
+          .until(m_shooter.atTargetVelocityTrigger() // shooter at target velocity 
+            .and(m_drivetrainCommandFactory.atTargetAngleTrigger())), // and drivetrain at target angle
+        m_column.velocityCommand(ColumnConstants.COLUMN_VELOCITY)),
+      Commands.sequence( // column: 
+        m_indexer.offCommand() // wait until 
+          .until(m_shooter.atTargetVelocityTrigger() // shooter at target velocity
+            .and(m_drivetrainCommandFactory.atTargetAngleTrigger())), // and drivetrain at target angle
+        m_indexer.velocityCommand(IndexerConstants.INDEXER_VELOCITY)))
+    .withName("shootByDistance");
+  }
+
+  /**
+   * Command that shoots based on distance to hub using vision
+   */
+  public Command shootByDistanceTestCommand() {
+    return m_shooter.shooterVelocityCommand(m_shooterVelocitySupplier);
+  }
+
+  /**
+   * Command that shoots at a given velocity
+   * Simultaneously runs the shooter and snap to angle, then runs column and indexer
+   */
+  public Command shootManualCommand(Supplier<JoystickVals> joystickValsSupplier, double velocity) {
+    return Commands.parallel(
+      m_shooter.shooterVelocityCommand(velocity), // run shooter at given velocity  
+      m_drivetrainCommandFactory.snapToAngle( // drivetrain: snap to angle 
+        joystickValsSupplier,
+        () -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)),
+      Commands.sequence( // column: 
+        m_column.offCommand() // wait until 
+          .until(m_shooter.atTargetVelocityTrigger() // shooter at target velocity 
+            .and(m_drivetrainCommandFactory.atTargetAngleTrigger())), // and drivetrain at target angle
+        m_column.velocityCommand(ColumnConstants.COLUMN_VELOCITY)),
+      Commands.sequence( // column: 
+        m_indexer.offCommand() // wait until 
+          .until(m_shooter.atTargetVelocityTrigger() // shooter at target velocity
+            .and(m_drivetrainCommandFactory.atTargetAngleTrigger())), // and drivetrain at target angle
+        m_indexer.velocityCommand(IndexerConstants.INDEXER_VELOCITY)))
+    .withName("shootManual " + velocity);
+  }
+
+  /**
+   * Command that shoots at a given shooter and column velocity
+   * Simultaneously runs the shooter, then runs column and indexer
+   */
+  public Command shootManualCommand(double shooterVelocity, double columnVelocity) {
+    return Commands.parallel(
+      m_shooter.shooterVelocityCommand(shooterVelocity), // run shooter at given velocity  
+      Commands.sequence( // column: 
+        m_column.offCommand() // wait until 
+          .until(m_shooter.atTargetVelocityTrigger()), // shooter at target velocity 
+        new WaitCommand(1.0),
+        m_column.velocityCommand(columnVelocity)),
+      Commands.sequence( // column: 
+        m_indexer.offCommand() // wait until 
+          .until(m_shooter.atTargetVelocityTrigger()), // shooter at target velocity
+        new WaitCommand(1.0), 
+        m_indexer.velocityCommand(IndexerConstants.INDEXER_VELOCITY))
+    ).withName("shootManualWithoutSnap " + shooterVelocity + " " + columnVelocity);
+  }
+
+  /**
+   * Command that shoots at a given velocity
+   * Simultaneously runs the shooter, then runs column and indexer
+   */
+  public Command shootManualCommand(double velocity) {
+    return shootManualCommand(velocity, ColumnConstants.COLUMN_VELOCITY);
+  }
+
+  /**
+   * Command that shoots with velocity supplier
+   * Simultaneously runs the shooter, then runs column and indexer
+   */
+  public Command shootManualCommand() {
+    return Commands.parallel(
+      m_shooter.shooterVelocityCommand(m_shooterVelocitySupplier), // run shooter at given velocity  
+      Commands.sequence( // column: 
+        m_column.offCommand() // wait until 
+          .until(m_shooter.atTargetVelocityTrigger()), // shooter at target velocity 
+        new WaitCommand(1.0),
+        m_column.velocityCommand(ColumnConstants.COLUMN_VELOCITY)),
+      Commands.sequence( // column: 
+        m_indexer.offCommand() // wait until 
+          .until(m_shooter.atTargetVelocityTrigger()), // shooter at target velocity
+        new WaitCommand(1.0), 
+        m_indexer.velocityCommand(IndexerConstants.INDEXER_VELOCITY))
+    ).withName("shootManualWithSupplier");
+  }
+
+  /**
+   * Run shooter at given velocity
+   */
+  public Command shootManualTestCommand(double velocity) {
+    return m_shooter.shooterVelocityCommand(velocity);
+  }
+
+  // HELPER FUNCTIONS
+
+  /** 
+   * Calculates the shooter velocity based on the distance to the hub
+   */
   private Double calculateShooterVelocity() {
     // Calculate distance from hub
     Pose2d robotPose = m_drivetrain.getState().Pose;
@@ -83,93 +198,6 @@ public class RobotCommandFactory {
 
   public Double setShooterVelocity() {
     return ShooterConstants.SHOOTER_TESTING_VELOCITY1;
-  }
-
-  /**
-   * Command that shoots based on distance to hub using vision
-  */
-  public Command shootByDistanceCommand(Supplier<JoystickVals> joystickValsSupplier) {
-    return Commands.parallel(
-      m_shooter.shooterVelocityCommand(m_shooterVelocitySupplier), // run shooter at velocity  
-      m_drivetrainCommandFactory.snapToAngle( // drivetrain: snap to angle 
-        joystickValsSupplier,
-        () -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)),
-      Commands.sequence( // column: 
-        m_column.offCommand() // wait until 
-          .until(m_shooter.atTargetVelocityTrigger() // shooter at target velocity 
-            .and(m_drivetrainCommandFactory.atTargetAngleTrigger())), // and drivetrain at target angle
-        m_column.velocityCommand(ColumnConstants.COLUMN_VELOCITY))
-    ).withName("shootByDistance");
-  }
-
-  public Command shootByDistanceTestCommand() {
-    return m_shooter.shooterVelocityCommand(m_shooterVelocitySupplier);
-  }
-
-  public Command shootManualCommand(Supplier<JoystickVals> joystickValsSupplier, double velocity) {
-    return Commands.parallel(
-      m_shooter.shooterVelocityCommand(velocity), // run shooter at given velocity  
-      m_drivetrainCommandFactory.snapToAngle( // drivetrain: snap to angle 
-        joystickValsSupplier,
-        () -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)),
-      Commands.sequence( // column: 
-        m_column.offCommand() // wait until 
-          .until(m_shooter.atTargetVelocityTrigger() // shooter at target velocity 
-            .and(m_drivetrainCommandFactory.atTargetAngleTrigger())), // and drivetrain at target angle
-        m_column.velocityCommand(ColumnConstants.COLUMN_VELOCITY))
-    ).withName("shootManual");
-  }
-
-  public Command shootManualCommand(double velocity) {
-    return Commands.parallel(
-      m_shooter.shooterVelocityCommand(velocity), // run shooter at given velocity  
-      Commands.sequence( // column: 
-        m_column.offCommand() // wait until 
-          .until(m_shooter.atTargetVelocityTrigger()), // shooter at target velocity 
-        new WaitCommand(1.0),
-        m_column.velocityCommand(ColumnConstants.COLUMN_VELOCITY)),
-      Commands.sequence( // column: 
-        m_indexer.offCommand() // wait until 
-          .until(m_shooter.atTargetVelocityTrigger()), // shooter at target velocity
-        new WaitCommand(1.0), 
-        m_indexer.velocityCommand(IndexerConstants.INDEXER_VELOCITY))
-    ).withName("shootManualWithoutSnap");
-  }
-
-  public Command shootManualCommand(double velocity, double cVelocity) {
-    return Commands.parallel(
-      m_shooter.shooterVelocityCommand(velocity), // run shooter at given velocity  
-      Commands.sequence( // column: 
-        m_column.offCommand() // wait until 
-          .until(m_shooter.atTargetVelocityTrigger()), // shooter at target velocity 
-        new WaitCommand(1.0),
-        m_column.velocityCommand(cVelocity)),
-      Commands.sequence( // column: 
-        m_indexer.offCommand() // wait until 
-          .until(m_shooter.atTargetVelocityTrigger()), // shooter at target velocity
-        new WaitCommand(1.0), 
-        m_indexer.velocityCommand(IndexerConstants.INDEXER_VELOCITY))
-    ).withName("shootManualWithoutSnap");
-  }
-
-  public Command shootManualCommand() {
-    return Commands.parallel(
-      m_shooter.shooterVelocityCommand(m_shooterVelocitySupplier), // run shooter at given velocity  
-      Commands.sequence( // column: 
-        m_column.offCommand() // wait until 
-          .until(m_shooter.atTargetVelocityTrigger()), // shooter at target velocity 
-        new WaitCommand(1.0),
-        m_column.velocityCommand(ColumnConstants.COLUMN_VELOCITY)),
-      Commands.sequence( // column: 
-        m_indexer.offCommand() // wait until 
-          .until(m_shooter.atTargetVelocityTrigger()), // shooter at target velocity
-        new WaitCommand(1.0), 
-        m_indexer.velocityCommand(IndexerConstants.INDEXER_VELOCITY))
-    ).withName("shootManualWithSupplier");
-  }
-
-  public Command shootManualTestCommand(double velocity) {
-    return m_shooter.shooterVelocityCommand(velocity);
   }
 
   public double getDistanceToHub() {
