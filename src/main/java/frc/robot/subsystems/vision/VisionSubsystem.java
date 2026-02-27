@@ -17,6 +17,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.math.util.Units;
@@ -60,6 +61,8 @@ public class VisionSubsystem extends SubsystemBase {
 
   private double m_lastTimestamp = 0.0;
 
+  private boolean m_driverModeEnabled = false; // true = raw video feed, false = normal AprilTag processing
+
   /** Creates a new Vision Subsystem. */
   public VisionSubsystem() {
     cameras.add(new LocalizationCamera(VisionConstants.CAMERA1_NAME, VisionConstants.ROBOT_TO_CAM1_3D));
@@ -81,6 +84,28 @@ public class VisionSubsystem extends SubsystemBase {
     for (LocalizationCamera cam : cameras){
       cam.setFilterPipeline(filterPipeline);
     }
+  }
+
+  /*
+   * Helper method that toggles driver mode on all cameras.
+   * NOTE: driver mode means robot does nothing with the camera input
+   * @param driverMode true = raw video field
+   *                   false = normal AprilTag processing
+   */
+  public void setCamerasToDriverMode(boolean driverMode) {
+    for (LocalizationCamera cam : cameras) {
+      cam.setDriverMode(driverMode);
+    }
+    SmartDashboard.putBoolean("vision/oldDriverModeState", driverMode);
+    SmartDashboard.putBoolean("vision/driverMode", driverMode);
+  }
+
+  // Command to toggle driver mode on all cameras
+  public Command toggleDriverModeCommand() {
+    return runOnce(() -> {
+      m_driverModeEnabled = !m_driverModeEnabled;
+      setCamerasToDriverMode(m_driverModeEnabled);
+    });
   }
 
   @Override

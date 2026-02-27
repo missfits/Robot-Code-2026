@@ -83,6 +83,16 @@ public class LocalizationCamera {
     return m_estPoseField;
   }
 
+  // Toggles driver mode on single camera
+  // NOTE: driver mode means robot does nothing with the camera input
+  public void setDriverMode(boolean driverMode) {
+    m_camera.setDriverMode(driverMode);
+
+    // log state of SINGLE CAMERA DRIVER MODE to SmartDashboard
+    SmartDashboard.putBoolean(m_logString + "oldDriverModeState", driverMode);
+    SmartDashboard.putBoolean(m_logString + "driverMode", driverMode);
+  }
+
   // --- filtering methods ---
   public void setFilterPipeline(LocalVisionFilterPipeline filterPipeline) {
     m_filterPipeline = filterPipeline;

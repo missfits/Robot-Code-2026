@@ -287,6 +287,9 @@ public class RobotContainer {
 
     m_vision.setGlobalFilterPipeline(globalPipeline);
     m_vision.setLocalFilteringPipeline(localPipeline);
+
+    // --- CONFIGURE DRIVER MODE TOGGLE ---
+    m_testJoystick.povUp().onTrue(m_vision.toggleDriverModeCommand());
   }
 
   private void configureBindingsSimulation() {
