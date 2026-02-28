@@ -24,7 +24,8 @@ public class PivotSubsystem extends MechanismsSubsystemBase {
 
   @Override
   protected void runClosedLoopVelocity(double velocity) {
-    VelocityVoltage request = new VelocityVoltage(velocity)
+    double clampedVelocity = m_IO.clampVelocity(velocity);
+    VelocityVoltage request = new VelocityVoltage(clampedVelocity)
     .withEnableFOC(PivotConstants.ENABLE_FOC)
     .withFeedForward(PivotConstants.FEED_FORWARD)
     .withSlot(PivotConstants.SLOT)
