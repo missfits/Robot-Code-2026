@@ -263,13 +263,6 @@ public class RobotContainer {
         m_driverJoystickValsSupplier,
         () -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)
     ));
-    // adjust shooter velocity
-    m_driverJoystick.leftBumper().and(m_driverJoystick.x()).onTrue(
-      new InstantCommand(() -> ShooterConstants.SHOOTER_TESTING_VELOCITY1 -= 5)
-    );
-    m_driverJoystick.leftBumper().and(m_driverJoystick.y()).onTrue(
-      new InstantCommand(() -> ShooterConstants.SHOOTER_TESTING_VELOCITY1 += 5)
-    );
 
     m_testJoystick.povCenter().negate().onTrue(new InstantCommand(() -> resetControllerConstantsSmartDashboard()));
 
