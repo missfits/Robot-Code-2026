@@ -2,6 +2,7 @@ package frc.robot.subsystems.intake;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 
+import edu.wpi.first.math.MathUtil;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.subsystems.MechanismsIOHardwareBase;
 
@@ -41,6 +42,41 @@ public class PivotIOHardware extends MechanismsIOHardwareBase {
 
   public double degreesToMotorRevolutions(double degrees) {
     return degrees / PivotConstants.DEGREES_PER_REVOLUTION;
+  }
+
+  /**
+   * Clamps the target position to be within the pivot's safe operating range
+   * @param targetDegrees The desired target position in degrees
+   * @return The clamped target position in degrees
+   */
+  public double clampPositionDegrees(double targetDegrees) {
+    return MathUtil.clamp(targetDegrees, PivotConstants.STORE_POSITION_DEGREES, PivotConstants.DEPLOY_POSITION_DEGREES);
+  }
+
+  public double clampVoltage(double volts) {
+    double value = MathUtil.clamp(volts, -PivotConstants.MAX_VOLTAGE, PivotConstants.MAX_VOLTAGE);
+    // if position is too low, only run the elevator up 
+    if (getPositionDegrees() < PivotConstants.STORE_POSITION_DEGREES) {
+        value = MathUtil.clamp(value, 0, PivotConstants.MAX_VOLTAGE);
+    }
+    // if position is too high, only run the elevator down (or in placd)
+    if (getPositionDegrees() > PivotConstants.DEPLOY_POSITION_DEGREES) {
+        value = MathUtil.clamp(value, -PivotConstants.MAX_VOLTAGE, PivotConstants.kG);
+    }
+    return value;
+  }
+
+  public double clampVelocity(double velocity) {
+    double value = MathUtil.clamp(velocity, -PivotConstants.MAX_VELOCITY, PivotConstants.MAX_VELOCITY);
+    // if position is too low, only run the elevator up 
+    if (getPositionDegrees() < PivotConstants.STORE_POSITION_DEGREES) {
+        value = MathUtil.clamp(value, 0, PivotConstants.MAX_VELOCITY);
+    }
+    // if position is too high, only run the elevator down (or in placd)
+    if (getPositionDegrees() > PivotConstants.DEPLOY_POSITION_DEGREES) {
+        value = MathUtil.clamp(value, -PivotConstants.MAX_VELOCITY, 0);
+    }
+    return value;
   }
 
   public void resetSlot0Gains() {

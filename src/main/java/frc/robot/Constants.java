@@ -172,18 +172,18 @@ public final class Constants {
     // Pivot volts
     public static double DEPLOY_VOLTAGE = 1.0;
     public static double STORE_VOLTAGE = -1.0*DEPLOY_VOLTAGE;
+    public static double MAX_VOLTAGE = 6.0;
 
     // Pivot motor velocities
     public static double DEPLOY_VELOCITY = 1.0;
     public static double STORE_VELOCITY = -1.0*DEPLOY_VELOCITY;
-    public static final double PIVOT_MAX_VELOCITY = 15.0;
+    public static final double MAX_VELOCITY = 15.0;
 
     // Pivot positions
     public static double STORE_POSITION_DEGREES = 0;
     public static double DEPLOY_POSITION_DEGREES = 70;
 
     // Max manual volts
-    public static double PIVOT_MAX_MANUAL_VOLTS = 6.0;
     
     // PID gains
     public static double kP = 4.8;
@@ -192,6 +192,7 @@ public final class Constants {
 
     // Feed forward values
     public static double kS = 0.25;
+    public static double kG = 0.0;
     public static double kV = 0.12;
     public static double kA = 0.01;
 
