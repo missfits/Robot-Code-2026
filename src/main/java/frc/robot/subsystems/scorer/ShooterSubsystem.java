@@ -61,29 +61,30 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
   }
 
   public Command shooterVelocityCommand(Supplier<Double> velocitySupplier) {
-    return velocityCommand(velocitySupplier.get()).withName("run shooter velocity from supplier");
+    return run(() -> { m_influencerIO.setVelocityVoltage(velocitySupplier.get());});
+    //return velocityCommand(velocitySupplier.get()).withName("run shooter velocity from supplier");
   }
 
   public Command shooterVoltageCommand() {
     return voltageCommand(
-      ShooterConstants.OUTTAKE_MOTOR_VOLTAGE
+      ShooterConstants.SHOOTER_VOLTAGE
     ).withName("run shooter voltage");
   }
   
   public Command shooterBackVoltageCommand() {
     return voltageCommand(
-      ShooterConstants.BACK_MOTOR_VOLTAGE
+      ShooterConstants.SHOOTER_BACK_VOLTAGE
     ).withName("run shooter back voltage");
   }
 
   public Command shooterWithTimeoutVoltageCommand() {
     return voltageCommand(
-      ShooterConstants.OUTTAKE_MOTOR_VOLTAGE
+      ShooterConstants.SHOOTER_VOLTAGE
     ).withTimeout(ShooterConstants.RUN_SHOOTER_TIME).withName("run shooter timeout");
   }
 
   public Command shooterAutoCommand() {
-    return velocityCommand(ShooterConstants.OUTTAKE_MOTOR_VELOCITY)
+    return velocityCommand(ShooterConstants.SHOOTER_VELOCITY)
       .withTimeout(ShooterConstants.RUN_SHOOTER_TIME).withName("run shooter auto");
   }
 

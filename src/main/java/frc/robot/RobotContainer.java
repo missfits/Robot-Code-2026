@@ -22,6 +22,7 @@ import frc.robot.subsystems.vision.filtering.LocalCameraPoseConsistencyDistanceT
 import frc.robot.subsystems.vision.filtering.LocalCameraPoseConsistencyFilter;
 import frc.robot.subsystems.vision.filtering.LocalDistanceToFusedPoseFilter;
 import frc.robot.subsystems.vision.filtering.LocalPoseZRollPitchFilter;
+import frc.robot.utils.AllianceFlipUtil;
 import frc.robot.utils.HubCalculations;
 import frc.robot.subsystems.drivetrain.Telemetry;
 import frc.robot.subsystems.intake.RollerSubsystem;
@@ -57,6 +58,7 @@ import edu.wpi.first.math.util.Units;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import org.ironmaple.simulation.SimulatedArena;
 import org.photonvision.EstimatedRobotPose;
@@ -120,6 +122,10 @@ public class RobotContainer {
   private final CommandXboxController m_testJoystick =
     new CommandXboxController(OperatorConstants.kTestControllerPort);
 
+  // Joystick suppliers
+  private final Supplier<JoystickVals> m_driverJoystickValsSupplier =
+    () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY());
+
   private final Field2d m_actualField = new Field2d(); // field simulation
 
   /** The container for the robot. Contains subsystems and commands. */
@@ -129,7 +135,7 @@ public class RobotContainer {
     if (Utils.isSimulation()) {
       configureBindingsSimulation();
     } else {
-      configureBindingsTestingMechanisms();
+      configureBindingsPracticeField();
       configureBindingsVision();
     }
 
@@ -213,6 +219,57 @@ public class RobotContainer {
     m_drivetrain.registerTelemetry(logger::telemeterize);
 
     configureDefaultCommandCompetition();
+  }
+
+  private void configureBindingsPracticeField() {
+    // Default drive
+    m_drivetrain.setDefaultCommand(
+      // Drivetrain will execute this command periodically
+      m_drivetrainCommandFactory.defaultDrive(
+        () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
+        () -> new JoystickVals(m_driverJoystick.getRightX(), m_driverJoystick.getRightY()),
+        () -> false
+      )
+    );
+
+    // Drive in slowmode while right bumper is pressed
+    m_driverJoystick.rightBumper().whileTrue(
+      m_drivetrainCommandFactory.defaultDrive(
+        () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
+        () -> new JoystickVals(m_driverJoystick.getRightX(), m_driverJoystick.getRightY()),
+        () -> true
+      )
+    );
+
+    m_driverJoystick.leftTrigger().whileTrue(m_robotCommandFactory.shootManualTestCommand(ShooterConstants.SHOOTER_TESTING_VELOCITY1));
+    m_driverJoystick.rightTrigger().whileTrue(m_robotCommandFactory.shootManualWithoutSnapCommand());
+
+    m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).whileTrue(
+      m_robotCommandFactory.shootManualWithoutSnapCommand(ShooterConstants.SHOOTER_TESTING_VELOCITY1, ColumnConstants.COLUMN_TESTING_VELOCITY1));
+    m_driverJoystick.a().and(m_driverJoystick.leftBumper().negate()).whileTrue(
+      m_robotCommandFactory.shootManualWithoutSnapCommand(ShooterConstants.SHOOTER_TESTING_VELOCITY1, ColumnConstants.COLUMN_TESTING_VELOCITY2));
+    m_driverJoystick.x().and(m_driverJoystick.leftBumper().negate()).whileTrue(
+      m_robotCommandFactory.shootManualWithoutSnapCommand(ShooterConstants.SHOOTER_TESTING_VELOCITY1, ColumnConstants.COLUMN_TESTING_VELOCITY3));
+    m_driverJoystick.y().and(m_driverJoystick.leftBumper().negate()).whileTrue(
+      m_robotCommandFactory.shootManualWithoutSnapCommand(ShooterConstants.SHOOTER_TESTING_VELOCITY1, ColumnConstants.COLUMN_TESTING_VELOCITY4));
+
+    // reset the field-centric heading on a button press
+    m_driverJoystick.leftBumper().and(m_driverJoystick.b()).onTrue(
+      m_drivetrain.runOnce(() -> m_drivetrain.resetRotation(AllianceFlipUtil.apply(new Rotation2d(0))))
+    );
+    // snap to angle
+    m_driverJoystick.leftBumper().and(m_driverJoystick.a()).whileTrue(
+      m_drivetrainCommandFactory.snapToAngle(
+        m_driverJoystickValsSupplier,
+        () -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)
+    ));
+
+    m_testJoystick.povCenter().negate().onTrue(new InstantCommand(() -> resetControllerConstantsSmartDashboard()));
+
+    // m_driverJoystick.x().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_indexer.indexerVelocityCommand());
+    // m_driverJoystick.y().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_column.columnVelocityCommand());
+
+    m_robotCommandFactory.setDefaultCommand();
   }
 
   private void configureBindingsTestingMechanisms() {
@@ -373,9 +430,11 @@ public class RobotContainer {
     SmartDashboard.putNumber("shooter influencer IO/kP", SmartDashboard.getNumber("shooter influencer IO/kP", ShooterConstants.INFLUENCER_kP));
     SmartDashboard.putNumber("shooter influencer IO/kI", SmartDashboard.getNumber("shooter influencer IO/kI", ShooterConstants.INFLUENCER_kI));
     SmartDashboard.putNumber("shooter influencer IO/kD", SmartDashboard.getNumber("shooter influencer IO/kD", ShooterConstants.INFLUENCER_kD));
-    SmartDashboard.putNumber("shooter influencer IO/velocity", SmartDashboard.getNumber("shooter influencer IO/velocity", ShooterConstants.OUTTAKE_MOTOR_VELOCITY));
-    SmartDashboard.putNumber("shooter influencer IO/out voltage", SmartDashboard.getNumber("shooter/out voltage", ShooterConstants.OUTTAKE_MOTOR_VOLTAGE));
-    SmartDashboard.putNumber("shooter influencer IO/back voltage", SmartDashboard.getNumber("shooter/back voltage", ShooterConstants.BACK_MOTOR_VOLTAGE));
+    SmartDashboard.putNumber("shooter influencer IO/velocity", SmartDashboard.getNumber("shooter influencer IO/velocity", ShooterConstants.SHOOTER_VELOCITY));
+    SmartDashboard.putNumber("shooter influencer IO/test velocity", SmartDashboard.getNumber("shooter influencer IO/test velocity", ShooterConstants.SHOOTER_TESTING_VELOCITY1));
+
+    SmartDashboard.putNumber("shooter influencer IO/out voltage", SmartDashboard.getNumber("shooter/out voltage", ShooterConstants.SHOOTER_VOLTAGE));
+    SmartDashboard.putNumber("shooter influencer IO/back voltage", SmartDashboard.getNumber("shooter/back voltage", ShooterConstants.SHOOTER_BACK_VOLTAGE));
 
     // Robot Command Factory Logging 
     SmartDashboard.putNumber("robot command factory/distance to hub", m_robotCommandFactory.getDistanceToHub());
@@ -421,9 +480,11 @@ public class RobotContainer {
     ShooterConstants.INFLUENCER_kP = SmartDashboard.getNumber("shooter influencer IO/kP", 0);
     ShooterConstants.INFLUENCER_kI = SmartDashboard.getNumber("shooter influencer IO/kI", 0);
     ShooterConstants.INFLUENCER_kD = SmartDashboard.getNumber("shooter influencer IO/kD", 0);
-    ShooterConstants.OUTTAKE_MOTOR_VELOCITY = SmartDashboard.getNumber("shooter influencer IO/velocity", 0);
-    ShooterConstants.OUTTAKE_MOTOR_VOLTAGE = SmartDashboard.getNumber("shooter influencer IO/out voltage", 0);
-    ShooterConstants.BACK_MOTOR_VOLTAGE = SmartDashboard.getNumber("shooter influencer IO/back voltage", 0);
+    ShooterConstants.SHOOTER_VELOCITY = SmartDashboard.getNumber("shooter influencer IO/velocity", 0);
+    ShooterConstants.SHOOTER_TESTING_VELOCITY1 = SmartDashboard.getNumber("shooter influencer IO/testing velocity", 0);
+
+    ShooterConstants.SHOOTER_VOLTAGE = SmartDashboard.getNumber("shooter influencer IO/out voltage", 0);
+    ShooterConstants.SHOOTER_BACK_VOLTAGE = SmartDashboard.getNumber("shooter influencer IO/back voltage", 0);
 
     m_pivot.resetControllers();
     m_roller.resetControllers();
