@@ -40,7 +40,7 @@ public class RobotCommandFactory {
   private final VisionSubsystem m_vision;
   private final DrivetrainCommandFactory m_drivetrainCommandFactory;
 
-  private final Supplier<Double> m_shooterVelocitySupplier = () -> calculateShooterVelocity(); 
+  private final Supplier<Double> m_shooterVelocitySupplier = () -> setShooterVelocity(); 
 
   public RobotCommandFactory(CommandSwerveDrivetrain drivetrain, 
       PivotSubsystem pivot, RollerSubsystem roller, IndexerSubsystem indexer, ColumnSubsystem column, 
@@ -197,7 +197,7 @@ public class RobotCommandFactory {
   }
 
   public Double setShooterVelocity() {
-    return ShooterConstants.SHOOTER_TESTING_VELOCITY1;
+    return SmartDashboard.getNumber("shooter influencer IO/test velocity", 10);
   }
 
   public double getDistanceToHub() {

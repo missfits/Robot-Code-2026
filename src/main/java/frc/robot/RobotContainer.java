@@ -437,6 +437,7 @@ public class RobotContainer {
     SmartDashboard.putNumber("shooter influencer IO/kI", SmartDashboard.getNumber("shooter influencer IO/kI", ShooterConstants.INFLUENCER_kI));
     SmartDashboard.putNumber("shooter influencer IO/kD", SmartDashboard.getNumber("shooter influencer IO/kD", ShooterConstants.INFLUENCER_kD));
     SmartDashboard.putNumber("shooter influencer IO/velocity", SmartDashboard.getNumber("shooter influencer IO/velocity", ShooterConstants.SHOOTER_VELOCITY));
+    SmartDashboard.putNumber("shooter influencer IO/test velocity", SmartDashboard.getNumber("shooter influencer IO/test velocity", ShooterConstants.SHOOTER_TESTING_VELOCITY1));
 
     SmartDashboard.putNumber("shooter influencer IO/out voltage", SmartDashboard.getNumber("shooter/out voltage", ShooterConstants.SHOOTER_VOLTAGE));
     SmartDashboard.putNumber("shooter influencer IO/back voltage", SmartDashboard.getNumber("shooter/back voltage", ShooterConstants.SHOOTER_BACK_VOLTAGE));

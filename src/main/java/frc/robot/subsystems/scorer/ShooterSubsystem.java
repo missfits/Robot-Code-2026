@@ -61,7 +61,8 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
   }
 
   public Command shooterVelocityCommand(Supplier<Double> velocitySupplier) {
-    return velocityCommand(velocitySupplier.get()).withName("run shooter velocity from supplier");
+    return run(() -> { m_influencerIO.setVelocityVoltage(velocitySupplier.get());});
+    //return velocityCommand(velocitySupplier.get()).withName("run shooter velocity from supplier");
   }
 
   public Command shooterVoltageCommand() {
