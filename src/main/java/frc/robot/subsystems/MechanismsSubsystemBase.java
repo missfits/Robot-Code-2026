@@ -59,6 +59,7 @@ public abstract class MechanismsSubsystemBase extends SubsystemBase {
 
   protected abstract void setVoltage(double volts);
 
+  // voltage
   public Command voltageCommand(double volts) {
     return this.run(() -> setVoltage(volts), mechanismName + "voltageCommand");
   }
@@ -67,30 +68,42 @@ public abstract class MechanismsSubsystemBase extends SubsystemBase {
     return this.run(() -> {setVoltage(volts);}, mechanismName + "voltageCommand with " + time + " second timeout").withTimeout(time);
   }
 
+  public Command voltageCommand(Supplier<Double> voltageSupplier) {
+    return this.run(() -> setVoltage(voltageSupplier.get()), mechanismName + "voltageCommand with supplier");
+  }
+
+  public Command voltageCommandWithTimeout(Supplier<Double> voltageSupplier, double time) {
+    return this.run(() -> {setVoltage(voltageSupplier.get());}, mechanismName + "voltageCommand with supplier and " + time + " second timeout").withTimeout(time);
+  }
+
+  // velocity
   public Command velocityCommand(double velocity) {
     return this.run(() -> runClosedLoopVelocity(velocity), mechanismName + "velocityCommand");
   } 
 
-  //need a second velocityCommand command for subsystems with two motors
   public Command velocityCommand(double velocityOne, double velocityTwo) {
     return this.run(()-> runClosedLoopVelocity(velocityOne, velocityTwo), mechanismName + "velocityCommand");
   }
 
-  public Command offCommand() {
-    return loggedCommand(mechanismName + "off", new RunCommand(() -> setVoltage(0), this));
+  public Command velocityCommand(Supplier<Double> velocitySupplier) {
+    return this.run(() -> runClosedLoopVelocity(velocitySupplier.get()), mechanismName + "velocityCommand with supplier");
+  }
+
+  public Command velocityCommand(Supplier<Double> velocitySupplierOne, Supplier<Double> velocitySupplierTwo) {
+    return this.run(() -> runClosedLoopVelocity(velocitySupplierOne.get(), velocitySupplierTwo.get()), mechanismName + "velocityCommand with two suppliers");
   }
 
   protected void runClosedLoopVelocity(double velocity) {
     throw new UnsupportedOperationException(getName() + " does not support single-motor velocity control");
   }
 
-  //need a second runClosedLoopVelocity command for subsystems with two motors
   protected void runClosedLoopVelocity(double velocityOne, double velocityTwo) {
     throw new UnsupportedOperationException(getName() + " does not support dual-motor velocity control");
   }
 
-  public Command velocityCommand(Supplier<Double> velocitySupplier) {
-    return loggedCommand( mechanismName + "velocityCommand (supplier ver)", this.run(() -> runClosedLoopVelocity(velocitySupplier.get())));
+  // off
+  public Command offCommand() {
+    return loggedCommand(mechanismName + "off", new RunCommand(() -> setVoltage(0), this));
   }
 
   @Override
