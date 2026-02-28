@@ -22,6 +22,7 @@ import frc.robot.subsystems.vision.filtering.LocalCameraPoseConsistencyDistanceT
 import frc.robot.subsystems.vision.filtering.LocalCameraPoseConsistencyFilter;
 import frc.robot.subsystems.vision.filtering.LocalDistanceToFusedPoseFilter;
 import frc.robot.subsystems.vision.filtering.LocalPoseZRollPitchFilter;
+import frc.robot.utils.AllianceFlipUtil;
 import frc.robot.utils.HubCalculations;
 import frc.robot.subsystems.drivetrain.Telemetry;
 import frc.robot.subsystems.intake.RollerSubsystem;
@@ -254,13 +255,13 @@ public class RobotContainer {
 
     // reset the field-centric heading on a button press
     m_driverJoystick.leftBumper().and(m_driverJoystick.b()).onTrue(
-      m_drivetrain.runOnce(() -> m_drivetrain.resetRotation(new Rotation2d(DriverStation.getAlliance().get().equals(Alliance.Blue) ? 0 : Math.PI)))
+      m_drivetrain.runOnce(() -> m_drivetrain.resetRotation(AllianceFlipUtil.apply(new Rotation2d(0))))
     );
     // snap to angle
     m_driverJoystick.leftBumper().and(m_driverJoystick.a()).whileTrue(
       m_drivetrainCommandFactory.snapToAngle(
         m_driverJoystickValsSupplier,
-        HubCalculations.angleToHub(m_drivetrain.getState().Pose)
+        () -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)
     ));
     // adjust shooter velocity
     m_driverJoystick.leftBumper().and(m_driverJoystick.x()).onTrue(
