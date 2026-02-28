@@ -84,7 +84,7 @@ public class RobotCommandFactory {
           .until(m_shooter.atTargetVelocityTrigger() // shooter at target velocity 
             .and(m_drivetrainCommandFactory.atTargetAngleTrigger())), // and drivetrain at target angle
         m_column.velocityCommand(ColumnConstants.COLUMN_VELOCITY)),
-      Commands.sequence( // column: 
+      Commands.sequence( // indexers: 
         m_indexer.offCommand() // wait until 
           .until(m_shooter.atTargetVelocityTrigger() // shooter at target velocity
             .and(m_drivetrainCommandFactory.atTargetAngleTrigger())), // and drivetrain at target angle
