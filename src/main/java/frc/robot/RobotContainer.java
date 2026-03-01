@@ -344,6 +344,9 @@ public class RobotContainer {
 
     m_vision.setGlobalFilterPipeline(globalPipeline);
     m_vision.setLocalFilteringPipeline(localPipeline);
+
+    // --- CONFIGURE RAW VIDEO MODE TOGGLE ---
+    m_testJoystick.start().onTrue(m_vision.toggleRawVideoModeCommand());
   }
 
   private void configureBindingsSimulation() {
