@@ -106,7 +106,7 @@ public class VisionSubsystem extends SubsystemBase {
       // each camera should be < 5ms, issue when >10ms
       double camTime = Timer.getFPGATimestamp() - camStart;
       totalCameraTime += camTime;
-      SmartDashboard.putNumber("timing/vision/" + cam.getCameraName() + "Ms", camTime * 1000);
+      SmartDashboard.putNumber("controlLoopTiming/vision/" + cam.getCameraName() + "Ms", camTime * 1000);
 
       // If no camera reading, skip filtering.
       if (!cam.getCameraReading().isPresent()) {
@@ -122,7 +122,7 @@ public class VisionSubsystem extends SubsystemBase {
       }
     }
     // for two cameras, should be <=10ms. issue if over.
-    SmartDashboard.putNumber("timing/vision/allCamerasMs", totalCameraTime * 1000);
+    SmartDashboard.putNumber("controlLoopTiming/vision/allCamerasMs", totalCameraTime * 1000);
 
     // Run all enabled global filters on allValidReadings
     // NOTE: upates allValidReadings into readings that have passed all the filters

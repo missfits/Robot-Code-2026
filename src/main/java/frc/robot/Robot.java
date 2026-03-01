@@ -73,7 +73,7 @@ public class Robot extends TimedRobot {
     double schedulerStart = Timer.getFPGATimestamp();
     CommandScheduler.getInstance().run();
     double schedulerTime = Timer.getFPGATimestamp() - schedulerStart;
-    SmartDashboard.putNumber("timing/schedulerMs", schedulerTime * 1000);
+    SmartDashboard.putNumber("controlLoopTiming/schedulerMs", schedulerTime * 1000);
 
     m_intake.setAngle(m_intakePot.get());
 
@@ -83,7 +83,7 @@ public class Robot extends TimedRobot {
     m_robotContainer.updatePoseEst();
 
     double visionTime = Timer.getFPGATimestamp() - visionStart;
-    SmartDashboard.putNumber("timing/visionMs", visionTime * 1000); // time for updatePoseEst() to run
+    SmartDashboard.putNumber("controlLoopTiming/visionMs", visionTime * 1000); // time for updatePoseEst() to run
 
     // m_robotContainer.logToSmartDashboard();
 
@@ -92,9 +92,9 @@ public class Robot extends TimedRobot {
     double loopExecutionTime = loopEndTime - loopStartTime;
 
     // Log timing in milliseconds
-    SmartDashboard.putNumber("timing/loopToLoopMs", loopToLoopTime * 1000); // should be ~20ms, issue if > 25ms
-    SmartDashboard.putNumber("timing/loopExecutionMs", loopExecutionTime * 1000); // should be <15ms, issue if >20ms
-    SmartDashboard.putBoolean("timing/overrun", loopExecutionTime > 0.020);
+    SmartDashboard.putNumber("controlLoopTiming/loopToLoopMs", loopToLoopTime * 1000); // should be ~20ms, issue if > 25ms
+    SmartDashboard.putNumber("controlLoopTiming/loopExecutionMs", loopExecutionTime * 1000); // should be <15ms, issue if >20ms
+    SmartDashboard.putBoolean("controlLoopTiming/overrun", loopExecutionTime > 0.020);
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
