@@ -3,6 +3,7 @@ package frc.robot.subsystems.intake;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.fasterxml.jackson.databind.deser.SettableAnyProperty;
 
 import edu.wpi.first.math.MathUtil;
@@ -17,6 +18,7 @@ public class PivotIOHardware extends MechanismsIOHardwareBase {
     super(motorID, PivotConstants.MOTOR_STATOR_LIMIT,
         PivotConstants.PEAK_FORWARD_DUTY_CYCLE, PivotConstants.PEAK_REVERSE_DUTY_CYCLE, "pivotIO/");
     resetSlot0Gains();
+    setNeutralMode(NeutralModeValue.Brake);
   }
 
   public double getPositionRadians() {
