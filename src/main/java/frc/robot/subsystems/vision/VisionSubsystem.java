@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -94,8 +95,18 @@ public class VisionSubsystem extends SubsystemBase {
       globalFilterPipeline.updateSmartDashboardToggles();
     }
 
+    // Update camera readings and time each camera's processing
+    double totalCameraTime = 0;
     for (LocalizationCamera cam : cameras){
+      double camStart = Timer.getFPGATimestamp();
+
       cam.updateCameraReading();
+
+      // time for updateCameraReading() to run
+      // each camera should be < 5ms, issue when >10ms
+      double camTime = Timer.getFPGATimestamp() - camStart;
+      totalCameraTime += camTime;
+      SmartDashboard.putNumber("timing/vision/" + cam.getCameraName() + "Ms", camTime * 1000);
 
       // If no camera reading, skip filtering.
       if (!cam.getCameraReading().isPresent()) {
@@ -110,6 +121,8 @@ public class VisionSubsystem extends SubsystemBase {
         allValidReadings.add(newReading);
       }
     }
+    // for two cameras, should be <=10ms. issue if over.
+    SmartDashboard.putNumber("timing/vision/allCamerasMs", totalCameraTime * 1000);
 
     // Run all enabled global filters on allValidReadings
     // NOTE: upates allValidReadings into readings that have passed all the filters
@@ -120,7 +133,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     // Sort allValidReadings by timestamp (oldest first)
     allValidReadings.sort(Comparator.comparingDouble(CameraReading::timestampSeconds));
-    
+
     // Periodically update m_lastTimestamp!
     if (allValidReadings.size() > 0){
       m_lastTimestamp = allValidReadings.get(allValidReadings.size() - 1).timestampSeconds();
