@@ -135,8 +135,7 @@ public class RobotContainer {
     if (Utils.isSimulation()) {
       configureBindingsSimulation();
     } else {
-      configureBindingsPracticeField();
-      configureBindingsVision();
+      configureBindingsTestingMechanisms();
     }
 
     setRobotMode(RobotMode.NEUTRAL);
