@@ -122,6 +122,7 @@ public abstract class MechanismsIOHardwareBase {
    * Checks if the mechanism has reached the target velocity within tolerance.
    *
    * @param tolerance the velocity tolerance in revolutions per second
+   * @param targetVelocitySupplier a supplier for the target velocity in revolutions per second
    * @return true if the current velocity is within tolerance of the target velocity
    */
   public boolean atTargetVelocity(double tolerance, Supplier<Double> targetVelocitySupplier) {
@@ -129,6 +130,13 @@ public abstract class MechanismsIOHardwareBase {
     return Math.abs(currentVelocity - targetVelocitySupplier.get()) <= tolerance;
   }
 
+  /**
+   * Checks if the mechanism has reached the target velocity within tolerance.
+   * 
+   * @param tolerance the velocity tolerance in revolutions per second
+   * @param targetVelocity the target velocity in revolutions per second
+   * @return true if the current velocity is within tolerance of the target velocity
+   */
   public boolean atTargetVelocity(double tolerance, double targetVelocity) {
     return atTargetVelocity(tolerance, () -> targetVelocity);
   }
