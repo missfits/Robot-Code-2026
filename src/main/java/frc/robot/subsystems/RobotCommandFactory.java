@@ -29,6 +29,7 @@ import frc.robot.utils.ShooterLookupTable;
 import frc.robot.utils.HubCalculations;
 
 public class RobotCommandFactory {
+  // subsystems
   private final CommandSwerveDrivetrain m_drivetrain;
   private final PivotSubsystem m_pivot;
   private final RollerSubsystem m_roller;
@@ -40,6 +41,12 @@ public class RobotCommandFactory {
   private final VisionSubsystem m_vision;
   private final DrivetrainCommandFactory m_drivetrainCommandFactory;
 
+  // velocity suppliers
+  private final Supplier<Double> m_pivotDeployVelocitySupplier = () -> setPivotVelocity();
+  private final Supplier<Double> m_pivotStoreVelocitySupplier = () -> -setPivotVelocity();
+  private final Supplier<Double> m_rollerVelocitySupplier = () -> setRollerVelocity();
+  private final Supplier<Double> m_indexerVelocitySupplier = () -> setIndexerVelocity();
+  private final Supplier<Double> m_columnVelocitySupplier = () -> setColumnVelocity();
   private final Supplier<Double> m_shooterVelocitySupplier = () -> setShooterVelocity(); 
   private final Supplier<Double> m_shooterVelocityCalculatedSupplier = () -> calculateShooterVelocity(); 
 
@@ -178,6 +185,25 @@ public class RobotCommandFactory {
   }
 
   // HELPER FUNCTIONS
+  private Double setPivotVelocity() {
+    return SmartDashboard.getNumber("pivot IO/test velocity", 1);
+  }
+
+  private Double setRollerVelocity() {
+    return SmartDashboard.getNumber("roller IO/test velocity", 10);
+  }
+
+  private Double setIndexerVelocity() {
+    return SmartDashboard.getNumber("indexer IO/test velocity", 10);
+  }
+
+  private Double setColumnVelocity() {
+    return SmartDashboard.getNumber("column IO/test velocity", 10);
+  }
+
+  private Double setShooterVelocity() {
+    return SmartDashboard.getNumber("shooter influencer IO/test velocity", 10);
+  }
 
   /** 
    * Calculates the shooter velocity based on the distance to the hub
@@ -195,10 +221,6 @@ public class RobotCommandFactory {
     } else {
       return 0.0; // TODO: fix, based on robot mode?? 
     }
-  }
-
-  public Double setShooterVelocity() {
-    return SmartDashboard.getNumber("shooter influencer IO/test velocity", 10);
   }
 
   public double getDistanceToHub() {
