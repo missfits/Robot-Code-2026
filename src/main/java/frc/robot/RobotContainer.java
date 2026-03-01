@@ -274,12 +274,22 @@ public class RobotContainer {
 
   // updated 3/1/26
   private void configureBindingsTestingMechanisms() {
+    // x: deploy pivot
     m_testJoystick.x().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.deployPivotCommand());
+    // y: store pivot
     m_testJoystick.y().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.storePivotCommand());
+    // b: run roller
     m_testJoystick.b().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runRollerCommand());
+    // a: run roller and indexer 
     m_testJoystick.a().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runIntakeRollersCommand());
-    
+
+    // left bumper + x: deploy pivot motion magic
+    m_testJoystick.leftBumper().and(m_testJoystick.x()).whileTrue(m_pivot.deployPivotCommand());
+    // left bumper + y: store pivot motion magic
+    m_testJoystick.leftBumper().and(m_testJoystick.y()).whileTrue(m_pivot.storePivotCommand());
+    // left bumper + b: run roller back
     m_testJoystick.leftBumper().and(m_testJoystick.b()).whileTrue(m_robotCommandFactory.runRollersBackCommand());
+    // left bumper + a: run roller and indexer back
     m_testJoystick.leftBumper().and(m_testJoystick.a()).whileTrue(m_robotCommandFactory.runIntakeRollersBackCommand());
 
     m_testJoystick.povCenter().negate().onTrue(new InstantCommand(() -> resetControllerConstantsSmartDashboard()));
