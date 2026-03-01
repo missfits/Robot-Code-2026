@@ -57,7 +57,8 @@ public abstract class MechanismsIOHardwareBase {
     motorOutput.PeakReverseDutyCycle = peakReverseDutyCycle;
     motor.getConfigurator().apply(motorOutput);
   }
-  
+
+  // blocks robot for 0.1 seconds, dont call during match
   public void setNeutralMode(NeutralModeValue neutralMode) {
     motor.setNeutralMode(neutralMode);
   }
