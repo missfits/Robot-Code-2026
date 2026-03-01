@@ -83,14 +83,14 @@ public class LocalizationCamera {
     return m_estPoseField;
   }
 
-  // Toggles driver mode on single camera
-  // NOTE: driver mode means robot does nothing with the camera input
-  public void setDriverMode(boolean driverMode) {
-    m_camera.setDriverMode(driverMode);
+  // Toggles "Raw Video Mode" for single camera
+  // NOTE: PhotonVision method for raw video mode is setDriverMode
+  // setDriverMode(true) = raw video feed, setDriverMode(false) = normal AprilTag processing
+  public void setRawVideoMode(boolean rawVideoMode) {
+    m_camera.setDriverMode(rawVideoMode);
 
-    // log state of SINGLE CAMERA DRIVER MODE to SmartDashboard
-    SmartDashboard.putBoolean(m_logString + "/oldDriverModeState", driverMode);
-    SmartDashboard.putBoolean(m_logString + "/driverMode", driverMode);
+    // log state of SINGLE CAMERA "RAW VIDEO MODE" to SmartDashboard
+    SmartDashboard.putBoolean(m_logString + "/driverMode", rawVideoMode);
   }
 
   // --- filtering methods ---

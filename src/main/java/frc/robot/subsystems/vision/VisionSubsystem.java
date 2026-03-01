@@ -61,7 +61,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   private double m_lastTimestamp = 0.0;
 
-  private boolean m_driverModeEnabled = false; // true = raw video feed, false = normal AprilTag processing
+  private boolean m_rawVideoModeEnabled = false; // true = raw video feed, false = normal AprilTag processing
 
   /** Creates a new Vision Subsystem. */
   public VisionSubsystem() {
@@ -92,18 +92,18 @@ public class VisionSubsystem extends SubsystemBase {
    * @param driverMode true = raw video field
    *                   false = normal AprilTag processing
    */
-  public void setCamerasToDriverMode(boolean driverMode) {
+  public void setCamerasToRawVideoMode(boolean rawVideoMode) {
     for (LocalizationCamera cam : cameras) {
-      cam.setDriverMode(driverMode);
+      cam.setRawVideoMode(rawVideoMode);
     }
-    SmartDashboard.putBoolean("vision/driverMode", driverMode);
+    SmartDashboard.putBoolean("vision/rawVideoModeEnabled", rawVideoMode);
   }
 
   // Command to toggle driver mode on all cameras
-  public Command toggleDriverModeCommand() {
+  public Command toggleRawVideoModeCommand() {
     return runOnce(() -> {
-      m_driverModeEnabled = !m_driverModeEnabled;
-      setCamerasToDriverMode(m_driverModeEnabled);
+      m_rawVideoModeEnabled = !m_rawVideoModeEnabled;
+      setCamerasToRawVideoMode(m_rawVideoModeEnabled);
     });
   }
 
