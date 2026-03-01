@@ -1,9 +1,14 @@
 package frc.robot.subsystems.intake;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.subsystems.MechanismsIOHardwareBase;
+import frc.robot.utils.MechanismUtil;
 
 public class PivotIOHardware extends MechanismsIOHardwareBase {
 
@@ -11,6 +16,7 @@ public class PivotIOHardware extends MechanismsIOHardwareBase {
     super(motorID, PivotConstants.MOTOR_STATOR_LIMIT,
         PivotConstants.PEAK_FORWARD_DUTY_CYCLE, PivotConstants.PEAK_REVERSE_DUTY_CYCLE, "pivotIO/");
     resetSlot0Gains();
+    setNeutralMode(NeutralModeValue.Brake);
   }
 
   public double getPositionRadians() {
@@ -41,6 +47,31 @@ public class PivotIOHardware extends MechanismsIOHardwareBase {
 
   public double degreesToMotorRevolutions(double degrees) {
     return degrees / PivotConstants.DEGREES_PER_REVOLUTION;
+  }
+
+  @Override
+  public void setVoltage(double volts) {
+    volts = MechanismUtil.clamp(volts, getPositionDegrees(), PivotConstants.STORE_POSITION_DEGREES, PivotConstants.DEPLOY_POSITION_DEGREES,
+        -PivotConstants.MAX_VOLTAGE, PivotConstants.MAX_VOLTAGE, 0, 0);
+    SmartDashboard.putNumber(logPrefix + "commandedVoltage", volts);
+    motor.setControl(new VoltageOut(volts));
+  }
+
+  @Override
+  public void setVelocityVoltage(double velocityRevolutionsPerSecond) {
+    setTargetVelocity(velocityRevolutionsPerSecond);
+    velocityRevolutionsPerSecond = MechanismUtil.clamp(velocityRevolutionsPerSecond, getPositionDegrees(), PivotConstants.STORE_POSITION_DEGREES, PivotConstants.DEPLOY_POSITION_DEGREES,
+        -PivotConstants.MAX_VELOCITY, PivotConstants.MAX_VELOCITY, 0, 0);
+    SmartDashboard.putNumber(logPrefix + "targetVelocityRevolutionsPerSecond", velocityRevolutionsPerSecond);
+    motor.setControl(new VelocityVoltage(velocityRevolutionsPerSecond));
+  }
+
+  @Override
+  public void setVelocityVoltage(VelocityVoltage request) {
+    setTargetVelocity(request.Velocity);
+    request.Velocity = MechanismUtil.clamp(request.Velocity, getPositionDegrees(), PivotConstants.STORE_POSITION_DEGREES, PivotConstants.DEPLOY_POSITION_DEGREES,
+        -PivotConstants.MAX_VELOCITY, PivotConstants.MAX_VELOCITY, 0, 0);
+    motor.setControl(request);
   }
 
   public void resetSlot0Gains() {

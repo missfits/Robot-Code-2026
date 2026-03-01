@@ -15,7 +15,9 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -54,6 +56,11 @@ public abstract class MechanismsIOHardwareBase {
     motorOutput.PeakForwardDutyCycle = peakForwardDutyCycle;
     motorOutput.PeakReverseDutyCycle = peakReverseDutyCycle;
     motor.getConfigurator().apply(motorOutput);
+  }
+
+  // blocks robot for 0.1 seconds, dont call during match
+  public void setNeutralMode(NeutralModeValue neutralMode) {
+    motor.setNeutralMode(neutralMode);
   }
 
   public double getPositionRevolutions() {
@@ -111,6 +118,10 @@ public abstract class MechanismsIOHardwareBase {
 
   public void goToPositionProfiled(MotionMagicVoltage request) {
     motor.setControl(request);
+  }
+
+  public void setTargetVelocity(double velocity) {
+    targetVelocity = velocity;
   }
 
   /**

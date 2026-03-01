@@ -55,8 +55,11 @@ public class RollerSubsystem extends MechanismsSubsystemBase {
   }
 
   public Command rollerVelocityCommand() { 
-    return velocityCommand(RollerConstants.ROLLER_VELOCITY)
-      .withName("run intake velocity");
+    return velocityCommand(RollerConstants.ROLLER_VELOCITY);
+  }
+
+  public Command rollerBackVelocityCommand() { 
+    return velocityCommand(-RollerConstants.ROLLER_VELOCITY);
   }
 
   @Override

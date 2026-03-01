@@ -29,6 +29,7 @@ import frc.robot.utils.ShooterLookupTable;
 import frc.robot.utils.HubCalculations;
 
 public class RobotCommandFactory {
+  // subsystems
   private final CommandSwerveDrivetrain m_drivetrain;
   private final PivotSubsystem m_pivot;
   private final RollerSubsystem m_roller;
@@ -40,6 +41,13 @@ public class RobotCommandFactory {
   private final VisionSubsystem m_vision;
   private final DrivetrainCommandFactory m_drivetrainCommandFactory;
 
+  // velocity suppliers
+  private final Supplier<Double> m_pivotDeployVelocitySupplier = () -> setPivotVelocity();
+  private final Supplier<Double> m_pivotStoreVelocitySupplier = () -> -setPivotVelocity();
+  private final Supplier<Double> m_rollerVelocitySupplier = () -> setRollerVelocity();
+  private final Supplier<Double> m_rollerBackVelocitySupplier = () -> -setRollerVelocity();
+  private final Supplier<Double> m_indexerVelocitySupplier = () -> setIndexerVelocity();
+  private final Supplier<Double> m_columnVelocitySupplier = () -> setColumnVelocity();
   private final Supplier<Double> m_shooterVelocitySupplier = () -> setShooterVelocity(); 
   private final Supplier<Double> m_shooterVelocityCalculatedSupplier = () -> calculateShooterVelocity(); 
 
@@ -65,6 +73,60 @@ public class RobotCommandFactory {
     m_indexer.setDefaultCommand(m_indexer.offCommand());
     m_column.setDefaultCommand(m_column.offCommand());
     m_shooter.setDefaultCommand(m_shooter.offCommand());
+  }
+
+  public void resetPosition() {
+    m_pivot.resetPosition();
+    m_roller.resetPosition();
+    m_indexer.resetPosition();
+    m_column.resetPosition();
+    m_shooter.resetPosition();
+  }
+
+  // --- INTAKE COMMANDS ---
+  public Command deployPivotCommand() {
+    return m_pivot.velocityCommand(m_pivotDeployVelocitySupplier).withName("deployPivot");
+  }
+
+  public Command storePivotCommand() {
+    return m_pivot.velocityCommand(m_pivotStoreVelocitySupplier).withName("storePivot");
+  }
+
+  public Command runRollerCommand() {
+    return m_roller.velocityCommand(m_rollerVelocitySupplier).withName("runRoller");
+  }
+
+  public Command runRollersBackCommand() {
+    return m_roller.velocityCommand(m_rollerBackVelocitySupplier).withName("runRollersBack");
+  }
+
+  public Command runIntakeRollersCommand() {
+    return Commands.parallel(
+      m_roller.velocityCommand(m_rollerVelocitySupplier),
+      m_indexer.velocityCommand(m_indexerVelocitySupplier)
+    ).withName("runIntakeRollers");
+  }
+
+  public Command runIntakeRollersBackCommand() {
+    return Commands.parallel(
+      m_roller.velocityCommand(() -> -m_rollerVelocitySupplier.get()),
+      m_indexer.velocityCommand(() -> -m_indexerVelocitySupplier.get())
+    ).withName("runIntakeRollersBack");
+  }
+
+  public Command deployIntake() {
+    return Commands.parallel(
+      deployPivotCommand(),
+      runIntakeRollersCommand()
+    ).withName("deployIntake");
+  }
+
+  public Command storeIntake() {
+    return Commands.parallel(
+      storePivotCommand(),
+      m_roller.offCommand(),
+      m_column.offCommand()
+    ).withName("storeIntake");
   }
 
   // --- SCORE COMMANDS ---
@@ -178,6 +240,25 @@ public class RobotCommandFactory {
   }
 
   // HELPER FUNCTIONS
+  private Double setPivotVelocity() {
+    return SmartDashboard.getNumber("pivot IO/velocity", 1);
+  }
+
+  private Double setRollerVelocity() {
+    return SmartDashboard.getNumber("roller IO/velocity", 10);
+  }
+
+  private Double setIndexerVelocity() {
+    return SmartDashboard.getNumber("indexer IO/velocity", 10);
+  }
+
+  private Double setColumnVelocity() {
+    return SmartDashboard.getNumber("column IO/velocity", 10);
+  }
+
+  private Double setShooterVelocity() {
+    return SmartDashboard.getNumber("shooter influencer IO/velocity", 10);
+  }
 
   /** 
    * Calculates the shooter velocity based on the distance to the hub
@@ -195,10 +276,6 @@ public class RobotCommandFactory {
     } else {
       return 0.0; // TODO: fix, based on robot mode?? 
     }
-  }
-
-  public Double setShooterVelocity() {
-    return SmartDashboard.getNumber("shooter influencer IO/test velocity", 10);
   }
 
   public double getDistanceToHub() {
