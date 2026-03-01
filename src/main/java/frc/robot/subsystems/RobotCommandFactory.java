@@ -74,6 +74,48 @@ public class RobotCommandFactory {
     m_shooter.setDefaultCommand(m_shooter.offCommand());
   }
 
+  // --- INTAKE COMMANDS ---
+  public Command deployPivotCommand() {
+    return m_pivot.velocityCommand(m_pivotDeployVelocitySupplier).withName("deployPivot");
+  }
+
+  public Command storePivotCommand() {
+    return m_pivot.velocityCommand(m_pivotStoreVelocitySupplier).withName("storePivot");
+  }
+
+  public Command runRollerCommand() {
+    return m_roller.velocityCommand(m_rollerVelocitySupplier).withName("runRoller");
+  }
+
+  public Command runIntakeRollersCommand() {
+    return Commands.parallel(
+      m_roller.velocityCommand(m_rollerVelocitySupplier),
+      m_indexer.velocityCommand(m_indexerVelocitySupplier)
+    ).withName("runIntakeRollers");
+  }
+
+  public Command runIntakeRollersBackCommand() {
+    return Commands.parallel(
+      m_roller.velocityCommand(() -> -m_rollerVelocitySupplier.get()),
+      m_indexer.velocityCommand(() -> -m_indexerVelocitySupplier.get())
+    ).withName("runIntakeRollersBack");
+  }
+
+  public Command deployIntake() {
+    return Commands.parallel(
+      deployPivotCommand(),
+      runIntakeRollersCommand()
+    ).withName("deployIntake");
+  }
+
+  public Command storeIntake() {
+    return Commands.parallel(
+      storePivotCommand(),
+      m_roller.offCommand(),
+      m_column.offCommand()
+    ).withName("storeIntake");
+  }
+
   // --- SCORE COMMANDS ---
 
   /**
