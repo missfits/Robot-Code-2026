@@ -15,6 +15,7 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.Angle;
@@ -55,6 +56,10 @@ public abstract class MechanismsIOHardwareBase {
     motorOutput.PeakForwardDutyCycle = peakForwardDutyCycle;
     motorOutput.PeakReverseDutyCycle = peakReverseDutyCycle;
     motor.getConfigurator().apply(motorOutput);
+  }
+  
+  public void setNeutralMode(NeutralModeValue neutralMode) {
+    motor.setNeutralMode(neutralMode);
   }
 
   public double getPositionRevolutions() {

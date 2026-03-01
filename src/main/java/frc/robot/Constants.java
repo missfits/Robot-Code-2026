@@ -167,7 +167,7 @@ public final class Constants {
     public static final double PEAK_REVERSE_DUTY_CYCLE = -0.5;
 
     // Conversions
-    public static final double DEGREES_PER_REVOLUTION = 360./50.;
+    public static final double DEGREES_PER_REVOLUTION = 360./25.*20/30;
 
     // Pivot volts
     public static double DEPLOY_VOLTAGE = 3.0;
