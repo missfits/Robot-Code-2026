@@ -33,6 +33,8 @@ public class Robot extends TimedRobot {
 
   // Loop timing tracking
   private double m_lastLoopStartTime = 0;
+  private double m_loopToLoopTime = 0;
+  private double m_loopExecutionTime = 0;
 
 
   /**
@@ -63,7 +65,13 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     // --- LOOP TIMING START ---
     double loopStartTime = Timer.getFPGATimestamp();
-    double loopToLoopTime = loopStartTime - m_lastLoopStartTime;
+
+    // Log timing in milliseconds
+    SmartDashboard.putNumber("controlLoopTiming/loopToLoopMs", m_loopToLoopTime * 1000); // should be ~20ms, issue if > 25ms
+    SmartDashboard.putNumber("controlLoopTiming/loopExecutionMs", m_loopExecutionTime * 1000); // should be <15ms, issue if >20ms
+    SmartDashboard.putBoolean("controlLoopTiming/overrun", m_loopExecutionTime > 0.020);
+
+    m_loopToLoopTime = loopStartTime - m_lastLoopStartTime;
     m_lastLoopStartTime = loopStartTime;
 
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
@@ -89,12 +97,7 @@ public class Robot extends TimedRobot {
 
     // --- LOOP TIMING END ---
     double loopEndTime = Timer.getFPGATimestamp();
-    double loopExecutionTime = loopEndTime - loopStartTime;
-
-    // Log timing in milliseconds
-    SmartDashboard.putNumber("controlLoopTiming/loopToLoopMs", loopToLoopTime * 1000); // should be ~20ms, issue if > 25ms
-    SmartDashboard.putNumber("controlLoopTiming/loopExecutionMs", loopExecutionTime * 1000); // should be <15ms, issue if >20ms
-    SmartDashboard.putBoolean("controlLoopTiming/overrun", loopExecutionTime > 0.020);
+    m_loopExecutionTime = loopEndTime - loopStartTime;
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
