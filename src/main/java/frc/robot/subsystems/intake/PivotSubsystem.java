@@ -24,18 +24,12 @@ public class PivotSubsystem extends MechanismsSubsystemBase {
 
   @Override
   protected void runClosedLoopVelocity(double velocity) {
-    double clampedVelocity = m_IO.clampVelocity(velocity);
-    VelocityVoltage request = new VelocityVoltage(clampedVelocity)
+    VelocityVoltage request = new VelocityVoltage(velocity)
     .withEnableFOC(PivotConstants.ENABLE_FOC)
     .withFeedForward(PivotConstants.FEED_FORWARD)
     .withSlot(PivotConstants.SLOT)
     .withOverrideBrakeDurNeutral(PivotConstants.OVERRIDE_BRAKE_DUR_NEUTRAL);
     m_IO.setVelocityVoltage(request);
-  }
-
-  @Override
-  public Command voltageCommand(double volts) {
-    return voltageCommand(m_IO.clampVoltage(volts));
   }
 
   public void resetPosition() {
@@ -59,16 +53,14 @@ public class PivotSubsystem extends MechanismsSubsystemBase {
 
   public Command deployPivotCommand() {
     return this.run(() ->  {
-      double clampedPosition = m_IO.clampPositionDegrees(PivotConstants.DEPLOY_POSITION_DEGREES);
-      MotionMagicVoltage request = new MotionMagicVoltage(m_IO.degreesToMotorRevolutions(clampedPosition));
+      MotionMagicVoltage request = new MotionMagicVoltage(m_IO.degreesToMotorRevolutions(PivotConstants.DEPLOY_POSITION_DEGREES));
       m_IO.goToPositionProfiled(request);
     });
   }
 
   public Command storePivotCommand() {
     return this.run(() ->  {
-      double clampedPosition = m_IO.clampPositionDegrees(PivotConstants.STORE_POSITION_DEGREES);
-      MotionMagicVoltage request = new MotionMagicVoltage(m_IO.degreesToMotorRevolutions(clampedPosition));
+      MotionMagicVoltage request = new MotionMagicVoltage(m_IO.degreesToMotorRevolutions(PivotConstants.STORE_POSITION_DEGREES));
       m_IO.goToPositionProfiled(request);
     });
   }

@@ -143,6 +143,10 @@ public abstract class MechanismsIOHardwareBase {
     motor.setControl(request);
   }
 
+  public void setTargetVelocity(double velocity) {
+    targetVelocity = velocity;
+  }
+
   /**
    * Checks if the mechanism has reached the target velocity within tolerance.
    *

@@ -1,8 +1,12 @@
 package frc.robot.subsystems.intake;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
+import com.fasterxml.jackson.databind.deser.SettableAnyProperty;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.subsystems.MechanismsIOHardwareBase;
 
@@ -44,39 +48,29 @@ public class PivotIOHardware extends MechanismsIOHardwareBase {
     return degrees / PivotConstants.DEGREES_PER_REVOLUTION;
   }
 
-  /**
-   * Clamps the target position to be within the pivot's safe operating range
-   * @param targetDegrees The desired target position in degrees
-   * @return The clamped target position in degrees
-   */
-  public double clampPositionDegrees(double targetDegrees) {
-    return MathUtil.clamp(targetDegrees, PivotConstants.STORE_POSITION_DEGREES, PivotConstants.DEPLOY_POSITION_DEGREES);
+  @Override
+  public void setVoltage(double volts) {
+    volts = clamp(volts, getPositionDegrees(), PivotConstants.STORE_POSITION_DEGREES, PivotConstants.DEPLOY_POSITION_DEGREES,
+        -PivotConstants.MAX_VOLTAGE, PivotConstants.MAX_VOLTAGE, 0, 0);
+    SmartDashboard.putNumber(logPrefix + "commandedVoltage", volts);
+    motor.setControl(new VoltageOut(volts));
   }
 
-  public double clampVoltage(double volts) {
-    double value = MathUtil.clamp(volts, -PivotConstants.MAX_VOLTAGE, PivotConstants.MAX_VOLTAGE);
-    // if position is too low, only run the elevator up 
-    if (getPositionDegrees() < PivotConstants.STORE_POSITION_DEGREES) {
-        value = MathUtil.clamp(value, 0, PivotConstants.MAX_VOLTAGE);
-    }
-    // if position is too high, only run the elevator down (or in placd)
-    if (getPositionDegrees() > PivotConstants.DEPLOY_POSITION_DEGREES) {
-        value = MathUtil.clamp(value, -PivotConstants.MAX_VOLTAGE, PivotConstants.kG);
-    }
-    return value;
+  @Override
+  public void setVelocityVoltage(double velocityRevolutionsPerSecond) {
+    setTargetVelocity(velocityRevolutionsPerSecond);
+    velocityRevolutionsPerSecond = clamp(velocityRevolutionsPerSecond, getPositionDegrees(), PivotConstants.STORE_POSITION_DEGREES, PivotConstants.DEPLOY_POSITION_DEGREES,
+        -PivotConstants.MAX_VELOCITY, PivotConstants.MAX_VELOCITY, 0, 0);
+    SmartDashboard.putNumber(logPrefix + "targetVelocityRevolutionsPerSecond", velocityRevolutionsPerSecond);
+    motor.setControl(new VelocityVoltage(velocityRevolutionsPerSecond));
   }
 
-  public double clampVelocity(double velocity) {
-    double value = MathUtil.clamp(velocity, -PivotConstants.MAX_VELOCITY, PivotConstants.MAX_VELOCITY);
-    // if position is too low, only run the elevator up 
-    if (getPositionDegrees() < PivotConstants.STORE_POSITION_DEGREES) {
-        value = MathUtil.clamp(value, 0, PivotConstants.MAX_VELOCITY);
-    }
-    // if position is too high, only run the elevator down (or in placd)
-    if (getPositionDegrees() > PivotConstants.DEPLOY_POSITION_DEGREES) {
-        value = MathUtil.clamp(value, -PivotConstants.MAX_VELOCITY, 0);
-    }
-    return value;
+  @Override
+  public void setVelocityVoltage(VelocityVoltage request) {
+    setTargetVelocity(request.Velocity);
+    request.Velocity = clamp(request.Velocity, getPositionDegrees(), PivotConstants.STORE_POSITION_DEGREES, PivotConstants.DEPLOY_POSITION_DEGREES,
+        -PivotConstants.MAX_VELOCITY, PivotConstants.MAX_VELOCITY, 0, 0);
+    motor.setControl(request);
   }
 
   public void resetSlot0Gains() {
