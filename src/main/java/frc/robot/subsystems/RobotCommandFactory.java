@@ -228,23 +228,23 @@ public class RobotCommandFactory {
 
   // HELPER FUNCTIONS
   private Double setPivotVelocity() {
-    return SmartDashboard.getNumber("pivot IO/test velocity", 1);
+    return SmartDashboard.getNumber("pivot IO/velocity", 1);
   }
 
   private Double setRollerVelocity() {
-    return SmartDashboard.getNumber("roller IO/test velocity", 10);
+    return SmartDashboard.getNumber("roller IO/velocity", 10);
   }
 
   private Double setIndexerVelocity() {
-    return SmartDashboard.getNumber("indexer IO/test velocity", 10);
+    return SmartDashboard.getNumber("indexer IO/velocity", 10);
   }
 
   private Double setColumnVelocity() {
-    return SmartDashboard.getNumber("column IO/test velocity", 10);
+    return SmartDashboard.getNumber("column IO/velocity", 10);
   }
 
   private Double setShooterVelocity() {
-    return SmartDashboard.getNumber("shooter influencer IO/test velocity", 10);
+    return SmartDashboard.getNumber("shooter influencer IO/velocity", 10);
   }
 
   /** 

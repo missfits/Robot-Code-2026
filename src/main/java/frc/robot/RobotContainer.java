@@ -431,10 +431,7 @@ public class RobotContainer {
     SmartDashboard.putNumber("shooter influencer IO/kI", SmartDashboard.getNumber("shooter influencer IO/kI", ShooterConstants.INFLUENCER_kI));
     SmartDashboard.putNumber("shooter influencer IO/kD", SmartDashboard.getNumber("shooter influencer IO/kD", ShooterConstants.INFLUENCER_kD));
     SmartDashboard.putNumber("shooter influencer IO/velocity", SmartDashboard.getNumber("shooter influencer IO/velocity", ShooterConstants.SHOOTER_VELOCITY));
-    SmartDashboard.putNumber("shooter influencer IO/test velocity", SmartDashboard.getNumber("shooter influencer IO/test velocity", ShooterConstants.SHOOTER_TESTING_VELOCITY1));
-
     SmartDashboard.putNumber("shooter influencer IO/out voltage", SmartDashboard.getNumber("shooter/out voltage", ShooterConstants.SHOOTER_VOLTAGE));
-    SmartDashboard.putNumber("shooter influencer IO/back voltage", SmartDashboard.getNumber("shooter/back voltage", ShooterConstants.SHOOTER_BACK_VOLTAGE));
 
     // Robot Command Factory Logging 
     SmartDashboard.putNumber("robot command factory/distance to hub", m_robotCommandFactory.getDistanceToHub());
@@ -447,31 +444,20 @@ public class RobotContainer {
     IndexerConstants.kP = SmartDashboard.getNumber("indexer IO/kP", 0);
     IndexerConstants.kI = SmartDashboard.getNumber("indexer IO/kI", 0);
     IndexerConstants.kD = SmartDashboard.getNumber("indexer IO/kD", 0);
-    IndexerConstants.INDEXER_VELOCITY = SmartDashboard.getNumber("indexer IO/velocity", 0);
-    IndexerConstants.INDEXER_VOLTAGE = SmartDashboard.getNumber("indexer IO/voltage", 0);
-
     // Column
     ColumnConstants.kP = SmartDashboard.getNumber("column IO/kP", 0);
     ColumnConstants.kI = SmartDashboard.getNumber("column IO/kI", 0);
     ColumnConstants.kD = SmartDashboard.getNumber("column IO/kD", 0);
-    ColumnConstants.COLUMN_VELOCITY = SmartDashboard.getNumber("column IO/velocity", 0);
-    ColumnConstants.COLUMN_VOLTAGE = SmartDashboard.getNumber("column IO/voltage", 0);
 
     // Roller
     RollerConstants.kP = SmartDashboard.getNumber("roller IO/kP", 0);
     RollerConstants.kI = SmartDashboard.getNumber("roller IO/kI", 0);
     RollerConstants.kD = SmartDashboard.getNumber("roller IO/kD", 0);
-    RollerConstants.ROLLER_VELOCITY = SmartDashboard.getNumber("roller IO/velocity",0);
-    RollerConstants.ROLLER_VOLTAGE = SmartDashboard.getNumber("roller IO/voltage", 0);
 
     // Pivot
     PivotConstants.kP = SmartDashboard.getNumber("pivot IO/kP", 0);
     PivotConstants.kI = SmartDashboard.getNumber("pivot IO/kI", 0);
     PivotConstants.kD = SmartDashboard.getNumber("pivot IO/kD", 0);
-    PivotConstants.DEPLOY_VELOCITY = SmartDashboard.getNumber("pivot IO/velocity",0);
-    PivotConstants.DEPLOY_VOLTAGE = SmartDashboard.getNumber("pivot IO/voltage", 0);
-    PivotConstants.STORE_VELOCITY = -1.0*SmartDashboard.getNumber("pivot IO/velocity",0);
-    PivotConstants.STORE_VOLTAGE = -1.0*SmartDashboard.getNumber("pivot IO/voltage", 0);
 
     PivotConstants.STORE_POSITION_DEGREES = SmartDashboard.getNumber("pivot/store position", 0);
     PivotConstants.DEPLOY_POSITION_DEGREES = SmartDashboard.getNumber("pivot/deploy position", 0);
@@ -480,11 +466,6 @@ public class RobotContainer {
     ShooterConstants.INFLUENCER_kP = SmartDashboard.getNumber("shooter influencer IO/kP", 0);
     ShooterConstants.INFLUENCER_kI = SmartDashboard.getNumber("shooter influencer IO/kI", 0);
     ShooterConstants.INFLUENCER_kD = SmartDashboard.getNumber("shooter influencer IO/kD", 0);
-    ShooterConstants.SHOOTER_VELOCITY = SmartDashboard.getNumber("shooter influencer IO/velocity", 0);
-    ShooterConstants.SHOOTER_TESTING_VELOCITY1 = SmartDashboard.getNumber("shooter influencer IO/testing velocity", 0);
-
-    ShooterConstants.SHOOTER_VOLTAGE = SmartDashboard.getNumber("shooter influencer IO/out voltage", 0);
-    ShooterConstants.SHOOTER_BACK_VOLTAGE = SmartDashboard.getNumber("shooter influencer IO/back voltage", 0);
 
     m_pivot.resetControllers();
     m_roller.resetControllers();
