@@ -364,6 +364,10 @@ public class RobotContainer {
     m_robotCommandFactory.setDefaultCommand();
   }
 
+  public void resetPosition() {
+    m_robotCommandFactory.resetPosition();
+  }
+
   public void setRobotMode(RobotMode newMode) {
     m_robotMode = newMode;
     configureDefaultCommandCompetition();

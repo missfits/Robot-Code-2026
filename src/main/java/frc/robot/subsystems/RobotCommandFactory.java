@@ -75,6 +75,14 @@ public class RobotCommandFactory {
     m_shooter.setDefaultCommand(m_shooter.offCommand());
   }
 
+  public void resetPosition() {
+    m_pivot.resetPosition();
+    m_roller.resetPosition();
+    m_indexer.resetPosition();
+    m_column.resetPosition();
+    m_shooter.resetPosition();
+  }
+
   // --- INTAKE COMMANDS ---
   public Command deployPivotCommand() {
     return m_pivot.velocityCommand(m_pivotDeployVelocitySupplier).withName("deployPivot");
