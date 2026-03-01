@@ -55,6 +55,9 @@ public class IndexerSubsystem extends MechanismsSubsystemBase {
   @Override
   public void periodic() {
     super.periodic();
-    SmartDashboard.putNumber("indexer/current", m_IO.getCurrent());
+    SmartDashboard.putNumber("indexer IO/live current", m_IO.getCurrent());
+    SmartDashboard.putNumber("indexer IO/live position", m_IO.getPositionDegrees());
+    SmartDashboard.putNumber("indexer IO/live velocity", m_IO.getVelocityDegreesPerSecond());
+    SmartDashboard.putNumber("indexer IO/live voltage", m_IO.getVoltage());
   }
 }
