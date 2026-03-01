@@ -9,6 +9,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.subsystems.MechanismsIOHardwareBase;
+import frc.robot.utils.MechanismUtil;
 
 public class PivotIOHardware extends MechanismsIOHardwareBase {
 
@@ -50,7 +51,7 @@ public class PivotIOHardware extends MechanismsIOHardwareBase {
 
   @Override
   public void setVoltage(double volts) {
-    volts = clamp(volts, getPositionDegrees(), PivotConstants.STORE_POSITION_DEGREES, PivotConstants.DEPLOY_POSITION_DEGREES,
+    volts = MechanismUtil.clamp(volts, getPositionDegrees(), PivotConstants.STORE_POSITION_DEGREES, PivotConstants.DEPLOY_POSITION_DEGREES,
         -PivotConstants.MAX_VOLTAGE, PivotConstants.MAX_VOLTAGE, 0, 0);
     SmartDashboard.putNumber(logPrefix + "commandedVoltage", volts);
     motor.setControl(new VoltageOut(volts));
@@ -59,7 +60,7 @@ public class PivotIOHardware extends MechanismsIOHardwareBase {
   @Override
   public void setVelocityVoltage(double velocityRevolutionsPerSecond) {
     setTargetVelocity(velocityRevolutionsPerSecond);
-    velocityRevolutionsPerSecond = clamp(velocityRevolutionsPerSecond, getPositionDegrees(), PivotConstants.STORE_POSITION_DEGREES, PivotConstants.DEPLOY_POSITION_DEGREES,
+    velocityRevolutionsPerSecond = MechanismUtil.clamp(velocityRevolutionsPerSecond, getPositionDegrees(), PivotConstants.STORE_POSITION_DEGREES, PivotConstants.DEPLOY_POSITION_DEGREES,
         -PivotConstants.MAX_VELOCITY, PivotConstants.MAX_VELOCITY, 0, 0);
     SmartDashboard.putNumber(logPrefix + "targetVelocityRevolutionsPerSecond", velocityRevolutionsPerSecond);
     motor.setControl(new VelocityVoltage(velocityRevolutionsPerSecond));
@@ -68,7 +69,7 @@ public class PivotIOHardware extends MechanismsIOHardwareBase {
   @Override
   public void setVelocityVoltage(VelocityVoltage request) {
     setTargetVelocity(request.Velocity);
-    request.Velocity = clamp(request.Velocity, getPositionDegrees(), PivotConstants.STORE_POSITION_DEGREES, PivotConstants.DEPLOY_POSITION_DEGREES,
+    request.Velocity = MechanismUtil.clamp(request.Velocity, getPositionDegrees(), PivotConstants.STORE_POSITION_DEGREES, PivotConstants.DEPLOY_POSITION_DEGREES,
         -PivotConstants.MAX_VELOCITY, PivotConstants.MAX_VELOCITY, 0, 0);
     motor.setControl(request);
   }
