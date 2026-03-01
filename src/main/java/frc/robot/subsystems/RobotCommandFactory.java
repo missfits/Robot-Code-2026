@@ -143,12 +143,12 @@ public class RobotCommandFactory {
         () -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)),
       Commands.sequence( // column: 
         m_column.offCommand() // wait until 
-          .until(m_shooter.atTargetVelocityTrigger() // shooter at target velocity 
+          .until(m_shooter.atTargetVelocityTrigger(m_shooterVelocityCalculatedSupplier) // shooter at target velocity 
             .and(m_drivetrainCommandFactory.atTargetAngleTrigger())), // and drivetrain at target angle
         m_column.velocityCommand(ColumnConstants.COLUMN_VELOCITY)),
       Commands.sequence( // indexers: 
         m_indexer.offCommand() // wait until 
-          .until(m_shooter.atTargetVelocityTrigger() // shooter at target velocity
+          .until(m_shooter.atTargetVelocityTrigger(m_shooterVelocityCalculatedSupplier) // shooter at target velocity
             .and(m_drivetrainCommandFactory.atTargetAngleTrigger())), // and drivetrain at target angle
         m_indexer.velocityCommand(IndexerConstants.INDEXER_VELOCITY)))
     .withName("shootByDistance");
@@ -173,12 +173,12 @@ public class RobotCommandFactory {
         () -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)),
       Commands.sequence( // column: 
         m_column.offCommand() // wait until 
-          .until(m_shooter.atTargetVelocityTrigger() // shooter at target velocity 
+          .until(m_shooter.atTargetVelocityTrigger(velocity) // shooter at target velocity 
             .and(m_drivetrainCommandFactory.atTargetAngleTrigger())), // and drivetrain at target angle
         m_column.velocityCommand(ColumnConstants.COLUMN_VELOCITY)),
       Commands.sequence( // indexer: 
         m_indexer.offCommand() // wait until 
-          .until(m_shooter.atTargetVelocityTrigger() // shooter at target velocity
+          .until(m_shooter.atTargetVelocityTrigger(velocity) // shooter at target velocity
             .and(m_drivetrainCommandFactory.atTargetAngleTrigger())), // and drivetrain at target angle
         m_indexer.velocityCommand(IndexerConstants.INDEXER_VELOCITY)))
     .withName("shootManual " + velocity);
@@ -193,12 +193,12 @@ public class RobotCommandFactory {
       m_shooter.shooterVelocityCommand(shooterVelocity), // run shooter at given velocity  
       Commands.sequence( // column: 
         m_column.offCommand() // wait until 
-          .until(m_shooter.atTargetVelocityTrigger()), // shooter at target velocity 
+          .until(m_shooter.atTargetVelocityTrigger(shooterVelocity)), // shooter at target velocity 
         new WaitCommand(1.0),
         m_column.velocityCommand(columnVelocity)),
       Commands.sequence( // indexer: 
         m_indexer.offCommand() // wait until 
-          .until(m_shooter.atTargetVelocityTrigger()), // shooter at target velocity
+          .until(m_shooter.atTargetVelocityTrigger(shooterVelocity)), // shooter at target velocity
         new WaitCommand(1.0), 
         m_indexer.velocityCommand(IndexerConstants.INDEXER_VELOCITY))
     ).withName("shootManualWithoutSnap " + shooterVelocity + " " + columnVelocity);
@@ -221,12 +221,12 @@ public class RobotCommandFactory {
       m_shooter.shooterVelocityCommand(m_shooterVelocitySupplier), // run shooter at given velocity  
       Commands.sequence( // column: 
         m_column.offCommand() // wait until 
-          .until(m_shooter.atTargetVelocityTrigger()), // shooter at target velocity 
+          .until(m_shooter.atTargetVelocityTrigger(m_shooterVelocitySupplier)), // shooter at target velocity 
         new WaitCommand(1.0),
         m_column.velocityCommand(ColumnConstants.COLUMN_VELOCITY)),
       Commands.sequence( // indexer: 
         m_indexer.offCommand() // wait until 
-          .until(m_shooter.atTargetVelocityTrigger()), // shooter at target velocity
+          .until(m_shooter.atTargetVelocityTrigger(m_shooterVelocitySupplier)), // shooter at target velocity
         new WaitCommand(1.0), 
         m_indexer.velocityCommand(IndexerConstants.INDEXER_VELOCITY))
     ).withName("shootManualWithSupplier");

@@ -5,6 +5,8 @@ import static edu.wpi.first.units.Units.Revolutions;
 import static edu.wpi.first.units.Units.RevolutionsPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
+import java.util.function.Supplier;
+
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
@@ -34,8 +36,6 @@ public abstract class MechanismsIOHardwareBase {
   protected final StatusSignal<AngularVelocity> velocitySignal;
   protected final StatusSignal<Voltage> voltageSignal;
   protected final StatusSignal<Current> currentSignal;
-
-  private double targetVelocity = 0.0;
 
   protected MechanismsIOHardwareBase(int motorID, double statorCurrentLimit,
       double peakForwardDutyCycle, double peakReverseDutyCycle, String logPrefix) {
@@ -97,13 +97,11 @@ public abstract class MechanismsIOHardwareBase {
   }
 
   public void setVelocityVoltage(double velocityRevolutionsPerSecond) {
-    targetVelocity = velocityRevolutionsPerSecond;
     SmartDashboard.putNumber(logPrefix + "targetVelocityRevolutionsPerSecond", velocityRevolutionsPerSecond);
     motor.setControl(new VelocityVoltage(velocityRevolutionsPerSecond));
   }
 
   public void setVelocityVoltage(VelocityVoltage request) {
-    targetVelocity = request.Velocity;
     motor.setControl(request);
   }
 
@@ -120,19 +118,27 @@ public abstract class MechanismsIOHardwareBase {
     motor.setControl(request);
   }
 
-  public void setTargetVelocity(double velocity) {
-    targetVelocity = velocity;
-  }
-
   /**
    * Checks if the mechanism has reached the target velocity within tolerance.
    *
    * @param tolerance the velocity tolerance in revolutions per second
+   * @param targetVelocitySupplier a supplier for the target velocity in revolutions per second
    * @return true if the current velocity is within tolerance of the target velocity
    */
-  public boolean atTargetVelocity(double tolerance) {
+  public boolean atTargetVelocity(double tolerance, Supplier<Double> targetVelocitySupplier) {
     double currentVelocity = getMotorVelocityRevolutionsPerSecond();
-    return Math.abs(currentVelocity - targetVelocity) <= tolerance;
+    return Math.abs(currentVelocity - targetVelocitySupplier.get()) <= tolerance;
+  }
+
+  /**
+   * Checks if the mechanism has reached the target velocity within tolerance.
+   * 
+   * @param tolerance the velocity tolerance in revolutions per second
+   * @param targetVelocity the target velocity in revolutions per second
+   * @return true if the current velocity is within tolerance of the target velocity
+   */
+  public boolean atTargetVelocity(double tolerance, double targetVelocity) {
+    return atTargetVelocity(tolerance, () -> targetVelocity);
   }
 
   /**
@@ -141,8 +147,8 @@ public abstract class MechanismsIOHardwareBase {
    * @param tolerance the velocity tolerance in revolutions per second
    * @return a Trigger that activates when at target velocity
    */
-  public Trigger atTargetVelocityTrigger(double tolerance) {
-    return new Trigger(() -> atTargetVelocity(tolerance));
+  public Trigger atTargetVelocityTrigger(double tolerance, Supplier<Double> targetVelocitySupplier) {
+    return new Trigger(() -> atTargetVelocity(tolerance, targetVelocitySupplier));
   }
 
   public void setInverted(boolean isInverted) {

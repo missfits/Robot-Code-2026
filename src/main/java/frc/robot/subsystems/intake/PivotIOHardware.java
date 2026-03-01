@@ -59,7 +59,6 @@ public class PivotIOHardware extends MechanismsIOHardwareBase {
 
   @Override
   public void setVelocityVoltage(double velocityRevolutionsPerSecond) {
-    setTargetVelocity(velocityRevolutionsPerSecond);
     velocityRevolutionsPerSecond = MechanismUtil.clamp(velocityRevolutionsPerSecond, getPositionDegrees(), PivotConstants.STORE_POSITION_DEGREES, PivotConstants.DEPLOY_POSITION_DEGREES,
         -PivotConstants.MAX_VELOCITY, PivotConstants.MAX_VELOCITY, 0, 0);
     SmartDashboard.putNumber(logPrefix + "targetVelocityRevolutionsPerSecond", velocityRevolutionsPerSecond);
@@ -68,7 +67,6 @@ public class PivotIOHardware extends MechanismsIOHardwareBase {
 
   @Override
   public void setVelocityVoltage(VelocityVoltage request) {
-    setTargetVelocity(request.Velocity);
     request.Velocity = MechanismUtil.clamp(request.Velocity, getPositionDegrees(), PivotConstants.STORE_POSITION_DEGREES, PivotConstants.DEPLOY_POSITION_DEGREES,
         -PivotConstants.MAX_VELOCITY, PivotConstants.MAX_VELOCITY, 0, 0);
     motor.setControl(request);
