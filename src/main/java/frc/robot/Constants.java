@@ -170,7 +170,7 @@ public final class Constants {
     public static final double DEGREES_PER_REVOLUTION = 360./50.;
 
     // Pivot volts
-    public static double DEPLOY_VOLTAGE = 1.0;
+    public static double DEPLOY_VOLTAGE = 3.0;
     public static double STORE_VOLTAGE = -1.0*DEPLOY_VOLTAGE;
     public static double MAX_VOLTAGE = 6.0;
 

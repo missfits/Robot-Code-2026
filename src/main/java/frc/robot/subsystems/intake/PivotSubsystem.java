@@ -46,9 +46,21 @@ public class PivotSubsystem extends MechanismsSubsystemBase {
     m_IO.resetSlot0Gains();
   }
 
-  // Commands
-  public Command pivotVelocityCommand() {
-    return velocityCommand(PivotConstants.DEPLOY_VELOCITY).withName("run pivot velocity");
+  // Commands 
+  public Command voltageDeployPivotCommand() {
+    return voltageCommand(PivotConstants.DEPLOY_VOLTAGE).withName("deploy pivot voltage");
+  }
+
+  public Command voltageStorePivotCommand() {
+    return voltageCommand(PivotConstants.STORE_VOLTAGE).withName("store pivot voltage");
+  }
+
+  public Command velocityDeployPivotCommand() {
+    return velocityCommand(PivotConstants.DEPLOY_VELOCITY).withName("deploy pivot velocity");
+  }
+
+  public Command velocityStorePivotCommand() {
+    return velocityCommand(PivotConstants.STORE_VELOCITY).withName("store pivot velocity");
   }
 
   public Command deployPivotCommand() {
