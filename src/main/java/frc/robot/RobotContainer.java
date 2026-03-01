@@ -272,49 +272,17 @@ public class RobotContainer {
     m_robotCommandFactory.setDefaultCommand();
   }
 
+  // updated 3/1/26
   private void configureBindingsTestingMechanisms() {
-    // m_testJoystick.a().whileTrue(m_roller.rollerVelocityCommand());
-    // m_testJoystick.y().whileTrue(m_indexer.indexerVelocityCommand());
-    // m_testJoystick.b().whileTrue(m_column.columnVelocityCommand());
-
-    // m_testJoystick.b().whileTrue(m_pivot.pivotVelocityCommand()); // commented for testing 2/15
-    m_testJoystick.a().whileTrue(m_roller.rollerVelocityCommand());
-    m_testJoystick.x().whileTrue(m_indexer.indexerVelocityCommand());
-    m_testJoystick.y().whileTrue(m_column.columnVelocityCommand());
-
-    m_testJoystick.b().whileTrue(new ParallelCommandGroup(
-      m_roller.rollerVelocityCommand(),
-      m_indexer.indexerVelocityCommand(),
-      m_column.columnVelocityCommand()
-    ));
-
-   //m_testJoystick.rightBumper().whileTrue(m_pivot.storePivotCommand());
-    m_testJoystick.leftBumper().whileTrue(m_pivot.deployPivotCommand());
-    //m_testJoystick.rightTrigger().whileTrue(m_shooter.shooterVelocityCommand(SmartDashboard.getNumber("shooter test speeds/high speed", 80)));
-    m_testJoystick.leftTrigger().whileTrue(m_shooter.shooterBackVoltageCommand());
-
-
-    //shooter testing bindings:
-    m_testJoystick.rightTrigger().whileTrue(m_shooter.shooterVelocityCommand(SmartDashboard.getNumber("shooter test speeds/high speed", 80)));
-    m_testJoystick.rightBumper().and(m_testJoystick.rightTrigger().negate()).whileTrue(m_shooter.shooterVelocityCommand(SmartDashboard.getNumber("shooter test speeds/low speed", 70)));
+    m_testJoystick.x().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.deployPivotCommand());
+    m_testJoystick.y().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.storePivotCommand());
+    m_testJoystick.b().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runRollerCommand());
+    m_testJoystick.a().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runIntakeRollersCommand());
+    
+    m_testJoystick.leftBumper().and(m_testJoystick.b()).whileTrue(m_robotCommandFactory.runRollersBackCommand());
+    m_testJoystick.leftBumper().and(m_testJoystick.a()).whileTrue(m_robotCommandFactory.runIntakeRollersBackCommand());
 
     m_testJoystick.povCenter().negate().onTrue(new InstantCommand(() -> resetControllerConstantsSmartDashboard()));
-
-    // // TODO: change -- this is for testing
-    // m_testJoystick.y().and(m_testJoystick.leftBumper().negate()).whileTrue(
-    //   m_drivetrainCommandFactory.snapToAngle(
-    //     () -> new JoystickVals(m_testJoystick.getLeftX(), m_testJoystick.getLeftY()),
-    //     0
-    //   )
-    // );
-
-    // // TODO: change -- this is for testing
-    // m_testJoystick.b().and(m_testJoystick.leftBumper().negate()).onTrue(
-    //   m_drivetrainCommandFactory.snapToTarget(
-    //     () -> new JoystickVals(m_testJoystick.getLeftX(), m_testJoystick.getLeftY()),
-    //     () -> new Pose2d(Units.inchesToMeters(182), Units.inchesToMeters(182), new Rotation2d())
-    //   )
-    // );
 
     configureDefaultCommandTesting();
   }

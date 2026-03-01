@@ -45,6 +45,7 @@ public class RobotCommandFactory {
   private final Supplier<Double> m_pivotDeployVelocitySupplier = () -> setPivotVelocity();
   private final Supplier<Double> m_pivotStoreVelocitySupplier = () -> -setPivotVelocity();
   private final Supplier<Double> m_rollerVelocitySupplier = () -> setRollerVelocity();
+  private final Supplier<Double> m_rollerBackVelocitySupplier = () -> -setRollerVelocity();
   private final Supplier<Double> m_indexerVelocitySupplier = () -> setIndexerVelocity();
   private final Supplier<Double> m_columnVelocitySupplier = () -> setColumnVelocity();
   private final Supplier<Double> m_shooterVelocitySupplier = () -> setShooterVelocity(); 
@@ -85,6 +86,10 @@ public class RobotCommandFactory {
 
   public Command runRollerCommand() {
     return m_roller.velocityCommand(m_rollerVelocitySupplier).withName("runRoller");
+  }
+
+  public Command runRollersBackCommand() {
+    return m_roller.velocityCommand(m_rollerBackVelocitySupplier).withName("runRollersBack");
   }
 
   public Command runIntakeRollersCommand() {
