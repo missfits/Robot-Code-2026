@@ -216,8 +216,8 @@ public final class Constants {
     public static final int MOTOR_STATOR_LIMIT = 40;
 
     // Duty cycle limits
-    public static final double PEAK_FORWARD_DUTY_CYCLE = 0.5;
-    public static final double PEAK_REVERSE_DUTY_CYCLE = -0.5;
+    public static final double PEAK_FORWARD_DUTY_CYCLE = 1;
+    public static final double PEAK_REVERSE_DUTY_CYCLE = -1;
 
     // Conversions
     public static final double DEGREES_PER_REVOLUTION = 360./3.;
@@ -260,8 +260,8 @@ public final class Constants {
     public static final int MOTOR_STATOR_LIMIT = 40;
 
     // Duty cycle limits
-    public static final double PEAK_FORWARD_DUTY_CYCLE = 0.5;
-    public static final double PEAK_REVERSE_DUTY_CYCLE = -0.5;
+    public static final double PEAK_FORWARD_DUTY_CYCLE = 1;
+    public static final double PEAK_REVERSE_DUTY_CYCLE = -1;
 
     // Conversions
     public static final double DEGREES_PER_REVOLUTION = 360;
@@ -296,8 +296,8 @@ public final class Constants {
     public static final int MOTOR_STATOR_LIMIT = 40;
 
     // Duty cycle limits
-    public static final double PEAK_FORWARD_DUTY_CYCLE = 0.5;
-    public static final double PEAK_REVERSE_DUTY_CYCLE = -0.5;
+    public static final double PEAK_FORWARD_DUTY_CYCLE = 1;
+    public static final double PEAK_REVERSE_DUTY_CYCLE = -1;
 
     // Conversions
     public static final double DEGREES_PER_REVOLUTION = 360;
@@ -348,8 +348,8 @@ public final class Constants {
     public static final int FOLLOWER_MOTOR_STATOR_LIMIT = 60;
 
     // Duty cycle limits
-    public static final double PEAK_FORWARD_DUTY_CYCLE = 0.5;
-    public static final double PEAK_REVERSE_DUTY_CYCLE = -0.5;
+    public static final double PEAK_FORWARD_DUTY_CYCLE = 1;
+    public static final double PEAK_REVERSE_DUTY_CYCLE = -1;
 
     // Conversions
     public static final double SHOOTER_DEGREES_PER_REVOLUTION = 360;
@@ -400,8 +400,8 @@ public final class Constants {
     public static final int CLIMBER_MOTOR_STATOR_LIMIT = 40;
 
     // Duty cycle limits
-    public static final double PEAK_FORWARD_DUTY_CYCLE = 0.5;
-    public static final double PEAK_REVERSE_DUTY_CYCLE = -0.5;
+    public static final double PEAK_FORWARD_DUTY_CYCLE = 1;
+    public static final double PEAK_REVERSE_DUTY_CYCLE = -1;
 
     public static final double CLIMBER_METERS_PER_REVOLUTION = 360./10.;
   }
