@@ -83,6 +83,16 @@ public class LocalizationCamera {
     return m_estPoseField;
   }
 
+  // Toggles "Raw Video Mode" for single camera
+  // NOTE: PhotonVision method for raw video mode is setDriverMode
+  // setDriverMode(true) = raw video feed, setDriverMode(false) = normal AprilTag processing
+  public void setRawVideoMode(boolean rawVideoMode) {
+    m_camera.setDriverMode(rawVideoMode);
+
+    // log state of SINGLE CAMERA "RAW VIDEO MODE" to SmartDashboard
+    SmartDashboard.putBoolean(m_logString + "/driverMode", rawVideoMode);
+  }
+
   // --- filtering methods ---
   public void setFilterPipeline(LocalVisionFilterPipeline filterPipeline) {
     m_filterPipeline = filterPipeline;

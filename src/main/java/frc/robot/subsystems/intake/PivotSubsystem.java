@@ -32,19 +32,6 @@ public class PivotSubsystem extends MechanismsSubsystemBase {
     m_IO.setVelocityVoltage(request);
   }
 
-  public Command runPivotManual(double volts) {
-    return run(() -> {
-        double clampedVolts = MathUtil.clamp(volts, -PivotConstants.PIVOT_MAX_MANUAL_VOLTS, PivotConstants.PIVOT_MAX_MANUAL_VOLTS);
-        double position = m_IO.getPositionDegrees();
-
-        if ((position <= PivotConstants.STORE_POSITION_DEGREES && clampedVolts < 0) ||
-            (position >= PivotConstants.DEPLOY_POSITION_DEGREES && clampedVolts > 0))
-            m_IO.setVoltage(0.0);
-        else
-            m_IO.setVoltage(clampedVolts);
-    });
-  }
-
   public void resetPosition() {
     m_IO.resetPosition();
   }
@@ -53,15 +40,28 @@ public class PivotSubsystem extends MechanismsSubsystemBase {
   public void periodic() {
     super.periodic();
     SmartDashboard.putNumber("pivot/current", m_IO.getCurrent());
+    SmartDashboard.putNumber("pivot/positionDegrees", m_IO.getPositionDegrees());
   }
 
   public void resetControllers() {
     m_IO.resetSlot0Gains();
   }
 
-  // Commands
-  public Command pivotVelocityCommand() {
-    return velocityCommand(PivotConstants.DEPLOY_VELOCITY).withName("run pivot velocity");
+  // Commands 
+  public Command voltageDeployPivotCommand() {
+    return voltageCommand(PivotConstants.DEPLOY_VOLTAGE).withName("deploy pivot voltage");
+  }
+
+  public Command voltageStorePivotCommand() {
+    return voltageCommand(PivotConstants.STORE_VOLTAGE).withName("store pivot voltage");
+  }
+
+  public Command velocityDeployPivotCommand() {
+    return velocityCommand(PivotConstants.DEPLOY_VELOCITY).withName("deploy pivot velocity");
+  }
+
+  public Command velocityStorePivotCommand() {
+    return velocityCommand(PivotConstants.STORE_VELOCITY).withName("store pivot velocity");
   }
 
   public Command deployPivotCommand() {

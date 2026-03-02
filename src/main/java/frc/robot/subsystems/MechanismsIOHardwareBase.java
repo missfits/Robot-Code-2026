@@ -5,6 +5,8 @@ import static edu.wpi.first.units.Units.Revolutions;
 import static edu.wpi.first.units.Units.RevolutionsPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
+import java.util.function.Supplier;
+
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
@@ -15,7 +17,9 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -32,8 +36,6 @@ public abstract class MechanismsIOHardwareBase {
   protected final StatusSignal<AngularVelocity> velocitySignal;
   protected final StatusSignal<Voltage> voltageSignal;
   protected final StatusSignal<Current> currentSignal;
-
-  private double targetVelocity = 0.0;
 
   protected MechanismsIOHardwareBase(int motorID, double statorCurrentLimit,
       double peakForwardDutyCycle, double peakReverseDutyCycle, String logPrefix) {
@@ -54,6 +56,11 @@ public abstract class MechanismsIOHardwareBase {
     motorOutput.PeakForwardDutyCycle = peakForwardDutyCycle;
     motorOutput.PeakReverseDutyCycle = peakReverseDutyCycle;
     motor.getConfigurator().apply(motorOutput);
+  }
+
+  // blocks robot for 0.1 seconds, dont call during match
+  public void setNeutralMode(NeutralModeValue neutralMode) {
+    motor.setNeutralMode(neutralMode);
   }
 
   public double getPositionRevolutions() {
@@ -90,13 +97,11 @@ public abstract class MechanismsIOHardwareBase {
   }
 
   public void setVelocityVoltage(double velocityRevolutionsPerSecond) {
-    targetVelocity = velocityRevolutionsPerSecond;
     SmartDashboard.putNumber(logPrefix + "targetVelocityRevolutionsPerSecond", velocityRevolutionsPerSecond);
     motor.setControl(new VelocityVoltage(velocityRevolutionsPerSecond));
   }
 
   public void setVelocityVoltage(VelocityVoltage request) {
-    targetVelocity = request.Velocity;
     motor.setControl(request);
   }
 
@@ -117,11 +122,23 @@ public abstract class MechanismsIOHardwareBase {
    * Checks if the mechanism has reached the target velocity within tolerance.
    *
    * @param tolerance the velocity tolerance in revolutions per second
+   * @param targetVelocitySupplier a supplier for the target velocity in revolutions per second
    * @return true if the current velocity is within tolerance of the target velocity
    */
-  public boolean atTargetVelocity(double tolerance) {
+  public boolean atTargetVelocity(double tolerance, Supplier<Double> targetVelocitySupplier) {
     double currentVelocity = getMotorVelocityRevolutionsPerSecond();
-    return Math.abs(currentVelocity - targetVelocity) <= tolerance;
+    return Math.abs(currentVelocity - targetVelocitySupplier.get()) <= tolerance;
+  }
+
+  /**
+   * Checks if the mechanism has reached the target velocity within tolerance.
+   * 
+   * @param tolerance the velocity tolerance in revolutions per second
+   * @param targetVelocity the target velocity in revolutions per second
+   * @return true if the current velocity is within tolerance of the target velocity
+   */
+  public boolean atTargetVelocity(double tolerance, double targetVelocity) {
+    return atTargetVelocity(tolerance, () -> targetVelocity);
   }
 
   /**
@@ -130,8 +147,8 @@ public abstract class MechanismsIOHardwareBase {
    * @param tolerance the velocity tolerance in revolutions per second
    * @return a Trigger that activates when at target velocity
    */
-  public Trigger atTargetVelocityTrigger(double tolerance) {
-    return new Trigger(() -> atTargetVelocity(tolerance));
+  public Trigger atTargetVelocityTrigger(double tolerance, Supplier<Double> targetVelocitySupplier) {
+    return new Trigger(() -> atTargetVelocity(tolerance, targetVelocitySupplier));
   }
 
   public void setInverted(boolean isInverted) {
