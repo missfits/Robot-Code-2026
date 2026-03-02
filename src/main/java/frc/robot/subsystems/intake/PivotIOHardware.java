@@ -87,9 +87,9 @@ public class PivotIOHardware extends MechanismsIOHardwareBase {
     slot0Configs.kA = PivotConstants.kA;
 
     var motionMagicConfigs = talonFXConfigs.MotionMagic;
-    motionMagicConfigs.MotionMagicCruiseVelocity = PivotConstants.CRUISE_VELOCITY;
-    motionMagicConfigs.MotionMagicAcceleration = PivotConstants.ACCELERATION;
-    motionMagicConfigs.MotionMagicJerk = PivotConstants.JERK;
+    motionMagicConfigs.MotionMagicCruiseVelocity = PivotConstants.CRUISE_VELOCITY / PivotConstants.DEGREES_PER_REVOLUTION * 360;
+    motionMagicConfigs.MotionMagicAcceleration = PivotConstants.ACCELERATION / PivotConstants.DEGREES_PER_REVOLUTION * 360;
+    motionMagicConfigs.MotionMagicJerk = PivotConstants.JERK / PivotConstants.DEGREES_PER_REVOLUTION * 360;
 
     var motorOutputConfigs = talonFXConfigs.MotorOutput;
     motorOutputConfigs.PeakForwardDutyCycle = PivotConstants.PEAK_FORWARD_DUTY_CYCLE;
