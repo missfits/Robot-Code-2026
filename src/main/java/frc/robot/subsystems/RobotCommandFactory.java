@@ -85,11 +85,11 @@ public class RobotCommandFactory {
 
   // --- INTAKE COMMANDS ---
   public Command deployPivotCommand() {
-    return m_pivot.velocityCommand(m_pivotDeployVelocitySupplier).withName("deployPivot");
+    return m_pivot.voltageCommand(m_pivotDeployVelocitySupplier).withName("deployPivot");
   }
 
   public Command storePivotCommand() {
-    return m_pivot.velocityCommand(m_pivotStoreVelocitySupplier).withName("storePivot");
+    return m_pivot.voltageCommand(m_pivotStoreVelocitySupplier).withName("storePivot");
   }
 
   public Command runRollerCommand() {
