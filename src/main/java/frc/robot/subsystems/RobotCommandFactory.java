@@ -298,4 +298,8 @@ public class RobotCommandFactory {
     return m_shooterVelocitySupplier.get();
   }
 
+  public double getCalculatedShooterVelocity() {
+    return m_shooterVelocityCalculatedSupplier.get();
+  }
+
 }

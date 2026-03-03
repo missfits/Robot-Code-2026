@@ -476,6 +476,15 @@ public class RobotContainer {
     SmartDashboard.putNumber("robot command factory/to hub shooter velocity", m_robotCommandFactory.getTargetShooterVelocity());
   }
 
+
+  public void logShootByDistanceValues() {
+    // Robot Command Factory Logging 
+    SmartDashboard.putNumber("robot command factory/distance to hub", m_robotCommandFactory.getDistanceToHub());
+    SmartDashboard.putNumber("robot command factory/angle to hub", m_robotCommandFactory.getAngleToHub());
+    SmartDashboard.putNumber("robot command factory/to hub shooter velocity", m_robotCommandFactory.getCalculatedShooterVelocity());
+
+  }
+
   private void resetControllerConstantsSmartDashboard() {
     // Indexer
     IndexerConstants.kP = SmartDashboard.getNumber("indexer IO/kP", 0);
