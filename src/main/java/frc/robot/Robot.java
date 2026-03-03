@@ -8,6 +8,7 @@ import org.ironmaple.simulation.SimulatedArena;
 
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
@@ -29,6 +30,11 @@ public class Robot extends TimedRobot {
   private final Encoder m_intakeEncoder = new Encoder(0, 1);
   private final AnalogPotentiometer m_intakePot = new AnalogPotentiometer(1, 90);
   private final MechanismLigament2d m_intake;
+
+  // Loop timing tracking
+  private double m_lastLoopStartTime = 0;
+  private double m_loopToLoopTime = 0;
+  private double m_loopExecutionTime = 0;
 
 
   /**
@@ -57,16 +63,41 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    // --- LOOP TIMING START ---
+    double loopStartTime = Timer.getFPGATimestamp();
+
+    // Log timing in milliseconds
+    SmartDashboard.putNumber("controlLoopTiming/loopToLoopMs", m_loopToLoopTime * 1000); // should be ~20ms, issue if > 25ms
+    SmartDashboard.putNumber("controlLoopTiming/loopExecutionMs", m_loopExecutionTime * 1000); // should be <15ms, issue if >20ms
+    SmartDashboard.putBoolean("controlLoopTiming/overrun", m_loopExecutionTime > 0.020);
+
+    m_loopToLoopTime = loopStartTime - m_lastLoopStartTime;
+    m_lastLoopStartTime = loopStartTime;
+
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
+    double schedulerStart = Timer.getFPGATimestamp();
     CommandScheduler.getInstance().run();
+    double schedulerTime = Timer.getFPGATimestamp() - schedulerStart;
+    SmartDashboard.putNumber("controlLoopTiming/schedulerMs", schedulerTime * 1000);
+
     m_intake.setAngle(m_intakePot.get());
 
     // Update pose estimate with vision measurements
+    double visionStart = Timer.getFPGATimestamp();
+
     m_robotContainer.updatePoseEst();
+
+    double visionTime = Timer.getFPGATimestamp() - visionStart;
+    SmartDashboard.putNumber("controlLoopTiming/visionMs", visionTime * 1000); // time for updatePoseEst() to run
+
     // m_robotContainer.logToSmartDashboard();
+
+    // --- LOOP TIMING END ---
+    double loopEndTime = Timer.getFPGATimestamp();
+    m_loopExecutionTime = loopEndTime - loopStartTime;
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
