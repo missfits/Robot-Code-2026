@@ -224,7 +224,7 @@ public final class Constants {
 
     // Intake volts
     public static double ROLLER_VOLTAGE = 1.0;
-    public static double ROLLER_BACK_VOLTAGE = 1.0;
+    public static double ROLLER_BACK_VOLTAGE = -1.0;
 
     // Intake motor velocities
     public static double ROLLER_VELOCITY = 40.0;
@@ -306,12 +306,7 @@ public final class Constants {
     public static double COLUMN_VOLTAGE = 1.0;
 
     // Column motor velocities
-    public static double COLUMN_VELOCITY = 50.0;
-
-    public static double COLUMN_TESTING_VELOCITY1 = 25.0;
-    public static double COLUMN_TESTING_VELOCITY2 = 35.0;
-    public static double COLUMN_TESTING_VELOCITY3 = 45.0;
-    public static double COLUMN_TESTING_VELOCITY4 = 55.0;
+    public static double COLUMN_VELOCITY = 75.0;
 
     // PID gains
     // Tuned in shop 2/12
@@ -360,11 +355,6 @@ public final class Constants {
 
     public static double SHOOTER_VOLTAGE = 1.0;
     public static double SHOOTER_BACK_VOLTAGE = -1.0;
-
-    public static double SHOOTER_TESTING_VELOCITY1 = 55.0;
-    public static double SHOOTER_TESTING_VELOCITY2 = 60.0;
-    public static double SHOOTER_TESTING_VELOCITY3 = 65.0;
-    public static double SHOOTER_TESTING_VELOCITY4 = 70.0;
 
     // Influencer PID/FF gains
     public static double INFLUENCER_kP = 0.3;
