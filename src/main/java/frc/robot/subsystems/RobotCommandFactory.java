@@ -114,6 +114,10 @@ public class RobotCommandFactory {
     ).withName("runIntakeRollersBack");
   }
 
+  public Command runColumnCommand() {
+    return m_column.velocityCommand(m_columnVelocitySupplier);
+  }
+
   public Command deployIntake() {
     return Commands.parallel(
       deployPivotCommand(),
@@ -237,6 +241,10 @@ public class RobotCommandFactory {
    */
   public Command shootManualTestCommand(double velocity) {
     return m_shooter.shooterVelocityCommand(velocity);
+  }
+
+  public Command shootManualTestCommand() {
+    return m_shooter.shooterVelocityCommand(m_shooterVelocitySupplier);
   }
 
   // HELPER FUNCTIONS

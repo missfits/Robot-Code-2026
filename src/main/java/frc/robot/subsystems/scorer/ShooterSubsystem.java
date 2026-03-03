@@ -101,14 +101,14 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
   public void periodic() {
     super.periodic();
 
-    SmartDashboard.putNumber("shooter follower/current", m_followerIO.getCurrent());
-    SmartDashboard.putNumber("shooter influencer/current", m_influencerIO.getCurrent());
+    SmartDashboard.putNumber("shooter follower IO/live current", m_followerIO.getCurrent());
+    SmartDashboard.putNumber("shooter follower IO/live position", m_followerIO.getPositionDegrees());
+    SmartDashboard.putNumber("shooter follower IO/live velocity", m_followerIO.getVelocityDegreesPerSecond());
+    SmartDashboard.putNumber("shooter follower IO/live voltage", m_followerIO.getVoltage());
 
-    SmartDashboard.putNumber("shooter influencer/voltage", m_influencerIO.getVoltage());
-    SmartDashboard.putNumber("shooter influencer/velocityDPS", m_influencerIO.getVelocityDegreesPerSecond());
-    SmartDashboard.putNumber("shooter influencer/velocityRadiansPS", m_influencerIO.getVelocityRadiansPerSecond());
-    SmartDashboard.putNumber("shooter influencer/velocityRevolutionsPS", m_influencerIO.getMotorVelocityRevolutionsPerSecond());
-
-
+    SmartDashboard.putNumber("shooter influencer IO/live current", m_influencerIO.getCurrent());
+    SmartDashboard.putNumber("shooter influencer IO/live position", m_influencerIO.getPositionDegrees());
+    SmartDashboard.putNumber("shooter influencer IO/live velocity", m_influencerIO.getVelocityDegreesPerSecond());
+    SmartDashboard.putNumber("shooter influencer IO/live voltage", m_influencerIO.getVoltage());
   }
 }

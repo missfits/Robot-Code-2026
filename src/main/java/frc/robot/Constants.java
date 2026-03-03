@@ -167,7 +167,7 @@ public final class Constants {
     public static final double PEAK_REVERSE_DUTY_CYCLE = -0.5;
 
     // Conversions
-    public static final double DEGREES_PER_REVOLUTION = 360./25.*20/30;
+    public static final double DEGREES_PER_REVOLUTION = 360./25.*18./30.;
 
     // Pivot volts
     public static double DEPLOY_VOLTAGE = 3.0;
@@ -180,25 +180,25 @@ public final class Constants {
     public static final double MAX_VELOCITY = 15.0;
 
     // Pivot positions
-    public static double STORE_POSITION_DEGREES = 0;
-    public static double DEPLOY_POSITION_DEGREES = 70;
+    public static double STORE_POSITION_DEGREES = 20;
+    public static double DEPLOY_POSITION_DEGREES = 55;
 
     // Max manual volts
     
     // PID gains
-    public static double kP = 4.8;
+    public static double kP = 0.3;
     public static double kI = 0;
-    public static double kD = 0.1;
+    public static double kD = 0;
 
     // Feed forward values
     public static double kS = 0.25;
     public static double kG = 0.0;
     public static double kV = 0.12;
-    public static double kA = 0.01;
+    public static double kA = 0.0;
 
     // Motion Magic values
-    public static double CRUISE_VELOCITY = 2.0;
-    public static double ACCELERATION = 10;
+    public static double CRUISE_VELOCITY = 0.2;
+    public static double ACCELERATION = 1;
     public static double JERK = 100;
   }
 
@@ -306,7 +306,7 @@ public final class Constants {
     public static double COLUMN_VOLTAGE = 1.0;
 
     // Column motor velocities
-    public static double COLUMN_VELOCITY = 25.0;
+    public static double COLUMN_VELOCITY = 10.0;
 
     public static double COLUMN_TESTING_VELOCITY1 = 25.0;
     public static double COLUMN_TESTING_VELOCITY2 = 35.0;

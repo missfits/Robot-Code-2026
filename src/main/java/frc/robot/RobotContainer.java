@@ -135,8 +135,7 @@ public class RobotContainer {
     if (Utils.isSimulation()) {
       configureBindingsSimulation();
     } else {
-      configureBindingsPracticeField();
-      configureBindingsVision();
+      configureBindingsTestingMechanisms();
     }
 
     setRobotMode(RobotMode.NEUTRAL);
@@ -279,18 +278,27 @@ public class RobotContainer {
     // y: store pivot
     m_testJoystick.y().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.storePivotCommand());
     // b: run roller
-    m_testJoystick.b().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runRollerCommand());
+    m_testJoystick.b().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runRollersBackCommand());
     // a: run roller and indexer 
-    m_testJoystick.a().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runIntakeRollersCommand());
+    m_testJoystick.a().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runIntakeRollersBackCommand());
 
     // left bumper + x: deploy pivot motion magic
     m_testJoystick.leftBumper().and(m_testJoystick.x()).whileTrue(m_pivot.deployPivotCommand());
     // left bumper + y: store pivot motion magic
     m_testJoystick.leftBumper().and(m_testJoystick.y()).whileTrue(m_pivot.storePivotCommand());
     // left bumper + b: run roller back
-    m_testJoystick.leftBumper().and(m_testJoystick.b()).whileTrue(m_robotCommandFactory.runRollersBackCommand());
+    // m_testJoystick.leftBumper().and(m_testJoystick.b()).whileTrue(m_robotCommandFactory.runRollersBackCommand());
     // left bumper + a: run roller and indexer back
-    m_testJoystick.leftBumper().and(m_testJoystick.a()).whileTrue(m_robotCommandFactory.runIntakeRollersBackCommand());
+    // m_testJoystick.leftBumper().and(m_testJoystick.a()).whileTrue(m_robotCommandFactory.runIntakeRollersBackCommand());
+
+    m_testJoystick.leftTrigger().whileTrue(m_pivot.storePivotCommand());
+    m_testJoystick.rightTrigger().whileTrue(
+      new ParallelCommandGroup(
+        m_robotCommandFactory.runIntakeRollersCommand(),
+        m_robotCommandFactory.shootManualTestCommand(),
+        m_column.columnVelocityCommand()
+      )
+    );
 
     m_testJoystick.povCenter().negate().onTrue(new InstantCommand(() -> resetControllerConstantsSmartDashboard()));
 
@@ -408,8 +416,13 @@ public class RobotContainer {
     SmartDashboard.putNumber("pivot IO/velocity", SmartDashboard.getNumber("pivot IO/velocity", PivotConstants.DEPLOY_VELOCITY));
     SmartDashboard.putNumber("pivot IO/voltage", SmartDashboard.getNumber("pivot/voltage", PivotConstants.DEPLOY_VOLTAGE));
 
+    SmartDashboard.putNumber("pivot IO/motion magic velocity", SmartDashboard.getNumber("pivot IO/motion magic velocity", PivotConstants.CRUISE_VELOCITY));
+    SmartDashboard.putNumber("pivot IO/motion magic acceleration", SmartDashboard.getNumber("pivot IO/motion magic acceleration", PivotConstants.ACCELERATION));
+    SmartDashboard.putNumber("pivot IO/motion magic jerk", SmartDashboard.getNumber("pivot IO/motion magic jerk", PivotConstants.JERK));
+
     SmartDashboard.putNumber("pivot/store position", SmartDashboard.getNumber("pivot/store position", PivotConstants.STORE_POSITION_DEGREES));
     SmartDashboard.putNumber("pivot/deploy position", SmartDashboard.getNumber("pivot/deploy position", PivotConstants.DEPLOY_POSITION_DEGREES));
+
 
     // Shooter Influencer
     SmartDashboard.putNumber("shooter influencer IO/kP", SmartDashboard.getNumber("shooter influencer IO/kP", ShooterConstants.INFLUENCER_kP));
@@ -443,6 +456,10 @@ public class RobotContainer {
     PivotConstants.kP = SmartDashboard.getNumber("pivot IO/kP", 0);
     PivotConstants.kI = SmartDashboard.getNumber("pivot IO/kI", 0);
     PivotConstants.kD = SmartDashboard.getNumber("pivot IO/kD", 0);
+
+    PivotConstants.CRUISE_VELOCITY = SmartDashboard.getNumber("pivot IO/motion magic velocity", 0);
+    PivotConstants.ACCELERATION = SmartDashboard.getNumber("pivot IO/motion magic acceleration", 0);
+    PivotConstants.JERK = SmartDashboard.getNumber("pivot IO/motion magic jerk", 0);
 
     PivotConstants.STORE_POSITION_DEGREES = SmartDashboard.getNumber("pivot/store position", 0);
     PivotConstants.DEPLOY_POSITION_DEGREES = SmartDashboard.getNumber("pivot/deploy position", 0);
