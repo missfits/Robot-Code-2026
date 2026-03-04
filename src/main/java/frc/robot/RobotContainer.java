@@ -242,16 +242,13 @@ public class RobotContainer {
     );
 
     // INTAKE TESTING
-    // x: run roller and indexer
+    // x: deploy pivot motion magic
     m_driverJoystick.x().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_pivot.deployPivotCommand());
-    // y: run column
+    // y: store pivot motion magic
     m_driverJoystick.y().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_pivot.storePivotCommand());
     // b: run roller back 
     m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).whileTrue(
-      m_drivetrainCommandFactory.snapToAngle( // drivetrain: snap to angle 
-        () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
-        () -> HubCalculations.angleToHub(m_drivetrain.getState().Pose))
-    );
+      m_robotCommandFactory.snapToHubCommand(() -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY())));
     // a: run roller and indexer back
     m_driverJoystick.a().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runIntakeRollersBackCommand());
 
@@ -280,36 +277,6 @@ public class RobotContainer {
 
     configureDefaultCommandTesting();
 
-    // SHOOTER TESTING
-    // m_driverJoystick.leftTrigger().whileTrue(m_robotCommandFactory.shootManualTestCommand(ShooterConstants.SHOOTER_TESTING_VELOCITY1));
-    // m_driverJoystick.rightTrigger().whileTrue(m_robotCommandFactory.shootManualWithoutSnapCommand());
-
-    // m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).whileTrue(
-    //   m_robotCommandFactory.shootManualWithoutSnapCommand(ShooterConstants.SHOOTER_TESTING_VELOCITY1, ColumnConstants.COLUMN_TESTING_VELOCITY1));
-    // m_driverJoystick.a().and(m_driverJoystick.leftBumper().negate()).whileTrue(
-    //   m_robotCommandFactory.shootManualWithoutSnapCommand(ShooterConstants.SHOOTER_TESTING_VELOCITY1, ColumnConstants.COLUMN_TESTING_VELOCITY2));
-    // m_driverJoystick.x().and(m_driverJoystick.leftBumper().negate()).whileTrue(
-    //   m_robotCommandFactory.shootManualWithoutSnapCommand(ShooterConstants.SHOOTER_TESTING_VELOCITY1, ColumnConstants.COLUMN_TESTING_VELOCITY3));
-    // m_driverJoystick.y().and(m_driverJoystick.leftBumper().negate()).whileTrue(
-    //   m_robotCommandFactory.shootManualWithoutSnapCommand(ShooterConstants.SHOOTER_TESTING_VELOCITY1, ColumnConstants.COLUMN_TESTING_VELOCITY4));
-
-    // // reset the field-centric heading on a button press
-    // m_driverJoystick.leftBumper().and(m_driverJoystick.b()).onTrue(
-    //   m_drivetrain.runOnce(() -> m_drivetrain.resetRotation(AllianceFlipUtil.apply(new Rotation2d(0))))
-    // );
-    // // snap to angle
-    // m_driverJoystick.leftBumper().and(m_driverJoystick.a()).whileTrue(
-    //   m_drivetrainCommandFactory.snapToAngle(
-    //     m_driverJoystickValsSupplier,
-    //     () -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)
-    // ));
-
-    // m_testJoystick.povCenter().negate().onTrue(new InstantCommand(() -> resetControllerConstantsSmartDashboard()));
-
-    // // m_driverJoystick.x().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_indexer.indexerVelocityCommand());
-    // // m_driverJoystick.y().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_column.columnVelocityCommand());
-
-    // m_robotCommandFactory.setDefaultCommand();
   }
 
   // updated 3/1/26

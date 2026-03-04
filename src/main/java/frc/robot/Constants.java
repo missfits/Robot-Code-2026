@@ -307,6 +307,7 @@ public final class Constants {
 
     // Column motor velocities
     public static double COLUMN_VELOCITY = 100.0;
+    public static double COLUMN_RECYCLE_VELOCITY = 40.0;
 
     // PID gains
     // Tuned in shop 2/12
@@ -352,6 +353,7 @@ public final class Constants {
     // Motor velocities
     public static double SHOOTER_VELOCITY = 10.0;
     public static double SHOOTER_BACK_VELOCITY = -1.0;
+    public static double SHOOTER_RECYCLE_VELOCITY = -1.0;
 
     public static double SHOOTER_VOLTAGE = 1.0;
     public static double SHOOTER_BACK_VOLTAGE = -1.0;

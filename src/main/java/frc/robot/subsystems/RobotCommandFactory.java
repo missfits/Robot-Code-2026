@@ -47,6 +47,7 @@ public class RobotCommandFactory {
   private final Supplier<Double> m_rollerVelocitySupplier = () -> setRollerVelocity();
   private final Supplier<Double> m_rollerBackVelocitySupplier = () -> -setRollerVelocity();
   private final Supplier<Double> m_indexerVelocitySupplier = () -> setIndexerVelocity();
+  private final Supplier<Double> m_indexerBackVelocitySupplier = () -> -setIndexerVelocity();
   private final Supplier<Double> m_columnVelocitySupplier = () -> setColumnVelocity();
   private final Supplier<Double> m_shooterVelocitySupplier = () -> setShooterVelocity(); 
   private final Supplier<Double> m_shooterVelocityCalculatedSupplier = () -> calculateShooterVelocity(); 
@@ -84,6 +85,7 @@ public class RobotCommandFactory {
   }
 
   // --- INTAKE COMMANDS ---
+  // pivot
   public Command deployPivotCommand() {
     return m_pivot.velocityCommand(m_pivotDeployVelocitySupplier).withName("deployPivot");
   }
@@ -92,6 +94,7 @@ public class RobotCommandFactory {
     return m_pivot.velocityCommand(m_pivotStoreVelocitySupplier).withName("storePivot");
   }
 
+  // rollers
   public Command runRollerCommand() {
     return m_roller.velocityCommand(m_rollerVelocitySupplier).withName("runRoller");
   }
@@ -100,6 +103,25 @@ public class RobotCommandFactory {
     return m_roller.velocityCommand(m_rollerBackVelocitySupplier).withName("runRollersBack");
   }
 
+  // indexer
+  public Command runIndexerCommand() {
+    return m_indexer.velocityCommand(m_indexerVelocitySupplier).withName("runIndexer");
+  }
+
+  public Command runIndexerBackCommand() {
+    return m_indexer.velocityCommand(m_indexerBackVelocitySupplier).withName("runIndexerBack");
+  }
+
+  // column
+  public Command runColumnCommand() {
+    return m_column.velocityCommand(m_columnVelocitySupplier).withName("runColumn");
+  }
+
+  public Command runColumnBackCommand() {
+    return m_column.velocityCommand(() -> -m_columnVelocitySupplier.get()).withName("runColumnBack");
+  }
+
+  // combos
   public Command runIntakeRollersCommand() {
     return Commands.parallel(
       m_roller.velocityCommand(m_rollerVelocitySupplier),
@@ -114,21 +136,34 @@ public class RobotCommandFactory {
     ).withName("runIntakeRollersBack");
   }
 
-  public Command runColumnCommand() {
-    return m_column.velocityCommand(m_columnVelocitySupplier);
+  public Command outtakeCommand() {
+    return Commands.parallel(
+      runIntakeRollersBackCommand(),
+      runColumnBackCommand(),
+      m_shooter.velocityCommand(ShooterConstants.SHOOTER_RECYCLE_VELOCITY)
+    ).withName("outtake");
   }
 
-  public Command deployIntake() {
+  public Command recycleFuelCommand() {
+    return Commands.parallel(
+      runIntakeRollersCommand(),
+      m_column.velocityCommand(ColumnConstants.COLUMN_RECYCLE_VELOCITY),
+      m_shooter.velocityCommand(ShooterConstants.SHOOTER_RECYCLE_VELOCITY)
+    ).withName("recycleFuel");
+  }
+
+  public Command intakeCommand() {
     return Commands.parallel(
       deployPivotCommand(),
-      runIntakeRollersCommand()
-    ).withName("deployIntake");
+      recycleFuelCommand()
+    ).withName("intake");
   }
 
-  public Command storeIntake() {
+  public Command storeIntakeCommand() {
     return Commands.parallel(
       storePivotCommand(),
       m_roller.offCommand(),
+      m_indexer.offCommand(),
       m_column.offCommand()
     ).withName("storeIntake");
   }
@@ -214,18 +249,18 @@ public class RobotCommandFactory {
    */
   public Command shootToHubCommand(Supplier<Double> shooterSupplier, Supplier<Double> columnSupplier, Supplier<Double> indexerSupplier) {
     return Commands.sequence(
-        new WaitCommand(5) // timeout and just shoot after 5 seconds 
+        new WaitCommand(3) // timeout and just shoot after 5 seconds 
           .until(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose))),
         Commands.parallel(
-        m_shooter.shooterVelocityCommand(shooterSupplier), // run shooter at given velocity  
-        Commands.sequence( // column: 
-          m_column.offCommand() // wait until 
-            .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity 
-          m_column.velocityCommand(columnSupplier)),
-        Commands.sequence( // indexer: 
-          m_indexer.offCommand() // wait until 
-            .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity
-          m_indexer.velocityCommand(indexerSupplier)))
+          m_shooter.shooterVelocityCommand(shooterSupplier), // run shooter at given velocity  
+          Commands.sequence( // column: 
+            m_column.offCommand() // wait until 
+              .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity 
+            m_column.velocityCommand(columnSupplier)),
+          Commands.sequence( // indexer: 
+            m_indexer.offCommand() // wait until 
+              .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity
+            m_indexer.velocityCommand(indexerSupplier)))
     );
   }
 
