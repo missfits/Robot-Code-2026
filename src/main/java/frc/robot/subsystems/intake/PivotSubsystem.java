@@ -1,5 +1,7 @@
 package frc.robot.subsystems.intake;
 
+import java.util.function.DoubleSupplier;
+
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 
@@ -71,15 +73,16 @@ public class PivotSubsystem extends MechanismsSubsystemBase {
   }
 
   public Command deployPivotCommand() {
-    return this.run(() ->  {
-      MotionMagicVoltage request = new MotionMagicVoltage(m_IO.degreesToMotorRevolutions(PivotConstants.DEPLOY_POSITION_DEGREES));
-      m_IO.goToPositionProfiled(request);
-    });
+    return motionMagicVoltageCommand (() -> PivotConstants.DEPLOY_POSITION_DEGREES);
   }
 
   public Command storePivotCommand() {
+    return motionMagicVoltageCommand (() -> PivotConstants.STORE_POSITION_DEGREES);
+  }
+
+  private Command motionMagicVoltageCommand(DoubleSupplier positionSupplier) {
     return this.run(() ->  {
-      MotionMagicVoltage request = new MotionMagicVoltage(m_IO.degreesToMotorRevolutions(PivotConstants.STORE_POSITION_DEGREES));
+      MotionMagicVoltage request = new MotionMagicVoltage(m_IO.degreesToMotorRevolutions(positionSupplier.getAsDouble())).withUpdateFreqHz(30);
       m_IO.goToPositionProfiled(request);
     });
   }
