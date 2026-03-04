@@ -145,7 +145,7 @@ public final class Constants {
     public static final double SNAP_TO_TARGET_DISTANCE_THRESHOLD = 0.05; // 5cm
 
     // angle tolerance (in radians) for atTargetAngle()
-    public static final double ANGLE_TOLERANCE = Math.toRadians(10);
+    public static final double ANGLE_TOLERANCE = Math.toRadians(3);
 
   }
 
@@ -227,7 +227,7 @@ public final class Constants {
     public static double ROLLER_BACK_VOLTAGE = -1.0;
 
     // Intake motor velocities
-    public static double ROLLER_VELOCITY = 40.0;
+    public static double ROLLER_VELOCITY = 35.0;
 
     // Max manual volts
     public static double ROLLER_MAX_MANUAL_VOLTS = 6.0;
@@ -270,7 +270,7 @@ public final class Constants {
     public static double INDEXER_VOLTAGE = 1.0;
 
     // Indexer motor velocity
-    public static double INDEXER_VELOCITY = 50.0;
+    public static double INDEXER_VELOCITY = 70.0;
 
     // Indexer PID/FF gains
     // Tuned in shop 2/12
@@ -306,7 +306,7 @@ public final class Constants {
     public static double COLUMN_VOLTAGE = 1.0;
 
     // Column motor velocities
-    public static double COLUMN_VELOCITY = 75.0;
+    public static double COLUMN_VELOCITY = 100.0;
 
     // PID gains
     // Tuned in shop 2/12
