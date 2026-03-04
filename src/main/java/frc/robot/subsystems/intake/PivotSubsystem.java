@@ -78,7 +78,7 @@ public class PivotSubsystem extends MechanismsSubsystemBase {
 
   private Command motionMagicVoltageCommand(DoubleSupplier positionSupplier) {
     return this.run(() ->  {
-      MotionMagicVoltage request = new MotionMagicVoltage(m_IO.degreesToMotorRevolutions(positionSupplier.getAsDouble())).withUpdateFreqHz(10);
+      MotionMagicVoltage request = new MotionMagicVoltage(m_IO.degreesToMotorRevolutions(positionSupplier.getAsDouble())).withUpdateFreqHz(30);
       m_IO.goToPositionProfiled(request);
     });
   }
