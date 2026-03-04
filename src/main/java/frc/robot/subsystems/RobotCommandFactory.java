@@ -203,6 +203,31 @@ public class RobotCommandFactory {
         m_indexer.velocityCommand(indexerSupplier)));
   }
 
+  /**
+   * Command that shoots with shooter, column, indexer velocity supplier
+   * Simultaneously runs the shooter, then runs column and indexer **once the drivetrain is at the correct angle**
+   * 
+   * @param shooterSupplier Supplier for shooter velocity
+   * @param columnSupplier Supplier for column velocity
+   * @param indexerSupplier Supplier for indexer velocity
+   * @return Command that shoots with given velocity suppliers
+   */
+  public Command shootToHubCommand(Supplier<Double> shooterSupplier, Supplier<Double> columnSupplier, Supplier<Double> indexerSupplier) {
+    return Commands.sequence(
+        WaitCommand.until(m_drivetrain.atTargetAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose))),
+        Commands.parallel(
+        m_shooter.shooterVelocityCommand(shooterSupplier), // run shooter at given velocity  
+        Commands.sequence( // column: 
+          m_column.offCommand() // wait until 
+            .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity 
+          m_column.velocityCommand(columnSupplier)),
+        Commands.sequence( // indexer: 
+          m_indexer.offCommand() // wait until 
+            .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity
+          m_indexer.velocityCommand(indexerSupplier)))
+    );
+  }
+
   public Command snapToHubCommand(Supplier<JoystickVals> joystickValsSupplier) {
     return m_drivetrainCommandFactory.snapToAngle( // drivetrain: snap to angle 
       joystickValsSupplier,
