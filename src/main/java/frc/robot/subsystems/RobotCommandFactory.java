@@ -214,7 +214,8 @@ public class RobotCommandFactory {
    */
   public Command shootToHubCommand(Supplier<Double> shooterSupplier, Supplier<Double> columnSupplier, Supplier<Double> indexerSupplier) {
     return Commands.sequence(
-        WaitCommand.until(m_drivetrain.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose))),
+        new WaitCommand(5) // timeout and just shoot after 5 seconds 
+          .until(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose))),
         Commands.parallel(
         m_shooter.shooterVelocityCommand(shooterSupplier), // run shooter at given velocity  
         Commands.sequence( // column: 
