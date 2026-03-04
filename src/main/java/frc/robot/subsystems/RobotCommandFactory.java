@@ -142,7 +142,7 @@ public class RobotCommandFactory {
   public Command shootByDistanceCommand(Supplier<JoystickVals> joystickValsSupplier) {
     return Commands.parallel(
       snapToHubCommand(joystickValsSupplier),
-      shootCommand(m_shooterVelocityCalculatedSupplier, m_indexerVelocitySupplier, m_columnVelocitySupplier))
+      shootToHubCommand(m_shooterVelocityCalculatedSupplier, m_columnVelocitySupplier, m_indexerVelocitySupplier))
     .withName("shootByDistance");
   }
 
@@ -160,7 +160,7 @@ public class RobotCommandFactory {
   public Command shootManualCommand(Supplier<JoystickVals> joystickValsSupplier) {
     return Commands.parallel(
       snapToHubCommand(joystickValsSupplier),
-      shootCommand(m_shooterVelocitySupplier, m_columnVelocitySupplier, m_indexerVelocitySupplier))
+      shootToHubCommand(m_shooterVelocitySupplier, m_columnVelocitySupplier, m_indexerVelocitySupplier))
     .withName("shootManual");
   }
 

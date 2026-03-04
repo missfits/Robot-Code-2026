@@ -260,9 +260,11 @@ public class RobotContainer {
     // left bumper + y: store pivot motion magic
     m_driverJoystick.leftBumper().and(m_driverJoystick.y()).whileTrue(m_robotCommandFactory.runColumnCommand());
     // left bumper + b: reset drivetrain rotation 
-    m_driverJoystick.leftBumper().and(m_driverJoystick.b()).whileTrue(m_drivetrain.runOnce(() -> m_drivetrain.resetRotation(AllianceFlipUtil.apply(new Rotation2d(0)))));
+    m_driverJoystick.leftBumper().and(m_driverJoystick.b()).whileTrue(
+      new InstantCommand(() -> m_drivetrain.resetRotation(AllianceFlipUtil.apply(new Rotation2d(0)))));
     // left bumper + a: reset pivot to deploy position 
-    m_driverJoystick.leftBumper().and(m_driverJoystick.a()).whileTrue(new InstantCommand(() -> m_pivot.resetToDeployPosition()));
+    m_driverJoystick.leftBumper().and(m_driverJoystick.a()).whileTrue(new InstantCommand(
+      () -> m_pivot.resetToDeployPosition()));
 
     // run shooter
     m_driverJoystick.leftTrigger().whileTrue(m_robotCommandFactory.shootByDistanceCommand(() -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY())));
