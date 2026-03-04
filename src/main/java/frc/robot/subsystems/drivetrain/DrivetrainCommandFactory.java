@@ -151,14 +151,17 @@ public class DrivetrainCommandFactory {
         });
     }
 
-    private boolean atTargetAngle() {
-        return Math.abs(m_drivetrain.getState().Pose.getRotation().minus(targetAngle).getRadians()) < DrivetrainConstants.ANGLE_TOLERANCE;
+    private boolean atAngle(Supplier<Rotation2d> angleSupplier) {
+        return Math.abs(m_drivetrain.getState().Pose.getRotation().minus(angleSupplier.get()).getRadians()) < DrivetrainConstants.ANGLE_TOLERANCE;
     }
 
     public Trigger atTargetAngleTrigger() {
-        return new Trigger(() -> atTargetAngle());
+        return new Trigger(() -> atAngle(() -> targetAngle));
     }
 
+    public Trigger atAngleTrigger(Supplier<Rotation2d> angleSupplier) {
+        return new Trigger(() -> atAngle(angleSupplier));
+    }
 
     // ----- SYSID -----
     public Command sysIdQuasistaticTranslationForward() {

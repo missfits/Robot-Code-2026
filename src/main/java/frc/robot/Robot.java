@@ -94,6 +94,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("controlLoopTiming/visionMs", visionTime * 1000); // time for updatePoseEst() to run
 
     // m_robotContainer.logToSmartDashboard();
+    m_robotContainer.logShootByDistanceValues();
 
     // --- LOOP TIMING END ---
     double loopEndTime = Timer.getFPGATimestamp();
