@@ -17,18 +17,18 @@ public class ShooterLookupTable {
   static {
     // Initialize the lookup table with placeholder values
     // Format: distance in meters -> velocity in rotations per second
-    DISTANCE_TO_VELOCITY_MAP.put(0.5, 0.0);   // 0.5m 
-    DISTANCE_TO_VELOCITY_MAP.put(1.0, 0.0);   // 1.0m 
-    DISTANCE_TO_VELOCITY_MAP.put(1.5, 0.0);   // 1.5m 
-    DISTANCE_TO_VELOCITY_MAP.put(2.0, 0.0);   // 2.0m 
-    DISTANCE_TO_VELOCITY_MAP.put(2.5, 0.0);   // 2.5m 
-    DISTANCE_TO_VELOCITY_MAP.put(3.0, 0.0);   // 3.0m 
-    DISTANCE_TO_VELOCITY_MAP.put(3.5, 0.0);   // 3.5m 
-    DISTANCE_TO_VELOCITY_MAP.put(4.0, 0.0);   // 4.0m 
-    DISTANCE_TO_VELOCITY_MAP.put(4.5, 0.0);   // 4.5m 
-    DISTANCE_TO_VELOCITY_MAP.put(5.0, 0.0);   // 5.0m 
-    DISTANCE_TO_VELOCITY_MAP.put(5.5, 0.0);   // 5.5m 
-    DISTANCE_TO_VELOCITY_MAP.put(6.0, 0.0);   // 6.0m 
+    DISTANCE_TO_VELOCITY_MAP.put(0.5, 40.);   // 0.5m 
+    DISTANCE_TO_VELOCITY_MAP.put(1.0, 40.);   // 1.0m 
+    DISTANCE_TO_VELOCITY_MAP.put(1.5, 40.);   // 1.5m 
+    DISTANCE_TO_VELOCITY_MAP.put(2.0, 40.);   // 2.0m 
+    DISTANCE_TO_VELOCITY_MAP.put(2.5, 45.);   // 2.5m 
+    // DISTANCE_TO_VELOCITY_MAP.put(3.0, 45.);   // 3.0m 
+    DISTANCE_TO_VELOCITY_MAP.put(3.5, 53.);   // 3.5m 
+    DISTANCE_TO_VELOCITY_MAP.put(4.0, 53.);   // 4.0m 
+    DISTANCE_TO_VELOCITY_MAP.put(4.5, 53.);   // 4.5m 
+    DISTANCE_TO_VELOCITY_MAP.put(5.0, 53.);   // 5.0m 
+    DISTANCE_TO_VELOCITY_MAP.put(5.5, 53.);   // 5.5m 
+    DISTANCE_TO_VELOCITY_MAP.put(6.0, 53.);   // 6.0m 
 
   }
   

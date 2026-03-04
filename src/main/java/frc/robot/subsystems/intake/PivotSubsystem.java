@@ -38,6 +38,10 @@ public class PivotSubsystem extends MechanismsSubsystemBase {
     m_IO.resetPosition();
   }
 
+  public void resetToDeployPosition() {
+    m_IO.setPositionDegrees(PivotConstants.DEPLOY_POSITION_DEGREES);
+  }
+
   @Override
   public void periodic() {
     super.periodic();
