@@ -99,7 +99,7 @@ public class RobotCommandFactory {
     return m_roller.velocityCommand(m_rollerVelocitySupplier).withName("runRoller");
   }
 
-  public Command runRollersBackCommand() {
+  public Command runRollerBackCommand() {
     return m_roller.velocityCommand(m_rollerBackVelocitySupplier).withName("runRollersBack");
   }
 

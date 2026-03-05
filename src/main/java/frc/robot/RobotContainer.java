@@ -119,6 +119,8 @@ public class RobotContainer {
 
   private final CommandXboxController m_driverJoystick =
     new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  private final CommandXboxController m_operatorJoystick =
+    new CommandXboxController(OperatorConstants.kOperatorControllerPort);
   private final CommandXboxController m_testJoystick =
     new CommandXboxController(OperatorConstants.kTestControllerPort);
 
@@ -241,7 +243,7 @@ public class RobotContainer {
       )
     );
 
-    // INTAKE TESTING
+    // DRIVER
     // x: deploy pivot motion magic
     m_driverJoystick.x().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_pivot.deployPivotCommand());
     // y: store pivot motion magic
@@ -265,15 +267,29 @@ public class RobotContainer {
 
     // run shooter
     m_driverJoystick.leftTrigger().whileTrue(m_robotCommandFactory.shootByDistanceCommand(() -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY())));
-    m_driverJoystick.rightTrigger().whileTrue(
-      new ParallelCommandGroup(
-        m_robotCommandFactory.runIntakeRollersCommand(),
-        m_robotCommandFactory.shootManualTestCommand(),
-        m_column.columnVelocityCommand()
-      )
-    );
+    m_driverJoystick.rightTrigger().whileTrue(m_robotCommandFactory.recycleFuelCommand());
 
     m_driverJoystick.povCenter().negate().onTrue(new InstantCommand(() -> resetControllerConstantsSmartDashboard()));
+
+    // OPERATOR
+    // x: run intake
+    m_operatorJoystick.x().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runRollerCommand());
+    // y: store pivot motion magic
+    m_operatorJoystick.y().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runIndexerCommand());
+    // b: run roller back 
+    m_operatorJoystick.b().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runColumnCommand());
+    // a: run roller and indexer back
+    // m_operatorJoystick.a().and(m_driverJoystick.leftBumper().negate()).whileTrue();
+
+    // left bumper + x: deploy pivot motion magic
+    m_driverJoystick.leftBumper().and(m_driverJoystick.x()).whileTrue(m_robotCommandFactory.runRollerBackCommand());
+    // left bumper + y: store pivot motion magic
+    m_driverJoystick.leftBumper().and(m_driverJoystick.y()).whileTrue(m_robotCommandFactory.runIndexerBackCommand());
+    // left bumper + b: reset drivetrain rotation 
+    m_driverJoystick.leftBumper().and(m_driverJoystick.b()).whileTrue(m_robotCommandFactory.runColumnBackCommand());
+    // left bumper + a: reset pivot to deploy position 
+    // m_driverJoystick.leftBumper().and(m_driverJoystick.a()).whileTrue();
+
 
     configureDefaultCommandTesting();
 
@@ -286,7 +302,7 @@ public class RobotContainer {
     // y: store pivot
     m_testJoystick.y().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.storePivotCommand());
     // b: run roller
-    m_testJoystick.b().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runRollersBackCommand());
+    m_testJoystick.b().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runRollerBackCommand());
     // a: run roller and indexer 
     m_testJoystick.a().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runIntakeRollersBackCommand());
 

@@ -26,7 +26,8 @@ import frc.robot.generated.TunerConstants;
 public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
-    public static final int kTestControllerPort = 1;
+    public static final int kOperatorControllerPort = 1;
+    public static final int kTestControllerPort = 2;
 
     // Joystick deadband values
     public static final double DRIVE_JOYSTICK_DEADBAND = 0.1;
