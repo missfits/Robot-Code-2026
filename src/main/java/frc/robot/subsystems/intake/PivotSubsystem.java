@@ -88,6 +88,13 @@ public class PivotSubsystem extends MechanismsSubsystemBase {
     );
   }
 
+  public Command repeatingDisplaceFuelCommand() {
+    return Commands.repeatingSequence(
+      displaceFuelCommand(),
+      Commands.waitSeconds(PivotConstants.DISPLACE_FUEL_DELAY)
+    );
+  }
+
   
   private Command motionMagicVoltageCommand(DoubleSupplier positionSupplier) {
     return this.run(() ->  {
