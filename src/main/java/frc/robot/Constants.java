@@ -181,7 +181,12 @@ public final class Constants {
 
     // Pivot positions
     public static double STORE_POSITION_DEGREES = 10;
+    public static double DISPLACE_FUEL_POSITION_DEGREES = 35;
     public static double DEPLOY_POSITION_DEGREES = 55;
+
+    // Timeout values for displace fuel command 
+    public static final double DISPLACE_FUEL_UP_TIMEOUT = 0.25; // TODO: tune
+    public static final double DISPLACE_FUEL_DOWN_TIMEOUT = 0.25;
 
     // Max manual volts
     

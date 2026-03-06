@@ -8,6 +8,7 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.subsystems.MechanismsSubsystemBase;
 
@@ -80,6 +81,14 @@ public class PivotSubsystem extends MechanismsSubsystemBase {
     return motionMagicVoltageCommand (() -> PivotConstants.STORE_POSITION_DEGREES);
   }
 
+  public Command displaceFuelCommand() {
+    return Commands.sequence(
+      motionMagicVoltageCommand(() -> PivotConstants.DISPLACE_FUEL_POSITION_DEGREES).withTimeout(PivotConstants.DISPLACE_FUEL_UP_TIMEOUT), 
+      motionMagicVoltageCommand(() -> PivotConstants.DEPLOY_POSITION_DEGREES).withTimeout(PivotConstants.DISPLACE_FUEL_DOWN_TIMEOUT)
+    );
+  }
+
+  
   private Command motionMagicVoltageCommand(DoubleSupplier positionSupplier) {
     return this.run(() ->  {
       MotionMagicVoltage request = new MotionMagicVoltage(m_IO.degreesToMotorRevolutions(positionSupplier.getAsDouble())).withUpdateFreqHz(30);
