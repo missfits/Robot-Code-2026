@@ -101,7 +101,7 @@ public class RobotCommandFactory {
   }
 
   public Command runRollerBackCommand() {
-    return m_roller.velocityCommand(m_rollerBackVelocitySupplier).withName("runRollersBack");
+    return m_roller.velocityCommand(m_rollerBackVelocitySupplier).withName("runRollerBack");
   }
 
   // indexer
@@ -206,7 +206,7 @@ public class RobotCommandFactory {
    */
   public Command shootToHubCommand(Supplier<Double> shooterSupplier, Supplier<Double> columnSupplier, Supplier<Double> indexerSupplier) {
     return Commands.sequence(
-        new WaitCommand(3) // timeout and just shoot after 5 seconds 
+        new WaitCommand(3) // timeout and just shoot after 3 seconds 
           .until(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose))),
         Commands.parallel(
           m_shooter.shooterVelocityCommand(shooterSupplier), // run shooter at given velocity  
