@@ -272,23 +272,30 @@ public class RobotContainer {
     m_driverJoystick.povCenter().negate().onTrue(new InstantCommand(() -> resetControllerConstantsSmartDashboard()));
 
     // OPERATOR
-    // x: run intake
-    m_operatorJoystick.x().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runRollerCommand());
-    // y: store pivot motion magic
-    m_operatorJoystick.y().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runIndexerCommand());
-    // b: run roller back 
-    m_operatorJoystick.b().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runColumnCommand());
-    // a: run roller and indexer back
-    // m_operatorJoystick.a().and(m_driverJoystick.leftBumper().negate()).whileTrue();
-
-    // left bumper + x: deploy pivot motion magic
-    m_driverJoystick.leftBumper().and(m_driverJoystick.x()).whileTrue(m_robotCommandFactory.runRollerBackCommand());
-    // left bumper + y: store pivot motion magic
-    m_driverJoystick.leftBumper().and(m_driverJoystick.y()).whileTrue(m_robotCommandFactory.runIndexerBackCommand());
-    // left bumper + b: reset drivetrain rotation 
-    m_driverJoystick.leftBumper().and(m_driverJoystick.b()).whileTrue(m_robotCommandFactory.runColumnBackCommand());
-    // left bumper + a: reset pivot to deploy position 
-    // m_driverJoystick.leftBumper().and(m_driverJoystick.a()).whileTrue();
+    // x: manual shoot at closest distance
+    m_operatorJoystick.x().and(m_driverJoystick.leftBumper().negate()).whileTrue(
+      m_robotCommandFactory.backupScoreCommand(ShooterConstants.SHOOTER_DISTANCE1_VELOCITY)
+    );
+    // y: manual shoot at close distance
+    m_operatorJoystick.y().and(m_driverJoystick.leftBumper().negate()).whileTrue(
+      m_robotCommandFactory.backupScoreCommand(ShooterConstants.SHOOTER_DISTANCE2_VELOCITY)
+    );
+    // b: manual shoot at far distance
+    m_operatorJoystick.y().and(m_driverJoystick.leftBumper().negate()).whileTrue(
+      m_robotCommandFactory.backupScoreCommand(ShooterConstants.SHOOTER_DISTANCE3_VELOCITY)
+    );
+    // a: manual shoot at furthest distance
+    m_operatorJoystick.y().and(m_driverJoystick.leftBumper().negate()).whileTrue(
+      m_robotCommandFactory.backupScoreCommand(ShooterConstants.SHOOTER_DISTANCE4_VELOCITY)
+    );
+    // left bumper + x: run roller back
+    m_operatorJoystick.leftBumper().and(m_driverJoystick.x()).whileTrue(m_robotCommandFactory.runRollerBackCommand());
+    // left bumper + y: run indexer back
+    m_operatorJoystick.leftBumper().and(m_driverJoystick.y()).whileTrue(m_robotCommandFactory.runIndexerBackCommand());
+    // left bumper + b: run column back
+    m_operatorJoystick.leftBumper().and(m_driverJoystick.b()).whileTrue(m_robotCommandFactory.runColumnBackCommand());
+    // left bumper + a: run shooter back
+    m_operatorJoystick.leftBumper().and(m_driverJoystick.a()).whileTrue(m_robotCommandFactory.runShooterBackCommand());
 
 
     configureDefaultCommandTesting();

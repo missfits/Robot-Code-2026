@@ -50,6 +50,7 @@ public class RobotCommandFactory {
   private final Supplier<Double> m_indexerBackVelocitySupplier = () -> -setIndexerVelocity();
   private final Supplier<Double> m_columnVelocitySupplier = () -> setColumnVelocity();
   private final Supplier<Double> m_shooterVelocitySupplier = () -> setShooterVelocity(); 
+  private final Supplier<Double> m_shooterBackVelocitySupplier = () -> -setShooterVelocity(); 
   private final Supplier<Double> m_shooterVelocityCalculatedSupplier = () -> calculateShooterVelocity(); 
 
   public RobotCommandFactory(CommandSwerveDrivetrain drivetrain, 
@@ -168,6 +169,10 @@ public class RobotCommandFactory {
     ).withName("storeIntake");
   }
 
+  public Command runShooterBackCommand() {
+    return m_shooter.velocityCommand(m_shooterBackVelocitySupplier);
+  }
+
   // --- SCORE COMMANDS ---
 
   /**
@@ -214,6 +219,15 @@ public class RobotCommandFactory {
   public Command shootManualTestCommand() {
     return m_shooter.shooterVelocityCommand(m_shooterVelocitySupplier)
       .withName("shootManualTest");
+  }
+
+  public Command backupScoreCommand(double velocity) {
+    return Commands.parallel(
+      m_shooter.velocityCommand(velocity),
+      m_roller.velocityCommand(RollerConstants.ROLLER_VELOCITY),
+      m_indexer.velocityCommand(IndexerConstants.INDEXER_VELOCITY),
+      m_column.velocityCommand(ColumnConstants.COLUMN_VELOCITY)
+    );
   }
 
   /**

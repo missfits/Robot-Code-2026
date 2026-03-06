@@ -354,7 +354,13 @@ public final class Constants {
     // Motor velocities
     public static double SHOOTER_VELOCITY = 10.0;
     public static double SHOOTER_BACK_VELOCITY = -1.0;
-    public static double SHOOTER_RECYCLE_VELOCITY = -1.0;
+    public static double SHOOTER_RECYCLE_VELOCITY = 10.0;
+
+    public static double SHOOTER_DISTANCE1_VELOCITY = 45.0;
+    public static double SHOOTER_DISTANCE2_VELOCITY = 50.0;
+    public static double SHOOTER_DISTANCE3_VELOCITY = 55.0;
+    public static double SHOOTER_DISTANCE4_VELOCITY = 60.0;
+
 
     public static double SHOOTER_VOLTAGE = 1.0;
     public static double SHOOTER_BACK_VOLTAGE = -1.0;
