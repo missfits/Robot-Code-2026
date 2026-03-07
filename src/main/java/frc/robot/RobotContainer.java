@@ -520,14 +520,17 @@ public class RobotContainer {
    * Define named commands for autonomous paths
    */
   private void createNamedCommands() {
-    // TODO -- REPLACE WITH PROPER COMMAND ONCE IT HAS BEEN WRITTEN 
-    NamedCommands.registerCommand("trigger intake", new WaitCommand(1));
-    NamedCommands.registerCommand("snap to hub", m_drivetrainCommandFactory.snapToAngle(
-      () -> new JoystickVals(0, 0), 
-      HubCalculations.angleToHub(m_drivetrain.getState().Pose).getDegrees())
-      .withTimeout(1.5));
-    NamedCommands.registerCommand("climb", new WaitCommand(1));
-    NamedCommands.registerCommand("shoot", m_shooter.shooterAutoCommand());
+    NamedCommands.registerCommand("trigger intake", 
+      m_robotCommandFactory.runIntakeRollersCommand()); // DOES NOT END 
+     NamedCommands.registerCommand("deploy intake", 
+      m_pivot.deployPivotCommand());
+    NamedCommands.registerCommand("snap to hub", 
+      m_robotCommandFactory.snapToHubCommand(() -> new JoystickVals(0, 0))
+        .withTimeout(0.5));
+    NamedCommands.registerCommand("climb", 
+      new WaitCommand(1));
+    NamedCommands.registerCommand("shoot",
+       m_robotCommandFactory.shootByDistanceCommand(() -> new JoystickVals(0, 0)));
   }
 
   /**

@@ -142,7 +142,7 @@ public class RobotCommandFactory {
   public Command shootByDistanceCommand(Supplier<JoystickVals> joystickValsSupplier) {
     return Commands.parallel(
       snapToHubCommand(joystickValsSupplier),
-      shootToHubCommand(m_shooterVelocityCalculatedSupplier, m_columnVelocitySupplier, m_indexerVelocitySupplier))
+      shootToHubCommandWithDisplacement(m_shooterVelocityCalculatedSupplier, m_columnVelocitySupplier, m_indexerVelocitySupplier))
     .withName("shootByDistance");
   }
 
@@ -160,7 +160,7 @@ public class RobotCommandFactory {
   public Command shootManualCommand(Supplier<JoystickVals> joystickValsSupplier) {
     return Commands.parallel(
       snapToHubCommand(joystickValsSupplier),
-      shootToHubCommand(m_shooterVelocitySupplier, m_columnVelocitySupplier, m_indexerVelocitySupplier))
+      shootToHubCommandWithDisplacement(m_shooterVelocitySupplier, m_columnVelocitySupplier, m_indexerVelocitySupplier))
     .withName("shootManual");
   }
 
@@ -205,6 +205,27 @@ public class RobotCommandFactory {
 
   /**
    * Command that shoots with shooter, column, indexer velocity supplier
+   * Simultaneously runs the shooter, then runs column and indexer
+   * Runs displace fuel command after shooter is at target velocity
+   * 
+   * @param shooterSupplier Supplier for shooter velocity
+   * @param columnSupplier Supplier for column velocity
+   * @param indexerSupplier Supplier for indexer velocity
+   * @return Command that shoots with given velocity suppliers
+   */
+  public Command shootCommandWithDisplacement(Supplier<Double> shooterSupplier, Supplier<Double> columnSupplier, Supplier<Double> indexerSupplier) {
+    return Commands.parallel(
+      shootCommand(shooterSupplier, columnSupplier, indexerSupplier),
+      Commands.sequence(
+        new WaitCommand(1000) // wait until 
+          .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity
+        new WaitCommand(2), // wait 2 seconds for some of the fuel to be shot out 
+        m_pivot.repeatingDisplaceFuelCommand())
+    );
+  }
+
+  /**
+   * Command that shoots with shooter, column, indexer velocity supplier
    * Simultaneously runs the shooter, then runs column and indexer **once the drivetrain is at the correct angle**
    * 
    * @param shooterSupplier Supplier for shooter velocity
@@ -226,6 +247,17 @@ public class RobotCommandFactory {
           m_indexer.offCommand() // wait until 
             .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity
           m_indexer.velocityCommand(indexerSupplier)))
+    );
+  }
+
+  public Command shootToHubCommandWithDisplacement(Supplier<Double> shooterSupplier, Supplier<Double> columnSupplier, Supplier<Double> indexerSupplier) {
+    return Commands.parallel(
+      shootToHubCommand(shooterSupplier, columnSupplier, indexerSupplier),
+      Commands.sequence(
+        new WaitCommand(1000) // wait until 
+          .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity
+        new WaitCommand(2), // wait 2 seconds for some of the fuel to be shot out 
+        m_pivot.repeatingDisplaceFuelCommand())
     );
   }
 
