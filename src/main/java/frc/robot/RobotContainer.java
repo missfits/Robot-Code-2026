@@ -168,19 +168,13 @@ public class RobotContainer {
       // Drivetrain will execute this command periodically
       m_drivetrainCommandFactory.defaultDrive(
         () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
-        () -> new JoystickVals(m_driverJoystick.getRightX(), m_driverJoystick.getRightY()),
-        () -> false
+        () -> new JoystickVals(m_driverJoystick.getRightX(), m_driverJoystick.getRightY())
       )
     );
 
     // Drive in slowmode while right bumper is pressed
-    m_driverJoystick.rightBumper().whileTrue(
-      m_drivetrainCommandFactory.defaultDrive(
-        () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
-        () -> new JoystickVals(m_driverJoystick.getRightX(), m_driverJoystick.getRightY()),
-        () -> true
-      )
-    );
+    m_drivetrainCommandFactory.setSlowmodeButton(m_driverJoystick.rightBumper());
+
 
     m_driverJoystick.leftBumper().and(m_driverJoystick.x()).onTrue(
       new InstantCommand(() -> setRobotMode(RobotMode.NEUTRAL))
@@ -227,19 +221,12 @@ public class RobotContainer {
       // Drivetrain will execute this command periodically
       m_drivetrainCommandFactory.defaultDrive(
         () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
-        () -> new JoystickVals(m_driverJoystick.getRightX(), m_driverJoystick.getRightY()),
-        () -> false
+        () -> new JoystickVals(m_driverJoystick.getRightX(), m_driverJoystick.getRightY())
       )
     );
 
     // Drive in slowmode while right bumper is pressed
-    m_driverJoystick.rightBumper().whileTrue(
-      m_drivetrainCommandFactory.defaultDrive(
-        () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
-        () -> new JoystickVals(m_driverJoystick.getRightX(), m_driverJoystick.getRightY()),
-        () -> true
-      )
-    );
+    m_drivetrainCommandFactory.setSlowmodeButton(m_driverJoystick.rightBumper());
 
     // INTAKE TESTING
     // x: run roller and indexer
@@ -382,19 +369,13 @@ public class RobotContainer {
       // Drivetrain will execute this command periodically
       m_drivetrainCommandFactory.defaultDrive(
         () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
-        () -> new JoystickVals(m_driverJoystick.getRightX(), m_driverJoystick.getRightY()),
-        () -> false
+        () -> new JoystickVals(m_driverJoystick.getRightX(), m_driverJoystick.getRightY())
       )
     );
 
     // Drive in slowmode while right bumper is pressed
-    m_driverJoystick.rightBumper().whileTrue(
-      m_drivetrainCommandFactory.defaultDrive(
-        () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
-        () -> new JoystickVals(m_driverJoystick.getRightX(), m_driverJoystick.getRightY()),
-        () -> true
-      )
-    );
+    m_drivetrainCommandFactory.setSlowmodeButton(m_driverJoystick.rightBumper());
+
 
     Consumer<SwerveDriveState> telemetry =  ((CommandSwerveDrivetrainSim) m_drivetrain)
       .getSimTelemetryConsumer().andThen(logger::telemeterize);

@@ -31,6 +31,8 @@ public class DrivetrainCommandFactory {
 
     private final CommandSwerveDrivetrain m_drivetrain;
 
+    private BooleanSupplier slowmodeSupplier = () -> false;
+
     private Rotation2d targetAngle = new Rotation2d();
 
     public DrivetrainCommandFactory(CommandSwerveDrivetrain drivetrain) {
@@ -39,10 +41,14 @@ public class DrivetrainCommandFactory {
         setHeadingController();
     }
 
+    public void setSlowmodeButton(Trigger slowmodeButton) {
+        slowmodeSupplier = () -> slowmodeButton.getAsBoolean();
+    }
+
     // ----- DEFAULT DRIVE -----
     // Note that X is defined as forward according to WPILib convention,
     // and Y is defined as to the left according to WPILib convention.
-    public Command defaultDrive(Supplier<JoystickVals> translationSupplier, Supplier<JoystickVals> rotationSupplier, BooleanSupplier slowmodeSupplier) {
+    public Command defaultDrive(Supplier<JoystickVals> translationSupplier, Supplier<JoystickVals> rotationSupplier) {
 
         return m_drivetrain.getCommandFromRequest(() -> {
 
@@ -66,7 +72,7 @@ public class DrivetrainCommandFactory {
     }
 
     // ----- SNAP TO ANGLE -----
-    // Drives the robot while automatically rotating to face a specified angle
+    // Drives the robot while automatically rotating to face a specified angle in degrees
     public Command snapToAngle(Supplier<JoystickVals> translationSupplier, double angle) {
         return snapToAngle(translationSupplier, () -> Rotation2d.fromDegrees(angle));
     }
@@ -81,7 +87,9 @@ public class DrivetrainCommandFactory {
             SmartDashboard.putNumber("drivetrain/snap to angle", angleSupplier.get().getDegrees());
             targetAngle = angleSupplier.get();
             JoystickVals translation = translationSupplier.get();
-            JoystickVals shapedValues = Controls.inputShape(translation, true, false);
+            boolean slowmode = slowmodeSupplier.getAsBoolean();
+
+            JoystickVals shapedValues = Controls.inputShape(translation, true, slowmode);
 
             return m_driveFacingAngle.withVelocityX(-shapedValues.y() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive forward with negative Y (forward)
             .withVelocityY(-shapedValues.x() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive left with negative X (left)
@@ -112,7 +120,9 @@ public class DrivetrainCommandFactory {
         return m_drivetrain.getCommandFromRequest(() -> {
 
             JoystickVals translation = translationSupplier.get();
-            JoystickVals shapedValues = Controls.inputShape(translation, true, false);
+            boolean slowmode = slowmodeSupplier.getAsBoolean();
+
+            JoystickVals shapedValues = Controls.inputShape(translation, true, slowmode);
 
             Pose2d targetPose = targetPoseSupplier.get(); // target pose
 
