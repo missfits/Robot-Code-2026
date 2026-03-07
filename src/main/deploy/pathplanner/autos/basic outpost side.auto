@@ -13,25 +13,7 @@
         {
           "type": "named",
           "data": {
-            "name": "snap to hub"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "shoot"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "outpost shooting to climb"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "climb"
           }
         }
       ]
