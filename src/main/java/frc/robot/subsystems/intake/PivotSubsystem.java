@@ -98,6 +98,7 @@ public class PivotSubsystem extends MechanismsSubsystemBase {
   
   private Command motionMagicVoltageCommand(DoubleSupplier positionSupplier) {
     return this.run(() ->  {
+      SmartDashboard.putNumber("pivot IO/motion magic target position", positionSupplier.getAsDouble());
       MotionMagicVoltage request = new MotionMagicVoltage(m_IO.degreesToMotorRevolutions(positionSupplier.getAsDouble())).withUpdateFreqHz(30);
       m_IO.goToPositionProfiled(request);
     });
