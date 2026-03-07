@@ -250,6 +250,17 @@ public class RobotCommandFactory {
     );
   }
 
+  public Command shootToHubCommandWithDisplacement(Supplier<Double> shooterSupplier, Supplier<Double> columnSupplier, Supplier<Double> indexerSupplier) {
+    return Commands.parallel(
+      shootToHubCommand(shooterSupplier, columnSupplier, indexerSupplier),
+      Commands.sequence(
+        new WaitCommand(1000) // wait until 
+          .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity
+        new WaitCommand(2), // wait 2 seconds for some of the fuel to be shot out 
+        m_pivot.repeatingDisplaceFuelCommand())
+    );
+  }
+
   public Command snapToHubCommand(Supplier<JoystickVals> joystickValsSupplier) {
     return m_drivetrainCommandFactory.snapToAngle( // drivetrain: snap to angle 
       joystickValsSupplier,
