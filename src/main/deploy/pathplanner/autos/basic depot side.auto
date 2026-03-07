@@ -46,18 +46,6 @@
           "data": {
             "name": "shoot"
           }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "depot shooting location to depot climb"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "climb"
-          }
         }
       ]
     }
