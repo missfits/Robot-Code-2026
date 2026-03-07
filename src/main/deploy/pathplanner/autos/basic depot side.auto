@@ -38,12 +38,6 @@
         {
           "type": "named",
           "data": {
-            "name": "snap to hub"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "shoot"
           }
         }
