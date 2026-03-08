@@ -96,7 +96,7 @@ public class DrivetrainCommandFactory {
             return m_driveFacingAngle.withVelocityX(-shapedValues.y() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive forward with negative Y (forward)
             .withVelocityY(-shapedValues.x() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive left with negative X (left)
             .withTargetDirection(targetAngle);
-        });
+        }).withName("snapToAngle");
     }
 
     /**
@@ -138,11 +138,11 @@ public class DrivetrainCommandFactory {
             return m_driveFacingAngle.withVelocityX(-shapedValues.y() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive forward with negative Y (forward)
                 .withVelocityY(-shapedValues.x() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive left with negative X (left)
                 .withTargetDirection(angleToTarget);
-        });
+        }).withName("snapToTarget");
     }
 
     public Command snapForBump(Supplier<JoystickVals> translationSupplier) {
-        return snapToAngle(translationSupplier, () -> getBumpAngle(m_drivetrain.getState().Pose));
+        return snapToAngle(translationSupplier, () -> getBumpAngle(m_drivetrain.getState().Pose)).withName("snapForBump");
     }
 
     /**
