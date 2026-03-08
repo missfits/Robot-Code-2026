@@ -468,14 +468,14 @@ public final class Constants {
           ROBOT_TO_CAM1_Z = Units.inchesToMeters(8.3);
           ROBOT_TO_CAM1_ROLL = 0;
           ROBOT_TO_CAM1_PITCH = Units.degreesToRadians(-20);
-          ROBOT_TO_CAM1_YAW = Units.degreesToRadians(135); // estimated
+          ROBOT_TO_CAM1_YAW = Units.degreesToRadians(135)-0.12; // estimated
 
           ROBOT_TO_CAM2_X = Units.inchesToMeters(-21.0/2+2.25);
           ROBOT_TO_CAM2_Y = Units.inchesToMeters(33.0/2-6.5);
           ROBOT_TO_CAM2_Z = Units.inchesToMeters(8.5);
           ROBOT_TO_CAM2_ROLL = 0;
           ROBOT_TO_CAM2_PITCH = Units.degreesToRadians(-20);
-          ROBOT_TO_CAM2_YAW = Units.degreesToRadians(-135); // estimated
+          ROBOT_TO_CAM2_YAW = Units.degreesToRadians(-135)+0.14; // estimated
           break;
 
         case CERIDWEN:
