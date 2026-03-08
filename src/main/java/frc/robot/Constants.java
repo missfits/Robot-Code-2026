@@ -226,14 +226,14 @@ public final class Constants {
     public static final double PEAK_REVERSE_DUTY_CYCLE = -1;
 
     // Conversions
-    public static final double DEGREES_PER_REVOLUTION = 360./3.;
+    public static final double DEGREES_PER_REVOLUTION = 360.;
 
     // Intake volts
     public static double ROLLER_VOLTAGE = 1.0;
     public static double ROLLER_BACK_VOLTAGE = -1.0;
 
     // Intake motor velocities
-    public static double ROLLER_VELOCITY = 35.0;
+    public static double ROLLER_VELOCITY = 100.0;
 
     // Max manual volts
     public static double ROLLER_MAX_MANUAL_VOLTS = 6.0;
