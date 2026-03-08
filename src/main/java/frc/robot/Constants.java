@@ -53,7 +53,7 @@ public final class Constants {
     public static double DRIVE_KV = 0.124;
     public static double DRIVE_KA = 0;
 
-    public static double WHEEL_RADIUS_FUDGE_FACTOR = 1.0;
+    public static double WHEEL_RADIUS_FUDGE_FACTOR = 1.0/1.05;
 
     // Max speeds for drivetrain
     public static final double MAX_TRANSLATION_SPEED = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
