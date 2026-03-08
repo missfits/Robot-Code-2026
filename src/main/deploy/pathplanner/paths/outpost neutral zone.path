@@ -4,15 +4,15 @@
     {
       "anchor": {
         "x": 3.6785093315972226,
-        "y": 2.541507450810185
+        "y": 2.618468605324074
       },
       "prevControl": null,
       "nextControl": {
         "x": 4.678509331597217,
-        "y": 2.541507450810185
+        "y": 2.618468605324074
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "outpost neutral zone start"
     },
     {
       "anchor": {
