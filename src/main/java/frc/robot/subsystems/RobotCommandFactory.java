@@ -273,19 +273,19 @@ public class RobotCommandFactory {
   }
 
   private Double setRollerVelocity() {
-    return SmartDashboard.getNumber("roller IO/velocity", 10);
+    return SmartDashboard.getNumber("roller IO/velocity", RollerConstants.ROLLER_VELOCITY);
   }
 
   private Double setIndexerVelocity() {
-    return SmartDashboard.getNumber("indexer IO/velocity", 10);
+    return SmartDashboard.getNumber("indexer IO/velocity", IndexerConstants.INDEXER_VELOCITY);
   }
 
   private Double setColumnVelocity() {
-    return SmartDashboard.getNumber("column IO/velocity", 10);
+    return SmartDashboard.getNumber("column IO/velocity", ColumnConstants.COLUMN_VELOCITY);
   }
 
   private Double setShooterVelocity() {
-    return SmartDashboard.getNumber("shooter influencer IO/velocity", 10);
+    return SmartDashboard.getNumber("shooter influencer IO/velocity", ShooterConstants.SHOOTER_VELOCITY);
   }
 
   /** 
