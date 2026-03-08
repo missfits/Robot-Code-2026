@@ -142,16 +142,7 @@ public class DrivetrainCommandFactory {
     }
 
     public Command snapForBump(Supplier<JoystickVals> translationSupplier) {
-        return m_drivetrain.getCommandFromRequest(() -> {
-            JoystickVals translation = translationSupplier.get();
-            boolean slowmode = slowmodeSupplier.getAsBoolean();
-
-            JoystickVals shapedValues = Controls.inputShape(translation, true, slowmode);
-
-            return m_driveFacingAngle.withVelocityX(-shapedValues.y() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive forward with negative Y (forward)
-                .withVelocityY(-shapedValues.x() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive left with negative X (left)
-                .withTargetDirection(getBumpAngle(m_drivetrain.getState().Pose));
-        });
+        return snapToAngle(translationSupplier, () -> getBumpAngle(m_drivetrain.getState().Pose));
     }
 
     /**
