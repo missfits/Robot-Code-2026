@@ -68,6 +68,8 @@ import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.events.EventTrigger;
+
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 import com.ctre.phoenix6.SignalLogger;
@@ -520,6 +522,10 @@ public class RobotContainer {
    * Define named commands for autonomous paths
    */
   private void createNamedCommands() {
+
+    new EventTrigger("trigger intake").onTrue(m_robotCommandFactory.runIntakeRollersCommand());
+    new EventTrigger("shoot").onTrue(m_robotCommandFactory.shootByDistanceCommand(() -> new JoystickVals(0, 0)));
+
     NamedCommands.registerCommand("trigger intake", 
       m_robotCommandFactory.runIntakeRollersCommand()); // DOES NOT END 
      NamedCommands.registerCommand("deploy intake", 
