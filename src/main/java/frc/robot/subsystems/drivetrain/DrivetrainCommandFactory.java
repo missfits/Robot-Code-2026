@@ -3,6 +3,7 @@ package frc.robot.subsystems.drivetrain;
 import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
 
 import java.util.function.Supplier;
+import java.lang.reflect.Field;
 import java.util.function.BooleanSupplier;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
@@ -18,7 +19,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.FieldConstants;
 import frc.robot.RobotContainer.JoystickVals;
+import frc.robot.utils.AllianceFlipUtil;
 
 public class DrivetrainCommandFactory {
     /* Setting up bindings for necessary control of the swerve drive platform */
@@ -137,6 +140,35 @@ public class DrivetrainCommandFactory {
                 .withVelocityY(-shapedValues.x() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive left with negative X (left)
                 .withTargetDirection(angleToTarget);
         });
+    }
+
+    public Command snapForBump(Supplier<JoystickVals> translationSupplier) {
+        return m_drivetrain.getCommandFromRequest(() -> {
+            JoystickVals translation = translationSupplier.get();
+            boolean slowmode = slowmodeSupplier.getAsBoolean();
+
+            JoystickVals shapedValues = Controls.inputShape(translation, true, slowmode);
+
+            return m_driveFacingAngle.withVelocityX(-shapedValues.y() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive forward with negative Y (forward)
+                .withVelocityY(-shapedValues.x() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive left with negative X (left)
+                .withTargetDirection(getBumpAngle(m_drivetrain.getState().Pose));
+        });
+    }
+
+    /**
+     * Determines the field-relative heading the robot should use to face the bump.
+     * @param robotPose The robot's current field pose
+     * @return The field-relative heading the robot should face
+     */
+    private Rotation2d getBumpAngle(Pose2d robotPose) {
+        Pose2d blueAlliancePose = AllianceFlipUtil.apply(robotPose); // Normalize to the blue-alliance perspective for a consistent field-side check.
+        Rotation2d blueAllianceHeading;
+        if (blueAlliancePose.getX() < FieldConstants.LinesVertical.hubCenter) { // On the alliance-side half of the field.
+            blueAllianceHeading = Rotation2d.fromDegrees(0); // Face away from the driver station.
+        } else {
+            blueAllianceHeading = Rotation2d.fromDegrees(180); // Face toward the driver station.
+        }
+        return AllianceFlipUtil.apply(blueAllianceHeading); // Convert back to the current alliance's field-relative heading.
     }
 
     public void setHeadingController(){
