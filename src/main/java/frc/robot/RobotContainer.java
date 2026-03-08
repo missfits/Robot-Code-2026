@@ -156,6 +156,8 @@ public class RobotContainer {
     logToSmartDashboard();
 
     SignalLogger.start();
+
+    configureBindingsVision();
   }
 
 
