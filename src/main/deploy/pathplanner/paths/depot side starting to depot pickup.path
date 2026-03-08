@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 0.9584272771871047,
-        "y": 5.965
+        "x": 1.3400187355324078,
+        "y": 5.95
       },
       "prevControl": {
-        "x": 0.7084272771871047,
-        "y": 5.965
+        "x": 1.0900187355324078,
+        "y": 5.95
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "deploy intake",
-      "waypointRelativePos": 0,
+      "name": "trigger intake",
+      "waypointRelativePos": 0.3749218750000006,
       "endWaypointRelativePos": null,
       "command": null
     }
