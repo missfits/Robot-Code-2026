@@ -3,7 +3,6 @@ package frc.robot.subsystems.drivetrain;
 import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
 
 import java.util.function.Supplier;
-import java.lang.reflect.Field;
 import java.util.function.BooleanSupplier;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
