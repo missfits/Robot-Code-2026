@@ -237,14 +237,16 @@ public class RobotContainer {
     m_driverJoystick.x().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runIntakeRollersCommand());
     // y: run column
     m_driverJoystick.y().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runColumnCommand());
-    // b: run roller back 
-    m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).whileTrue(
-      m_drivetrainCommandFactory.snapToAngle( // drivetrain: snap to angle 
-        () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
-        () -> HubCalculations.angleToHub(m_drivetrain.getState().Pose))
-    );
+    // // b: run roller back 
+    // m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).whileTrue(
+    //   m_drivetrainCommandFactory.snapToAngle( // drivetrain: snap to angle 
+    //     () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
+    //     () -> HubCalculations.angleToHub(m_drivetrain.getState().Pose))
+    // );
+
+
     // a: run roller and indexer back
-    m_driverJoystick.a().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.shootManualTestCommand());
+    m_driverJoystick.a().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.shootWithoutDistance());
 
     // left bumper + x: deploy pivot motion magic
     m_driverJoystick.leftBumper().and(m_driverJoystick.x()).whileTrue(m_pivot.storePivotCommand());
@@ -258,14 +260,8 @@ public class RobotContainer {
       () -> m_pivot.resetToDeployPosition()));
 
     // run shooter
-    m_driverJoystick.leftTrigger().whileTrue(m_robotCommandFactory.shootByDistanceCommand(() -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY())));
-    m_driverJoystick.rightTrigger().whileTrue(
-      new ParallelCommandGroup(
-        m_robotCommandFactory.runIntakeRollersCommand(),
-        m_robotCommandFactory.shootManualTestCommand(),
-        m_column.columnVelocityCommand()
-      )
-    );
+    m_driverJoystick.leftTrigger().and(m_driverJoystick.leftBumper().negate()).onTrue(m_robotCommandFactory.shootByDistanceCommand(() -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY())));
+    m_driverJoystick.leftTrigger().and(m_driverJoystick.leftBumper()).onTrue(m_robotCommandFactory.offCommand());
 
     m_driverJoystick.povCenter().negate().onTrue(new InstantCommand(() -> resetControllerConstantsSmartDashboard()));
 
