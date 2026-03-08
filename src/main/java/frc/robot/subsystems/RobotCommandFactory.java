@@ -273,20 +273,22 @@ public class RobotCommandFactory {
    * @return Command that shoots with given velocity suppliers
    */
   public Command shootToHubCommand(Supplier<Double> shooterSupplier, Supplier<Double> columnSupplier, Supplier<Double> indexerSupplier) {
-    return Commands.sequence(
-        new WaitCommand(5) // timeout and just shoot after 5 seconds 
-          .until(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose))),
+    return
         Commands.parallel(
         m_shooter.shooterVelocityCommand(shooterSupplier), // run shooter at given velocity  
         Commands.sequence( // column: 
           m_column.offCommand() // wait until 
-            .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity 
+            .until(m_shooter.atTargetVelocityTrigger(shooterSupplier).and(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))), // shooter at target velocity 
           m_column.velocityCommand(columnSupplier)),
+
+        Commands.sequence( // column: 
+          m_roller.offCommand() // wait until 
+            .until(m_shooter.atTargetVelocityTrigger(shooterSupplier).and(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))), // shooter at target velocity 
+          m_roller.velocityCommand(() -> m_rollerVelocitySupplier.get())),
         Commands.sequence( // indexer: 
           m_indexer.offCommand() // wait until 
-            .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity
-          m_indexer.velocityCommand(indexerSupplier)))
-    );
+            .until(m_shooter.atTargetVelocityTrigger(shooterSupplier).and(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))), // shooter at target velocity
+          m_indexer.velocityCommand(indexerSupplier)));
   }
 
   public Command shootToHubCommandWithDisplacement(Supplier<Double> shooterSupplier, Supplier<Double> columnSupplier, Supplier<Double> indexerSupplier) {
