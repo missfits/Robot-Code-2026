@@ -75,6 +75,16 @@ public class RobotCommandFactory {
     m_shooter.setDefaultCommand(m_shooter.shooterVelocityCommand(10));
   }
 
+  public Command offCommand() {
+    return new ParallelCommandGroup(
+      m_pivot.offCommand(),
+      m_roller.offCommand(),
+      m_indexer.offCommand(),
+      m_column.offCommand(),
+      m_shooter.shooterVelocityCommand(10)
+    );
+  }
+
   public void resetPosition() {
     m_pivot.resetPosition();
     m_roller.resetPosition();
