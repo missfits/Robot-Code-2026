@@ -230,9 +230,9 @@ public class RobotContainer {
 
     // INTAKE TESTING
     // x: run roller and indexer
-    m_driverJoystick.x().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_pivot.deployPivotCommand());
+    m_driverJoystick.x().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runIntakeRollersCommand());
     // y: run column
-    m_driverJoystick.y().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_pivot.storePivotCommand());
+    m_driverJoystick.y().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runColumnCommand());
     // b: run roller back 
     m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).whileTrue(
       m_drivetrainCommandFactory.snapToAngle( // drivetrain: snap to angle 
@@ -240,12 +240,12 @@ public class RobotContainer {
         () -> HubCalculations.angleToHub(m_drivetrain.getState().Pose))
     );
     // a: run roller and indexer back
-    m_driverJoystick.a().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runIntakeRollersBackCommand());
+    m_driverJoystick.a().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.shootManualTestCommand());
 
     // left bumper + x: deploy pivot motion magic
-    m_driverJoystick.leftBumper().and(m_driverJoystick.x()).whileTrue(m_robotCommandFactory.runIntakeRollersCommand());
+    m_driverJoystick.leftBumper().and(m_driverJoystick.x()).whileTrue(m_pivot.storePivotCommand());
     // left bumper + y: store pivot motion magic
-    m_driverJoystick.leftBumper().and(m_driverJoystick.y()).whileTrue(m_robotCommandFactory.runColumnCommand());
+    m_driverJoystick.leftBumper().and(m_driverJoystick.y()).whileTrue(m_pivot.displaceFuelCommand());
     // left bumper + b: reset drivetrain rotation 
     m_driverJoystick.leftBumper().and(m_driverJoystick.b()).whileTrue(
       new InstantCommand(() -> m_drivetrain.resetRotation(AllianceFlipUtil.apply(new Rotation2d(0)))));
