@@ -151,14 +151,14 @@ public class DrivetrainCommandFactory {
      * @return The field-relative heading the robot should face
      */
     private Rotation2d getBumpAngle(Pose2d robotPose) {
-        Pose2d blueAlliancePose = AllianceFlipUtil.apply(robotPose); // Normalize to the blue-alliance perspective for a consistent field-side check.
+        Pose2d blueAlliancePose = AllianceFlipUtil.apply(robotPose); // Normalize to the blue-alliance perspective to check with blue hub
         Rotation2d blueAllianceHeading;
-        if (blueAlliancePose.getX() < FieldConstants.LinesVertical.hubCenter) { // On the alliance-side half of the field.
+        if (blueAlliancePose.getX() < FieldConstants.LinesVertical.hubCenter) { // If in alliance zone
             blueAllianceHeading = Rotation2d.fromDegrees(0); // Face away from the driver station.
         } else {
             blueAllianceHeading = Rotation2d.fromDegrees(180); // Face toward the driver station.
         }
-        return AllianceFlipUtil.apply(blueAllianceHeading); // Convert back to the current alliance's field-relative heading.
+        return AllianceFlipUtil.apply(blueAllianceHeading); // Convert heading back for the current alliance
     }
 
     public void setHeadingController(){
