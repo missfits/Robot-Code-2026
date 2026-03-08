@@ -9,12 +9,6 @@
           "data": {
             "pathName": "outpost neutral zone"
           }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "shoot"
-          }
         }
       ]
     }
