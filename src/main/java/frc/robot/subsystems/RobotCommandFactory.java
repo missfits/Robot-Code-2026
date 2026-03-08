@@ -72,7 +72,7 @@ public class RobotCommandFactory {
     m_roller.setDefaultCommand(m_roller.offCommand());
     m_indexer.setDefaultCommand(m_indexer.offCommand());
     m_column.setDefaultCommand(m_column.offCommand());
-    m_shooter.setDefaultCommand(m_shooter.offCommand());
+    m_shooter.setDefaultCommand(m_shooter.shooterVelocityCommand(10));
   }
 
   public void resetPosition() {
