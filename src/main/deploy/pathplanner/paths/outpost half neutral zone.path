@@ -4,28 +4,28 @@
     {
       "anchor": {
         "x": 3.6785093315972226,
-        "y": 2.0742948495370377
+        "y": 2.618468605324074
       },
       "prevControl": null,
       "nextControl": {
         "x": 4.678509331597217,
-        "y": 2.0742948495370377
+        "y": 2.618468605324074
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.724180121527778,
-        "y": 2.0742948495370377
+        "x": 5.75652611400463,
+        "y": 2.4934805410879632
       },
       "prevControl": {
-        "x": 5.492314627081502,
-        "y": 2.167774218839489
+        "x": 5.524660619558354,
+        "y": 2.5869599103904144
       },
       "nextControl": {
-        "x": 6.2009772969685715,
-        "y": 1.8820683203079431
+        "x": 6.233323289445424,
+        "y": 2.3012540118588687
       },
       "isLocked": false,
       "linkedName": null
@@ -64,16 +64,16 @@
     },
     {
       "anchor": {
-        "x": 5.330057653356482,
-        "y": 2.79292701099537
+        "x": 5.4131861979166676,
+        "y": 2.618468605324074
       },
       "prevControl": {
-        "x": 6.244545532692178,
-        "y": 2.7713077052721764
+        "x": 7.14609157986111,
+        "y": 2.630672164351852
       },
       "nextControl": {
-        "x": 4.644558810763889,
-        "y": 2.8091328125000006
+        "x": 4.727512824514771,
+        "y": 2.6136399195958915
       },
       "isLocked": false,
       "linkedName": null
@@ -81,15 +81,15 @@
     {
       "anchor": {
         "x": 3.6785093315972226,
-        "y": 2.8937047887731477
+        "y": 2.618468605324074
       },
       "prevControl": {
         "x": 3.9285056306373414,
-        "y": 2.895065107208069
+        "y": 2.619828923758995
       },
       "nextControl": {
         "x": 3.352949869791667,
-        "y": 2.8919333043981488
+        "y": 2.616697120949075
       },
       "isLocked": false,
       "linkedName": null
@@ -170,14 +170,14 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "deploy intake",
-      "waypointRelativePos": 0,
+      "name": "trigger intake",
+      "waypointRelativePos": 0.6679687499999999,
       "endWaypointRelativePos": null,
       "command": null
     },
     {
-      "name": "trigger intake",
-      "waypointRelativePos": 1.3635937500000004,
+      "name": "shoot",
+      "waypointRelativePos": 5.834531249999995,
       "endWaypointRelativePos": null,
       "command": null
     }
