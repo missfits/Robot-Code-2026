@@ -243,6 +243,35 @@ public class RobotCommandFactory {
    * @param indexerSupplier Supplier for indexer velocity
    * @return Command that shoots with given velocity suppliers
    */
+  public Command shootWithoutDistance() {
+    return Commands.parallel(
+        m_shooter.shooterBackVoltageCommand().withTimeout(0.25).andThen( 
+          m_shooter.shooterVelocityCommand(m_shooterVelocitySupplier)), // run shooter at given velocity  
+        Commands.sequence( // column: 
+          m_column.offCommand() // wait until 
+            .until(m_shooter.atTargetVelocityTrigger(m_shooterVelocitySupplier)), // shooter at target velocity 
+          m_column.velocityCommand(m_columnVelocitySupplier)),
+
+        Commands.sequence( // roller: 
+          m_roller.offCommand()  // wait until 
+            .until(m_shooter.atTargetVelocityTrigger(m_shooterVelocitySupplier)), // shooter at target velocity 
+          m_roller.velocityCommand(m_rollerVelocitySupplier)),
+        Commands.sequence( // indexer: 
+          m_indexer.offCommand() // wait until 
+            .until(m_shooter.atTargetVelocityTrigger(m_shooterVelocitySupplier)), // shooter at target velocity
+          m_indexer.velocityCommand(m_indexerVelocitySupplier)));
+          
+  }
+
+  /**
+   * Command that shoots with shooter, column, indexer velocity supplier
+   * Simultaneously runs the shooter, then runs column and indexer **once the drivetrain is at the correct angle**
+   * 
+   * @param shooterSupplier Supplier for shooter velocity
+   * @param columnSupplier Supplier for column velocity
+   * @param indexerSupplier Supplier for indexer velocity
+   * @return Command that shoots with given velocity suppliers
+   */
   public Command shootToHubCommand(Supplier<Double> shooterSupplier, Supplier<Double> columnSupplier, Supplier<Double> indexerSupplier) {
     return Commands.sequence(
         new WaitCommand(5) // timeout and just shoot after 5 seconds 
