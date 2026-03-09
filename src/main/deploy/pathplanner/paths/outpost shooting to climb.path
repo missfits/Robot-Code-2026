@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.085026331018519,
-        "y": 2.723642288773149
+        "x": 2.9352732204861116,
+        "y": 3.110941261574075
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.7550475518538913,
-        "y": 2.735495250550662
+        "x": 2.5380670572916673,
+        "y": 3.0493985821759257
       },
       "isLocked": false,
       "linkedName": "outpost shooting point"
@@ -48,7 +48,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 29.999999999999996
   },
   "useDefaultConstraints": true
 }

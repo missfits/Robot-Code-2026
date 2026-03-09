@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.7700002893518523,
-        "y": 2.401822627314815
+        "x": 3.222581741898148,
+        "y": 2.5590254629629636
       },
       "isLocked": false,
       "linkedName": "outpost starting point"
     },
     {
       "anchor": {
-        "x": 2.085026331018519,
-        "y": 2.723642288773149
+        "x": 2.9352732204861116,
+        "y": 3.110941261574075
       },
       "prevControl": {
-        "x": 2.444178385416667,
-        "y": 2.683554253472222
+        "x": 3.0969375723379637,
+        "y": 2.8194336660879626
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 29.999999999999996
   },
   "reversed": false,
   "folder": null,
