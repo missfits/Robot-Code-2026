@@ -341,7 +341,7 @@ public class RobotCommandFactory {
 
   /**
    * Command that shoots based on set[mechanism]Velocity()
-   * Simultaneously runs the shooter, then runs column and indexer
+   * Simultaneously runs the shooter, then runs column, indexer and roller 
    * @return Command that shoots with set[mechanism]Velocity()
    */
   public Command shootWithoutDistance() {
