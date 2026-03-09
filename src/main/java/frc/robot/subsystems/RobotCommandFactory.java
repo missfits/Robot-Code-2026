@@ -215,20 +215,28 @@ public class RobotCommandFactory {
    * @return Command that shoots with given velocity suppliers
    */
   public Command shootToHubCommand(Supplier<Double> shooterSupplier, Supplier<Double> columnSupplier, Supplier<Double> indexerSupplier) {
-    return Commands.sequence(
-        new WaitCommand(3) // timeout and just shoot after 3 seconds 
-          .until(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose))),
-        Commands.parallel(
-          m_shooter.shooterVelocityCommand(shooterSupplier), // run shooter at given velocity  
-          Commands.sequence( // column: 
-            m_column.offCommand() // wait until 
-              .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity 
-            m_column.velocityCommand(columnSupplier)),
-          Commands.sequence( // indexer: 
-            m_indexer.offCommand() // wait until 
-              .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity
-            m_indexer.velocityCommand(indexerSupplier)))
-    );
+
+    return Commands.parallel(
+      // shooter 
+      Commands.sequence(
+        new WaitCommand(3) // wait until (timeout after 3 seconds)
+          .until(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose))), // facing hub 
+        m_shooter.shooterVelocityCommand(shooterSupplier)), // run shooter at given velocity  
+
+      // column 
+      Commands.sequence( 
+        m_column.offCommand() // wait until 
+          .until(m_shooter.atTargetVelocityTrigger(shooterSupplier) // shooter at target velocity 
+            .and(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))), // and facing hub
+        m_column.velocityCommand(columnSupplier)),
+
+      // indexer 
+      Commands.sequence( // indexer: 
+        m_indexer.offCommand() // wait until 
+          .until(m_shooter.atTargetVelocityTrigger(shooterSupplier) // shooter at target velocity 
+            .and(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))), // and facing hub
+        m_indexer.velocityCommand(indexerSupplier))
+    ); 
   }
 
   public Command shootToHubCommandWithDisplacement(Supplier<Double> shooterSupplier, Supplier<Double> columnSupplier, Supplier<Double> indexerSupplier) {
