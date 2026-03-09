@@ -74,7 +74,17 @@ public class RobotCommandFactory {
     m_roller.setDefaultCommand(m_roller.offCommand());
     m_indexer.setDefaultCommand(m_indexer.offCommand());
     m_column.setDefaultCommand(m_column.offCommand());
-    m_shooter.setDefaultCommand(m_shooter.offCommand());
+    m_shooter.setDefaultCommand(m_shooter.shooterVelocityCommand(10));
+  }
+
+  public Command offCommand() {
+    return new ParallelCommandGroup(
+      m_pivot.offCommand(),
+      m_roller.offCommand(),
+      m_indexer.offCommand(),
+      m_column.offCommand(),
+      m_shooter.shooterVelocityCommand(10)
+    );
   }
 
   public void resetPosition() {
@@ -320,25 +330,54 @@ public class RobotCommandFactory {
     );
   }
 
+  /**
+   * Command that shoots with shooter, column, indexer velocity supplier
+   * Simultaneously runs the shooter, then runs column and indexer **once the drivetrain is at the correct angle**
+   * 
+   * @param shooterSupplier Supplier for shooter velocity
+   * @param columnSupplier Supplier for column velocity
+   * @param indexerSupplier Supplier for indexer velocity
+   * @return Command that shoots with given velocity suppliers
+   */
+  public Command shootWithoutDistance() {
+    return Commands.parallel(
+        m_shooter.shooterBackVoltageCommand().withTimeout(0.25).andThen( 
+          m_shooter.shooterVelocityCommand(m_shooterVelocitySupplier)), // run shooter at given velocity  
+        Commands.sequence( // column: 
+          m_column.offCommand() // wait until 
+            .until(m_shooter.atTargetVelocityTrigger(m_shooterVelocitySupplier)), // shooter at target velocity 
+          m_column.velocityCommand(m_columnVelocitySupplier)),
+
+        Commands.sequence( // roller: 
+          m_roller.offCommand()  // wait until 
+            .until(m_shooter.atTargetVelocityTrigger(m_shooterVelocitySupplier)), // shooter at target velocity 
+          m_roller.velocityCommand(m_rollerVelocitySupplier)),
+        Commands.sequence( // indexer: 
+          m_indexer.offCommand() // wait until 
+            .until(m_shooter.atTargetVelocityTrigger(m_shooterVelocitySupplier)), // shooter at target velocity
+          m_indexer.velocityCommand(m_indexerVelocitySupplier)));
+          
+  }
+
   // HELPER FUNCTIONS
   private Double setPivotVelocity() {
     return SmartDashboard.getNumber("pivot IO/velocity", 1);
   }
 
   private Double setRollerVelocity() {
-    return SmartDashboard.getNumber("roller IO/velocity", 10);
+    return SmartDashboard.getNumber("roller IO/velocity", RollerConstants.ROLLER_VELOCITY);
   }
 
   private Double setIndexerVelocity() {
-    return SmartDashboard.getNumber("indexer IO/velocity", 10);
+    return SmartDashboard.getNumber("indexer IO/velocity", IndexerConstants.INDEXER_VELOCITY);
   }
 
   private Double setColumnVelocity() {
-    return SmartDashboard.getNumber("column IO/velocity", 10);
+    return SmartDashboard.getNumber("column IO/velocity", ColumnConstants.COLUMN_VELOCITY);
   }
 
   private Double setShooterVelocity() {
-    return SmartDashboard.getNumber("shooter influencer IO/velocity", 10);
+    return SmartDashboard.getNumber("shooter influencer IO/velocity", ShooterConstants.SHOOTER_VELOCITY);
   }
 
   /** 

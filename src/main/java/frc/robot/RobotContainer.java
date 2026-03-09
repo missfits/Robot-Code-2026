@@ -68,6 +68,8 @@ import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.events.EventTrigger;
+
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 import com.ctre.phoenix6.SignalLogger;
@@ -156,6 +158,8 @@ public class RobotContainer {
     logToSmartDashboard();
 
     SignalLogger.start();
+
+    configureBindingsVision();
   }
 
 
@@ -230,21 +234,26 @@ public class RobotContainer {
     // Drive in slowmode while right bumper is pressed
     m_drivetrainCommandFactory.setSlowmodeButton(m_driverJoystick.rightBumper());
 
-    // DRIVER
-    // x: deploy pivot motion magic
-    m_driverJoystick.x().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_pivot.deployPivotCommand());
-    // y: store pivot motion magic
-    m_driverJoystick.y().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_pivot.storePivotCommand());
-    // b: run roller back 
-    m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).whileTrue(
-      m_robotCommandFactory.snapToHubCommand(() -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY())));
+    // INTAKE TESTING
+    // x: run roller and indexer
+    m_driverJoystick.x().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runIntakeRollersCommand());
+    // y: run column
+    m_driverJoystick.y().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runColumnCommand());
+    // // b: run roller back 
+    // m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).whileTrue(
+    //   m_drivetrainCommandFactory.snapToAngle( // drivetrain: snap to angle 
+    //     () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
+    //     () -> HubCalculations.angleToHub(m_drivetrain.getState().Pose))
+    // );
+
+
     // a: run roller and indexer back
-    m_driverJoystick.a().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.outtakeCommand());
+    m_driverJoystick.a().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.shootWithoutDistance());
 
     // left bumper + x: deploy pivot motion magic
-    m_driverJoystick.leftBumper().and(m_driverJoystick.x()).whileTrue(m_robotCommandFactory.runIntakeRollersCommand());
+    m_driverJoystick.leftBumper().and(m_driverJoystick.x()).whileTrue(m_pivot.storePivotCommand());
     // left bumper + y: store pivot motion magic
-    m_driverJoystick.leftBumper().and(m_driverJoystick.y()).whileTrue(m_robotCommandFactory.runColumnCommand());
+    m_driverJoystick.leftBumper().and(m_driverJoystick.y()).whileTrue(m_pivot.displaceFuelCommand());
     // left bumper + b: reset drivetrain rotation 
     m_driverJoystick.leftBumper().and(m_driverJoystick.b()).whileTrue(
       new InstantCommand(() -> m_drivetrain.resetRotation(AllianceFlipUtil.apply(new Rotation2d(0)))));
@@ -253,8 +262,8 @@ public class RobotContainer {
       () -> m_pivot.resetToDeployPosition()));
 
     // run shooter
-    m_driverJoystick.leftTrigger().whileTrue(m_robotCommandFactory.shootByDistanceCommand(() -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY())));
-    m_driverJoystick.rightTrigger().whileTrue(m_robotCommandFactory.recycleFuelCommand());
+    m_driverJoystick.leftTrigger().and(m_driverJoystick.leftBumper().negate()).onTrue(m_robotCommandFactory.shootByDistanceCommand(() -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY())));
+    m_driverJoystick.leftTrigger().and(m_driverJoystick.leftBumper()).onTrue(m_robotCommandFactory.offCommand());
 
     m_driverJoystick.povCenter().negate().onTrue(new InstantCommand(() -> resetControllerConstantsSmartDashboard()));
 
@@ -425,6 +434,9 @@ public class RobotContainer {
     SmartDashboard.putNumber("pivot IO/kP", SmartDashboard.getNumber("pivot IO/kP", PivotConstants.kP));
     SmartDashboard.putNumber("pivot IO/kI", SmartDashboard.getNumber("pivot IO/kI", PivotConstants.kI));
     SmartDashboard.putNumber("pivot IO/kD", SmartDashboard.getNumber("pivot IO/kD", PivotConstants.kD));
+    SmartDashboard.putNumber("pivot IO/kS", SmartDashboard.getNumber("pivot IO/kS", PivotConstants.kS));
+    SmartDashboard.putNumber("pivot IO/kV", SmartDashboard.getNumber("pivot IO/kV", PivotConstants.kV));
+    SmartDashboard.putNumber("pivot IO/kA", SmartDashboard.getNumber("pivot IO/kA", PivotConstants.kA));
     SmartDashboard.putNumber("pivot IO/velocity", SmartDashboard.getNumber("pivot IO/velocity", PivotConstants.DEPLOY_VELOCITY));
     SmartDashboard.putNumber("pivot IO/voltage", SmartDashboard.getNumber("pivot/voltage", PivotConstants.DEPLOY_VOLTAGE));
 
@@ -478,6 +490,10 @@ public class RobotContainer {
     PivotConstants.kI = SmartDashboard.getNumber("pivot IO/kI", 0);
     PivotConstants.kD = SmartDashboard.getNumber("pivot IO/kD", 0);
 
+    PivotConstants.kS = SmartDashboard.getNumber("pivot IO/kS", 0);
+    PivotConstants.kV = SmartDashboard.getNumber("pivot IO/kV", 0);
+    PivotConstants.kA = SmartDashboard.getNumber("pivot IO/kA", 0);
+
     PivotConstants.CRUISE_VELOCITY = SmartDashboard.getNumber("pivot IO/motion magic velocity", 0);
     PivotConstants.ACCELERATION = SmartDashboard.getNumber("pivot IO/motion magic acceleration", 0);
     PivotConstants.JERK = SmartDashboard.getNumber("pivot IO/motion magic jerk", 0);
@@ -503,6 +519,10 @@ public class RobotContainer {
    * Define named commands for autonomous paths
    */
   private void createNamedCommands() {
+
+    new EventTrigger("trigger intake").onTrue(m_robotCommandFactory.runIntakeRollersCommand());
+    new EventTrigger("shoot").onTrue(m_robotCommandFactory.shootByDistanceCommand(() -> new JoystickVals(0, 0)));
+
     NamedCommands.registerCommand("trigger intake", 
       m_robotCommandFactory.runIntakeRollersCommand()); // DOES NOT END 
      NamedCommands.registerCommand("deploy intake", 
