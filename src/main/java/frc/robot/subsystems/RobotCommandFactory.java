@@ -236,7 +236,7 @@ public class RobotCommandFactory {
           .until(m_shooter.atTargetVelocityTrigger(shooterSupplier) // shooter at target velocity 
             .and(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))), // and facing hub
         m_indexer.velocityCommand(indexerSupplier))
-    ); 
+    ).withName("shootToHub"); 
   }
 
   public Command shootToHubCommandWithDisplacement(Supplier<Double> shooterSupplier, Supplier<Double> columnSupplier, Supplier<Double> indexerSupplier) {
@@ -247,7 +247,7 @@ public class RobotCommandFactory {
           .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity
         new WaitCommand(2), // wait 2 seconds for some of the fuel to be shot out 
         m_pivot.repeatingDisplaceFuelCommand())
-    );
+    ).withName("shootToHubWithDisplacement");
   }
 
   public Command snapToHubCommand(Supplier<JoystickVals> joystickValsSupplier) {
@@ -314,7 +314,8 @@ public class RobotCommandFactory {
       Commands.sequence( // indexer: 
         m_indexer.offCommand() // wait until 
           .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity
-        m_indexer.velocityCommand(indexerSupplier)));
+        m_indexer.velocityCommand(indexerSupplier))
+    ).withName("shootCommand");
   }
 
   /**
@@ -335,7 +336,7 @@ public class RobotCommandFactory {
           .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity
         new WaitCommand(2), // wait 2 seconds for some of the fuel to be shot out 
         m_pivot.repeatingDisplaceFuelCommand())
-    );
+    ).withName("shootCommandWithDisplacement");
   }
 
   /**
@@ -358,7 +359,8 @@ public class RobotCommandFactory {
         Commands.sequence( // indexer: 
           m_indexer.offCommand() // wait until 
             .until(m_shooter.atTargetVelocityTrigger(m_shooterVelocitySupplier)), // shooter at target velocity
-          m_indexer.velocityCommand(m_indexerVelocitySupplier)));
+          m_indexer.velocityCommand(m_indexerVelocitySupplier))
+    ).withName("shootWithoutDistance");
   }
 
   // HELPER FUNCTIONS
