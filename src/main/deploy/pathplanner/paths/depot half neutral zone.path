@@ -84,28 +84,28 @@
         "y": 5.611555483217593
       },
       "prevControl": {
-        "x": 3.9363788945262304,
-        "y": 5.612915801652514
+        "x": 3.9363157272187164,
+        "y": 5.617337322227181
       },
       "nextControl": {
-        "x": 3.3608231336805554,
-        "y": 5.609783998842595
+        "x": 3.312008897569445,
+        "y": 5.602894892939815
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.9672255497685187,
-        "y": 5.476660228587963
+        "x": 2.9339610098379634,
+        "y": 4.9326176938657404
       },
       "prevControl": {
-        "x": 3.2235002893518523,
-        "y": 5.229177300347222
+        "x": 3.1390595341435192,
+        "y": 5.350622395833332
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "depot shooting location"
     }
   ],
   "rotationTargets": [
@@ -123,6 +123,10 @@
     },
     {
       "waypointRelativePos": 3.905048076923084,
+      "rotationDegrees": 0.0
+    },
+    {
+      "waypointRelativePos": 4.914608828671325,
       "rotationDegrees": 0.0
     }
   ],
@@ -143,7 +147,7 @@
     {
       "name": "come back over the bump",
       "minWaypointRelativePos": 3.9766071428571426,
-      "maxWaypointRelativePos": 5.073415178571427,
+      "maxWaypointRelativePos": 5.05,
       "constraints": {
         "maxVelocity": 1.25,
         "maxAcceleration": 2.0,
@@ -177,7 +181,7 @@
     },
     {
       "name": "shoot",
-      "waypointRelativePos": 5.834531249999995,
+      "waypointRelativePos": 5.885959821428568,
       "endWaypointRelativePos": null,
       "command": null
     }
@@ -191,8 +195,8 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 0.0
+    "velocity": 0.0,
+    "rotation": -29.999999999999996
   },
   "reversed": false,
   "folder": null,

@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.190826244212963,
-        "y": 5.954370515046296
+        "x": 3.2890452112268527,
+        "y": 5.430798466435185
       },
       "isLocked": false,
       "linkedName": "depot starting point"
     },
     {
       "anchor": {
-        "x": 1.942,
-        "y": 5.965
+        "x": 2.9339610098379634,
+        "y": 4.9326176938657404
       },
       "prevControl": {
-        "x": 2.2773964120370374,
-        "y": 5.959356915509258
+        "x": 3.2623417245370376,
+        "y": 5.405407190393519
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "depot shooting location"
     }
   ],
   "rotationTargets": [],
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -179.88399873602916
+    "rotation": -29.999999999999996
   },
   "reversed": false,
   "folder": null,
