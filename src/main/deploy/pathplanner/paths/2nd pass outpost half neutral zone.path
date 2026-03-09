@@ -48,32 +48,32 @@
     },
     {
       "anchor": {
-        "x": 7.621899160879629,
-        "y": 0.921583405671297
+        "x": 7.138611979166667,
+        "y": 1.654321831597223
       },
       "prevControl": {
-        "x": 6.639761937308039,
-        "y": 0.9390684906556604
+        "x": 6.156474755595077,
+        "y": 1.6718069165815863
       },
       "nextControl": {
-        "x": 7.9904335214120366,
-        "y": 0.9150223524305556
+        "x": 7.507146339699075,
+        "y": 1.6477607783564816
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.825423032407407,
-        "y": 3.1678912037037037
+        "x": 7.486807074652778,
+        "y": 3.3870959924768522
       },
       "prevControl": {
-        "x": 8.087630053711367,
-        "y": 3.0748758689292104
+        "x": 7.7490140959567375,
+        "y": 3.294080657702359
       },
       "nextControl": {
-        "x": 6.79560011574074,
-        "y": 3.533210648148149
+        "x": 6.456984157986111,
+        "y": 3.7524154369212974
       },
       "isLocked": false,
       "linkedName": null
@@ -126,24 +126,28 @@
   ],
   "rotationTargets": [
     {
+      "waypointRelativePos": 1.0294380099067597,
+      "rotationDegrees": 0.0
+    },
+    {
       "waypointRelativePos": 1.7,
       "rotationDegrees": 0.0
     },
     {
-      "waypointRelativePos": 2.972847465034966,
+      "waypointRelativePos": 3.342757502913754,
       "rotationDegrees": 90.0
     },
     {
-      "waypointRelativePos": 4.1451595279720275,
-      "rotationDegrees": 90.0
+      "waypointRelativePos": 4.194620483682982,
+      "rotationDegrees": 170.0
     },
     {
-      "waypointRelativePos": 4.866695804195803,
-      "rotationDegrees": 0.0
+      "waypointRelativePos": 5.023792613636364,
+      "rotationDegrees": 180.0
     },
     {
       "waypointRelativePos": 5.795072115384615,
-      "rotationDegrees": 0.0
+      "rotationDegrees": 180.0
     }
   ],
   "constraintZones": [
@@ -175,10 +179,10 @@
     },
     {
       "name": "intaking",
-      "minWaypointRelativePos": 3.1037499999999993,
-      "maxWaypointRelativePos": 4.091406249999998,
+      "minWaypointRelativePos": 2.5530468749999984,
+      "maxWaypointRelativePos": 4.954375000000001,
       "constraints": {
-        "maxVelocity": 2.0,
+        "maxVelocity": 2.75,
         "maxAcceleration": 3.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
