@@ -170,19 +170,13 @@ public class RobotContainer {
       // Drivetrain will execute this command periodically
       m_drivetrainCommandFactory.defaultDrive(
         () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
-        () -> new JoystickVals(m_driverJoystick.getRightX(), m_driverJoystick.getRightY()),
-        () -> false
+        () -> new JoystickVals(m_driverJoystick.getRightX(), m_driverJoystick.getRightY())
       )
     );
 
     // Drive in slowmode while right bumper is pressed
-    m_driverJoystick.rightBumper().whileTrue(
-      m_drivetrainCommandFactory.defaultDrive(
-        () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
-        () -> new JoystickVals(m_driverJoystick.getRightX(), m_driverJoystick.getRightY()),
-        () -> true
-      )
-    );
+    m_drivetrainCommandFactory.setSlowmodeButton(m_driverJoystick.rightBumper());
+
 
     m_driverJoystick.leftBumper().and(m_driverJoystick.x()).onTrue(
       new InstantCommand(() -> setRobotMode(RobotMode.NEUTRAL))
@@ -229,19 +223,12 @@ public class RobotContainer {
       // Drivetrain will execute this command periodically
       m_drivetrainCommandFactory.defaultDrive(
         () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
-        () -> new JoystickVals(m_driverJoystick.getRightX(), m_driverJoystick.getRightY()),
-        () -> false
+        () -> new JoystickVals(m_driverJoystick.getRightX(), m_driverJoystick.getRightY())
       )
     );
 
     // Drive in slowmode while right bumper is pressed
-    m_driverJoystick.rightBumper().whileTrue(
-      m_drivetrainCommandFactory.defaultDrive(
-        () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
-        () -> new JoystickVals(m_driverJoystick.getRightX(), m_driverJoystick.getRightY()),
-        () -> true
-      )
-    );
+    m_drivetrainCommandFactory.setSlowmodeButton(m_driverJoystick.rightBumper());
 
     // DRIVER
     // x: deploy pivot motion magic
@@ -372,19 +359,13 @@ public class RobotContainer {
       // Drivetrain will execute this command periodically
       m_drivetrainCommandFactory.defaultDrive(
         () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
-        () -> new JoystickVals(m_driverJoystick.getRightX(), m_driverJoystick.getRightY()),
-        () -> false
+        () -> new JoystickVals(m_driverJoystick.getRightX(), m_driverJoystick.getRightY())
       )
     );
 
     // Drive in slowmode while right bumper is pressed
-    m_driverJoystick.rightBumper().whileTrue(
-      m_drivetrainCommandFactory.defaultDrive(
-        () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
-        () -> new JoystickVals(m_driverJoystick.getRightX(), m_driverJoystick.getRightY()),
-        () -> true
-      )
-    );
+    m_drivetrainCommandFactory.setSlowmodeButton(m_driverJoystick.rightBumper());
+
 
     Consumer<SwerveDriveState> telemetry =  ((CommandSwerveDrivetrainSim) m_drivetrain)
       .getSimTelemetryConsumer().andThen(logger::telemeterize);
@@ -522,14 +503,17 @@ public class RobotContainer {
    * Define named commands for autonomous paths
    */
   private void createNamedCommands() {
-    // TODO -- REPLACE WITH PROPER COMMAND ONCE IT HAS BEEN WRITTEN 
-    NamedCommands.registerCommand("trigger intake", new WaitCommand(1));
-    NamedCommands.registerCommand("snap to hub", m_drivetrainCommandFactory.snapToAngle(
-      () -> new JoystickVals(0, 0), 
-      HubCalculations.angleToHub(m_drivetrain.getState().Pose).getDegrees())
-      .withTimeout(1.5));
-    NamedCommands.registerCommand("climb", new WaitCommand(1));
-    NamedCommands.registerCommand("shoot", m_shooter.shooterAutoCommand());
+    NamedCommands.registerCommand("trigger intake", 
+      m_robotCommandFactory.runIntakeRollersCommand()); // DOES NOT END 
+     NamedCommands.registerCommand("deploy intake", 
+      m_pivot.deployPivotCommand());
+    NamedCommands.registerCommand("snap to hub", 
+      m_robotCommandFactory.snapToHubCommand(() -> new JoystickVals(0, 0))
+        .withTimeout(0.5));
+    NamedCommands.registerCommand("climb", 
+      new WaitCommand(1));
+    NamedCommands.registerCommand("shoot",
+       m_robotCommandFactory.shootByDistanceCommand(() -> new JoystickVals(0, 0)));
   }
 
   /**
