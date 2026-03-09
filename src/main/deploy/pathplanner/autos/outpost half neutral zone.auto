@@ -9,6 +9,12 @@
           "data": {
             "pathName": "outpost half neutral zone"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "2nd pass outpost half neutral zone"
+          }
         }
       ]
     }
