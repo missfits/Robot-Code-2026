@@ -37,6 +37,7 @@ import frc.robot.Constants.ColumnConstants;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.IndexerConstants;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.RobotContainer.JoystickVals;
 import frc.robot.Constants.SensorConstants;
 
 import edu.wpi.first.wpilibj.DataLogManager;
@@ -521,7 +522,7 @@ public class RobotContainer {
   private void createNamedCommands() {
 
     new EventTrigger("trigger intake").onTrue(m_robotCommandFactory.runIntakeRollersCommand());
-    new EventTrigger("shoot").onTrue(m_robotCommandFactory.shootByDistanceCommand(() -> new JoystickVals(0, 0)).withTimeout(5)); // TODO: tune timeout
+    new EventTrigger("shoot").onTrue(m_robotCommandFactory.shootByDistanceAutoCommand().withTimeout(5)); // TODO: tune timeout
 
     NamedCommands.registerCommand("trigger intake", 
       m_robotCommandFactory.runIntakeRollersCommand()); // DOES NOT END 

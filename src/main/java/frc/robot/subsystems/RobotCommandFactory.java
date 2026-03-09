@@ -198,6 +198,18 @@ public class RobotCommandFactory {
     .withName("shootByDistance");
   }
 
+   /**
+   * Command that shoots based on distance to hub using vision
+   * Simultaneously runs the shooter and snap to angle, then runs column and indexer
+   * Drivetrain component is run as a proxy command
+  */
+  public Command shootByDistanceAutoCommand() {
+    return Commands.parallel(
+      snapToHubCommand(() -> new JoystickVals(0 , 0)).asProxy().withName("snapToHubProxied"),
+      shootToHubCommandWithDisplacement(m_shooterVelocityCalculatedSupplier, m_columnVelocitySupplier, m_indexerVelocitySupplier))
+    .withName("shootByDistance");
+  }
+
   /**
    * Command that shoots based on distance to hub using vision
    */
