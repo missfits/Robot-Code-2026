@@ -521,7 +521,7 @@ public class RobotContainer {
   private void createNamedCommands() {
 
     new EventTrigger("trigger intake").onTrue(m_robotCommandFactory.runIntakeRollersCommand());
-    new EventTrigger("shoot").onTrue(m_robotCommandFactory.shootByDistanceCommand(() -> new JoystickVals(0, 0)));
+    new EventTrigger("shoot").onTrue(m_robotCommandFactory.shootByDistanceCommand(() -> new JoystickVals(0, 0)).withTimeout(5)); // TODO: tune timeout
 
     NamedCommands.registerCommand("trigger intake", 
       m_robotCommandFactory.runIntakeRollersCommand()); // DOES NOT END 
