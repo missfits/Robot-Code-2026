@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.9352732204861116,
-        "y": 3.110941261574075
+        "x": 3.0768607494212965,
+        "y": 2.951114004629629
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.1685842737268524,
-        "y": 2.6715475260416666
+        "x": 3.3101718026620373,
+        "y": 2.511720269097221
       },
       "isLocked": false,
       "linkedName": "outpost shooting point"
@@ -112,12 +112,12 @@
     },
     {
       "anchor": {
-        "x": 2.9352732204861116,
-        "y": 3.110941261574075
+        "x": 3.0768607494212965,
+        "y": 2.951114004629629
       },
       "prevControl": {
-        "x": 3.194697265625001,
-        "y": 2.799028790509259
+        "x": 3.3362847945601857,
+        "y": 2.639201533564813
       },
       "nextControl": null,
       "isLocked": false,
@@ -126,11 +126,11 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.0294380099067597,
+      "waypointRelativePos": 0.7524949009324008,
       "rotationDegrees": 0.0
     },
     {
-      "waypointRelativePos": 1.7,
+      "waypointRelativePos": 1.9507757867132876,
       "rotationDegrees": 0.0
     },
     {
@@ -146,7 +146,7 @@
       "rotationDegrees": 180.0
     },
     {
-      "waypointRelativePos": 5.795072115384615,
+      "waypointRelativePos": 6.0609429632867124,
       "rotationDegrees": 180.0
     }
   ],
@@ -216,13 +216,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 29.999999999999996
+    "rotation": 45.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0.0,
-    "rotation": 29.999999999999996
+    "rotation": 45.0
   },
   "useDefaultConstraints": true
 }
