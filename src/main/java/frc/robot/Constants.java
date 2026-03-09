@@ -26,7 +26,8 @@ import frc.robot.generated.TunerConstants;
 public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
-    public static final int kTestControllerPort = 1;
+    public static final int kOperatorControllerPort = 1;
+    public static final int kTestControllerPort = 2;
 
     // Joystick deadband values
     public static final double DRIVE_JOYSTICK_DEADBAND = 0.1;
@@ -313,6 +314,7 @@ public final class Constants {
 
     // Column motor velocities
     public static double COLUMN_VELOCITY = 100.0;
+    public static double COLUMN_RECYCLE_VELOCITY = 40.0;
 
     // PID gains
     // Tuned in shop 2/12
@@ -358,6 +360,13 @@ public final class Constants {
     // Motor velocities
     public static double SHOOTER_VELOCITY = 10.0;
     public static double SHOOTER_BACK_VELOCITY = -1.0;
+    public static double SHOOTER_RECYCLE_VELOCITY = 10.0;
+
+    public static double SHOOTER_DISTANCE1_VELOCITY = 45.0;
+    public static double SHOOTER_DISTANCE2_VELOCITY = 50.0;
+    public static double SHOOTER_DISTANCE3_VELOCITY = 55.0;
+    public static double SHOOTER_DISTANCE4_VELOCITY = 60.0;
+
 
     public static double SHOOTER_VOLTAGE = 1.0;
     public static double SHOOTER_BACK_VOLTAGE = -1.0;
