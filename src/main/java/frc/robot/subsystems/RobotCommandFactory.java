@@ -331,13 +331,9 @@ public class RobotCommandFactory {
   }
 
   /**
-   * Command that shoots with shooter, column, indexer velocity supplier
-   * Simultaneously runs the shooter, then runs column and indexer **once the drivetrain is at the correct angle**
-   * 
-   * @param shooterSupplier Supplier for shooter velocity
-   * @param columnSupplier Supplier for column velocity
-   * @param indexerSupplier Supplier for indexer velocity
-   * @return Command that shoots with given velocity suppliers
+   * Command that shoots based on set[mechanism]Velocity()
+   * Simultaneously runs the shooter, then runs column and indexer
+   * @return Command that shoots with set[mechanism]Velocity()
    */
   public Command shootWithoutDistance() {
     return Commands.parallel(
@@ -347,7 +343,6 @@ public class RobotCommandFactory {
           m_column.offCommand() // wait until 
             .until(m_shooter.atTargetVelocityTrigger(m_shooterVelocitySupplier)), // shooter at target velocity 
           m_column.velocityCommand(m_columnVelocitySupplier)),
-
         Commands.sequence( // roller: 
           m_roller.offCommand()  // wait until 
             .until(m_shooter.atTargetVelocityTrigger(m_shooterVelocitySupplier)), // shooter at target velocity 
@@ -356,7 +351,6 @@ public class RobotCommandFactory {
           m_indexer.offCommand() // wait until 
             .until(m_shooter.atTargetVelocityTrigger(m_shooterVelocitySupplier)), // shooter at target velocity
           m_indexer.velocityCommand(m_indexerVelocitySupplier)));
-          
   }
 
   // HELPER FUNCTIONS
