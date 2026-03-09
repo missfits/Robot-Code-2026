@@ -219,7 +219,7 @@ public class RobotCommandFactory {
     return Commands.parallel(
       // shooter 
       Commands.sequence(
-        new WaitCommand(3) // wait until (timeout after 3 seconds)
+        new WaitCommand(10000) // wait until (no timeout)
           .until(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose))), // facing hub 
         m_shooter.shooterVelocityCommand(shooterSupplier)), // run shooter at given velocity  
 
