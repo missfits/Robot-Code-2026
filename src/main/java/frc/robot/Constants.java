@@ -488,11 +488,11 @@ public final class Constants {
           ROBOT_TO_CAM2_PITCH = Units.degreesToRadians(-20);
           ROBOT_TO_CAM2_YAW = Units.degreesToRadians(-135); // estimated
  
-          ROBOT_TO_CAM3_X = Units.inchesToMeters(10); //needs to be measured
-          ROBOT_TO_CAM3_Y = Units.inchesToMeters(10); //needs to be measured
-          ROBOT_TO_CAM3_Z = Units.inchesToMeters(10); //needs to be measured
+          ROBOT_TO_CAM3_X = Units.inchesToMeters(21/2-0.75); //needs to be measured
+          ROBOT_TO_CAM3_Y = Units.inchesToMeters(-33.0/2+2); //needs to be measured
+          ROBOT_TO_CAM3_Z = Units.inchesToMeters(29); //needs to be measured
           ROBOT_TO_CAM3_ROLL = 0;
-          ROBOT_TO_CAM3_PITCH = Units.degreesToRadians(-20); //needs to be measured
+          ROBOT_TO_CAM3_PITCH = Units.degreesToRadians(-30); //needs to be measured
           ROBOT_TO_CAM3_YAW = Units.degreesToRadians(0); //needs to be measured
 
           break;
