@@ -343,7 +343,7 @@ public class RobotCommandFactory {
     return Commands.parallel(
       Commands.sequence(
         // run shooter at slightly higher velocity until we shoot some fuel  
-        m_shooter.shooterVelocityCommand(() -> {return m_shooterVelocitySupplier.get() + ShooterConstants.INTIAL_ADDITIONAL_VELOCITY;})
+        m_shooter.shooterVelocityCommand(() -> m_shooterVelocitySupplier.get() + ShooterConstants.INTIAL_ADDITIONAL_VELOCITY)
           .until(m_shooter.isFuelShot(m_shooterVelocitySupplier.get() + ShooterConstants.INTIAL_ADDITIONAL_VELOCITY)),
         m_shooter.shooterVelocityCommand(m_shooterVelocitySupplier)),  // run shooter at given velocity  
         Commands.sequence( // column: 
