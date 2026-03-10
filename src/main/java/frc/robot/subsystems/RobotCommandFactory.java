@@ -276,18 +276,6 @@ public class RobotCommandFactory {
       IndexerConstants.SHOOT_VELOCITY);
   }
 
-  public Command intakeCommand() {
-    return intakeModeCommand();
-  }
-
-  public Command neutralCommand() {
-    return neutralModeCommand();
-  }
-
-  public Command scoreCommand(Supplier<JoystickVals> joystickValsSupplier) {
-    return scoreModeCommand(joystickValsSupplier);
-  }
-
   // - driver commands -
 
   // neutral mode
