@@ -37,7 +37,8 @@ public class LEDSubsystem extends SubsystemBase {
     // Set the default command to turn the strip off, otherwise the last colors written by
     // the last command to run will continue to be displayed.
     // Note: Other default patterns could be used instead!
-    setDefaultCommand((runScrollingYellowBlueCommand()).withName("LED/default colors"));
+    // default command has been set in robot container
+    // setDefaultCommand((runScrollingYellowBlueCommand()).withName("LED/default colors"));
   }
 
 
@@ -110,5 +111,17 @@ public class LEDSubsystem extends SubsystemBase {
     LEDPattern base = LEDPattern.gradient(LEDPattern.GradientType.kDiscontinuous, Color.kYellow, Color.kBlue);
     LEDPattern pattern = base.scrollAtRelativeSpeed(Percent.per(Second).of(100));
     return runPattern(pattern).withName("LED/scrolling yellow-blue");
+  }
+
+  public Command runVisionStatus(java.util.function.BooleanSupplier visionHealthySupplier) {
+    LEDPattern base = LEDPattern.gradient(LEDPattern.GradientType.kDiscontinuous, Color.kYellow, Color.kBlue);
+    LEDPattern pattern = base.scrollAtRelativeSpeed(Percent.per(Second).of(100));
+
+    return run(() -> {
+      if (visionHealthySupplier.getAsBoolean())
+        pattern.applyTo(m_ledBuffer);
+      else
+        LEDPattern.solid(Color.kRed).applyTo(m_ledBuffer);
+    }).withName("LED/vision status");
   }
 }

@@ -83,6 +83,10 @@ public class LocalizationCamera {
     return m_estPoseField;
   }
 
+  public boolean isConnected() {
+    return m_camera.isConnected();
+  }
+
   // Toggles "Raw Video Mode" for single camera
   // NOTE: PhotonVision method for raw video mode is setDriverMode
   // setDriverMode(true) = raw video feed, setDriverMode(false) = normal AprilTag processing

@@ -108,6 +108,26 @@ public class VisionSubsystem extends SubsystemBase {
     });
   }
 
+  public boolean areCamerasConnected() {
+    for (LocalizationCamera cam : cameras)
+      if (!cam.isConnected())
+        return false;
+    return true;
+  }
+
+  public boolean isVisionUpdating() {
+    double currentTime = Timer.getFPGATimestamp();
+    return (currentTime - m_lastTimestamp) < 0.5;
+  }
+
+  public boolean hasValidTargets() {
+    return !allValidReadings.isEmpty();
+  }
+
+  public boolean isVisionHealthy() {
+    return areCamerasConnected() && isVisionUpdating() && hasValidTargets();
+  }
+
   @Override
   public void periodic() {
     // clear allValidReadings at the beginning of every loop

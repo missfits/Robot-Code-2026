@@ -29,6 +29,7 @@ import frc.robot.subsystems.intake.RollerSubsystem;
 import frc.robot.subsystems.scorer.ShooterSubsystem;
 import frc.robot.subsystems.LaserCANSensorBase;
 import frc.robot.subsystems.RobotCommandFactory;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.RollerConstants;
@@ -102,6 +103,7 @@ public class RobotContainer {
   public final IndexerSubsystem m_indexer = new IndexerSubsystem();
   public final PivotSubsystem m_pivot = new PivotSubsystem();
   public final ColumnSubsystem m_column = new ColumnSubsystem();
+  public final LEDSubsystem m_led = new LEDSubsystem();
 
   // Sensors
   private final LaserCANSensorBase m_intakeSensor = new LaserCANSensorBase(
@@ -144,6 +146,9 @@ public class RobotContainer {
     }
 
     setRobotMode(RobotMode.NEUTRAL);
+    
+    // Vision LED indicator
+    m_led.setDefaultCommand(m_led.runVisionStatus(() -> m_vision.isVisionHealthy()));
 
     // Configure auto builder
     createNamedCommands();
