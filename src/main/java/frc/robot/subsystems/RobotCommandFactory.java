@@ -133,54 +133,145 @@ public class RobotCommandFactory {
   }
 
   // combos
+  // --- COMPETITION COMMANDS ---
+
+  // - manual commands -
   public Command runIntakeRollersCommand() {
     return Commands.parallel(
-      m_roller.velocityCommand(m_rollerVelocitySupplier),
-      m_indexer.velocityCommand(m_indexerVelocitySupplier)
+      m_roller.velocityCommand(RollerConstants.MANUAL_VELOCITY),
+      m_indexer.velocityCommand(IndexerConstants.MANUAL_VELOCITY)
     ).withName("runIntakeRollers");
   }
 
   public Command runIntakeRollersBackCommand() {
     return Commands.parallel(
-      m_roller.velocityCommand(() -> -m_rollerVelocitySupplier.get()),
-      m_indexer.velocityCommand(() -> -m_indexerVelocitySupplier.get())
+      m_roller.velocityCommand(RollerConstants.MANUAL_BACK_VELOCITY),
+      m_indexer.velocityCommand(IndexerConstants.MANUAL_BACK_VELOCITY)
     ).withName("runIntakeRollersBack");
   }
 
+  public Command runInnerRollersCommand() {
+    return Commands.parallel(
+      m_indexer.velocityCommand(IndexerConstants.MANUAL_VELOCITY),
+      m_column.velocityCommand(ColumnConstants.MANUAL_VELOCITY)
+    ).withName("runInnerRollers");
+  }
+
+  public Command runInnerRollersBackCommand() {
+    return Commands.parallel(
+      m_indexer.velocityCommand(IndexerConstants.MANUAL_BACK_VELOCITY),
+      m_column.velocityCommand(ColumnConstants.MANUAL_BACK_VELOCITY)
+    ).withName("runInnerRollersBack");
+  }
+
+  public Command runAllRollersCommand() {
+    return Commands.parallel(
+      m_roller.velocityCommand(RollerConstants.MANUAL_VELOCITY),
+      m_indexer.velocityCommand(IndexerConstants.MANUAL_VELOCITY),
+      m_column.velocityCommand(ColumnConstants.MANUAL_VELOCITY)
+    ).withName("runAllRollers");
+  }
+
+  public Command runAllRollersBackCommand() {
+    return Commands.parallel(
+      m_roller.velocityCommand(RollerConstants.MANUAL_BACK_VELOCITY), 
+      m_indexer.velocityCommand(IndexerConstants.MANUAL_BACK_VELOCITY),
+      m_column.velocityCommand(ColumnConstants.MANUAL_BACK_VELOCITY)
+    ).withName("runAllRollersBack");
+  }
+
+  public Command runShooterCloseDistanceCommand() {
+    return shootCommand(
+      ShooterConstants.SHOOTER_DISTANCE1_VELOCITY,
+      ColumnConstants.SHOOT_VELOCITY,
+      IndexerConstants.SHOOT_VELOCITY);
+  }
+
+  public Command runShooterMediumDistanceCommand() {
+    return shootCommand(
+      ShooterConstants.SHOOTER_DISTANCE2_VELOCITY,
+      ColumnConstants.SHOOT_VELOCITY,
+      IndexerConstants.SHOOT_VELOCITY);
+  }
+
+  public Command runShooterFarDistanceCommand() {
+    return shootCommand(
+      ShooterConstants.SHOOTER_DISTANCE3_VELOCITY,
+      ColumnConstants.SHOOT_VELOCITY,
+      IndexerConstants.SHOOT_VELOCITY);
+  }
+
+  public Command backupScoreCommand(double shooterVelocity) {
+    return shootCommand(
+      shooterVelocity,
+      ColumnConstants.SHOOT_VELOCITY,
+      IndexerConstants.SHOOT_VELOCITY);
+  }
+
+  public Command intakeCommand() {
+    return intakeModeCommand();
+  }
+
+  public Command neutralCommand() {
+    return neutralModeCommand();
+  }
+
+  public Command scoreCommand(Supplier<JoystickVals> joystickValsSupplier) {
+    return scoreModeCommand(joystickValsSupplier);
+  }
+
+  // - driver commands -
+
+  // neutral mode
   public Command outtakeCommand() {
     return Commands.parallel(
-      runIntakeRollersBackCommand(),
-      runColumnBackCommand(),
-      m_shooter.velocityCommand(ShooterConstants.SHOOTER_RECYCLE_VELOCITY)
+      m_pivot.storePivotCommand(),
+      m_roller.velocityCommand(RollerConstants.OUTTAKE_VELOCITY),
+      m_indexer.velocityCommand(IndexerConstants.OUTTAKE_VELOCITY),
+      m_column.velocityCommand(ColumnConstants.OUTTAKE_VELOCITY),
+      m_shooter.voltageCommand(ShooterConstants.OUTTAKE_VOLTAGE)
     ).withName("outtake");
   }
 
   public Command recycleFuelCommand() {
     return Commands.parallel(
-      runIntakeRollersCommand(),
-      m_column.velocityCommand(ColumnConstants.COLUMN_RECYCLE_VELOCITY),
-      m_shooter.velocityCommand(ShooterConstants.SHOOTER_RECYCLE_VELOCITY)
+      m_roller.velocityCommand(RollerConstants.RECYCLE_VELOCITY),
+      m_indexer.velocityCommand(IndexerConstants.RECYCLE_VELOCITY),
+      m_column.velocityCommand(ColumnConstants.RECYCLE_VELOCITY),
+      m_shooter.velocityCommand(ShooterConstants.RECYCLE_VELOCITY)
     ).withName("recycleFuel");
   }
 
-  public Command intakeCommand() {
+  public Command shuttleCommand() {
     return Commands.parallel(
-      deployPivotCommand(),
-      recycleFuelCommand()
-    ).withName("intake");
+      shootCommand(
+        ShooterConstants.SHUTTLE_VELOCITY,
+        ColumnConstants.SHUTTLE_VELOCITY,
+        IndexerConstants.SHUTTLE_VELOCITY
+      )
+    ).withName("shuttle");
   }
 
-  public Command storeIntakeCommand() {
+  public Command neutralModeCommand() {
     return Commands.parallel(
-      storePivotCommand(),
+      m_pivot.offCommand(),
       m_roller.offCommand(),
       m_indexer.offCommand(),
-      m_column.offCommand()
-    ).withName("storeIntake");
+      m_column.offCommand(),
+      m_shooter.offCommand()
+    ).withName("neutralMode");
   }
 
   public Command runShooterBackCommand() {
     return m_shooter.velocityCommand(m_shooterBackVelocitySupplier);
+  // intake mode
+  public Command intakeModeCommand() {
+    return Commands.parallel(
+      m_pivot.deployPivotCommand(),
+      m_roller.velocityCommand(RollerConstants.INTAKE_VELOCITY),
+      m_indexer.velocityCommand(IndexerConstants.INTAKE_VELOCITY),
+      m_column.velocityCommand(ColumnConstants.INTAKE_VELOCITY) // will run backwards
+    ).withName("intakeMode");
   }
 
   // --- SCORE COMMANDS ---
