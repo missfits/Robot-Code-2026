@@ -34,6 +34,10 @@ public class PivotIOHardware extends MechanismsIOHardwareBase {
   public double getVelocityDegreesPerSecond() {
     return getMotorVelocityRevolutionsPerSecond() * PivotConstants.DEGREES_PER_REVOLUTION;
   }
+  
+  public double getClosedLoopReferenceDegrees() {
+    return getClosedLoopReferenceRevolutions() * PivotConstants.DEGREES_PER_REVOLUTION;
+  }
 
   public void setPositionRadians(double radians) {
     double revolutions = Math.toDegrees(radians) / PivotConstants.DEGREES_PER_REVOLUTION;

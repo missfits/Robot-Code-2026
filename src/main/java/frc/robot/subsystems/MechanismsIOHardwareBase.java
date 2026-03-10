@@ -26,6 +26,7 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.PivotConstants;
 
 public abstract class MechanismsIOHardwareBase {
   protected final TalonFX motor;
@@ -77,6 +78,10 @@ public abstract class MechanismsIOHardwareBase {
 
   public double getCurrent() {
     return currentSignal.refresh().getValue().in(Amps);
+  }
+
+  public double getClosedLoopReferenceRevolutions() {
+    return motor.getClosedLoopReference().refresh().getValue();
   }
 
   public void motorOff() {

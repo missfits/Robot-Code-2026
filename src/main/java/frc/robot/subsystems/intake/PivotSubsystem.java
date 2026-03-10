@@ -51,6 +51,8 @@ public class PivotSubsystem extends MechanismsSubsystemBase {
     SmartDashboard.putNumber("pivot IO/live position", m_IO.getPositionDegrees());
     SmartDashboard.putNumber("pivot IO/live velocity", m_IO.getVelocityDegreesPerSecond());
     SmartDashboard.putNumber("pivot IO/live voltage", m_IO.getVoltage());
+
+    SmartDashboard.putNumber("pivot IO/closed loop reference", m_IO.getClosedLoopReferenceDegrees());
   }
 
   public void resetControllers() {
