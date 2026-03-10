@@ -7,13 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "outpost starting to outpost shooting"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "shoot"
+            "pathName": "drive 5m"
           }
         }
       ]

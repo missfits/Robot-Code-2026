@@ -17,9 +17,9 @@ public abstract class MechanismsSubsystemBase extends SubsystemBase {
 
   //logs the LAST INNER COMMAND that was scheduled on this subsystem, and runs ONCE when the command starts
   protected Command loggedCommand(String name, Command command) {
-    return command.withName(name).beforeStarting(() 
+    return command.beforeStarting(() 
     -> SmartDashboard.putString(mechanismName + "/lastRunningInnerCommand", name)
-    );
+    ).withName(name);
   }
   /*
    * --------------------------------------------------------------

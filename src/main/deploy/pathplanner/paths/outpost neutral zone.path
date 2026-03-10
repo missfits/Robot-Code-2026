@@ -1,0 +1,204 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.6785093315972226,
+        "y": 2.618468605324074
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.678509331597217,
+        "y": 2.618468605324074
+      },
+      "isLocked": false,
+      "linkedName": "outpost neutral zone start"
+    },
+    {
+      "anchor": {
+        "x": 5.722277416087963,
+        "y": 2.393555700231482
+      },
+      "prevControl": {
+        "x": 5.403475839120371,
+        "y": 2.6382829861111112
+      },
+      "nextControl": {
+        "x": 6.130067770809516,
+        "y": 2.0805163869753818
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.621899160879629,
+        "y": 0.921583405671297
+      },
+      "prevControl": {
+        "x": 6.639761937308039,
+        "y": 0.9390684906556604
+      },
+      "nextControl": {
+        "x": 7.9904335214120366,
+        "y": 0.9150223524305556
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.621899160879629,
+        "y": 6.437723307291667
+      },
+      "prevControl": {
+        "x": 7.726240148071654,
+        "y": 6.210538452180694
+      },
+      "nextControl": {
+        "x": 7.083564742476852,
+        "y": 7.60985546875
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.47308861400463,
+        "y": 2.541507450810185
+      },
+      "prevControl": {
+        "x": 6.932988570601853,
+        "y": 2.551414641203704
+      },
+      "nextControl": {
+        "x": 4.78741402679043,
+        "y": 2.536854317797316
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.6785093315972226,
+        "y": 2.541507450810185
+      },
+      "prevControl": {
+        "x": 3.927802219646601,
+        "y": 2.560297234417248
+      },
+      "nextControl": {
+        "x": 3.317257740162037,
+        "y": 2.514279079861111
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.085,
+        "y": 2.723642288773149
+      },
+      "prevControl": {
+        "x": 2.5878391203703703,
+        "y": 2.7603841869212964
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "outpost shooting point"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.8457167832167831,
+      "rotationDegrees": 0.0
+    },
+    {
+      "waypointRelativePos": 1.9728474650349659,
+      "rotationDegrees": 90.0
+    },
+    {
+      "waypointRelativePos": 3.1451595279720275,
+      "rotationDegrees": 90.0
+    },
+    {
+      "waypointRelativePos": 3.905048076923084,
+      "rotationDegrees": 0.0
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "go over the bump",
+      "minWaypointRelativePos": 0.0,
+      "maxWaypointRelativePos": 1.0362053571428569,
+      "constraints": {
+        "maxVelocity": 1.25,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    },
+    {
+      "name": "come back over the bump",
+      "minWaypointRelativePos": 3.999441964285711,
+      "maxWaypointRelativePos": 4.743816964285706,
+      "constraints": {
+        "maxVelocity": 1.25,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    },
+    {
+      "name": "intaking",
+      "minWaypointRelativePos": 2.1037499999999993,
+      "maxWaypointRelativePos": 3.0914062499999977,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "trigger intake",
+      "waypointRelativePos": 0.708816964285714,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "shoot",
+      "waypointRelativePos": 5.785513392857137,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0.0,
+    "rotation": 0.0
+  },
+  "useDefaultConstraints": true
+}

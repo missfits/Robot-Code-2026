@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.9584272771871047,
-        "y": 5.965
+        "x": 1.3400187355324078,
+        "y": 5.95
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.6958524762737353,
-        "y": 5.965
+        "x": 1.0774439346190383,
+        "y": 5.95
       },
       "isLocked": false,
       "linkedName": "depot pickup point"
@@ -33,7 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 1.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -50,5 +50,5 @@
     "velocity": 1.0,
     "rotation": 180.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }
