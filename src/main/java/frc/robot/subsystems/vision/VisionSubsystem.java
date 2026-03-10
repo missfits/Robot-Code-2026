@@ -113,9 +113,13 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public boolean areCamerasConnected() {
-    for (LocalizationCamera cam : cameras)
+    int notConnectedCounter = 0;
+    for (LocalizationCamera cam : cameras){
       if (!cam.isConnected())
+        notConnectedCounter += 1;
+      if (notConnectedCounter > VisionConstants.MIN_NUM_CAMERAS_DISCONNECTED)
         return false;
+    }
     return true;
   }
 
