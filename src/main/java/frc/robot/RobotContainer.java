@@ -133,7 +133,7 @@ public class RobotContainer {
       configureBindingsSimulation();
     } else {
       configureBindingsCompetition();
-
+      configureBindingsVision();
     }
 
     // Configure auto builder
@@ -149,8 +149,6 @@ public class RobotContainer {
     logToSmartDashboard();
 
     SignalLogger.start();
-
-    configureBindingsVision();
   }
 
 
@@ -228,7 +226,7 @@ public class RobotContainer {
 
     m_drivetrain.registerTelemetry(logger::telemeterize);
 
-    m_robotCommandFactory.setDefaultCommand();
+    configureDefaultCommands();
   }
 
   // updated 3/1/26
@@ -262,7 +260,7 @@ public class RobotContainer {
 
     m_testJoystick.povCenter().negate().onTrue(new InstantCommand(() -> resetControllerConstantsSmartDashboard()));
 
-    configureDefaultCommandTesting();
+    configureDefaultCommands();
   }
 
   private void configureBindingsTestingDrivetrain() {
@@ -308,13 +306,12 @@ public class RobotContainer {
     // Drive in slowmode while right bumper is pressed
     m_drivetrainCommandFactory.setSlowmodeButton(m_driverJoystick.rightBumper());
 
-
     Consumer<SwerveDriveState> telemetry =  ((CommandSwerveDrivetrainSim) m_drivetrain)
       .getSimTelemetryConsumer().andThen(logger::telemeterize);
     m_drivetrain.registerTelemetry(telemetry);
   }
 
-  private void configureDefaultCommandTesting() {
+  private void configureDefaultCommands() {
     m_robotCommandFactory.setDefaultCommand();
   }
 
