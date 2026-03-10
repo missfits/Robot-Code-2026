@@ -169,6 +169,8 @@ public class RobotContainer {
    * Define trigger -> command mappings
    */
   private void configureBindingsCompetition() {
+
+    // --- DRIVER COMMANDS ---
     // Default drive
     m_drivetrain.setDefaultCommand(
       // Drivetrain will execute this command periodically
@@ -205,6 +207,33 @@ public class RobotContainer {
     m_driverJoystick.leftTrigger().whileTrue(m_robotCommandFactory.shootManualWithoutSnapCommand());
     // right trigger: outtake / everything backwards (voltage -5)
     m_driverJoystick.rightTrigger().whileTrue(m_robotCommandFactory.outtakeCommand());
+
+    // ----------
+
+    // --- OPERATOR COMMANDS ---
+    // x: intake + indexer forward
+    m_operatorJoystick.x().and(m_operatorJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runIntakeRollersCommand());
+    // y: pivot up
+    m_operatorJoystick.y().and(m_operatorJoystick.leftBumper().negate()).whileTrue(m_pivot.deployPivotCommand());
+    // b: indexer + column forward
+    m_operatorJoystick.b().and(m_operatorJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runInnerRollersCommand());
+    // a: intake, indexer, column forwards
+    m_operatorJoystick.a().and(m_operatorJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runAllRollersCommand());
+    // left bumper + x: intake + indexer backwards
+    m_operatorJoystick.leftBumper().and(m_operatorJoystick.x()).whileTrue(m_robotCommandFactory.runIntakeRollersBackCommand());
+    // left bumper + y: pivot down
+    m_operatorJoystick.leftBumper().and(m_operatorJoystick.y()).whileTrue(m_pivot.storePivotCommand());
+    // left bumper + b: indexer + column backwards
+    m_operatorJoystick.leftBumper().and(m_operatorJoystick.b()).whileTrue(m_robotCommandFactory.runInnerRollersBackCommand());
+    // left bumper + a: intake, indexer, column backwards
+    m_operatorJoystick.leftBumper().and(m_operatorJoystick.a()).whileTrue(m_robotCommandFactory.runAllRollersBackCommand());
+    // right bumper: score speed 1
+    m_operatorJoystick.rightBumper().whileTrue(m_robotCommandFactory.runShooterCloseDistanceCommand());
+    // left trigger: score speed 2
+    m_operatorJoystick.leftTrigger().whileTrue(m_robotCommandFactory.runShooterMediumDistanceCommand());
+    // right trigger: score speed 3
+    m_operatorJoystick.rightTrigger().whileTrue(m_robotCommandFactory.runShooterFarDistanceCommand());
+
 
     m_drivetrain.registerTelemetry(logger::telemeterize);
 
