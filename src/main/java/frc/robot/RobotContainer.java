@@ -431,12 +431,24 @@ public class RobotContainer {
     SmartDashboard.putNumber("roller IO/voltage", SmartDashboard.getNumber("roller/voltage", RollerConstants.ROLLER_VOLTAGE));
 
     // Pivot
-    SmartDashboard.putNumber("pivot IO/kP", SmartDashboard.getNumber("pivot IO/kP", PivotConstants.kP));
-    SmartDashboard.putNumber("pivot IO/kI", SmartDashboard.getNumber("pivot IO/kI", PivotConstants.kI));
-    SmartDashboard.putNumber("pivot IO/kD", SmartDashboard.getNumber("pivot IO/kD", PivotConstants.kD));
-    SmartDashboard.putNumber("pivot IO/kS", SmartDashboard.getNumber("pivot IO/kS", PivotConstants.kS));
-    SmartDashboard.putNumber("pivot IO/kV", SmartDashboard.getNumber("pivot IO/kV", PivotConstants.kV));
-    SmartDashboard.putNumber("pivot IO/kA", SmartDashboard.getNumber("pivot IO/kA", PivotConstants.kA));
+    SmartDashboard.putNumber("pivot IO/kP_NO_LOAD", SmartDashboard.getNumber("pivot IO/kP_NO_LOAD", PivotConstants.kP_NO_LOAD));
+    SmartDashboard.putNumber("pivot IO/kI_NO_LOAD", SmartDashboard.getNumber("pivot IO/kI_NO_LOAD", PivotConstants.kI_NO_LOAD));
+    SmartDashboard.putNumber("pivot IO/kD_NO_LOAD", SmartDashboard.getNumber("pivot IO/kD_NO_LOAD", PivotConstants.kD_NO_LOAD));
+
+    SmartDashboard.putNumber("pivot IO/kS_NO_LOAD", SmartDashboard.getNumber("pivot IO/kS_NO_LOAD", PivotConstants.kS_NO_LOAD));
+    SmartDashboard.putNumber("pivot IO/kG_NO_LOAD", SmartDashboard.getNumber("pivot IO/kG_NO_LOAD", PivotConstants.kS_NO_LOAD));
+    SmartDashboard.putNumber("pivot IO/kV_NO_LOAD", SmartDashboard.getNumber("pivot IO/kV_NO_LOAD", PivotConstants.kV_NO_LOAD));
+    SmartDashboard.putNumber("pivot IO/kA_NO_LOAD", SmartDashboard.getNumber("pivot IO/kA_NO_LOAD", PivotConstants.kA_NO_LOAD));
+
+    SmartDashboard.putNumber("pivot IO/kP_WITH_LOAD", SmartDashboard.getNumber("pivot IO/kP_WITH_LOAD", PivotConstants.kP_WITH_LOAD));
+    SmartDashboard.putNumber("pivot IO/kI_WITH_LOAD", SmartDashboard.getNumber("pivot IO/kI_WITH_LOAD", PivotConstants.kI_WITH_LOAD));
+    SmartDashboard.putNumber("pivot IO/kD_WITH_LOAD", SmartDashboard.getNumber("pivot IO/kD_WITH_LOAD", PivotConstants.kD_WITH_LOAD));
+    
+    SmartDashboard.putNumber("pivot IO/kS_WITH_LOAD", SmartDashboard.getNumber("pivot IO/kS_WITH_LOAD", PivotConstants.kS_WITH_LOAD));
+    SmartDashboard.putNumber("pivot IO/kG_WITH_LOAD", SmartDashboard.getNumber("pivot IO/kG_WITH_LOAD", PivotConstants.kS_WITH_LOAD));
+    SmartDashboard.putNumber("pivot IO/kV_WITH_LOAD", SmartDashboard.getNumber("pivot IO/kV_WITH_LOAD", PivotConstants.kV_WITH_LOAD));
+    SmartDashboard.putNumber("pivot IO/kA_WITH_LOAD", SmartDashboard.getNumber("pivot IO/kA_WITH_LOAD", PivotConstants.kA_WITH_LOAD));
+    
     SmartDashboard.putNumber("pivot IO/velocity", SmartDashboard.getNumber("pivot IO/velocity", PivotConstants.DEPLOY_VELOCITY));
     SmartDashboard.putNumber("pivot IO/voltage", SmartDashboard.getNumber("pivot/voltage", PivotConstants.DEPLOY_VOLTAGE));
 
@@ -486,13 +498,23 @@ public class RobotContainer {
     RollerConstants.kD = SmartDashboard.getNumber("roller IO/kD", 0);
 
     // Pivot
-    PivotConstants.kP = SmartDashboard.getNumber("pivot IO/kP", 0);
-    PivotConstants.kI = SmartDashboard.getNumber("pivot IO/kI", 0);
-    PivotConstants.kD = SmartDashboard.getNumber("pivot IO/kD", 0);
+    PivotConstants.kP_NO_LOAD = SmartDashboard.getNumber("pivot IO/kP_NO_LOAD", 0);
+    PivotConstants.kI_NO_LOAD = SmartDashboard.getNumber("pivot IO/kI_NO_LOAD", 0);
+    PivotConstants.kD_NO_LOAD = SmartDashboard.getNumber("pivot IO/kD_NO_LOAD", 0);
 
-    PivotConstants.kS = SmartDashboard.getNumber("pivot IO/kS", 0);
-    PivotConstants.kV = SmartDashboard.getNumber("pivot IO/kV", 0);
-    PivotConstants.kA = SmartDashboard.getNumber("pivot IO/kA", 0);
+    PivotConstants.kS_NO_LOAD = SmartDashboard.getNumber("pivot IO/kS_NO_LOAD", 0);
+    PivotConstants.kG_NO_LOAD = SmartDashboard.getNumber("pivot IO/kG_NO_LOAD", 0);
+    PivotConstants.kV_NO_LOAD = SmartDashboard.getNumber("pivot IO/kV_NO_LOAD", 0);
+    PivotConstants.kA_NO_LOAD = SmartDashboard.getNumber("pivot IO/kA_NO_LOAD", 0);
+
+    PivotConstants.kP_WITH_LOAD = SmartDashboard.getNumber("pivot IO/kP_WITH_LOAD", 0);
+    PivotConstants.kI_WITH_LOAD = SmartDashboard.getNumber("pivot IO/kI_WITH_LOAD", 0);
+    PivotConstants.kD_WITH_LOAD = SmartDashboard.getNumber("pivot IO/kD_WITH_LOAD", 0);
+
+    PivotConstants.kS_WITH_LOAD = SmartDashboard.getNumber("pivot IO/kS_WITH_LOAD", 0);
+    PivotConstants.kG_WITH_LOAD = SmartDashboard.getNumber("pivot IO/kG_WITH_LOAD", 0);
+    PivotConstants.kV_WITH_LOAD = SmartDashboard.getNumber("pivot IO/kV_WITH_LOAD", 0);
+    PivotConstants.kA_WITH_LOAD = SmartDashboard.getNumber("pivot IO/kA_WITH_LOAD", 0);
 
     PivotConstants.CRUISE_VELOCITY = SmartDashboard.getNumber("pivot IO/motion magic velocity", 0);
     PivotConstants.ACCELERATION = SmartDashboard.getNumber("pivot IO/motion magic acceleration", 0);

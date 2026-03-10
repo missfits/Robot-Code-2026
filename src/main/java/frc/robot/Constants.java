@@ -192,16 +192,27 @@ public final class Constants {
 
     // Max manual volts
     
-    // PID gains
-    public static double kP = 0.3;
-    public static double kI = 0;
-    public static double kD = 0;
+    // PID/FF values for motion magic with no balls 
+    public static double kP_NO_LOAD = 0;
+    public static double kI_NO_LOAD = 0;
+    public static double kD_NO_LOAD = 0;
 
     // Feed forward values
-    public static double kS = 0.25;
-    public static double kG = 0.0;
-    public static double kV = 0.12;
-    public static double kA = 0.0;
+    public static double kS_NO_LOAD = 0.25;
+    public static double kG_NO_LOAD = 0.25;
+    public static double kV_NO_LOAD = 0.0;
+    public static double kA_NO_LOAD = 0.0;
+
+    // PID/FF values for motion magic with balls
+    public static double kP_WITH_LOAD = 0;
+    public static double kI_WITH_LOAD = 0;
+    public static double kD_WITH_LOAD = 0;
+
+    // Feed forward values
+    public static double kS_WITH_LOAD = 0.25;
+    public static double kG_WITH_LOAD = 0.25;
+    public static double kV_WITH_LOAD = 0.0;
+    public static double kA_WITH_LOAD = 0.0;
 
     // Motion Magic values
     public static double CRUISE_VELOCITY = 0.2;

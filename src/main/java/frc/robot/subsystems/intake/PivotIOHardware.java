@@ -81,14 +81,15 @@ public class PivotIOHardware extends MechanismsIOHardwareBase {
     var slot0Configs = talonFXConfigs.Slot0;
 
     //PID
-    slot0Configs.kP = PivotConstants.kP;
-    slot0Configs.kI = PivotConstants.kI;
-    slot0Configs.kD = PivotConstants.kD;
+    slot0Configs.kP = PivotConstants.kP_NO_LOAD;
+    slot0Configs.kI = PivotConstants.kI_NO_LOAD;
+    slot0Configs.kD = PivotConstants.kD_NO_LOAD;
 
     //feed forward values
-    slot0Configs.kS = PivotConstants.kS;
-    slot0Configs.kV = PivotConstants.kV;
-    slot0Configs.kA = PivotConstants.kA;
+    slot0Configs.kS = PivotConstants.kS_NO_LOAD;
+    slot0Configs.kG = PivotConstants.kG_NO_LOAD;
+    slot0Configs.kV = PivotConstants.kV_NO_LOAD;
+    slot0Configs.kA = PivotConstants.kA_NO_LOAD;
 
     var motionMagicConfigs = talonFXConfigs.MotionMagic;
     motionMagicConfigs.MotionMagicCruiseVelocity = PivotConstants.CRUISE_VELOCITY / PivotConstants.DEGREES_PER_REVOLUTION;
@@ -101,4 +102,33 @@ public class PivotIOHardware extends MechanismsIOHardwareBase {
 
     motor.getConfigurator().apply(talonFXConfigs);
   }
+
+
+  public void resetSlot1Gains() {
+    var talonFXConfigs = new TalonFXConfiguration();
+    var slot0Configs = talonFXConfigs.Slot1;
+
+    //PID
+    slot0Configs.kP = PivotConstants.kP_WITH_LOAD;
+    slot0Configs.kI = PivotConstants.kI_WITH_LOAD;
+    slot0Configs.kD = PivotConstants.kD_WITH_LOAD;
+
+    //feed forward values
+    slot0Configs.kS = PivotConstants.kS_WITH_LOAD;
+    slot0Configs.kG = PivotConstants.kG_WITH_LOAD;
+    slot0Configs.kV = PivotConstants.kV_WITH_LOAD;
+    slot0Configs.kA = PivotConstants.kA_WITH_LOAD;
+
+    var motionMagicConfigs = talonFXConfigs.MotionMagic;
+    motionMagicConfigs.MotionMagicCruiseVelocity = PivotConstants.CRUISE_VELOCITY / PivotConstants.DEGREES_PER_REVOLUTION;
+    motionMagicConfigs.MotionMagicAcceleration = PivotConstants.ACCELERATION / PivotConstants.DEGREES_PER_REVOLUTION;
+    motionMagicConfigs.MotionMagicJerk = PivotConstants.JERK / PivotConstants.DEGREES_PER_REVOLUTION;
+
+    var motorOutputConfigs = talonFXConfigs.MotorOutput;
+    motorOutputConfigs.PeakForwardDutyCycle = PivotConstants.PEAK_FORWARD_DUTY_CYCLE;
+    motorOutputConfigs.PeakReverseDutyCycle = PivotConstants.PEAK_REVERSE_DUTY_CYCLE;
+
+    motor.getConfigurator().apply(talonFXConfigs);
+  }
+
 }
