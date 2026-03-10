@@ -107,6 +107,6 @@ public class PivotSubsystem extends MechanismsSubsystemBase {
   }
 
   public Command zeroPivotCommand() {
-      return this.run(() -> setVoltage(1), "running pivot down").until(() -> m_IO.getCurrent() > 20).andThen(new InstantCommand(() -> this.resetToDeployPosition()).withName("reset pivot position")).withName("zero pivot");
+      return this.run(() -> setVoltage(PivotConstants.ZERO_PIVOT_VOLTAGE), "running pivot down").until(() -> m_IO.getCurrent() > PivotConstants.CURRENT_THRESHOLD).andThen(new InstantCommand(() -> this.resetToDeployPosition()).withName("reset pivot position")).withName("zero pivot");
   }
 }
