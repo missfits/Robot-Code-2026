@@ -95,7 +95,7 @@ public class RobotCommandFactory {
     m_shooter.resetPosition();
   }
 
-  // --- INTAKE COMMANDS ---
+  // --- TESTING COMMANDS ---
   // pivot
   public Command deployPivotCommand() {
     return m_pivot.velocityCommand(m_pivotDeployVelocitySupplier).withName("deployPivot");
@@ -132,7 +132,75 @@ public class RobotCommandFactory {
     return m_column.velocityCommand(() -> -m_columnVelocitySupplier.get()).withName("runColumnBack");
   }
 
-  // combos
+  // shooter
+
+  /**
+   * Command that shoots at a given velocity supplier
+   * Simultaneously runs the shooter and snap to angle, then runs column and indexer
+   */
+  public Command shootManualCommand(Supplier<JoystickVals> joystickValsSupplier) {
+    return Commands.parallel(
+      snapToHubCommand(joystickValsSupplier),
+      shootToHubCommandWithDisplacement(m_shooterVelocitySupplier, m_columnVelocitySupplier, m_indexerVelocitySupplier))
+    .withName("shootManual");
+  }
+
+  /**
+   * Command that shoots with shooter, column, indexer velocity supplier
+   * Simultaneously runs the shooter, then runs column and indexer
+   */
+  public Command shootManualWithoutSnapCommand() {
+    return shootCommand(m_shooterVelocitySupplier, m_columnVelocitySupplier, m_indexerVelocitySupplier)
+      .withName("shootManualWithoutSnap");
+  }
+
+  /**
+   * Run shooter with shooter velocity supplier
+   */
+  public Command shootManualTestCommand() {
+    return m_shooter.shooterVelocityCommand(m_shooterVelocitySupplier)
+      .withName("shootManualTest");
+  }
+
+  public Command runShooterBackCommand() {
+    return m_shooter.velocityCommand(m_shooterBackVelocitySupplier);
+  }
+
+  /**
+   * Command that shoots with shooter, column, indexer velocity supplier
+   * Simultaneously runs the shooter, then runs column and indexer
+   * 
+   * @param shooterSupplier Supplier for shooter velocity
+   * @param columnSupplier Supplier for column velocity
+   * @param indexerSupplier Supplier for indexer velocity
+   * @return Command that shoots with given velocity suppliers
+   */
+  public Command shootCommand(Supplier<Double> shooterSupplier, Supplier<Double> columnSupplier, Supplier<Double> indexerSupplier) {
+    return Commands.parallel(
+      m_shooter.shooterVelocityCommand(shooterSupplier), // run shooter at given velocity  
+      Commands.sequence( // column: 
+        m_column.offCommand() // wait until 
+          .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity 
+        m_column.velocityCommand(columnSupplier)),
+      Commands.sequence( // indexer: 
+        m_indexer.offCommand() // wait until 
+          .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity
+        m_indexer.velocityCommand(indexerSupplier)));
+  }
+
+  public Command shootCommand(double shooterVelocity, double columnVelocity, double indexerVelocity) {
+    return Commands.parallel(
+      m_shooter.shooterVelocityCommand(shooterVelocity), // run shooter at given velocity  
+      Commands.sequence( // column: 
+        m_column.offCommand() // wait until 
+          .until(m_shooter.atTargetVelocityTrigger(shooterVelocity)), // shooter at target velocity 
+        m_column.velocityCommand(columnVelocity)),
+      Commands.sequence( // indexer: 
+        m_indexer.offCommand() // wait until 
+          .until(m_shooter.atTargetVelocityTrigger(shooterVelocity)), // shooter at target velocity
+        m_indexer.velocityCommand(indexerVelocity)));
+  }
+
   // --- COMPETITION COMMANDS ---
 
   // - manual commands -
@@ -262,8 +330,6 @@ public class RobotCommandFactory {
     ).withName("neutralMode");
   }
 
-  public Command runShooterBackCommand() {
-    return m_shooter.velocityCommand(m_shooterBackVelocitySupplier);
   // intake mode
   public Command intakeModeCommand() {
     return Commands.parallel(
@@ -274,9 +340,16 @@ public class RobotCommandFactory {
     ).withName("intakeMode");
   }
 
-  // --- SCORE COMMANDS ---
-
-  // with vision and est pose
+  // score mode
+  public Command scoreModeCommand(Supplier<JoystickVals> joystickValsSupplier) {
+    return Commands.parallel(
+      snapToHubCommand(joystickValsSupplier),
+      shootToHubCommandWithDisplacement(
+        m_shooterVelocityCalculatedSupplier,
+        () -> ColumnConstants.SHOOT_VELOCITY,
+        () -> IndexerConstants.SHOOT_VELOCITY))
+    .withName("shootByDistance");
+  }
 
   /**
    * Command that shoots based on distance to hub using vision
@@ -339,66 +412,6 @@ public class RobotCommandFactory {
       () -> HubCalculations.angleToHub(m_drivetrain.getState().Pose));
   }
 
-  // without vision and est pose
-
-  /**
-   * Command that shoots at a given velocity supplier
-   * Simultaneously runs the shooter and snap to angle, then runs column and indexer
-   */
-  public Command shootManualCommand(Supplier<JoystickVals> joystickValsSupplier) {
-    return Commands.parallel(
-      snapToHubCommand(joystickValsSupplier),
-      shootToHubCommandWithDisplacement(m_shooterVelocitySupplier, m_columnVelocitySupplier, m_indexerVelocitySupplier))
-    .withName("shootManual");
-  }
-
-  /**
-   * Command that shoots with shooter, column, indexer velocity supplier
-   * Simultaneously runs the shooter, then runs column and indexer
-   */
-  public Command shootManualWithoutSnapCommand() {
-    return shootCommand(m_shooterVelocitySupplier, m_columnVelocitySupplier, m_indexerVelocitySupplier)
-      .withName("shootManualWithoutSnap");
-  }
-
-  /**
-   * Run shooter with shooter velocity supplier
-   */
-  public Command shootManualTestCommand() {
-    return m_shooter.shooterVelocityCommand(m_shooterVelocitySupplier)
-      .withName("shootManualTest");
-  }
-
-  public Command backupScoreCommand(double velocity) {
-    return Commands.parallel(
-      m_shooter.velocityCommand(velocity),
-      m_roller.velocityCommand(RollerConstants.ROLLER_VELOCITY),
-      m_indexer.velocityCommand(IndexerConstants.INDEXER_VELOCITY),
-      m_column.velocityCommand(ColumnConstants.COLUMN_VELOCITY)
-    );
-  }
-
-  /**
-   * Command that shoots with shooter, column, indexer velocity supplier
-   * Simultaneously runs the shooter, then runs column and indexer
-   * 
-   * @param shooterSupplier Supplier for shooter velocity
-   * @param columnSupplier Supplier for column velocity
-   * @param indexerSupplier Supplier for indexer velocity
-   * @return Command that shoots with given velocity suppliers
-   */
-  public Command shootCommand(Supplier<Double> shooterSupplier, Supplier<Double> columnSupplier, Supplier<Double> indexerSupplier) {
-    return Commands.parallel(
-      m_shooter.shooterVelocityCommand(shooterSupplier), // run shooter at given velocity  
-      Commands.sequence( // column: 
-        m_column.offCommand() // wait until 
-          .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity 
-        m_column.velocityCommand(columnSupplier)),
-      Commands.sequence( // indexer: 
-        m_indexer.offCommand() // wait until 
-          .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity
-        m_indexer.velocityCommand(indexerSupplier)));
-  }
 
   /**
    * Command that shoots with shooter, column, indexer velocity supplier
