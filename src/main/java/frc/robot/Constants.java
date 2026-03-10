@@ -393,6 +393,9 @@ public final class Constants {
 
     // Velocity tolerance for checking if shooter is at target (rotations per second)
     public static final double VELOCITY_TOLERANCE = 2;
+
+    // Current spike threshold for checking if fuel is shot (amps)
+    public static final double CURRENT_SPIKE_THRESHOLD = 20;
   }
 
   public static class ClimberConstants {
