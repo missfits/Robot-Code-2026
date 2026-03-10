@@ -181,9 +181,9 @@ public final class Constants {
     public static final double MAX_VELOCITY = 15.0;
 
     // Pivot positions
-    public static double STORE_POSITION_DEGREES = 10;
-    public static double DISPLACE_FUEL_POSITION_DEGREES = 35;
-    public static double DEPLOY_POSITION_DEGREES = 55;
+    public static double STORE_POSITION_DEGREES = 0;
+    public static double DISPLACE_FUEL_POSITION_DEGREES = -35;
+    public static double DEPLOY_POSITION_DEGREES = -55;
 
     // Timing values for displace fuel command 
     public static final double DISPLACE_FUEL_UP_TIMEOUT = 1; // TODO: tune
