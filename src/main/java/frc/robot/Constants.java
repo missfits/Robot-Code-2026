@@ -215,7 +215,7 @@ public final class Constants {
     public static double kA_WITH_LOAD = 0.0;
 
     // Motion Magic values
-    public static double CRUISE_VELOCITY = 0.2;
+    public static double CRUISE_VELOCITY = 0.2; // in degrees per second
     public static double ACCELERATION = 1;
     public static double JERK = 100;
   }
