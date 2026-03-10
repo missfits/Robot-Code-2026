@@ -135,6 +135,24 @@ public class LocalizationCamera {
     pose3dPublisher.set(newReading.map(reading -> reading.robotPose().estimatedPose).orElse(null));
   }
 
+  private PhotonPoseEstimator copyPoseEstimator() {
+    PhotonPoseEstimator poseEstimatorCopy = new PhotonPoseEstimator(
+        poseEstimator.getFieldTags(),
+        poseEstimator.getPrimaryStrategy(),
+        poseEstimator.getRobotToCameraTransform());
+
+    poseEstimatorCopy.setTagModel(poseEstimator.getTagModel());
+
+    Pose3d referencePose = poseEstimator.getReferencePose();
+    if (referencePose != null) {
+      poseEstimatorCopy.setReferencePose(referencePose);
+    }
+
+    m_currentReading.ifPresent(reading -> poseEstimatorCopy.setLastPose(reading.robotPose().estimatedPose));
+
+    return poseEstimatorCopy;
+  }
+
   private Optional<CameraReading> calculateNewCameraReading() {
     var results = m_camera.getAllUnreadResults(); // raw camera data
 
@@ -151,7 +169,9 @@ public class LocalizationCamera {
     if (!results.isEmpty()) {
       var result = results.get(results.size() - 1); // latest camera reading
 
-      var poseEstimatorOutput = poseEstimator.update(result);
+      // updating + filtering runs on a copy pose estimator so filtered don't pollute the estimator 
+      PhotonPoseEstimator candidatePoseEstimator = copyPoseEstimator();
+      var poseEstimatorOutput = candidatePoseEstimator.update(result);
       
       // If present, create new CameraReading and run through pose ambiguity + local filter pipeline.
       if (poseEstimatorOutput.isPresent()) {
@@ -172,9 +192,10 @@ public class LocalizationCamera {
           return Optional.empty();
         }
 
-        // Passed all filters --> update field simulation for single camera
+        // Passed all filters --> update field simulation for single camera + update poseEstimator
         updateField(newReading.robotPose().estimatedPose.toPose2d());
-        
+        poseEstimator = candidatePoseEstimator;
+
         SmartDashboard.putString(m_logString + "/filtering/" + "poseAmbiguity", "happy");
         return Optional.of(newReading);
       }
