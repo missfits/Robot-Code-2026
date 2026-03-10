@@ -355,8 +355,11 @@ public class RobotCommandFactory {
    */
   public Command shootWithoutDistance() {
     return Commands.parallel(
-        m_shooter.shooterBackVoltageCommand().withTimeout(0.25).andThen( 
-          m_shooter.shooterVelocityCommand(m_shooterVelocitySupplier)), // run shooter at given velocity  
+      Commands.sequence(
+        // run shooter at slightly higher velocity until we shoot some fuel  
+        m_shooter.shooterVelocityCommand(() -> m_shooterVelocitySupplier.get() + ShooterConstants.INTIAL_ADDITIONAL_VELOCITY)
+          .until(m_shooter.isFuelShot(m_shooterVelocitySupplier.get() + ShooterConstants.INTIAL_ADDITIONAL_VELOCITY)),
+        m_shooter.shooterVelocityCommand(m_shooterVelocitySupplier)),  // run shooter at given velocity  
         Commands.sequence( // column: 
           m_column.offCommand() // wait until 
             .until(m_shooter.atTargetVelocityTrigger(m_shooterVelocitySupplier)), // shooter at target velocity 
@@ -368,7 +371,7 @@ public class RobotCommandFactory {
         Commands.sequence( // indexer: 
           m_indexer.offCommand() // wait until 
             .until(m_shooter.atTargetVelocityTrigger(m_shooterVelocitySupplier)), // shooter at target velocity
-          m_indexer.velocityCommand(m_indexerVelocitySupplier))
+          m_indexer.velocityCommand(m_indexerVelocitySupplier)  )
     ).withName("shootWithoutDistance");
   }
 

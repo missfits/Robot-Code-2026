@@ -367,6 +367,7 @@ public final class Constants {
     public static double SHOOTER_DISTANCE3_VELOCITY = 55.0;
     public static double SHOOTER_DISTANCE4_VELOCITY = 60.0;
 
+    public static double INTIAL_ADDITIONAL_VELOCITY = 5.0; // TODO: tune
 
     public static double SHOOTER_VOLTAGE = 1.0;
     public static double SHOOTER_BACK_VOLTAGE = -1.0;
@@ -392,6 +393,9 @@ public final class Constants {
 
     // Velocity tolerance for checking if shooter is at target (rotations per second)
     public static final double VELOCITY_TOLERANCE = 2;
+
+    // Current spike threshold for checking if fuel is shot (amps)
+    public static final double CURRENT_SPIKE_THRESHOLD = 20;
   }
 
   public static class ClimberConstants {

@@ -88,6 +88,10 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
       .withTimeout(ShooterConstants.RUN_SHOOTER_TIME).withName("run shooter auto");
   }
 
+  public Trigger isCurrentSpiking() {
+    return new Trigger(() -> m_influencerIO.getCurrent() > ShooterConstants.CURRENT_SPIKE_THRESHOLD);
+  }
+
   // Triggers
   public Trigger atTargetVelocityTrigger(Supplier<Double> targetVelocitySupplier) {
     return m_influencerIO.atTargetVelocityTrigger(ShooterConstants.VELOCITY_TOLERANCE, targetVelocitySupplier);
@@ -95,6 +99,10 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
 
   public Trigger atTargetVelocityTrigger(double targetVelocity) {
     return atTargetVelocityTrigger(() -> targetVelocity);
+  }
+
+  public Trigger isFuelShot(double targetVelocity) {
+    return isCurrentSpiking().and(atTargetVelocityTrigger(targetVelocity));
   }
 
   @Override
@@ -110,5 +118,7 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
     SmartDashboard.putNumber("shooter influencer IO/live position", m_influencerIO.getPositionDegrees());
     SmartDashboard.putNumber("shooter influencer IO/live velocity", m_influencerIO.getVelocityDegreesPerSecond());
     SmartDashboard.putNumber("shooter influencer IO/live voltage", m_influencerIO.getVoltage());
+
+    SmartDashboard.putBoolean("shooter/is current spiking", isCurrentSpiking().getAsBoolean());
   }
 }
