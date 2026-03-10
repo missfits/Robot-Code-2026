@@ -161,7 +161,7 @@ public final class Constants {
     public static final int MOTOR_ID = 20;
 
     // Motor limits
-    public static final int MOTOR_STATOR_LIMIT = 40;
+    public static final int MOTOR_STATOR_LIMIT = 60;
 
     // Duty cycle limits
     public static final double PEAK_FORWARD_DUTY_CYCLE = 1;
