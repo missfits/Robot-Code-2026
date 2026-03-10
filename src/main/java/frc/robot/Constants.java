@@ -455,7 +455,7 @@ public final class Constants {
     public static final Transform3d ROBOT_TO_CAM1_3D;
 
     //is camera connected check:
-    public static final int NUM_CAMERAS_DISCONNECTED;
+    public static final int MIN_NUM_CAMERAS_DISCONNECTED = 2;
 
     // Camera 2 position - robot-specific
     public static final double ROBOT_TO_CAM2_X;
