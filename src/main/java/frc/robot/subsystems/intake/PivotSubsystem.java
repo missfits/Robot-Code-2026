@@ -19,6 +19,7 @@ public class PivotSubsystem extends MechanismsSubsystemBase {
   public PivotSubsystem() {
     super("pivot");
     m_IO.resetPosition();
+    m_IO.setInverted(true);
   }
 
   protected void setVoltage(double volts) {

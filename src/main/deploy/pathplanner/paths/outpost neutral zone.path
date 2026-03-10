@@ -4,28 +4,28 @@
     {
       "anchor": {
         "x": 3.6785093315972226,
-        "y": 2.0742948495370377
+        "y": 2.618468605324074
       },
       "prevControl": null,
       "nextControl": {
         "x": 4.678509331597217,
-        "y": 2.0742948495370377
+        "y": 2.618468605324074
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "outpost neutral zone start"
     },
     {
       "anchor": {
-        "x": 5.724180121527778,
-        "y": 2.0742948495370377
+        "x": 5.722277416087963,
+        "y": 2.393555700231482
       },
       "prevControl": {
-        "x": 5.492314627081502,
-        "y": 2.167774218839489
+        "x": 5.403475839120371,
+        "y": 2.6382829861111112
       },
       "nextControl": {
-        "x": 6.2009772969685715,
-        "y": 1.8820683203079431
+        "x": 6.130067770809516,
+        "y": 2.0805163869753818
       },
       "isLocked": false,
       "linkedName": null
@@ -64,16 +64,16 @@
     },
     {
       "anchor": {
-        "x": 5.330057653356482,
-        "y": 2.79292701099537
+        "x": 5.47308861400463,
+        "y": 2.541507450810185
       },
       "prevControl": {
-        "x": 6.244545532692178,
-        "y": 2.7713077052721764
+        "x": 6.932988570601853,
+        "y": 2.551414641203704
       },
       "nextControl": {
-        "x": 4.644558810763889,
-        "y": 2.8091328125000006
+        "x": 4.78741402679043,
+        "y": 2.536854317797316
       },
       "isLocked": false,
       "linkedName": null
@@ -81,15 +81,15 @@
     {
       "anchor": {
         "x": 3.6785093315972226,
-        "y": 2.8937047887731477
+        "y": 2.541507450810185
       },
       "prevControl": {
-        "x": 3.9278022196466007,
-        "y": 2.912494572380211
+        "x": 3.927802219646601,
+        "y": 2.560297234417248
       },
       "nextControl": {
         "x": 3.317257740162037,
-        "y": 2.866476417824074
+        "y": 2.514279079861111
       },
       "isLocked": false,
       "linkedName": null
@@ -170,14 +170,14 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "deploy intake",
-      "waypointRelativePos": 0,
+      "name": "trigger intake",
+      "waypointRelativePos": 0.708816964285714,
       "endWaypointRelativePos": null,
       "command": null
     },
     {
-      "name": "trigger intake",
-      "waypointRelativePos": 1.3635937500000004,
+      "name": "shoot",
+      "waypointRelativePos": 5.785513392857137,
       "endWaypointRelativePos": null,
       "command": null
     }

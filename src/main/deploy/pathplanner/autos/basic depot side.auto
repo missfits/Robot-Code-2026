@@ -11,34 +11,15 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "depot pickup drive-in"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "trigger intake"
-                }
-              }
-            ]
+            "pathName": "depot pickup drive-in"
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "finished depot pickup to shooting location"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "shoot"
           }
         }
       ]

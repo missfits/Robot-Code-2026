@@ -68,6 +68,8 @@ import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.events.EventTrigger;
+
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 import com.ctre.phoenix6.SignalLogger;
@@ -119,6 +121,8 @@ public class RobotContainer {
 
   private final CommandXboxController m_driverJoystick =
     new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  private final CommandXboxController m_operatorJoystick =
+    new CommandXboxController(OperatorConstants.kOperatorControllerPort);
   private final CommandXboxController m_testJoystick =
     new CommandXboxController(OperatorConstants.kTestControllerPort);
 
@@ -154,6 +158,8 @@ public class RobotContainer {
     logToSmartDashboard();
 
     SignalLogger.start();
+
+    configureBindingsVision();
   }
 
 
@@ -230,22 +236,24 @@ public class RobotContainer {
 
     // INTAKE TESTING
     // x: run roller and indexer
-    m_driverJoystick.x().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_pivot.deployPivotCommand());
+    m_driverJoystick.x().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runIntakeRollersCommand());
     // y: run column
-    m_driverJoystick.y().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_pivot.storePivotCommand());
-    // b: run roller back 
-    m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).whileTrue(
-      m_drivetrainCommandFactory.snapToAngle( // drivetrain: snap to angle 
-        () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
-        () -> HubCalculations.angleToHub(m_drivetrain.getState().Pose))
-    );
+    m_driverJoystick.y().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runColumnCommand());
+    // // b: run roller back 
+    // m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).whileTrue(
+    //   m_drivetrainCommandFactory.snapToAngle( // drivetrain: snap to angle 
+    //     () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
+    //     () -> HubCalculations.angleToHub(m_drivetrain.getState().Pose))
+    // );
+
+
     // a: run roller and indexer back
-    m_driverJoystick.a().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runIntakeRollersBackCommand());
+    m_driverJoystick.a().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.shootWithoutDistance());
 
     // left bumper + x: deploy pivot motion magic
-    m_driverJoystick.leftBumper().and(m_driverJoystick.x()).whileTrue(m_robotCommandFactory.runIntakeRollersCommand());
+    m_driverJoystick.leftBumper().and(m_driverJoystick.x()).whileTrue(m_pivot.storePivotCommand());
     // left bumper + y: store pivot motion magic
-    m_driverJoystick.leftBumper().and(m_driverJoystick.y()).whileTrue(m_robotCommandFactory.runColumnCommand());
+    m_driverJoystick.leftBumper().and(m_driverJoystick.y()).whileTrue(m_pivot.displaceFuelCommand());
     // left bumper + b: reset drivetrain rotation 
     m_driverJoystick.leftBumper().and(m_driverJoystick.b()).whileTrue(
       new InstantCommand(() -> m_drivetrain.resetRotation(AllianceFlipUtil.apply(new Rotation2d(0)))));
@@ -254,49 +262,40 @@ public class RobotContainer {
       () -> m_pivot.resetToDeployPosition()));
 
     // run shooter
-    m_driverJoystick.leftTrigger().whileTrue(m_robotCommandFactory.shootByDistanceCommand(() -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY())));
-    m_driverJoystick.rightTrigger().whileTrue(
-      new ParallelCommandGroup(
-        m_robotCommandFactory.runIntakeRollersCommand(),
-        m_robotCommandFactory.shootManualTestCommand(),
-        m_column.columnVelocityCommand()
-      )
-    );
+    m_driverJoystick.leftTrigger().and(m_driverJoystick.leftBumper().negate()).onTrue(m_robotCommandFactory.shootByDistanceCommand(() -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY())));
+    m_driverJoystick.leftTrigger().and(m_driverJoystick.leftBumper()).onTrue(m_robotCommandFactory.offCommand());
 
     m_driverJoystick.povCenter().negate().onTrue(new InstantCommand(() -> resetControllerConstantsSmartDashboard()));
 
+    // OPERATOR
+    // x: manual shoot at closest distance
+    m_operatorJoystick.x().and(m_operatorJoystick.leftBumper().negate()).whileTrue(
+      m_robotCommandFactory.backupScoreCommand(ShooterConstants.SHOOTER_DISTANCE1_VELOCITY)
+    );
+    // y: manual shoot at close distance
+    m_operatorJoystick.y().and(m_operatorJoystick.leftBumper().negate()).whileTrue(
+      m_robotCommandFactory.backupScoreCommand(ShooterConstants.SHOOTER_DISTANCE2_VELOCITY)
+    );
+    // b: manual shoot at far distance
+    m_operatorJoystick.b().and(m_operatorJoystick.leftBumper().negate()).whileTrue(
+      m_robotCommandFactory.backupScoreCommand(ShooterConstants.SHOOTER_DISTANCE3_VELOCITY)
+    );
+    // a: manual shoot at furthest distance
+    m_operatorJoystick.a().and(m_operatorJoystick.leftBumper().negate()).whileTrue(
+      m_robotCommandFactory.backupScoreCommand(ShooterConstants.SHOOTER_DISTANCE4_VELOCITY)
+    );
+    // left bumper + x: run roller back
+    m_operatorJoystick.leftBumper().and(m_operatorJoystick.x()).whileTrue(m_robotCommandFactory.runRollerBackCommand());
+    // left bumper + y: run indexer back
+    m_operatorJoystick.leftBumper().and(m_operatorJoystick.y()).whileTrue(m_robotCommandFactory.runIndexerBackCommand());
+    // left bumper + b: run column back
+    m_operatorJoystick.leftBumper().and(m_operatorJoystick.b()).whileTrue(m_robotCommandFactory.runColumnBackCommand());
+    // left bumper + a: run shooter back
+    m_operatorJoystick.leftBumper().and(m_operatorJoystick.a()).whileTrue(m_robotCommandFactory.runShooterBackCommand());
+
+
     configureDefaultCommandTesting();
 
-    // SHOOTER TESTING
-    // m_driverJoystick.leftTrigger().whileTrue(m_robotCommandFactory.shootManualTestCommand(ShooterConstants.SHOOTER_TESTING_VELOCITY1));
-    // m_driverJoystick.rightTrigger().whileTrue(m_robotCommandFactory.shootManualWithoutSnapCommand());
-
-    // m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).whileTrue(
-    //   m_robotCommandFactory.shootManualWithoutSnapCommand(ShooterConstants.SHOOTER_TESTING_VELOCITY1, ColumnConstants.COLUMN_TESTING_VELOCITY1));
-    // m_driverJoystick.a().and(m_driverJoystick.leftBumper().negate()).whileTrue(
-    //   m_robotCommandFactory.shootManualWithoutSnapCommand(ShooterConstants.SHOOTER_TESTING_VELOCITY1, ColumnConstants.COLUMN_TESTING_VELOCITY2));
-    // m_driverJoystick.x().and(m_driverJoystick.leftBumper().negate()).whileTrue(
-    //   m_robotCommandFactory.shootManualWithoutSnapCommand(ShooterConstants.SHOOTER_TESTING_VELOCITY1, ColumnConstants.COLUMN_TESTING_VELOCITY3));
-    // m_driverJoystick.y().and(m_driverJoystick.leftBumper().negate()).whileTrue(
-    //   m_robotCommandFactory.shootManualWithoutSnapCommand(ShooterConstants.SHOOTER_TESTING_VELOCITY1, ColumnConstants.COLUMN_TESTING_VELOCITY4));
-
-    // // reset the field-centric heading on a button press
-    // m_driverJoystick.leftBumper().and(m_driverJoystick.b()).onTrue(
-    //   m_drivetrain.runOnce(() -> m_drivetrain.resetRotation(AllianceFlipUtil.apply(new Rotation2d(0))))
-    // );
-    // // snap to angle
-    // m_driverJoystick.leftBumper().and(m_driverJoystick.a()).whileTrue(
-    //   m_drivetrainCommandFactory.snapToAngle(
-    //     m_driverJoystickValsSupplier,
-    //     () -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)
-    // ));
-
-    // m_testJoystick.povCenter().negate().onTrue(new InstantCommand(() -> resetControllerConstantsSmartDashboard()));
-
-    // // m_driverJoystick.x().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_indexer.indexerVelocityCommand());
-    // // m_driverJoystick.y().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_column.columnVelocityCommand());
-
-    // m_robotCommandFactory.setDefaultCommand();
   }
 
   // updated 3/1/26
@@ -306,7 +305,7 @@ public class RobotContainer {
     // y: store pivot
     m_testJoystick.y().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.storePivotCommand());
     // b: run roller
-    m_testJoystick.b().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runRollersBackCommand());
+    m_testJoystick.b().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runRollerBackCommand());
     // a: run roller and indexer 
     m_testJoystick.a().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runIntakeRollersBackCommand());
 
@@ -435,6 +434,9 @@ public class RobotContainer {
     SmartDashboard.putNumber("pivot IO/kP", SmartDashboard.getNumber("pivot IO/kP", PivotConstants.kP));
     SmartDashboard.putNumber("pivot IO/kI", SmartDashboard.getNumber("pivot IO/kI", PivotConstants.kI));
     SmartDashboard.putNumber("pivot IO/kD", SmartDashboard.getNumber("pivot IO/kD", PivotConstants.kD));
+    SmartDashboard.putNumber("pivot IO/kS", SmartDashboard.getNumber("pivot IO/kS", PivotConstants.kS));
+    SmartDashboard.putNumber("pivot IO/kV", SmartDashboard.getNumber("pivot IO/kV", PivotConstants.kV));
+    SmartDashboard.putNumber("pivot IO/kA", SmartDashboard.getNumber("pivot IO/kA", PivotConstants.kA));
     SmartDashboard.putNumber("pivot IO/velocity", SmartDashboard.getNumber("pivot IO/velocity", PivotConstants.DEPLOY_VELOCITY));
     SmartDashboard.putNumber("pivot IO/voltage", SmartDashboard.getNumber("pivot/voltage", PivotConstants.DEPLOY_VOLTAGE));
 
@@ -488,6 +490,10 @@ public class RobotContainer {
     PivotConstants.kI = SmartDashboard.getNumber("pivot IO/kI", 0);
     PivotConstants.kD = SmartDashboard.getNumber("pivot IO/kD", 0);
 
+    PivotConstants.kS = SmartDashboard.getNumber("pivot IO/kS", 0);
+    PivotConstants.kV = SmartDashboard.getNumber("pivot IO/kV", 0);
+    PivotConstants.kA = SmartDashboard.getNumber("pivot IO/kA", 0);
+
     PivotConstants.CRUISE_VELOCITY = SmartDashboard.getNumber("pivot IO/motion magic velocity", 0);
     PivotConstants.ACCELERATION = SmartDashboard.getNumber("pivot IO/motion magic acceleration", 0);
     PivotConstants.JERK = SmartDashboard.getNumber("pivot IO/motion magic jerk", 0);
@@ -513,6 +519,10 @@ public class RobotContainer {
    * Define named commands for autonomous paths
    */
   private void createNamedCommands() {
+
+    new EventTrigger("trigger intake").onTrue(m_robotCommandFactory.runIntakeRollersCommand());
+    new EventTrigger("shoot").onTrue(m_robotCommandFactory.shootByDistanceCommand(() -> new JoystickVals(0, 0)));
+
     NamedCommands.registerCommand("trigger intake", 
       m_robotCommandFactory.runIntakeRollersCommand()); // DOES NOT END 
      NamedCommands.registerCommand("deploy intake", 
