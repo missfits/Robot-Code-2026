@@ -84,15 +84,8 @@ import com.ctre.phoenix6.SignalLogger;
 public class RobotContainer {
   public static record JoystickVals(double x, double y) {}
 
-  public enum RobotMode {
-    NEUTRAL,
-    INTAKE,
-    SHOOT
-  }
-
   private final SendableChooser<Command> m_autoChooser; // Sendable chooser that holds the autos
   private final Telemetry logger = new Telemetry(DrivetrainConstants.MAX_TRANSLATION_SPEED);
-  private RobotMode m_robotMode = RobotMode.NEUTRAL;
 
   // Subsystems
   public final CommandSwerveDrivetrain m_drivetrain = TunerConstants.createDrivetrain();
@@ -142,8 +135,6 @@ public class RobotContainer {
       configureBindingsCompetition();
 
     }
-
-    setRobotMode(RobotMode.NEUTRAL);
 
     // Configure auto builder
     createNamedCommands();
@@ -323,17 +314,6 @@ public class RobotContainer {
     m_drivetrain.registerTelemetry(telemetry);
   }
 
-  private void configureDefaultCommandCompetition() {
-    switch (m_robotMode) {
-      case NEUTRAL:
-        break;
-      case INTAKE:
-        break;
-      case SHOOT:
-        break;
-    }
-  }
-
   private void configureDefaultCommandTesting() {
     m_robotCommandFactory.setDefaultCommand();
   }
@@ -341,13 +321,6 @@ public class RobotContainer {
   public void resetPosition() {
     m_robotCommandFactory.resetPosition();
   }
-
-  public void setRobotMode(RobotMode newMode) {
-    m_robotMode = newMode;
-    configureDefaultCommandCompetition();
-    SmartDashboard.putString("robot/mode", m_robotMode.toString());
-  }
-
 
   // ----- LOGGING -----
   public void logToSmartDashboard() {
