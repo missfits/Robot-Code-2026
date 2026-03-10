@@ -132,8 +132,17 @@ public class RobotCommandFactory {
     return m_column.velocityCommand(() -> -m_columnVelocitySupplier.get()).withName("runColumnBack");
   }
 
+  public Command intake() {
+    return Commands.parallel(
+      m_roller.velocityCommand(m_rollerVelocitySupplier),
+      m_indexer.velocityCommand(m_indexerVelocitySupplier),
+      m_column.velocityCommand(() -> -m_columnVelocitySupplier.get())
+    ).withName("intake");
+  }
+
   // combos
   public Command runIntakeRollersCommand() {
+    // return m_roller.velocityCommand(m_rollerVelocitySupplier);
     return Commands.parallel(
       m_roller.velocityCommand(m_rollerVelocitySupplier),
       m_indexer.velocityCommand(m_indexerVelocitySupplier)
@@ -357,6 +366,10 @@ public class RobotCommandFactory {
             .until(m_shooter.atTargetVelocityTrigger(m_shooterVelocitySupplier)), // shooter at target velocity
           m_indexer.velocityCommand(m_indexerVelocitySupplier)));
           
+  }
+
+  public Command shootWithoutDistanceWithDisplacement() {
+    return Commands.parallel(shootWithoutDistance(), m_pivot.repeatingDisplaceFuelCommand());
   }
 
   // HELPER FUNCTIONS
