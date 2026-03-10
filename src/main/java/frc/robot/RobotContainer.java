@@ -178,44 +178,34 @@ public class RobotContainer {
       )
     );
 
-    // Drive in slowmode while right bumper is pressed
+    // x (on true): intake + led red
+    m_driverJoystick.x().and(m_driverJoystick.leftBumper().negate()).onTrue(m_robotCommandFactory.intakeCommand());
+    // y (on true): neutral + led blue
+    m_driverJoystick.y().and(m_driverJoystick.leftBumper().negate()).onTrue(m_robotCommandFactory.neutralCommand());
+    // b (on true): shoot + led green
+    m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).onTrue(m_robotCommandFactory.shootCommand(
+      () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY())));
+    // a: snap forward
+    m_driverJoystick.a().and(m_driverJoystick.leftBumper().negate()).whileTrue(
+      m_drivetrainCommandFactory.snapToAngle(
+        () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
+        AllianceFlipUtil.apply(new Rotation2d(0))));
+    // left bumper + x: deploy pivot
+    m_driverJoystick.leftBumper().and(m_driverJoystick.x()).whileTrue(m_pivot.deployPivotCommand());
+    // left bumper + y: store pivot
+    m_driverJoystick.leftBumper().and(m_driverJoystick.y()).whileTrue(m_pivot.storePivotCommand());
+    // left bumper + b: snap to hub
+    m_driverJoystick.leftBumper().and(m_driverJoystick.b()).whileTrue(
+      m_robotCommandFactory.snapToHubCommand(() -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY())));
+    // left bumper + a: point wheels in x
+    m_driverJoystick.leftBumper().and(m_driverJoystick.a()).whileTrue(m_drivetrainCommandFactory.pointWheelsinX());
+    // right bumper: slowmode
     m_drivetrainCommandFactory.setSlowmodeButton(m_driverJoystick.rightBumper());
+    // left trigger: shuttle
+    m_driverJoystick.leftTrigger().whileTrue(m_robotCommandFactory.shootManualWithoutSnapCommand());
+    // right trigger: outtake / everything backwards (voltage -5)
+    m_driverJoystick.rightTrigger().whileTrue(m_robotCommandFactory.outtakeCommand());
 
-
-    m_driverJoystick.leftBumper().and(m_driverJoystick.x()).onTrue(
-      new InstantCommand(() -> setRobotMode(RobotMode.NEUTRAL))
-    );
-   
-    // // TODO: change -- this is for testing
-    // m_driverJoystick.y().and(m_driverJoystick.leftBumper().negate()).whileTrue(
-    //   m_drivetrainCommandFactory.snapToAngle(
-    //     () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
-    //     0
-    //   )
-    // );
-
-    // // TODO: change -- this is for testing
-    // m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).onTrue(
-    //   m_drivetrainCommandFactory.snapToTarget(
-    //     () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
-    //     () -> new Pose2d(Units.inchesToMeters(182), Units.inchesToMeters(182), new Rotation2d())
-    //   )
-    // );
-
-    m_driverJoystick.leftBumper().and(m_driverJoystick.y()).onTrue(
-      new InstantCommand(() -> setRobotMode(RobotMode.INTAKE))
-    );
-
-    // reset the field-centric heading on a button press
-    m_driverJoystick.leftBumper().and(m_driverJoystick.b()).onTrue(
-      m_drivetrain.runOnce(() -> m_drivetrain.resetRotation(AllianceFlipUtil.apply(new Rotation2d(0))))
-    );
-
-    m_driverJoystick.leftBumper().and(m_driverJoystick.a()).onTrue(
-      new InstantCommand(() -> setRobotMode(RobotMode.SHOOT))
-    );
-
-    m_driverJoystick.povCenter().negate().onTrue(new InstantCommand(() -> resetControllerConstantsSmartDashboard()));
     m_drivetrain.registerTelemetry(logger::telemeterize);
 
     configureDefaultCommandCompetition();
