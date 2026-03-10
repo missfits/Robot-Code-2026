@@ -437,7 +437,7 @@ public final class Constants {
     public static final double VISION_DISTANCE_DISCARD = 10; 
     public static final double MAX_POSE_AMBIGUITY = 0.2;
     public static final int NUM_LAST_EST_POSES = 3;
-    public static final double STD_DEV_SCALER = 30;
+    public static final double STD_DEV_SCALAR = 30;
 
     // --- vision subsystem ---
     // (camera setup)
