@@ -64,6 +64,10 @@ public class VisionSubsystem extends SubsystemBase {
 
   private boolean m_rawVideoModeEnabled = false; // true = raw video feed, false = normal AprilTag processing
 
+  private Pose2d m_lastVisionPose = null;
+
+  private double m_lastVisionPoseTimestamp = 0.0;
+
   /** Creates a new Vision Subsystem. */
   public VisionSubsystem() {
     cameras.add(new LocalizationCamera(VisionConstants.CAMERA1_NAME, VisionConstants.ROBOT_TO_CAM1_3D));
@@ -124,8 +128,38 @@ public class VisionSubsystem extends SubsystemBase {
     return !allValidReadings.isEmpty();
   }
 
+  public boolean isVisionPoseStable() {
+    List<LocalizationCamera.CameraReading> readings = getValidCameraReadings();
+    
+    //if there are no valid readings, then theres nothing to compare to
+    if (readings.isEmpty()) {
+      return true;
+    }
+    
+    Pose2d currentPose = readings.get(0).robotPose().estimatedPose.toPose2d();
+    double timestamp = readings.get(0).robotPose().timestampSeconds;
+
+    //if we have never stored a previous vision pose before, then assume the est pose is stable
+    if (m_lastVisionPose == null) {
+      m_lastVisionPose = currentPose;
+      m_lastVisionPoseTimestamp = timestamp;
+      return true;
+    }
+
+    //calculate how far + how much time has passed since the robot appears to have moved between frames.
+     double distanceJump = currentPose.getTranslation().getDistance(m_lastVisionPose.getTranslation());
+     double dt = timestamp - m_lastVisionPoseTimestamp;
+     
+     //update stored pose so that next time the new current pose will be compared against this frame 
+     m_lastVisionPose = currentPose;
+     m_lastVisionPoseTimestamp = timestamp;
+     
+     // if robot seems like it's jumping > 1 meter in < 0.1s → probably est pose is flickering too much
+     return !(distanceJump > 1.0 && dt < 0.1);
+  }
+
   public boolean isVisionHealthy() {
-    return areCamerasConnected() && isVisionUpdating() && hasValidTargets();
+    return areCamerasConnected() && isVisionUpdating() && hasValidTargets() && isVisionPoseStable();
   }
 
   @Override
