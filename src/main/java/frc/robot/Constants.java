@@ -185,13 +185,13 @@ public final class Constants {
 
     // Pivot positions
     public static double STORE_POSITION_DEGREES = 10;
-    public static double DISPLACE_FUEL_POSITION_DEGREES = 35;
+    public static double DISPLACE_FUEL_POSITION_DEGREES = 25;
     public static double DEPLOY_POSITION_DEGREES = 55;
 
     // Timing values for displace fuel command 
     public static final double DISPLACE_FUEL_UP_TIMEOUT = 1; // TODO: tune
     public static final double DISPLACE_FUEL_DOWN_TIMEOUT = 1; 
-    public static final double DISPLACE_FUEL_DELAY = 1.5; // time between repeats of displace fuel command
+    public static final double DISPLACE_FUEL_DELAY = 0; // time between repeats of displace fuel command
 
     // Max manual volts
     
@@ -403,6 +403,7 @@ public final class Constants {
     public static double RECYCLE_VELOCITY = 10.0;
     public static double SHUTTLE_VELOCITY = 70.0;
     public static double OUTTAKE_VOLTAGE = -5.0;
+    public static double INTIAL_ADDITIONAL_VELOCITY = 5.0; // TODO: tune
 
     public static double SHOOTER_VOLTAGE = 1.0;
     public static double SHOOTER_BACK_VOLTAGE = -1.0;
@@ -428,6 +429,9 @@ public final class Constants {
 
     // Velocity tolerance for checking if shooter is at target (rotations per second)
     public static final double VELOCITY_TOLERANCE = 2;
+
+    // Current spike threshold for checking if fuel is shot (amps)
+    public static final double CURRENT_SPIKE_THRESHOLD = 20;
   }
 
   public static class ClimberConstants {
