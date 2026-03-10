@@ -18,7 +18,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.FieldConstants;
 import frc.robot.RobotContainer.JoystickVals;
+import frc.robot.utils.AllianceFlipUtil;
 
 public class DrivetrainCommandFactory {
     /* Setting up bindings for necessary control of the swerve drive platform */
@@ -84,8 +86,8 @@ public class DrivetrainCommandFactory {
     // Drives the robot while automatically rotating to face a specified rotation2d
     public Command snapToAngle(Supplier<JoystickVals> translationSupplier, Supplier<Rotation2d> angleSupplier) {
         return m_drivetrain.getCommandFromRequest(() -> {
-            SmartDashboard.putNumber("drivetrain/snap to angle", angleSupplier.get().getDegrees());
             targetAngle = angleSupplier.get();
+            SmartDashboard.putNumber("drivetrain/snapToAngle/targetAngle", targetAngle.getDegrees());
             JoystickVals translation = translationSupplier.get();
             boolean slowmode = slowmodeSupplier.getAsBoolean();
 
@@ -94,7 +96,7 @@ public class DrivetrainCommandFactory {
             return m_driveFacingAngle.withVelocityX(-shapedValues.y() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive forward with negative Y (forward)
             .withVelocityY(-shapedValues.x() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive left with negative X (left)
             .withTargetDirection(targetAngle);
-        });
+        }).withName("snapToAngle");
     }
 
     /**
@@ -136,7 +138,27 @@ public class DrivetrainCommandFactory {
             return m_driveFacingAngle.withVelocityX(-shapedValues.y() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive forward with negative Y (forward)
                 .withVelocityY(-shapedValues.x() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive left with negative X (left)
                 .withTargetDirection(angleToTarget);
-        });
+        }).withName("snapToTarget");
+    }
+
+    public Command snapForBump(Supplier<JoystickVals> translationSupplier) {
+        return snapToAngle(translationSupplier, () -> getBumpAngle(m_drivetrain.getState().Pose)).withName("snapForBump");
+    }
+
+    /**
+     * Determines the field-relative heading the robot should use to face the bump.
+     * @param robotPose The robot's current field pose
+     * @return The field-relative heading the robot should face
+     */
+    private Rotation2d getBumpAngle(Pose2d robotPose) {
+        Pose2d blueAlliancePose = AllianceFlipUtil.apply(robotPose); // Normalize to the blue-alliance perspective to check with blue hub
+        Rotation2d blueAllianceHeading;
+        if (blueAlliancePose.getX() < FieldConstants.LinesVertical.hubCenter) { // If in alliance zone
+            blueAllianceHeading = Rotation2d.fromDegrees(0); // Face away from the driver station.
+        } else {
+            blueAllianceHeading = Rotation2d.fromDegrees(180); // Face toward the driver station.
+        }
+        return AllianceFlipUtil.apply(blueAllianceHeading); // Convert heading back for the current alliance
     }
 
     public void setHeadingController(){
