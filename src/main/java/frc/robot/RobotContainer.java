@@ -92,7 +92,7 @@ public class RobotContainer {
 
   private final SendableChooser<Command> m_autoChooser; // Sendable chooser that holds the autos
   private final Telemetry logger = new Telemetry(DrivetrainConstants.MAX_TRANSLATION_SPEED);
-  private RobotMode m_robotMode;
+  private RobotMode m_robotMode = RobotMode.NEUTRAL;
 
   // Subsystems
   public final CommandSwerveDrivetrain m_drivetrain = TunerConstants.createDrivetrain();
@@ -139,7 +139,7 @@ public class RobotContainer {
     if (Utils.isSimulation()) {
       configureBindingsSimulation();
     } else {
-      configureBindingsPracticeField();
+      configureBindingsCompetition();
 
     }
 
@@ -184,8 +184,8 @@ public class RobotContainer {
     m_driverJoystick.x().and(m_driverJoystick.leftBumper().negate()).onTrue(m_robotCommandFactory.intakeCommand());
     // y (on true): neutral + led blue
     m_driverJoystick.y().and(m_driverJoystick.leftBumper().negate()).onTrue(m_robotCommandFactory.neutralCommand());
-    // b (on true): shoot + led green
-    m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).onTrue(m_robotCommandFactory.shootCommand(
+    // b (on true): score + led green
+    m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).onTrue(m_robotCommandFactory.scoreCommand(
       () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY())));
     // a: snap forward
     m_driverJoystick.a().and(m_driverJoystick.leftBumper().negate()).whileTrue(
@@ -204,7 +204,7 @@ public class RobotContainer {
     // right bumper: slowmode
     m_drivetrainCommandFactory.setSlowmodeButton(m_driverJoystick.rightBumper());
     // left trigger: shuttle
-    m_driverJoystick.leftTrigger().whileTrue(m_robotCommandFactory.shootManualWithoutSnapCommand());
+    m_driverJoystick.leftTrigger().whileTrue(m_robotCommandFactory.shuttleCommand());
     // right trigger: outtake / everything backwards (voltage -5)
     m_driverJoystick.rightTrigger().whileTrue(m_robotCommandFactory.outtakeCommand());
 
@@ -237,7 +237,7 @@ public class RobotContainer {
 
     m_drivetrain.registerTelemetry(logger::telemeterize);
 
-    configureDefaultCommandCompetition();
+    m_robotCommandFactory.setDefaultCommand();
   }
 
   private void configureBindingsPracticeField() {
@@ -300,9 +300,9 @@ public class RobotContainer {
       m_robotCommandFactory.backupScoreCommand(ShooterConstants.SHOOTER_DISTANCE3_VELOCITY)
     );
     // a: manual shoot at furthest distance
-    m_operatorJoystick.a().and(m_operatorJoystick.leftBumper().negate()).whileTrue(
-      m_robotCommandFactory.backupScoreCommand(ShooterConstants.SHOOTER_DISTANCE4_VELOCITY)
-    );
+    // m_operatorJoystick.a().and(m_operatorJoystick.leftBumper().negate()).whileTrue(
+    //   m_robotCommandFactory.backupScoreCommand(ShooterConstants.SHOOTER_DISTANCE4_VELOCITY)
+    // );
     // left bumper + x: run roller back
     m_operatorJoystick.leftBumper().and(m_operatorJoystick.x()).whileTrue(m_robotCommandFactory.runRollerBackCommand());
     // left bumper + y: run indexer back
