@@ -182,13 +182,13 @@ public final class Constants {
 
     // Pivot positions
     public static double STORE_POSITION_DEGREES = 10;
-    public static double DISPLACE_FUEL_POSITION_DEGREES = 25;
+    public static double DISPLACE_FUEL_POSITION_DEGREES = 35;
     public static double DEPLOY_POSITION_DEGREES = 55;
 
     // Timing values for displace fuel command 
     public static final double DISPLACE_FUEL_UP_TIMEOUT = 1; // TODO: tune
     public static final double DISPLACE_FUEL_DOWN_TIMEOUT = 1; 
-    public static final double DISPLACE_FUEL_DELAY = 0; // time between repeats of displace fuel command
+    public static final double DISPLACE_FUEL_DELAY = 1.5; // time between repeats of displace fuel command
 
     // Max manual volts
     
@@ -444,7 +444,6 @@ public final class Constants {
     // DEFAULT CONSTANTS (robot specific constants are below) 
     public static final String CAMERA1_NAME;
     public static final String CAMERA2_NAME;
-    public static final String CAMERA3_NAME;
 
     // Camera 1 position - robot-specific because camera mounting may differ
     public static final double ROBOT_TO_CAM1_X;
@@ -467,15 +466,6 @@ public final class Constants {
     public static final double ROBOT_TO_CAM2_YAW;
     public static final Transform3d ROBOT_TO_CAM2_3D;
 
-    // Camera 3 position - robot-specific
-    public static final double ROBOT_TO_CAM3_X;
-    public static final double ROBOT_TO_CAM3_Y;
-    public static final double ROBOT_TO_CAM3_Z;
-    public static final double ROBOT_TO_CAM3_ROLL;
-    public static final double ROBOT_TO_CAM3_PITCH;
-    public static final double ROBOT_TO_CAM3_YAW;
-    public static final Transform3d ROBOT_TO_CAM3_3D;
-
     static {
       switch (RobotConfig.getRobot()) {
         case CLEO:
@@ -483,7 +473,6 @@ public final class Constants {
 
           CAMERA1_NAME = "right_camera";
           CAMERA2_NAME = "left_camera";
-          CAMERA3_NAME = "front_camera";
 
           // Cleo camera positions
           ROBOT_TO_CAM1_X = Units.inchesToMeters(-21.0/2+2.0);
@@ -491,22 +480,14 @@ public final class Constants {
           ROBOT_TO_CAM1_Z = Units.inchesToMeters(8.3);
           ROBOT_TO_CAM1_ROLL = 0;
           ROBOT_TO_CAM1_PITCH = Units.degreesToRadians(-20);
-          ROBOT_TO_CAM1_YAW = Units.degreesToRadians(135)-0.12;
+          ROBOT_TO_CAM1_YAW = Units.degreesToRadians(135)-0.12; // estimated
 
           ROBOT_TO_CAM2_X = Units.inchesToMeters(-21.0/2+2.25);
           ROBOT_TO_CAM2_Y = Units.inchesToMeters(33.0/2-6.5);
           ROBOT_TO_CAM2_Z = Units.inchesToMeters(8.5);
           ROBOT_TO_CAM2_ROLL = 0;
           ROBOT_TO_CAM2_PITCH = Units.degreesToRadians(-20);
-          ROBOT_TO_CAM2_YAW = Units.degreesToRadians(-135)+0.14;
- 
-          ROBOT_TO_CAM3_X = Units.inchesToMeters(21/2-0.75); 
-          ROBOT_TO_CAM3_Y = Units.inchesToMeters(-33.0/2+2); 
-          ROBOT_TO_CAM3_Z = Units.inchesToMeters(29); 
-          ROBOT_TO_CAM3_ROLL = 0;
-          ROBOT_TO_CAM3_PITCH = Units.degreesToRadians(-30); 
-          ROBOT_TO_CAM3_YAW = Units.degreesToRadians(0); 
-
+          ROBOT_TO_CAM2_YAW = Units.degreesToRadians(-135)+0.14; // estimated
           break;
 
         case CERIDWEN:
@@ -514,7 +495,6 @@ public final class Constants {
 
           CAMERA1_NAME = "camera1";
           CAMERA2_NAME = "camera2";
-          CAMERA3_NAME = "camera3";
 
           ROBOT_TO_CAM1_X = Units.inchesToMeters(2);
           ROBOT_TO_CAM1_Y = Units.inchesToMeters(-7);
@@ -529,13 +509,6 @@ public final class Constants {
           ROBOT_TO_CAM2_ROLL = 0;
           ROBOT_TO_CAM2_PITCH = 0;
           ROBOT_TO_CAM2_YAW = 0;
-
-          ROBOT_TO_CAM3_X = 0;
-          ROBOT_TO_CAM3_Y = 0;
-          ROBOT_TO_CAM3_Z = 0;
-          ROBOT_TO_CAM3_ROLL = 0;
-          ROBOT_TO_CAM3_PITCH = 0;
-          ROBOT_TO_CAM3_YAW = 0;
           break;
 
         default:
@@ -551,11 +524,6 @@ public final class Constants {
       ROBOT_TO_CAM2_3D = new Transform3d(
         new Translation3d(ROBOT_TO_CAM2_X, ROBOT_TO_CAM2_Y, ROBOT_TO_CAM2_Z),
         new Rotation3d(ROBOT_TO_CAM2_ROLL, ROBOT_TO_CAM2_PITCH, ROBOT_TO_CAM2_YAW)
-      );
-
-      ROBOT_TO_CAM3_3D = new Transform3d(
-        new Translation3d(ROBOT_TO_CAM3_X, ROBOT_TO_CAM3_Y, ROBOT_TO_CAM3_Z),
-        new Rotation3d(ROBOT_TO_CAM3_ROLL, ROBOT_TO_CAM3_PITCH, ROBOT_TO_CAM3_YAW)
       );
     }
   }
