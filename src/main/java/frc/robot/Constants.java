@@ -156,7 +156,7 @@ public final class Constants {
     public static final double FEED_FORWARD = 0.0;
     public static final int SLOT = 0;
     public static final boolean OVERRIDE_BRAKE_DUR_NEUTRAL = false;
-    public static final double CURRENT_THRESHOLD = 20;
+    public static final double CURRENT_THRESHOLD = 60;
 
     // Motor ID
     public static final int MOTOR_ID = 20;
