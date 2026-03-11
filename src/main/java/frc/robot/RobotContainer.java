@@ -201,19 +201,19 @@ public class RobotContainer {
 
     // --- OPERATOR COMMANDS ---
     // x: intake + indexer forward
-    m_operatorJoystick.x().and(m_operatorJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runIntakeRollersCommand());
+    m_operatorJoystick.x().and(m_operatorJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runRollerIndexerCommand());
     // y: pivot up
     m_operatorJoystick.y().and(m_operatorJoystick.leftBumper().negate()).whileTrue(m_pivot.deployPivotCommand());
     // b: indexer + column forward
-    m_operatorJoystick.b().and(m_operatorJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runInnerRollersCommand());
+    m_operatorJoystick.b().and(m_operatorJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runIndexerColumnCommand());
     // a: intake, indexer, column forwards
     m_operatorJoystick.a().and(m_operatorJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runAllRollersCommand());
     // left bumper + x: intake + indexer backwards
-    m_operatorJoystick.leftBumper().and(m_operatorJoystick.x()).whileTrue(m_robotCommandFactory.runIntakeRollersBackCommand());
+    m_operatorJoystick.leftBumper().and(m_operatorJoystick.x()).whileTrue(m_robotCommandFactory.runRollerIndexerBackCommand());
     // left bumper + y: pivot down
     m_operatorJoystick.leftBumper().and(m_operatorJoystick.y()).whileTrue(m_pivot.storePivotCommand());
     // left bumper + b: indexer + column backwards
-    m_operatorJoystick.leftBumper().and(m_operatorJoystick.b()).whileTrue(m_robotCommandFactory.runInnerRollersBackCommand());
+    m_operatorJoystick.leftBumper().and(m_operatorJoystick.b()).whileTrue(m_robotCommandFactory.runIndexerColumnBackCommand());
     // left bumper + a: intake, indexer, column backwards
     m_operatorJoystick.leftBumper().and(m_operatorJoystick.a()).whileTrue(m_robotCommandFactory.runAllRollersBackCommand());
     // right bumper: score speed 1
@@ -238,7 +238,7 @@ public class RobotContainer {
     // b: run roller
     m_testJoystick.b().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runRollerBackTestCommand());
     // a: run roller and indexer 
-    m_testJoystick.a().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runIntakeRollersBackCommand());
+    m_testJoystick.a().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runRollerIndexerBackCommand());
 
     // left bumper + x: deploy pivot motion magic
     m_testJoystick.leftBumper().and(m_testJoystick.x()).whileTrue(m_pivot.deployPivotCommand());
@@ -252,7 +252,7 @@ public class RobotContainer {
     m_testJoystick.leftTrigger().whileTrue(m_pivot.storePivotCommand());
     m_testJoystick.rightTrigger().whileTrue(
       new ParallelCommandGroup(
-        m_robotCommandFactory.runIntakeRollersCommand(),
+        m_robotCommandFactory.runRollerIndexerCommand(),
         m_robotCommandFactory.runShooterTestCommand(),
         m_column.columnVelocityCommand()
       )
@@ -432,11 +432,11 @@ public class RobotContainer {
    */
   private void createNamedCommands() {
 
-    new EventTrigger("trigger intake").onTrue(m_robotCommandFactory.runIntakeRollersCommand());
+    new EventTrigger("trigger intake").onTrue(m_robotCommandFactory.runRollerIndexerCommand());
     new EventTrigger("shoot").onTrue(m_robotCommandFactory.autoShootWithVisionCommand(() -> new JoystickVals(0, 0)));
 
     NamedCommands.registerCommand("trigger intake", 
-      m_robotCommandFactory.runIntakeRollersCommand()); // DOES NOT END 
+      m_robotCommandFactory.runRollerIndexerCommand()); // DOES NOT END 
      NamedCommands.registerCommand("deploy intake", 
       m_pivot.deployPivotCommand());
     NamedCommands.registerCommand("snap to hub", 
