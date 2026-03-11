@@ -335,8 +335,6 @@ public class RobotCommandFactory {
     return Commands.parallel(
       shootWithVision(initialShooterSupplier, shooterSupplier, columnSupplier, indexerSupplier, rollerSupplier),
       Commands.sequence(
-        new WaitCommand(1000) // wait until 
-          .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity
         new WaitCommand(2), // wait 2 seconds for some of the fuel to be shot out 
         m_pivot.repeatingDisplaceFuelCommand())
     ).withName("shootWithVisionWithDisplacement");
@@ -356,8 +354,6 @@ public class RobotCommandFactory {
     return Commands.parallel(
       shootWithoutVision(initialShooterSupplier, shooterSupplier, columnSupplier, indexerSupplier, rollerSupplier),
       Commands.sequence(
-        new WaitCommand(1000) // wait until 
-          .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity
         new WaitCommand(2), // wait 2 seconds for some of the fuel to be shot out 
         m_pivot.repeatingDisplaceFuelCommand())
     ).withName("shootWithoutVisionWithDisplacement");
