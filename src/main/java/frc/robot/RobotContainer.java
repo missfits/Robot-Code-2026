@@ -178,9 +178,7 @@ public class RobotContainer {
       () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY())));
     // a: snap forward
     m_driverJoystick.a().and(m_driverJoystick.leftBumper().negate()).whileTrue(
-      m_drivetrainCommandFactory.snapToAngle(
-        () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
-        AllianceFlipUtil.apply(new Rotation2d(0))));
+      m_drivetrainCommandFactory.snapForBump(() -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY())));
     // left bumper + x: deploy pivot
     m_driverJoystick.leftBumper().and(m_driverJoystick.x()).whileTrue(m_pivot.deployPivotCommand());
     // left bumper + y: store pivot
