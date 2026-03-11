@@ -157,7 +157,7 @@ public class RobotCommandFactory {
     return Commands.parallel(
       snapToHubCommand(joystickValsSupplier),
       shootWithoutVisionWithDisplacement(m_shooterVelocityInitialSupplier, m_shooterVelocitySupplier, m_columnVelocitySupplier, m_indexerVelocitySupplier, m_rollerVelocitySupplier))
-    .withName("shootManual");
+    .withName("shootWithoutVisionTest");
   }
 
   /**
@@ -168,7 +168,7 @@ public class RobotCommandFactory {
     return Commands.parallel(
       snapToHubCommand(joystickValsSupplier),
       shootWithVisionWithDisplacement(m_shooterVelocityInitialCalculatedSupplier, m_shooterVelocityCalculatedSupplier, m_columnVelocitySupplier, m_indexerVelocitySupplier, m_rollerVelocitySupplier))
-    .withName("shootByDistance");
+    .withName("shootWithVisionTest");
   }
 
   /**
@@ -329,7 +329,7 @@ public class RobotCommandFactory {
         () -> ColumnConstants.SHOOT_VELOCITY,
         () -> IndexerConstants.SHOOT_VELOCITY,
         () -> RollerConstants.ROLLER_VELOCITY))
-    .withName("shootByDistance");
+    .withName("scoreMode");
   }
 
   // shoot helper commands
@@ -342,7 +342,7 @@ public class RobotCommandFactory {
           .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity
         new WaitCommand(2), // wait 2 seconds for some of the fuel to be shot out 
         m_pivot.repeatingDisplaceFuelCommand())
-    ).withName("shootToHubWithDisplacement");
+    ).withName("shootWithVisionWithDisplacement");
   }
 
   /**
@@ -363,7 +363,7 @@ public class RobotCommandFactory {
           .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity
         new WaitCommand(2), // wait 2 seconds for some of the fuel to be shot out 
         m_pivot.repeatingDisplaceFuelCommand())
-    ).withName("shootCommandWithDisplacement");
+    ).withName("shootWithoutVisionWithDisplacement");
   }
 
    /**
@@ -407,7 +407,7 @@ public class RobotCommandFactory {
           .until(m_shooter.atTargetVelocityTrigger(shooterSupplier) // shooter at target velocity 
             .and(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))), // and facing hub
         m_roller.velocityCommand(rollerSupplier))
-    ).withName("shootToHub"); 
+    ).withName("shootWithVision"); 
   }
 
   /**
@@ -444,7 +444,7 @@ public class RobotCommandFactory {
         m_roller.offCommand()  // wait until 
           .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity 
         m_roller.velocityCommand(rollerSupplier))
-    ).withName("shootWithoutDistance");
+    ).withName("shootWithoutVision");
   }
 
   public Command snapToHubCommand(Supplier<JoystickVals> joystickValsSupplier) {
@@ -463,7 +463,7 @@ public class RobotCommandFactory {
         () -> ColumnConstants.SHOOT_VELOCITY,
         () -> IndexerConstants.SHOOT_VELOCITY,
         () -> RollerConstants.SHOOT_VELOCITY)
-    ).withName("shootManual");
+    ).withName("autoShootWithVision");
   }
 
   // HELPER FUNCTIONS
