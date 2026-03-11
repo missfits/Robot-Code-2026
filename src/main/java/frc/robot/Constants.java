@@ -247,10 +247,10 @@ public final class Constants {
     public static double ROLLER_VELOCITY = 100.0;
     public static double MANUAL_VELOCITY = 80.0;
     public static double MANUAL_BACK_VELOCITY = -80.0;
-    public static double OUTTAKE_VELOCITY = 100.0;
-    public static double RECYCLE_VELOCITY = 100.0;
-    public static double INTAKE_VELOCITY = 100.0;
-    public static double SHOOT_VELOCITY = 100.0;
+    public static double OUTTAKE_VELOCITY = 80.0;
+    public static double RECYCLE_VELOCITY = 70.0;
+    public static double INTAKE_VELOCITY = 80.0;
+    public static double SHOOT_VELOCITY = 70.0;
 
     // Testing velocities
     public static double TESTING_VELOCITY = 0.0;
