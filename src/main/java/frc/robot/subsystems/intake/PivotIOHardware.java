@@ -1,6 +1,7 @@
 package frc.robot.subsystems.intake;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -70,6 +71,16 @@ public class PivotIOHardware extends MechanismsIOHardwareBase {
     request.Velocity = MechanismUtil.clamp(request.Velocity, getPositionDegrees(), PivotConstants.STORE_POSITION_DEGREES, PivotConstants.DEPLOY_POSITION_DEGREES,
         -PivotConstants.MAX_VELOCITY, PivotConstants.MAX_VELOCITY, 0, 0);
     motor.setControl(request);
+  }
+
+  @Override
+  public void goToPositionProfiled(MotionMagicVoltage request) {
+    motor.setControl(request.withFeedForward(getGravityFeedForward(getPositionDegrees())));
+  }
+
+  // calculate gravity feedforward from arm position in degrees
+  private double getGravityFeedForward(double position) {
+    return PivotConstants.kG * Math.cos(Math.toRadians(position + PivotConstants.GRAVITY_FEEDFORWARD_OFFSET));
   }
 
   public void resetSlot0Gains() {

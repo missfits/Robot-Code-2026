@@ -201,7 +201,7 @@ public final class Constants {
 
     // Feed forward values
     public static double kS = 0.25;
-    public static double kG = 0.0;
+    public static double kG = 0.25;
     public static double kV = 0.12;
     public static double kA = 0.0;
 
@@ -209,6 +209,9 @@ public final class Constants {
     public static double CRUISE_VELOCITY = 0.2;
     public static double ACCELERATION = 1;
     public static double JERK = 100;
+
+    public static final double GRAVITY_FEEDFORWARD_OFFSET = -55; // offset in degrees. 0 should be horizontal
+
   }
 
   public static class RollerConstants {
