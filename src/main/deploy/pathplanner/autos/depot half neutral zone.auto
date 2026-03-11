@@ -9,6 +9,18 @@
           "data": {
             "pathName": "depot half neutral zone"
           }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 5.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "2nd pass depot half neutral zone"
+          }
         }
       ]
     }
