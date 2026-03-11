@@ -302,7 +302,7 @@ public class RobotCommandFactory {
       m_roller.offCommand(),
       m_indexer.offCommand(),
       m_column.offCommand(),
-      m_shooter.offCommand()
+      m_shooter.shooterVelocityCommand(10)
     ).withName("neutralMode");
   }
 
