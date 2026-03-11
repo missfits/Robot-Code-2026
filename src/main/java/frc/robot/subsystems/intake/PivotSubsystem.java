@@ -9,6 +9,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.subsystems.MechanismsSubsystemBase;
 
@@ -103,5 +104,9 @@ public class PivotSubsystem extends MechanismsSubsystemBase {
       MotionMagicVoltage request = new MotionMagicVoltage(m_IO.degreesToMotorRevolutions(positionSupplier.getAsDouble())).withUpdateFreqHz(30);
       m_IO.goToPositionProfiled(request);
     });
+  }
+
+  public Command zeroPivotCommand() {
+      return this.run(() -> setVoltage(PivotConstants.ZERO_PIVOT_VOLTAGE), "running pivot down").until(() -> m_IO.getCurrent() > PivotConstants.CURRENT_THRESHOLD).andThen(new InstantCommand(() -> this.resetToDeployPosition()).withName("reset pivot position")).withName("zero pivot");
   }
 }
