@@ -101,38 +101,38 @@ public class RobotCommandFactory {
 
   // --- TESTING COMMANDS ---
   // pivot
-  public Command deployPivotCommand() {
+  public Command deployPivotTestCommand() {
     return m_pivot.velocityCommand(m_pivotDeployVelocitySupplier).withName("deployPivot");
   }
 
-  public Command storePivotCommand() {
+  public Command storePivotTestCommand() {
     return m_pivot.velocityCommand(m_pivotStoreVelocitySupplier).withName("storePivot");
   }
 
   // rollers
-  public Command runRollerCommand() {
+  public Command runRollerTestCommand() {
     return m_roller.velocityCommand(m_rollerVelocitySupplier).withName("runRoller");
   }
 
-  public Command runRollerBackCommand() {
+  public Command runRollerBackTestCommand() {
     return m_roller.velocityCommand(m_rollerBackVelocitySupplier).withName("runRollerBack");
   }
 
   // indexer
-  public Command runIndexerCommand() {
+  public Command runIndexerTestCommand() {
     return m_indexer.velocityCommand(m_indexerVelocitySupplier).withName("runIndexer");
   }
 
-  public Command runIndexerBackCommand() {
+  public Command runIndexerBackTestCommand() {
     return m_indexer.velocityCommand(m_indexerBackVelocitySupplier).withName("runIndexerBack");
   }
 
   // column
-  public Command runColumnCommand() {
+  public Command runColumnTestCommand() {
     return m_column.velocityCommand(m_columnVelocitySupplier).withName("runColumn");
   }
 
-  public Command runColumnBackCommand() {
+  public Command runColumnBackTestCommand() {
     return m_column.velocityCommand(() -> -m_columnVelocitySupplier.get()).withName("runColumnBack");
   }
 
@@ -140,12 +140,12 @@ public class RobotCommandFactory {
   /**
    * Run shooter with shooter velocity supplier
    */
-  public Command shootManualTestCommand() {
+  public Command runShooterTestCommand() {
     return m_shooter.shooterVelocityCommand(m_shooterVelocitySupplier)
-      .withName("shootManualTest");
+      .withName("runShooterTest");
   }
 
-  public Command runShooterBackCommand() {
+  public Command runShooterBackTestCommand() {
     return m_shooter.velocityCommand(m_shooterBackVelocitySupplier);
   }
 
