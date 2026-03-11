@@ -137,27 +137,6 @@ public class RobotCommandFactory {
   }
 
   // shooter
-
-  /**
-   * Command that shoots at a given velocity supplier
-   * Simultaneously runs the shooter and snap to angle, then runs column and indexer
-   */
-  public Command shootManualCommand(Supplier<JoystickVals> joystickValsSupplier) {
-    return Commands.parallel(
-      snapToHubCommand(joystickValsSupplier),
-      shootToHubCommandWithDisplacement(m_shooterVelocitySupplier, m_columnVelocitySupplier, m_indexerVelocitySupplier))
-    .withName("shootManual");
-  }
-
-  /**
-   * Command that shoots with shooter, column, indexer velocity supplier
-   * Simultaneously runs the shooter, then runs column and indexer
-   */
-  public Command shootManualWithoutSnapCommand() {
-    return shootCommand(m_shooterVelocitySupplier, m_columnVelocitySupplier, m_indexerVelocitySupplier)
-      .withName("shootManualWithoutSnap");
-  }
-
   /**
    * Run shooter with shooter velocity supplier
    */
@@ -171,38 +150,32 @@ public class RobotCommandFactory {
   }
 
   /**
-   * Command that shoots with shooter, column, indexer velocity supplier
-   * Simultaneously runs the shooter, then runs column and indexer
-   * 
-   * @param shooterSupplier Supplier for shooter velocity
-   * @param columnSupplier Supplier for column velocity
-   * @param indexerSupplier Supplier for indexer velocity
-   * @return Command that shoots with given velocity suppliers
+   * Command that shoots at a given velocity supplier
+   * Simultaneously runs the shooter and snap to angle, then runs column and indexer
    */
-  public Command shootCommand(Supplier<Double> shooterSupplier, Supplier<Double> columnSupplier, Supplier<Double> indexerSupplier) {
+  public Command shootWithoutVisionTestCommand(Supplier<JoystickVals> joystickValsSupplier) {
     return Commands.parallel(
-      m_shooter.shooterVelocityCommand(shooterSupplier), // run shooter at given velocity  
-      Commands.sequence( // column: 
-        m_column.offCommand() // wait until 
-          .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity 
-        m_column.velocityCommand(columnSupplier)),
-      Commands.sequence( // indexer: 
-        m_indexer.offCommand() // wait until 
-          .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity
-        m_indexer.velocityCommand(indexerSupplier)));
+      snapToHubCommand(joystickValsSupplier),
+      shootWithoutVisionWithDisplacement(m_shooterVelocityInitialSupplier, m_shooterVelocitySupplier, m_columnVelocitySupplier, m_indexerVelocitySupplier, m_rollerVelocitySupplier))
+    .withName("shootManual");
   }
 
-  public Command shootCommand(double shooterVelocity, double columnVelocity, double indexerVelocity) {
+  /**
+   * Command that shoots based on distance to hub using vision
+   * Simultaneously runs the shooter and snap to angle, then runs column and indexer
+  */
+  public Command shootWithVisionTestCommand(Supplier<JoystickVals> joystickValsSupplier) {
     return Commands.parallel(
-      m_shooter.shooterVelocityCommand(shooterVelocity), // run shooter at given velocity  
-      Commands.sequence( // column: 
-        m_column.offCommand() // wait until 
-          .until(m_shooter.atTargetVelocityTrigger(shooterVelocity)), // shooter at target velocity 
-        m_column.velocityCommand(columnVelocity)),
-      Commands.sequence( // indexer: 
-        m_indexer.offCommand() // wait until 
-          .until(m_shooter.atTargetVelocityTrigger(shooterVelocity)), // shooter at target velocity
-        m_indexer.velocityCommand(indexerVelocity)));
+      snapToHubCommand(joystickValsSupplier),
+      shootWithVisionWithDisplacement(m_shooterVelocityInitialCalculatedSupplier, m_shooterVelocityCalculatedSupplier, m_columnVelocitySupplier, m_indexerVelocitySupplier, m_rollerVelocitySupplier))
+    .withName("shootByDistance");
+  }
+
+  /**
+   * Command that shoots based on distance to hub using vision
+   */
+  public Command shootByDistanceTestCommand() {
+    return m_shooter.shooterVelocityCommand(m_shooterVelocityCalculatedSupplier);
   }
 
   // --- COMPETITION COMMANDS ---
@@ -343,73 +316,17 @@ public class RobotCommandFactory {
     .withName("shootByDistance");
   }
 
-  /**
-   * Command that shoots based on distance to hub using vision
-   * Simultaneously runs the shooter and snap to angle, then runs column and indexer
-  */
-  public Command shootByDistanceCommand(Supplier<JoystickVals> joystickValsSupplier) {
+  // shoot helper commands
+
+  public Command shootWithVisionWithDisplacement(Supplier<Double> initialShooterSupplier, Supplier<Double> shooterSupplier, Supplier<Double> columnSupplier, Supplier<Double> indexerSupplier, Supplier<Double> rollerSupplier) {
     return Commands.parallel(
-      snapToHubCommand(joystickValsSupplier),
-      shootToHubCommandWithDisplacement(m_shooterVelocityCalculatedSupplier, m_columnVelocitySupplier, m_indexerVelocitySupplier))
-    .withName("shootByDistance");
-  }
-
-  /**
-   * Command that shoots based on distance to hub using vision
-   */
-  public Command shootByDistanceTestCommand() {
-    return m_shooter.shooterVelocityCommand(m_shooterVelocityCalculatedSupplier);
-  }
-
-  /**
-   * Command that shoots with shooter, column, indexer velocity supplier
-   * Simultaneously runs the shooter, then runs column and indexer **once the drivetrain is at the correct angle**
-   * 
-   * @param shooterSupplier Supplier for shooter velocity
-   * @param columnSupplier Supplier for column velocity
-   * @param indexerSupplier Supplier for indexer velocity
-   * @return Command that shoots with given velocity suppliers
-   */
-  public Command shootToHubCommand(Supplier<Double> shooterSupplier, Supplier<Double> columnSupplier, Supplier<Double> indexerSupplier) {
-
-    return Commands.parallel(
-      // shooter 
-      Commands.sequence(
-        new WaitCommand(10000) // wait until (no timeout)
-          .until(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose))), // facing hub 
-        m_shooter.shooterVelocityCommand(shooterSupplier)), // run shooter at given velocity  
-
-      // column 
-      Commands.sequence( 
-        m_column.offCommand() // wait until 
-          .until(m_shooter.atTargetVelocityTrigger(shooterSupplier) // shooter at target velocity 
-            .and(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))), // and facing hub
-        m_column.velocityCommand(columnSupplier)),
-
-      // indexer 
-      Commands.sequence( // indexer: 
-        m_indexer.offCommand() // wait until 
-          .until(m_shooter.atTargetVelocityTrigger(shooterSupplier) // shooter at target velocity 
-            .and(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))), // and facing hub
-        m_indexer.velocityCommand(indexerSupplier))
-    ).withName("shootToHub"); 
-  }
-
-  public Command shootToHubCommandWithDisplacement(Supplier<Double> shooterSupplier, Supplier<Double> columnSupplier, Supplier<Double> indexerSupplier) {
-    return Commands.parallel(
-      shootToHubCommand(shooterSupplier, columnSupplier, indexerSupplier),
+      shootWithVision(initialShooterSupplier, shooterSupplier, columnSupplier, indexerSupplier, rollerSupplier),
       Commands.sequence(
         new WaitCommand(1000) // wait until 
           .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity
         new WaitCommand(2), // wait 2 seconds for some of the fuel to be shot out 
         m_pivot.repeatingDisplaceFuelCommand())
     ).withName("shootToHubWithDisplacement");
-  }
-
-  public Command snapToHubCommand(Supplier<JoystickVals> joystickValsSupplier) {
-    return m_drivetrainCommandFactory.snapToAngle( // drivetrain: snap to angle 
-      joystickValsSupplier,
-      () -> HubCalculations.angleToHub(m_drivetrain.getState().Pose));
   }
 
   /**
@@ -422,9 +339,9 @@ public class RobotCommandFactory {
    * @param indexerSupplier Supplier for indexer velocity
    * @return Command that shoots with given velocity suppliers
    */
-  public Command shootCommandWithDisplacement(Supplier<Double> shooterSupplier, Supplier<Double> columnSupplier, Supplier<Double> indexerSupplier) {
+  public Command shootWithoutVisionWithDisplacement(Supplier<Double> initialShooterSupplier, Supplier<Double> shooterSupplier, Supplier<Double> columnSupplier, Supplier<Double> indexerSupplier, Supplier<Double> rollerSupplier) {
     return Commands.parallel(
-      shootCommand(shooterSupplier, columnSupplier, indexerSupplier),
+      shootWithoutVision(initialShooterSupplier, shooterSupplier, columnSupplier, indexerSupplier, rollerSupplier),
       Commands.sequence(
         new WaitCommand(1000) // wait until 
           .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity
@@ -433,35 +350,93 @@ public class RobotCommandFactory {
     ).withName("shootCommandWithDisplacement");
   }
 
+   /**
+   * Command that shoots with shooter, column, indexer velocity supplier
+   * Simultaneously runs the shooter, then runs column and indexer **once the drivetrain is at the correct angle**
+   * 
+   * @param initialShooterSupplier Supplier for shooter velocity
+   * @param shooterSupplier Supplier for shooter velocity
+   * @param columnSupplier Supplier for column velocity
+   * @param indexerSupplier Supplier for indexer velocity
+   * @param rollerSupplier Supplier for roller velocity
+   * @return Command that shoots with given velocity suppliers
+   */
+  public Command shootWithVision(Supplier<Double> initialShooterSupplier, Supplier<Double> shooterSupplier, Supplier<Double> columnSupplier, Supplier<Double> indexerSupplier, Supplier<Double> rollerSupplier) {
+    return Commands.parallel(
+      // shooter 
+      Commands.sequence(
+        new WaitCommand(10000) // wait until (no timeout)
+          .until(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose))), // facing hub 
+        m_shooter.shooterVelocityCommand(initialShooterSupplier)
+          .until(m_shooter.isFuelShot(initialShooterSupplier.get())),
+        m_shooter.shooterVelocityCommand(shooterSupplier)),  // run shooter at given velocity  
+        
+      // column 
+      Commands.sequence( 
+        m_column.offCommand() // wait until 
+          .until(m_shooter.atTargetVelocityTrigger(shooterSupplier) // shooter at target velocity 
+            .and(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))), // and facing hub
+        m_column.velocityCommand(columnSupplier)),
+
+      // indexer 
+      Commands.sequence(
+        m_indexer.offCommand() // wait until 
+          .until(m_shooter.atTargetVelocityTrigger(shooterSupplier) // shooter at target velocity 
+            .and(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))), // and facing hub
+        m_indexer.velocityCommand(indexerSupplier)),
+
+      // roller
+      Commands.sequence(
+        m_roller.offCommand()  // wait until 
+          .until(m_shooter.atTargetVelocityTrigger(shooterSupplier) // shooter at target velocity 
+            .and(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))), // and facing hub
+        m_roller.velocityCommand(rollerSupplier))
+    ).withName("shootToHub"); 
+  }
+
   /**
    * Command that shoots based on set[mechanism]Velocity()
    * Simultaneously runs the shooter, then runs column, indexer and roller 
+   * 
+   * @param initialShooterSupplier Supplier for initial shooter velocity
+   * @param shooterSupplier Supplier for shooter velocity
+   * @param columnSupplier Supplier for column velocity
+   * @param indexerSupplier Supplier for indexer velocity
+   * @param rollerSupplier Supplier for roller velocity
    * @return Command that shoots with set[mechanism]Velocity()
    */
   public Command shootWithoutVision(Supplier<Double> initialShooterSupplier, Supplier<Double> shooterSupplier, Supplier<Double> columnSupplier, Supplier<Double> indexerSupplier, Supplier<Double> rollerSupplier) {
     return Commands.parallel(
+      // shooter 
       Commands.sequence(
         // run shooter at slightly higher velocity until we shoot some fuel  
         m_shooter.shooterVelocityCommand(initialShooterSupplier)
           .until(m_shooter.isFuelShot(initialShooterSupplier.get())),
         m_shooter.shooterVelocityCommand(shooterSupplier)),  // run shooter at given velocity  
-        Commands.sequence( // column: 
-          m_column.offCommand() // wait until 
-            .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity 
-          m_column.velocityCommand(columnSupplier)),
-        Commands.sequence( // roller: 
-          m_roller.offCommand()  // wait until 
-            .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity 
-          m_roller.velocityCommand(rollerSupplier)),
-        Commands.sequence( // indexer: 
-          m_indexer.offCommand() // wait until 
-            .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity
-          m_indexer.velocityCommand(indexerSupplier))
+      // column 
+      Commands.sequence(
+        m_column.offCommand() // wait until 
+          .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity 
+        m_column.velocityCommand(columnSupplier)),
+      // indexer
+      Commands.sequence(
+        m_indexer.offCommand() // wait until 
+          .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity
+        m_indexer.velocityCommand(indexerSupplier)),
+      // roller
+      Commands.sequence(
+        m_roller.offCommand()  // wait until 
+          .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity 
+        m_roller.velocityCommand(rollerSupplier))
     ).withName("shootWithoutDistance");
   }
 
-  public Command shootWithoutDistanceWithDisplacement() {
-    return Commands.parallel(shootWithoutDistance(), m_pivot.repeatingDisplaceFuelCommand());
+  public Command snapToHubCommand(Supplier<JoystickVals> joystickValsSupplier) {
+    return m_drivetrainCommandFactory.snapToAngle( // drivetrain: snap to angle 
+      joystickValsSupplier,
+      () -> HubCalculations.angleToHub(m_drivetrain.getState().Pose));
+  }
+
   }
 
   // HELPER FUNCTIONS

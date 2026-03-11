@@ -243,6 +243,7 @@ public final class Constants {
     public static double OUTTAKE_VELOCITY = 100.0;
     public static double RECYCLE_VELOCITY = 100.0;
     public static double INTAKE_VELOCITY = 100.0;
+    public static double SHOOT_VELOCITY = 100.0;
 
     // Testing velocities
     public static double TESTING_VELOCITY = 0.0;
