@@ -453,6 +453,17 @@ public class RobotCommandFactory {
       () -> HubCalculations.angleToHub(m_drivetrain.getState().Pose));
   }
 
+  // auto
+  public Command autoShootWithVisionCommand(Supplier<JoystickVals> joystickValsSupplier) {
+    return Commands.parallel(
+      snapToHubCommand(joystickValsSupplier),
+      shootWithoutVisionWithDisplacement(
+        m_shooterVelocityInitialCalculatedSupplier,
+        m_shooterVelocityCalculatedSupplier,
+        () -> ColumnConstants.SHOOT_VELOCITY,
+        () -> IndexerConstants.SHOOT_VELOCITY,
+        () -> RollerConstants.SHOOT_VELOCITY)
+    ).withName("shootManual");
   }
 
   // HELPER FUNCTIONS
