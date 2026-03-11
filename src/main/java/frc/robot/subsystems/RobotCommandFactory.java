@@ -287,16 +287,13 @@ public class RobotCommandFactory {
   }
 
   public Command shuttleCommand() {
-    return Commands.parallel(
-      shootWithoutVisionWithDisplacement(
+    return shootWithoutVisionWithDisplacement(
         () -> ShooterConstants.SHUTTLE_VELOCITY + ShooterConstants.INTIAL_ADDITIONAL_VELOCITY,
         () -> ShooterConstants.SHUTTLE_VELOCITY,
         () -> ColumnConstants.SHUTTLE_VELOCITY,
         () -> IndexerConstants.SHUTTLE_VELOCITY,
         () -> RollerConstants.ROLLER_VELOCITY
-      ),
-      m_pivot.repeatingDisplaceFuelCommand()
-    ).withName("shuttle");
+      ).withName("shuttle");
   }
 
   public Command neutralModeCommand() {
