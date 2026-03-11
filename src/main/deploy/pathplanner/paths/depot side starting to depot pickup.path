@@ -39,7 +39,7 @@
       "command": null
     },
     {
-      "name": "trigger intake",
+      "name": "intake trigger",
       "waypointRelativePos": 0.3749218750000006,
       "endWaypointRelativePos": null,
       "command": null
