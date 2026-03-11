@@ -182,6 +182,9 @@ public final class Constants {
     public static double STORE_VELOCITY = -1.0*DEPLOY_VELOCITY;
     public static final double MAX_VELOCITY = 15.0;
 
+    // Testing velocities
+    public static double TESTING_VELOCITY = 0.0;
+
     // Pivot positions
     public static double STORE_POSITION_DEGREES = 10;
     public static double DISPLACE_FUEL_POSITION_DEGREES = 25;
@@ -240,6 +243,15 @@ public final class Constants {
 
     // Intake motor velocities
     public static double ROLLER_VELOCITY = 100.0;
+    public static double MANUAL_VELOCITY = 80.0;
+    public static double MANUAL_BACK_VELOCITY = -80.0;
+    public static double OUTTAKE_VELOCITY = 100.0;
+    public static double RECYCLE_VELOCITY = 100.0;
+    public static double INTAKE_VELOCITY = 100.0;
+    public static double SHOOT_VELOCITY = 100.0;
+
+    // Testing velocities
+    public static double TESTING_VELOCITY = 0.0;
 
     // Max manual volts
     public static double ROLLER_MAX_MANUAL_VOLTS = 6.0;
@@ -284,6 +296,17 @@ public final class Constants {
     // Indexer motor velocity
     public static double INDEXER_VELOCITY = 70.0;
 
+    public static double SHOOT_VELOCITY = 100.0;
+    public static double MANUAL_VELOCITY = 80.0;
+    public static double MANUAL_BACK_VELOCITY = -80.0;
+    public static double OUTTAKE_VELOCITY = -100.0;
+    public static double RECYCLE_VELOCITY = 100.0;
+    public static double SHUTTLE_VELOCITY = 100.0;
+    public static double INTAKE_VELOCITY = 100.0;
+
+    // Testing velocities
+    public static double TESTING_VELOCITY = 0.0;
+
     // Indexer PID/FF gains
     // Tuned in shop 2/12
     public static double kP = 0.3;
@@ -319,7 +342,17 @@ public final class Constants {
 
     // Column motor velocities
     public static double COLUMN_VELOCITY = 100.0;
-    public static double COLUMN_RECYCLE_VELOCITY = 40.0;
+    
+    public static double SHOOT_VELOCITY = 100.0;
+    public static double MANUAL_VELOCITY = 80.0;
+    public static double MANUAL_BACK_VELOCITY = -80.0;
+    public static double OUTTAKE_VELOCITY = -100.0;
+    public static double RECYCLE_VELOCITY = 100.0;
+    public static double SHUTTLE_VELOCITY = 100.0;
+    public static double INTAKE_VELOCITY = -100.0;
+
+    // Testing velocities
+    public static double TESTING_VELOCITY = 0.0;
 
     // PID gains
     // Tuned in shop 2/12
@@ -365,13 +398,17 @@ public final class Constants {
     // Motor velocities
     public static double SHOOTER_VELOCITY = 10.0;
     public static double SHOOTER_BACK_VELOCITY = -1.0;
-    public static double SHOOTER_RECYCLE_VELOCITY = 10.0;
 
     public static double SHOOTER_DISTANCE1_VELOCITY = 45.0;
     public static double SHOOTER_DISTANCE2_VELOCITY = 50.0;
     public static double SHOOTER_DISTANCE3_VELOCITY = 55.0;
-    public static double SHOOTER_DISTANCE4_VELOCITY = 60.0;
 
+    // Testing velocities
+    public static double TESTING_VELOCITY = 40.0;
+
+    public static double RECYCLE_VELOCITY = 10.0;
+    public static double SHUTTLE_VELOCITY = 70.0;
+    public static double OUTTAKE_VOLTAGE = -5.0;
     public static double INTIAL_ADDITIONAL_VELOCITY = 5.0; // TODO: tune
 
     public static double SHOOTER_VOLTAGE = 1.0;
