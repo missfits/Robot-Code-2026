@@ -37,6 +37,7 @@ import frc.robot.Constants.ColumnConstants;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.IndexerConstants;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.RobotContainer.JoystickVals;
 import frc.robot.Constants.SensorConstants;
 
 import edu.wpi.first.wpilibj.DataLogManager;
@@ -432,20 +433,21 @@ public class RobotContainer {
    */
   private void createNamedCommands() {
 
-    new EventTrigger("trigger intake").onTrue(m_robotCommandFactory.runRollerIndexerCommand());
-    new EventTrigger("shoot").onTrue(m_robotCommandFactory.autoShootWithVisionCommand(() -> new JoystickVals(0, 0)));
+    new EventTrigger("deploy intake trigger").onTrue(m_pivot.zeroPivotCommand()); 
+    new EventTrigger("intake trigger").onTrue(m_robotCommandFactory.intakeModeCommand());
+    new EventTrigger("shoot trigger").onTrue(m_robotCommandFactory.autoShootWithVisionCommand().withTimeout(5)); // TODO: tune timeout
 
-    NamedCommands.registerCommand("trigger intake", 
-      m_robotCommandFactory.runRollerIndexerCommand()); // DOES NOT END 
-     NamedCommands.registerCommand("deploy intake", 
-      m_pivot.deployPivotCommand());
-    NamedCommands.registerCommand("snap to hub", 
+    NamedCommands.registerCommand("intake command", 
+      m_robotCommandFactory.intakeModeCommand()); // DOES NOT END 
+     NamedCommands.registerCommand("deploy intake command", 
+      m_pivot.zeroPivotCommand());
+    NamedCommands.registerCommand("snap to hub command", 
       m_robotCommandFactory.snapToHubCommand(() -> new JoystickVals(0, 0))
         .withTimeout(0.5));
-    NamedCommands.registerCommand("climb", 
+    NamedCommands.registerCommand("climb command", 
       new WaitCommand(1));
-    NamedCommands.registerCommand("shoot",
-       m_robotCommandFactory.autoShootWithVisionCommand(() -> new JoystickVals(0, 0)));
+    NamedCommands.registerCommand("shoot command",
+       m_robotCommandFactory.autoShootWithVisionCommand());
   }
 
   /**

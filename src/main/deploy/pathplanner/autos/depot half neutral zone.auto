@@ -7,13 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "depot side to depot shooting"
+            "pathName": "depot half neutral zone"
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "shoot command"
+            "waitTime": 5.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "2nd pass depot half neutral zone"
           }
         }
       ]
