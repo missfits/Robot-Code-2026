@@ -176,7 +176,7 @@ public class RobotContainer {
     // b (on true): score + led green
     m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).onTrue(m_robotCommandFactory.scoreModeCommand(
       () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY())));
-    // a: snap forward
+    // a: snap to bump 
     m_driverJoystick.a().and(m_driverJoystick.leftBumper().negate()).whileTrue(
       m_drivetrainCommandFactory.snapToBump(() -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY())));
     // left bumper + x: deploy pivot
