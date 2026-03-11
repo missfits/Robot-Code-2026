@@ -42,7 +42,7 @@ public class PivotSubsystem extends MechanismsSubsystemBase {
   }
 
   public void resetToDeployPosition() {
-    m_IO.setPositionDegrees(PivotConstants.DEPLOY_POSITION_DEGREES);
+    m_IO.setPositionDegrees(PivotConstants.RESET_DEPLOY_POSITION_DEGREES);
   }
 
   @Override
