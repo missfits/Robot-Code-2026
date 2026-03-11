@@ -132,8 +132,17 @@ public class RobotCommandFactory {
     return m_column.velocityCommand(() -> -m_columnVelocitySupplier.get()).withName("runColumnBack");
   }
 
+  public Command intake() {
+    return Commands.parallel(
+      m_roller.velocityCommand(m_rollerVelocitySupplier),
+      m_indexer.velocityCommand(m_indexerVelocitySupplier),
+      m_column.velocityCommand(() -> -m_columnVelocitySupplier.get())
+    ).withName("intake");
+  }
+
   // combos
   public Command runIntakeRollersCommand() {
+    // return m_roller.velocityCommand(m_rollerVelocitySupplier);
     return Commands.parallel(
       m_roller.velocityCommand(m_rollerVelocitySupplier),
       m_indexer.velocityCommand(m_indexerVelocitySupplier)
@@ -227,20 +236,28 @@ public class RobotCommandFactory {
    * @return Command that shoots with given velocity suppliers
    */
   public Command shootToHubCommand(Supplier<Double> shooterSupplier, Supplier<Double> columnSupplier, Supplier<Double> indexerSupplier) {
-    return Commands.sequence(
-        new WaitCommand(3) // timeout and just shoot after 3 seconds 
-          .until(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose))),
-        Commands.parallel(
-          m_shooter.shooterVelocityCommand(shooterSupplier), // run shooter at given velocity  
-          Commands.sequence( // column: 
-            m_column.offCommand() // wait until 
-              .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity 
-            m_column.velocityCommand(columnSupplier)),
-          Commands.sequence( // indexer: 
-            m_indexer.offCommand() // wait until 
-              .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity
-            m_indexer.velocityCommand(indexerSupplier)))
-    );
+
+    return Commands.parallel(
+      // shooter 
+      Commands.sequence(
+        new WaitCommand(10000) // wait until (no timeout)
+          .until(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose))), // facing hub 
+        m_shooter.shooterVelocityCommand(shooterSupplier)), // run shooter at given velocity  
+
+      // column 
+      Commands.sequence( 
+        m_column.offCommand() // wait until 
+          .until(m_shooter.atTargetVelocityTrigger(shooterSupplier) // shooter at target velocity 
+            .and(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))), // and facing hub
+        m_column.velocityCommand(columnSupplier)),
+
+      // indexer 
+      Commands.sequence( // indexer: 
+        m_indexer.offCommand() // wait until 
+          .until(m_shooter.atTargetVelocityTrigger(shooterSupplier) // shooter at target velocity 
+            .and(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))), // and facing hub
+        m_indexer.velocityCommand(indexerSupplier))
+    ).withName("shootToHub"); 
   }
 
   public Command shootToHubCommandWithDisplacement(Supplier<Double> shooterSupplier, Supplier<Double> columnSupplier, Supplier<Double> indexerSupplier) {
@@ -251,7 +268,7 @@ public class RobotCommandFactory {
           .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity
         new WaitCommand(2), // wait 2 seconds for some of the fuel to be shot out 
         m_pivot.repeatingDisplaceFuelCommand())
-    );
+    ).withName("shootToHubWithDisplacement");
   }
 
   public Command snapToHubCommand(Supplier<JoystickVals> joystickValsSupplier) {
@@ -318,7 +335,8 @@ public class RobotCommandFactory {
       Commands.sequence( // indexer: 
         m_indexer.offCommand() // wait until 
           .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity
-        m_indexer.velocityCommand(indexerSupplier)));
+        m_indexer.velocityCommand(indexerSupplier))
+    ).withName("shootCommand");
   }
 
   /**
@@ -339,27 +357,25 @@ public class RobotCommandFactory {
           .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity
         new WaitCommand(2), // wait 2 seconds for some of the fuel to be shot out 
         m_pivot.repeatingDisplaceFuelCommand())
-    );
+    ).withName("shootCommandWithDisplacement");
   }
 
   /**
-   * Command that shoots with shooter, column, indexer velocity supplier
-   * Simultaneously runs the shooter, then runs column and indexer **once the drivetrain is at the correct angle**
-   * 
-   * @param shooterSupplier Supplier for shooter velocity
-   * @param columnSupplier Supplier for column velocity
-   * @param indexerSupplier Supplier for indexer velocity
-   * @return Command that shoots with given velocity suppliers
+   * Command that shoots based on set[mechanism]Velocity()
+   * Simultaneously runs the shooter, then runs column, indexer and roller 
+   * @return Command that shoots with set[mechanism]Velocity()
    */
   public Command shootWithoutDistance() {
     return Commands.parallel(
-        m_shooter.shooterBackVoltageCommand().withTimeout(0.25).andThen( 
-          m_shooter.shooterVelocityCommand(m_shooterVelocitySupplier)), // run shooter at given velocity  
+      Commands.sequence(
+        // run shooter at slightly higher velocity until we shoot some fuel  
+        m_shooter.shooterVelocityCommand(() -> m_shooterVelocitySupplier.get() + ShooterConstants.INTIAL_ADDITIONAL_VELOCITY)
+          .until(m_shooter.isFuelShot(m_shooterVelocitySupplier.get() + ShooterConstants.INTIAL_ADDITIONAL_VELOCITY)),
+        m_shooter.shooterVelocityCommand(m_shooterVelocitySupplier)),  // run shooter at given velocity  
         Commands.sequence( // column: 
           m_column.offCommand() // wait until 
             .until(m_shooter.atTargetVelocityTrigger(m_shooterVelocitySupplier)), // shooter at target velocity 
           m_column.velocityCommand(m_columnVelocitySupplier)),
-
         Commands.sequence( // roller: 
           m_roller.offCommand()  // wait until 
             .until(m_shooter.atTargetVelocityTrigger(m_shooterVelocitySupplier)), // shooter at target velocity 
@@ -367,8 +383,12 @@ public class RobotCommandFactory {
         Commands.sequence( // indexer: 
           m_indexer.offCommand() // wait until 
             .until(m_shooter.atTargetVelocityTrigger(m_shooterVelocitySupplier)), // shooter at target velocity
-          m_indexer.velocityCommand(m_indexerVelocitySupplier)));
-          
+          m_indexer.velocityCommand(m_indexerVelocitySupplier)  )
+    ).withName("shootWithoutDistance");
+  }
+
+  public Command shootWithoutDistanceWithDisplacement() {
+    return Commands.parallel(shootWithoutDistance(), m_pivot.repeatingDisplaceFuelCommand());
   }
 
   // HELPER FUNCTIONS
