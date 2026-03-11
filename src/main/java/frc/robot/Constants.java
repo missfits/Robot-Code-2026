@@ -201,7 +201,7 @@ public final class Constants {
 
     // Feed forward values
     public static double kS = 0.25;
-    public static double kG = 0.0;
+    public static double kG = 0.25;
     public static double kV = 0.12;
     public static double kA = 0.0;
 
