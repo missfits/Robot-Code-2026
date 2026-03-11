@@ -432,11 +432,11 @@ public class RobotContainer {
   private void createNamedCommands() {
 
     new EventTrigger("deploy intake trigger").onTrue(m_pivot.zeroPivotCommand()); 
-    new EventTrigger("intake trigger").onTrue(m_robotCommandFactory.runIntakeRollersCommand());
+    new EventTrigger("intake trigger").onTrue(m_robotCommandFactory.runIntakeModeCommand());
     new EventTrigger("shoot trigger").onTrue(m_robotCommandFactory.autoShootWithVisionCommand().withTimeout(5)); // TODO: tune timeout
 
     NamedCommands.registerCommand("intake command", 
-      m_robotCommandFactory.runIntakeRollersCommand()); // DOES NOT END 
+      m_robotCommandFactory.runIntakeModeCommand()); // DOES NOT END 
      NamedCommands.registerCommand("deploy intake command", 
       m_pivot.zeroPivotCommand());
     NamedCommands.registerCommand("snap to hub command", 
