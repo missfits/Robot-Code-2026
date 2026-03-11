@@ -232,11 +232,11 @@ public class RobotContainer {
   // updated 3/1/26
   private void configureBindingsTestingMechanisms() {
     // x: deploy pivot
-    m_testJoystick.x().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.deployPivotCommand());
+    m_testJoystick.x().and(m_testJoystick.leftBumper().negate()).whileTrue(m_pivot.deployPivotCommand());
     // y: store pivot
-    m_testJoystick.y().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.storePivotCommand());
+    m_testJoystick.y().and(m_testJoystick.leftBumper().negate()).whileTrue(m_pivot.storePivotCommand());
     // b: run roller
-    m_testJoystick.b().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runRollerBackCommand());
+    m_testJoystick.b().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runRollerBackTestCommand());
     // a: run roller and indexer 
     m_testJoystick.a().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runIntakeRollersBackCommand());
 
@@ -253,7 +253,7 @@ public class RobotContainer {
     m_testJoystick.rightTrigger().whileTrue(
       new ParallelCommandGroup(
         m_robotCommandFactory.runIntakeRollersCommand(),
-        m_robotCommandFactory.shootManualTestCommand(),
+        m_robotCommandFactory.runShooterTestCommand(),
         m_column.columnVelocityCommand()
       )
     );
@@ -433,7 +433,7 @@ public class RobotContainer {
   private void createNamedCommands() {
 
     new EventTrigger("trigger intake").onTrue(m_robotCommandFactory.runIntakeRollersCommand());
-    new EventTrigger("shoot").onTrue(m_robotCommandFactory.shootByDistanceCommand(() -> new JoystickVals(0, 0)));
+    new EventTrigger("shoot").onTrue(m_robotCommandFactory.autoShootWithVisionCommand(() -> new JoystickVals(0, 0)));
 
     NamedCommands.registerCommand("trigger intake", 
       m_robotCommandFactory.runIntakeRollersCommand()); // DOES NOT END 
@@ -445,7 +445,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("climb", 
       new WaitCommand(1));
     NamedCommands.registerCommand("shoot",
-       m_robotCommandFactory.shootByDistanceCommand(() -> new JoystickVals(0, 0)));
+       m_robotCommandFactory.autoShootWithVisionCommand(() -> new JoystickVals(0, 0)));
   }
 
   /**
