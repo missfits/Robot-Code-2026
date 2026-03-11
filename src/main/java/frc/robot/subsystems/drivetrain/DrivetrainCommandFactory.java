@@ -141,8 +141,8 @@ public class DrivetrainCommandFactory {
         }).withName("snapToTarget");
     }
 
-    public Command snapForBump(Supplier<JoystickVals> translationSupplier) {
-        return snapToAngle(translationSupplier, () -> getBumpAngle(m_drivetrain.getState().Pose)).withName("snapForBump");
+    public Command snapToBump(Supplier<JoystickVals> translationSupplier) {
+        return snapToAngle(translationSupplier, () -> getBumpAngle(m_drivetrain.getState().Pose)).withName("snapToBump");
     }
 
     /**
