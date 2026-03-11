@@ -195,6 +195,8 @@ public class RobotContainer {
     // right trigger: outtake / everything backwards (voltage -5)
     m_driverJoystick.rightTrigger().whileTrue(m_robotCommandFactory.outtakeCommand());
 
+    m_driverJoystick.povCenter().negate().whileTrue(m_pivot.zeroPivotCommand());
+
     // ----------
 
     // --- OPERATOR COMMANDS ---
