@@ -85,15 +85,8 @@ import com.ctre.phoenix6.SignalLogger;
 public class RobotContainer {
   public static record JoystickVals(double x, double y) {}
 
-  public enum RobotMode {
-    NEUTRAL,
-    INTAKE,
-    SHOOT
-  }
-
   private final SendableChooser<Command> m_autoChooser; // Sendable chooser that holds the autos
   private final Telemetry logger = new Telemetry(DrivetrainConstants.MAX_TRANSLATION_SPEED);
-  private RobotMode m_robotMode;
 
   // Subsystems
   public final CommandSwerveDrivetrain m_drivetrain = TunerConstants.createDrivetrain();
@@ -140,11 +133,9 @@ public class RobotContainer {
     if (Utils.isSimulation()) {
       configureBindingsSimulation();
     } else {
-      configureBindingsPracticeField();
-
+      configureBindingsCompetition();
+      configureBindingsVision();
     }
-
-    setRobotMode(RobotMode.NEUTRAL);
 
     // Configure auto builder
     createNamedCommands();
@@ -159,8 +150,6 @@ public class RobotContainer {
     logToSmartDashboard();
 
     SignalLogger.start();
-
-    configureBindingsVision();
   }
 
 
@@ -170,6 +159,8 @@ public class RobotContainer {
    * Define trigger -> command mappings
    */
   private void configureBindingsCompetition() {
+
+    // --- DRIVER COMMANDS ---
     // Default drive
     m_drivetrain.setDefaultCommand(
       // Drivetrain will execute this command periodically
@@ -179,135 +170,74 @@ public class RobotContainer {
       )
     );
 
-    // Drive in slowmode while right bumper is pressed
+    // x (on true): intake + led red
+    m_driverJoystick.x().and(m_driverJoystick.leftBumper().negate()).onTrue(m_robotCommandFactory.intakeModeCommand());
+    // y (on true): neutral + led blue
+    m_driverJoystick.y().and(m_driverJoystick.leftBumper().negate()).onTrue(m_robotCommandFactory.neutralModeCommand());
+    // b (on true): score + led green
+    m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).onTrue(m_robotCommandFactory.scoreModeCommand(
+      () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY())));
+    // a: snap forward
+    m_driverJoystick.a().and(m_driverJoystick.leftBumper().negate()).whileTrue(
+      m_drivetrainCommandFactory.snapToAngle(
+        () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
+        AllianceFlipUtil.apply(new Rotation2d(0))));
+    // left bumper + x: deploy pivot
+    m_driverJoystick.leftBumper().and(m_driverJoystick.x()).whileTrue(m_pivot.deployPivotCommand());
+    // left bumper + y: store pivot
+    m_driverJoystick.leftBumper().and(m_driverJoystick.y()).whileTrue(m_pivot.storePivotCommand());
+    // left bumper + b: snap to hub
+    m_driverJoystick.leftBumper().and(m_driverJoystick.b()).whileTrue(
+      m_robotCommandFactory.snapToHubCommand(() -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY())));
+    // left bumper + a: point wheels in x
+    m_driverJoystick.leftBumper().and(m_driverJoystick.a()).whileTrue(m_drivetrainCommandFactory.pointWheelsinX());
+    // right bumper: slowmode
     m_drivetrainCommandFactory.setSlowmodeButton(m_driverJoystick.rightBumper());
+    // left trigger: shuttle
+    m_driverJoystick.leftTrigger().whileTrue(m_robotCommandFactory.shuttleCommand());
+    // right trigger: outtake / everything backwards (voltage -5)
+    m_driverJoystick.rightTrigger().whileTrue(m_robotCommandFactory.outtakeCommand());
+
+    // ----------
+
+    // --- OPERATOR COMMANDS ---
+    // x: intake + indexer forward
+    m_operatorJoystick.x().and(m_operatorJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runIntakeRollersCommand());
+    // y: pivot up
+    m_operatorJoystick.y().and(m_operatorJoystick.leftBumper().negate()).whileTrue(m_pivot.deployPivotCommand());
+    // b: indexer + column forward
+    m_operatorJoystick.b().and(m_operatorJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runInnerRollersCommand());
+    // a: intake, indexer, column forwards
+    m_operatorJoystick.a().and(m_operatorJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runAllRollersCommand());
+    // left bumper + x: intake + indexer backwards
+    m_operatorJoystick.leftBumper().and(m_operatorJoystick.x()).whileTrue(m_robotCommandFactory.runIntakeRollersBackCommand());
+    // left bumper + y: pivot down
+    m_operatorJoystick.leftBumper().and(m_operatorJoystick.y()).whileTrue(m_pivot.storePivotCommand());
+    // left bumper + b: indexer + column backwards
+    m_operatorJoystick.leftBumper().and(m_operatorJoystick.b()).whileTrue(m_robotCommandFactory.runInnerRollersBackCommand());
+    // left bumper + a: intake, indexer, column backwards
+    m_operatorJoystick.leftBumper().and(m_operatorJoystick.a()).whileTrue(m_robotCommandFactory.runAllRollersBackCommand());
+    // right bumper: score speed 1
+    m_operatorJoystick.rightBumper().whileTrue(m_robotCommandFactory.runShooterCloseDistanceCommand());
+    // left trigger: score speed 2
+    m_operatorJoystick.leftTrigger().whileTrue(m_robotCommandFactory.runShooterMediumDistanceCommand());
+    // right trigger: score speed 3
+    m_operatorJoystick.rightTrigger().whileTrue(m_robotCommandFactory.runShooterFarDistanceCommand());
 
 
-    m_driverJoystick.leftBumper().and(m_driverJoystick.x()).onTrue(
-      new InstantCommand(() -> setRobotMode(RobotMode.NEUTRAL))
-    );
-   
-    // // TODO: change -- this is for testing
-    // m_driverJoystick.y().and(m_driverJoystick.leftBumper().negate()).whileTrue(
-    //   m_drivetrainCommandFactory.snapToAngle(
-    //     () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
-    //     0
-    //   )
-    // );
-
-    // // TODO: change -- this is for testing
-    // m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).onTrue(
-    //   m_drivetrainCommandFactory.snapToTarget(
-    //     () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
-    //     () -> new Pose2d(Units.inchesToMeters(182), Units.inchesToMeters(182), new Rotation2d())
-    //   )
-    // );
-
-    m_driverJoystick.leftBumper().and(m_driverJoystick.y()).onTrue(
-      new InstantCommand(() -> setRobotMode(RobotMode.INTAKE))
-    );
-
-    // reset the field-centric heading on a button press
-    m_driverJoystick.leftBumper().and(m_driverJoystick.b()).onTrue(
-      m_drivetrain.runOnce(() -> m_drivetrain.resetRotation(AllianceFlipUtil.apply(new Rotation2d(0))))
-    );
-
-    m_driverJoystick.leftBumper().and(m_driverJoystick.a()).onTrue(
-      new InstantCommand(() -> setRobotMode(RobotMode.SHOOT))
-    );
-
-    m_driverJoystick.povCenter().negate().onTrue(new InstantCommand(() -> resetControllerConstantsSmartDashboard()));
     m_drivetrain.registerTelemetry(logger::telemeterize);
 
-    configureDefaultCommandCompetition();
-  }
-
-  private void configureBindingsPracticeField() {
-    // Default drive
-    m_drivetrain.setDefaultCommand(
-      // Drivetrain will execute this command periodically
-      m_drivetrainCommandFactory.defaultDrive(
-        () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
-        () -> new JoystickVals(m_driverJoystick.getRightX(), m_driverJoystick.getRightY())
-      )
-    );
-
-    // Drive in slowmode while right bumper is pressed
-    m_drivetrainCommandFactory.setSlowmodeButton(m_driverJoystick.rightBumper());
-
-    // INTAKE TESTING
-    // x: run roller and indexer
-    m_driverJoystick.x().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runIntakeRollersCommand());
-    // y: run column
-    m_driverJoystick.y().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runColumnCommand());
-    // // b: run roller back 
-    // m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).whileTrue(
-    //   m_drivetrainCommandFactory.snapToAngle( // drivetrain: snap to angle 
-    //     () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
-    //     () -> HubCalculations.angleToHub(m_drivetrain.getState().Pose))
-    // );
-
-
-    // a: run roller and indexer back
-    m_driverJoystick.a().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.shootWithoutDistance());
-
-    // left bumper + x: deploy pivot motion magic
-    m_driverJoystick.leftBumper().and(m_driverJoystick.x()).whileTrue(m_pivot.storePivotCommand());
-    // left bumper + y: store pivot motion magic
-    m_driverJoystick.leftBumper().and(m_driverJoystick.y()).whileTrue(m_pivot.displaceFuelCommand());
-    // left bumper + b: reset drivetrain rotation 
-    m_driverJoystick.leftBumper().and(m_driverJoystick.b()).whileTrue(
-      new InstantCommand(() -> m_drivetrain.resetRotation(AllianceFlipUtil.apply(new Rotation2d(0)))));
-    // left bumper + a: reset pivot to deploy position 
-    m_driverJoystick.leftBumper().and(m_driverJoystick.a()).whileTrue(m_pivot.zeroPivotCommand());
-    //m_driverJoystick.leftBumper().and(m_driverJoystick.a()).whileTrue(new InstantCommand(
-    //  () -> m_pivot.resetToDeployPosition()));
-
-    // run shooter
-    m_driverJoystick.leftTrigger().and(m_driverJoystick.leftBumper().negate()).onTrue(m_robotCommandFactory.shootByDistanceCommand(() -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY())));
-    m_driverJoystick.leftTrigger().and(m_driverJoystick.leftBumper()).onTrue(m_robotCommandFactory.offCommand());
-
-    m_driverJoystick.povCenter().negate().onTrue(new InstantCommand(() -> resetControllerConstantsSmartDashboard()));
-
-    // OPERATOR
-    // x: manual shoot at closest distance
-    m_operatorJoystick.x().and(m_operatorJoystick.leftBumper().negate()).whileTrue(
-      m_robotCommandFactory.backupScoreCommand(ShooterConstants.SHOOTER_DISTANCE1_VELOCITY)
-    );
-    // y: manual shoot at close distance
-    m_operatorJoystick.y().and(m_operatorJoystick.leftBumper().negate()).whileTrue(
-      m_robotCommandFactory.backupScoreCommand(ShooterConstants.SHOOTER_DISTANCE2_VELOCITY)
-    );
-    // b: manual shoot at far distance
-    m_operatorJoystick.b().and(m_operatorJoystick.leftBumper().negate()).whileTrue(
-      m_robotCommandFactory.backupScoreCommand(ShooterConstants.SHOOTER_DISTANCE3_VELOCITY)
-    );
-    // a: manual shoot at furthest distance
-    m_operatorJoystick.a().and(m_operatorJoystick.leftBumper().negate()).whileTrue(
-      m_robotCommandFactory.backupScoreCommand(ShooterConstants.SHOOTER_DISTANCE4_VELOCITY)
-    );
-    // left bumper + x: run roller back
-    m_operatorJoystick.leftBumper().and(m_operatorJoystick.x()).whileTrue(m_robotCommandFactory.runRollerBackCommand());
-    // left bumper + y: run indexer back
-    m_operatorJoystick.leftBumper().and(m_operatorJoystick.y()).whileTrue(m_robotCommandFactory.runIndexerBackCommand());
-    // left bumper + b: run column back
-    m_operatorJoystick.leftBumper().and(m_operatorJoystick.b()).whileTrue(m_robotCommandFactory.runColumnBackCommand());
-    // left bumper + a: run shooter back
-    m_operatorJoystick.leftBumper().and(m_operatorJoystick.a()).whileTrue(m_robotCommandFactory.runShooterBackCommand());
-
-
-    configureDefaultCommandTesting();
-
+    configureDefaultCommands();
   }
 
   // updated 3/1/26
   private void configureBindingsTestingMechanisms() {
     // x: deploy pivot
-    m_testJoystick.x().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.deployPivotCommand());
+    m_testJoystick.x().and(m_testJoystick.leftBumper().negate()).whileTrue(m_pivot.deployPivotCommand());
     // y: store pivot
-    m_testJoystick.y().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.storePivotCommand());
+    m_testJoystick.y().and(m_testJoystick.leftBumper().negate()).whileTrue(m_pivot.storePivotCommand());
     // b: run roller
-    m_testJoystick.b().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runRollerBackCommand());
+    m_testJoystick.b().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runRollerBackTestCommand());
     // a: run roller and indexer 
     m_testJoystick.a().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runIntakeRollersBackCommand());
 
@@ -324,14 +254,14 @@ public class RobotContainer {
     m_testJoystick.rightTrigger().whileTrue(
       new ParallelCommandGroup(
         m_robotCommandFactory.runIntakeRollersCommand(),
-        m_robotCommandFactory.shootManualTestCommand(),
+        m_robotCommandFactory.runShooterTestCommand(),
         m_column.columnVelocityCommand()
       )
     );
 
     m_testJoystick.povCenter().negate().onTrue(new InstantCommand(() -> resetControllerConstantsSmartDashboard()));
 
-    configureDefaultCommandTesting();
+    configureDefaultCommands();
   }
 
   private void configureBindingsTestingDrivetrain() {
@@ -377,37 +307,18 @@ public class RobotContainer {
     // Drive in slowmode while right bumper is pressed
     m_drivetrainCommandFactory.setSlowmodeButton(m_driverJoystick.rightBumper());
 
-
     Consumer<SwerveDriveState> telemetry =  ((CommandSwerveDrivetrainSim) m_drivetrain)
       .getSimTelemetryConsumer().andThen(logger::telemeterize);
     m_drivetrain.registerTelemetry(telemetry);
   }
 
-  private void configureDefaultCommandCompetition() {
-    switch (m_robotMode) {
-      case NEUTRAL:
-        break;
-      case INTAKE:
-        break;
-      case SHOOT:
-        break;
-    }
-  }
-
-  private void configureDefaultCommandTesting() {
+  private void configureDefaultCommands() {
     m_robotCommandFactory.setDefaultCommand();
   }
 
   public void resetPosition() {
     m_robotCommandFactory.resetPosition();
   }
-
-  public void setRobotMode(RobotMode newMode) {
-    m_robotMode = newMode;
-    configureDefaultCommandCompetition();
-    SmartDashboard.putString("robot/mode", m_robotMode.toString());
-  }
-
 
   // ----- LOGGING -----
   public void logToSmartDashboard() {
@@ -524,7 +435,7 @@ public class RobotContainer {
 
     new EventTrigger("deploy intake trigger").onTrue(m_pivot.zeroPivotCommand()); 
     new EventTrigger("intake trigger").onTrue(m_robotCommandFactory.runIntakeRollersCommand());
-    new EventTrigger("shoot trigger").onTrue(m_robotCommandFactory.shootByDistanceAutoCommand().withTimeout(5)); // TODO: tune timeout
+    new EventTrigger("shoot trigger").onTrue(m_robotCommandFactory.autoShootWithVisionCommand(() -> new JoystickVals(0, 0)).withTimeout(5)); // TODO: tune timeout
 
     NamedCommands.registerCommand("intake command", 
       m_robotCommandFactory.runIntakeRollersCommand()); // DOES NOT END 
@@ -536,7 +447,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("climb command", 
       new WaitCommand(1));
     NamedCommands.registerCommand("shoot command",
-       m_robotCommandFactory.shootByDistanceCommand(() -> new JoystickVals(0, 0)));
+       m_robotCommandFactory.autoShootWithVisionCommand(() -> new JoystickVals(0, 0)));
   }
 
   /**
