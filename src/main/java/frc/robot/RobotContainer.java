@@ -522,14 +522,14 @@ public class RobotContainer {
    */
   private void createNamedCommands() {
 
-    new EventTrigger("deploy intake trigger").onTrue(m_pivot.deployPivotCommand()); // TODO: replace with aria's deploy + zero pivot command
+    new EventTrigger("deploy intake trigger").onTrue(m_pivot.zeroPivotCommand()); 
     new EventTrigger("intake trigger").onTrue(m_robotCommandFactory.runIntakeRollersCommand());
     new EventTrigger("shoot trigger").onTrue(m_robotCommandFactory.shootByDistanceAutoCommand().withTimeout(5)); // TODO: tune timeout
 
     NamedCommands.registerCommand("intake command", 
       m_robotCommandFactory.runIntakeRollersCommand()); // DOES NOT END 
      NamedCommands.registerCommand("deploy intake command", 
-      m_pivot.deployPivotCommand());
+      m_pivot.zeroPivotCommand());
     NamedCommands.registerCommand("snap to hub command", 
       m_robotCommandFactory.snapToHubCommand(() -> new JoystickVals(0, 0))
         .withTimeout(0.5));
