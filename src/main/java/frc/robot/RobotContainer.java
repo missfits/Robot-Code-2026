@@ -435,7 +435,7 @@ public class RobotContainer {
 
     new EventTrigger("deploy intake trigger").onTrue(m_pivot.zeroPivotCommand()); 
     new EventTrigger("intake trigger").onTrue(m_robotCommandFactory.runIntakeRollersCommand());
-    new EventTrigger("shoot trigger").onTrue(m_robotCommandFactory.autoShootWithVisionCommand(() -> new JoystickVals(0, 0)).withTimeout(5)); // TODO: tune timeout
+    new EventTrigger("shoot trigger").onTrue(m_robotCommandFactory.autoShootWithVisionCommand().withTimeout(5)); // TODO: tune timeout
 
     NamedCommands.registerCommand("intake command", 
       m_robotCommandFactory.runIntakeRollersCommand()); // DOES NOT END 
@@ -447,7 +447,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("climb command", 
       new WaitCommand(1));
     NamedCommands.registerCommand("shoot command",
-       m_robotCommandFactory.autoShootWithVisionCommand(() -> new JoystickVals(0, 0)));
+       m_robotCommandFactory.autoShootWithVisionCommand());
   }
 
   /**
