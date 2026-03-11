@@ -147,7 +147,7 @@ task(eventDeploy) {
                 println "Committed to branch: '$branch'"
                 println "Commit message: '$commitMessage'"
             } else {
-                println "Not on an event or pr branch, skipping commit"
+                println "Not on an event or pf branch, skipping commit"
             }
         } else {
             println "Not running deploy task, skipping commit"
