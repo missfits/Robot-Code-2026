@@ -209,6 +209,9 @@ public final class Constants {
     public static double CRUISE_VELOCITY = 0.2;
     public static double ACCELERATION = 1;
     public static double JERK = 100;
+
+    public static final double GRAVITY_FEEDFORWARD_OFFSET = -55; // offset in degrees. 0 should be horizontal
+
   }
 
   public static class RollerConstants {
