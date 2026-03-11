@@ -36,7 +36,7 @@ public class LocalizationCamera {
   private AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
   private final Field2d m_estPoseField = new Field2d(); // field pose estimator
   private PhotonPoseEstimator poseEstimator;
-  private final Supplier<Rotation2d> m_robotHeadingSupplier;
+  private final Supplier<Rotation2d> m_robotRotationSupplier;
 
   private LocalVisionFilterPipeline m_filterPipeline = new LocalVisionFilterPipeline(); // filtering pipeline for each camera, initalizes as empty pipeline
 
@@ -54,7 +54,7 @@ public class LocalizationCamera {
     m_cameraName = cameraName;
     m_camera = new PhotonCamera(m_cameraName);
     m_logString = "vision/" + m_cameraName;
-    m_robotHeadingSupplier = robotHeadingSupplier;
+    m_robotRotationSupplier = robotHeadingSupplier;
 
     poseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, robotToCam);
 
@@ -229,7 +229,7 @@ public class LocalizationCamera {
       return Optional.empty();
     }
 
-    Rotation2d currentHeading = m_robotHeadingSupplier.get();
+    Rotation2d currentHeading = m_robotRotationSupplier.get();
     Pose3d chosenPose = bestPose.get();
     // Prefer the candidate whose field-relative heading is closer to the drivetrain heading.
     if (headingDistance(alternatePose.get().toPose2d().getRotation(), currentHeading)
