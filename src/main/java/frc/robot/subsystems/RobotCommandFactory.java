@@ -50,8 +50,12 @@ public class RobotCommandFactory {
   private final Supplier<Double> m_indexerBackVelocitySupplier = () -> -setIndexerVelocity();
   private final Supplier<Double> m_columnVelocitySupplier = () -> setColumnVelocity();
   private final Supplier<Double> m_shooterVelocitySupplier = () -> setShooterVelocity(); 
+  private final Supplier<Double> m_shooterVelocityInitialSupplier = 
+    () -> setShooterVelocity() + ShooterConstants.INTIAL_ADDITIONAL_VELOCITY;
   private final Supplier<Double> m_shooterBackVelocitySupplier = () -> -setShooterVelocity(); 
   private final Supplier<Double> m_shooterVelocityCalculatedSupplier = () -> calculateShooterVelocity(); 
+  private final Supplier<Double> m_shooterVelocityInitialCalculatedSupplier = 
+    () -> calculateShooterVelocity() + ShooterConstants.INTIAL_ADDITIONAL_VELOCITY;
 
   public RobotCommandFactory(CommandSwerveDrivetrain drivetrain, 
       PivotSubsystem pivot, RollerSubsystem roller, IndexerSubsystem indexer, ColumnSubsystem column, 
@@ -434,25 +438,25 @@ public class RobotCommandFactory {
    * Simultaneously runs the shooter, then runs column, indexer and roller 
    * @return Command that shoots with set[mechanism]Velocity()
    */
-  public Command shootWithoutDistance() {
+  public Command shootWithoutVision(Supplier<Double> initialShooterSupplier, Supplier<Double> shooterSupplier, Supplier<Double> columnSupplier, Supplier<Double> indexerSupplier, Supplier<Double> rollerSupplier) {
     return Commands.parallel(
       Commands.sequence(
         // run shooter at slightly higher velocity until we shoot some fuel  
-        m_shooter.shooterVelocityCommand(() -> m_shooterVelocitySupplier.get() + ShooterConstants.INTIAL_ADDITIONAL_VELOCITY)
-          .until(m_shooter.isFuelShot(m_shooterVelocitySupplier.get() + ShooterConstants.INTIAL_ADDITIONAL_VELOCITY)),
-        m_shooter.shooterVelocityCommand(m_shooterVelocitySupplier)),  // run shooter at given velocity  
+        m_shooter.shooterVelocityCommand(initialShooterSupplier)
+          .until(m_shooter.isFuelShot(initialShooterSupplier.get())),
+        m_shooter.shooterVelocityCommand(shooterSupplier)),  // run shooter at given velocity  
         Commands.sequence( // column: 
           m_column.offCommand() // wait until 
-            .until(m_shooter.atTargetVelocityTrigger(m_shooterVelocitySupplier)), // shooter at target velocity 
-          m_column.velocityCommand(m_columnVelocitySupplier)),
+            .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity 
+          m_column.velocityCommand(columnSupplier)),
         Commands.sequence( // roller: 
           m_roller.offCommand()  // wait until 
-            .until(m_shooter.atTargetVelocityTrigger(m_shooterVelocitySupplier)), // shooter at target velocity 
-          m_roller.velocityCommand(m_rollerVelocitySupplier)),
+            .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity 
+          m_roller.velocityCommand(rollerSupplier)),
         Commands.sequence( // indexer: 
           m_indexer.offCommand() // wait until 
-            .until(m_shooter.atTargetVelocityTrigger(m_shooterVelocitySupplier)), // shooter at target velocity
-          m_indexer.velocityCommand(m_indexerVelocitySupplier)  )
+            .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity
+          m_indexer.velocityCommand(indexerSupplier))
     ).withName("shootWithoutDistance");
   }
 
