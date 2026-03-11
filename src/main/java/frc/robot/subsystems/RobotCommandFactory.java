@@ -170,7 +170,6 @@ public class RobotCommandFactory {
       shootWithVisionWithDisplacement(m_shooterVelocityInitialCalculatedSupplier, m_shooterVelocityCalculatedSupplier, m_columnVelocitySupplier, m_indexerVelocitySupplier, m_rollerVelocitySupplier))
     .withName("shootWithVisionTest");
   }
-
   /**
    * Command that shoots based on distance to hub using vision
    */
@@ -288,16 +287,13 @@ public class RobotCommandFactory {
   }
 
   public Command shuttleCommand() {
-    return Commands.parallel(
-      shootWithoutVisionWithDisplacement(
+    return shootWithoutVisionWithDisplacement(
         () -> ShooterConstants.SHUTTLE_VELOCITY + ShooterConstants.INTIAL_ADDITIONAL_VELOCITY,
         () -> ShooterConstants.SHUTTLE_VELOCITY,
         () -> ColumnConstants.SHUTTLE_VELOCITY,
         () -> IndexerConstants.SHUTTLE_VELOCITY,
         () -> RollerConstants.ROLLER_VELOCITY
-      ),
-      m_pivot.repeatingDisplaceFuelCommand()
-    ).withName("shuttle");
+      ).withName("shuttle");
   }
 
   public Command neutralModeCommand() {
@@ -454,9 +450,9 @@ public class RobotCommandFactory {
   }
 
   // auto
-  public Command autoShootWithVisionCommand(Supplier<JoystickVals> joystickValsSupplier) {
+  public Command autoShootWithVisionCommand() {
     return Commands.parallel(
-      snapToHubCommand(joystickValsSupplier).asProxy(),
+      snapToHubCommand(() -> new JoystickVals(0, 0)).asProxy().withName("snapToHubProxied"),
       shootWithVisionWithDisplacement(
         m_shooterVelocityInitialCalculatedSupplier,
         m_shooterVelocityCalculatedSupplier,
