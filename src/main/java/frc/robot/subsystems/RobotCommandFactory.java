@@ -180,32 +180,32 @@ public class RobotCommandFactory {
   // --- COMPETITION COMMANDS ---
 
   // - manual commands -
-  public Command runIntakeRollersCommand() {
+  public Command runRollerIndexerCommand() {
     return Commands.parallel(
       m_roller.velocityCommand(RollerConstants.MANUAL_VELOCITY),
       m_indexer.velocityCommand(IndexerConstants.MANUAL_VELOCITY)
-    ).withName("runIntakeRollers");
+    ).withName("runRollerIndexer");
   }
 
-  public Command runIntakeRollersBackCommand() {
+  public Command runRollerIndexerBackCommand() {
     return Commands.parallel(
       m_roller.velocityCommand(RollerConstants.MANUAL_BACK_VELOCITY),
       m_indexer.velocityCommand(IndexerConstants.MANUAL_BACK_VELOCITY)
-    ).withName("runIntakeRollersBack");
+    ).withName("runRollerIndexerBack");
   }
 
-  public Command runInnerRollersCommand() {
+  public Command runIndexerColumnCommand() {
     return Commands.parallel(
       m_indexer.velocityCommand(IndexerConstants.MANUAL_VELOCITY),
       m_column.velocityCommand(ColumnConstants.MANUAL_VELOCITY)
-    ).withName("runInnerRollers");
+    ).withName("runIndexerColumn");
   }
 
-  public Command runInnerRollersBackCommand() {
+  public Command runIndexerColumnBackCommand() {
     return Commands.parallel(
       m_indexer.velocityCommand(IndexerConstants.MANUAL_BACK_VELOCITY),
       m_column.velocityCommand(ColumnConstants.MANUAL_BACK_VELOCITY)
-    ).withName("runInnerRollersBack");
+    ).withName("runIndexerColumnBack");
   }
 
   public Command runAllRollersCommand() {
