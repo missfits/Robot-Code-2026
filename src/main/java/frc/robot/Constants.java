@@ -411,7 +411,7 @@ public final class Constants {
     public static double RECYCLE_VELOCITY = 10.0;
     public static double SHUTTLE_VELOCITY = 70.0;
     public static double OUTTAKE_VOLTAGE = -5.0;
-    public static double INTIAL_ADDITIONAL_VELOCITY = 5.0; // TODO: tune
+    public static double INTIAL_ADDITIONAL_VELOCITY = 10.0; // TODO: tune
 
     public static double SHOOTER_VOLTAGE = 1.0;
     public static double SHOOTER_BACK_VOLTAGE = -1.0;
