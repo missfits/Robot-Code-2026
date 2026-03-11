@@ -226,31 +226,43 @@ public class RobotCommandFactory {
   }
 
   public Command runShooterCloseDistanceCommand() {
-    return shootCommand(
-      ShooterConstants.SHOOTER_DISTANCE1_VELOCITY,
-      ColumnConstants.SHOOT_VELOCITY,
-      IndexerConstants.SHOOT_VELOCITY);
+    return shootWithoutVisionWithDisplacement(
+      () -> ShooterConstants.SHOOTER_DISTANCE1_VELOCITY + ShooterConstants.INTIAL_ADDITIONAL_VELOCITY,
+      () -> ShooterConstants.SHOOTER_DISTANCE1_VELOCITY,
+      () -> ColumnConstants.SHOOT_VELOCITY,
+      () -> IndexerConstants.SHOOT_VELOCITY,
+      () -> RollerConstants.SHOOT_VELOCITY
+    );
   }
 
   public Command runShooterMediumDistanceCommand() {
-    return shootCommand(
-      ShooterConstants.SHOOTER_DISTANCE2_VELOCITY,
-      ColumnConstants.SHOOT_VELOCITY,
-      IndexerConstants.SHOOT_VELOCITY);
+    return shootWithoutVisionWithDisplacement(
+      () -> ShooterConstants.SHOOTER_DISTANCE2_VELOCITY + ShooterConstants.INTIAL_ADDITIONAL_VELOCITY,
+      () -> ShooterConstants.SHOOTER_DISTANCE2_VELOCITY,
+      () -> ColumnConstants.SHOOT_VELOCITY,
+      () -> IndexerConstants.SHOOT_VELOCITY,
+      () -> RollerConstants.SHOOT_VELOCITY
+    );
   }
 
   public Command runShooterFarDistanceCommand() {
-    return shootCommand(
-      ShooterConstants.SHOOTER_DISTANCE3_VELOCITY,
-      ColumnConstants.SHOOT_VELOCITY,
-      IndexerConstants.SHOOT_VELOCITY);
+    return shootWithoutVisionWithDisplacement(
+      () -> ShooterConstants.SHOOTER_DISTANCE3_VELOCITY + ShooterConstants.INTIAL_ADDITIONAL_VELOCITY,
+      () -> ShooterConstants.SHOOTER_DISTANCE3_VELOCITY,
+      () -> ColumnConstants.SHOOT_VELOCITY,
+      () -> IndexerConstants.SHOOT_VELOCITY,
+      () -> RollerConstants.SHOOT_VELOCITY
+    );
   }
 
   public Command backupScoreCommand(double shooterVelocity) {
-    return shootCommand(
-      shooterVelocity,
-      ColumnConstants.SHOOT_VELOCITY,
-      IndexerConstants.SHOOT_VELOCITY);
+    return shootWithoutVisionWithDisplacement(
+      () -> shooterVelocity + ShooterConstants.INTIAL_ADDITIONAL_VELOCITY,
+      () -> shooterVelocity,
+      () -> ColumnConstants.SHOOT_VELOCITY,
+      () -> IndexerConstants.SHOOT_VELOCITY,
+      () -> RollerConstants.SHOOT_VELOCITY
+    );
   }
 
   // - driver commands -
@@ -277,11 +289,14 @@ public class RobotCommandFactory {
 
   public Command shuttleCommand() {
     return Commands.parallel(
-      shootCommand(
-        ShooterConstants.SHUTTLE_VELOCITY,
-        ColumnConstants.SHUTTLE_VELOCITY,
-        IndexerConstants.SHUTTLE_VELOCITY
-      )
+      shootWithoutVisionWithDisplacement(
+        () -> ShooterConstants.SHUTTLE_VELOCITY + ShooterConstants.INTIAL_ADDITIONAL_VELOCITY,
+        () -> ShooterConstants.SHUTTLE_VELOCITY,
+        () -> ColumnConstants.SHUTTLE_VELOCITY,
+        () -> IndexerConstants.SHUTTLE_VELOCITY,
+        () -> RollerConstants.ROLLER_VELOCITY
+      ),
+      m_pivot.repeatingDisplaceFuelCommand()
     ).withName("shuttle");
   }
 
@@ -309,10 +324,12 @@ public class RobotCommandFactory {
   public Command scoreModeCommand(Supplier<JoystickVals> joystickValsSupplier) {
     return Commands.parallel(
       snapToHubCommand(joystickValsSupplier),
-      shootToHubCommandWithDisplacement(
+      shootWithVisionWithDisplacement(
+        m_shooterVelocityInitialCalculatedSupplier,
         m_shooterVelocityCalculatedSupplier,
         () -> ColumnConstants.SHOOT_VELOCITY,
-        () -> IndexerConstants.SHOOT_VELOCITY))
+        () -> IndexerConstants.SHOOT_VELOCITY,
+        () -> RollerConstants.ROLLER_VELOCITY))
     .withName("shootByDistance");
   }
 
