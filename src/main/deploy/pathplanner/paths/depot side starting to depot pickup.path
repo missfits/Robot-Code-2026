@@ -33,6 +33,12 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
+      "name": "deploy intake trigger",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
       "name": "trigger intake",
       "waypointRelativePos": 0.3749218750000006,
       "endWaypointRelativePos": null,
