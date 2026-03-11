@@ -302,7 +302,6 @@ public class RobotCommandFactory {
 
   public Command neutralModeCommand() {
     return Commands.parallel(
-      m_pivot.offCommand(),
       m_roller.offCommand(),
       m_indexer.offCommand(),
       m_column.offCommand(),
