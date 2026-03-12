@@ -126,10 +126,6 @@ public class VisionSubsystem extends SubsystemBase {
     return (currentTime - m_lastTimestamp) < VisionConstants.MAX_TIME_BETWEEN_UPDATES;
   }
 
-  public boolean hasValidTargets() {
-    return !allValidReadings.isEmpty();
-  }
-
   public boolean isEstPoseJumpy() {
     if (m_lastEstPoses.size() < VisionConstants.NUM_LAST_EST_POSES) {
       return true;
@@ -149,7 +145,7 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public boolean isVisionHealthy() {
-    return areCamerasConnected() && isVisionUpdating() && hasValidTargets() && isEstPoseJumpy();
+    return areCamerasConnected() && isVisionUpdating() && isEstPoseJumpy();
   }
 
   @Override
