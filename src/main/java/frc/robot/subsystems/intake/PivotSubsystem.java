@@ -45,6 +45,10 @@ public class PivotSubsystem extends MechanismsSubsystemBase {
     m_IO.setPositionDegrees(PivotConstants.RESET_DEPLOY_POSITION_DEGREES);
   }
 
+  public void resetPosition(double positionDegrees) {
+    m_IO.setPositionDegrees(positionDegrees);
+  }
+
   @Override
   public void periodic() {
     super.periodic();
@@ -107,6 +111,11 @@ public class PivotSubsystem extends MechanismsSubsystemBase {
   }
 
   public Command zeroPivotCommand() {
-      return this.run(() -> m_IO.setVoltageNoClamp(PivotConstants.ZERO_PIVOT_VOLTAGE), "running pivot down").until(() -> m_IO.getCurrent() > PivotConstants.CURRENT_THRESHOLD).andThen(new InstantCommand(() -> this.resetToDeployPosition()).withName("reset pivot position")).withName("zero pivot");
+      return this.run(() -> m_IO.setVoltageNoClamp(PivotConstants.ZERO_PIVOT_VOLTAGE), "running pivot down").until(() -> m_IO.getCurrent() > PivotConstants.CURRENT_THRESHOLD).andThen(new InstantCommand(() -> this.resetPosition(PivotConstants.RESET_DEPLOY_POSITION_DEGREES)).withName("reset pivot position")).withName("zero pivot");
+  }
+
+
+  public Command autoZeroPivotCommand() {
+      return this.run(() -> setVoltage(PivotConstants.AUTO_ZERO_PIVOT_VOLTAGE), "running pivot down").until(() -> m_IO.getCurrent() > PivotConstants.AUTO_CURRENT_THRESHOLD).andThen(new InstantCommand(() -> this.resetPosition(PivotConstants.DEPLOY_POSITION_DEGREES)).withName("reset pivot position")).withName("zero pivot");
   }
 }

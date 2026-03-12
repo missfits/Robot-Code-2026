@@ -157,6 +157,8 @@ public final class Constants {
     public static final int SLOT = 0;
     public static final boolean OVERRIDE_BRAKE_DUR_NEUTRAL = false;
     public static final double CURRENT_THRESHOLD = 40;
+    public static final double AUTO_CURRENT_THRESHOLD = 60;
+
 
     // Motor ID
     public static final int MOTOR_ID = 20;
@@ -176,6 +178,8 @@ public final class Constants {
     public static double STORE_VOLTAGE = -1.0*DEPLOY_VOLTAGE;
     public static double MAX_VOLTAGE = 6.0;
     public static double ZERO_PIVOT_VOLTAGE = 1.0;
+    public static double AUTO_ZERO_PIVOT_VOLTAGE = 1.0;
+
 
     // Pivot motor velocities
     public static double DEPLOY_VELOCITY = 1.0;
