@@ -61,7 +61,7 @@ public class ShooterIOHardware extends MechanismsIOHardwareBase {
 
 
   public double getVelocityRotationsPerSecond() {
-    return getMotorVelocityRevolutionsPerSecond() * getDegreesPerRevolution() * 360;
+    return getMotorVelocityRevolutionsPerSecond() * getDegreesPerRevolution() / 360;
   }
 
   public void setPositionRadians(double radians) {
