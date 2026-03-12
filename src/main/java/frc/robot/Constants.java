@@ -454,9 +454,6 @@ public final class Constants {
     public static final double ROBOT_TO_CAM1_YAW;
     public static final Transform3d ROBOT_TO_CAM1_3D;
 
-    //is camera connected check:
-    public static final int MIN_NUM_CAMERAS_DISCONNECTED = 2;
-
     // Camera 2 position - robot-specific
     public static final double ROBOT_TO_CAM2_X;
     public static final double ROBOT_TO_CAM2_Y;
@@ -466,6 +463,11 @@ public final class Constants {
     public static final double ROBOT_TO_CAM2_YAW;
     public static final Transform3d ROBOT_TO_CAM2_3D;
 
+    //is camera connected check:
+    public static final int MIN_NUM_CAMERAS_DISCONNECTED = 2;
+
+    //is vision updating check:
+    public static final double MAX_TIME_BETWEEN_UPDATES = 0.5;
     static {
       switch (RobotConfig.getRobot()) {
         case CLEO:

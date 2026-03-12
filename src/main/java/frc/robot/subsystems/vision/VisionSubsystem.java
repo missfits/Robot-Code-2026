@@ -123,7 +123,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   public boolean isVisionUpdating() {
     double currentTime = Timer.getFPGATimestamp();
-    return (currentTime - m_lastTimestamp) < 0.5;
+    return (currentTime - m_lastTimestamp) < VisionConstants.MAX_TIME_BETWEEN_UPDATES;
   }
 
   public boolean hasValidTargets() {
