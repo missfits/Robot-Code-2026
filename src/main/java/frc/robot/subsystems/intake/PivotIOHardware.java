@@ -58,6 +58,10 @@ public class PivotIOHardware extends MechanismsIOHardwareBase {
     motor.setControl(new VoltageOut(volts));
   }
 
+  public void setVoltageNoClamp(double volts) {
+    motor.setControl(new VoltageOut(volts));
+  }
+
   @Override
   public void setVelocityVoltage(double velocityRevolutionsPerSecond) {
     velocityRevolutionsPerSecond = MechanismUtil.clamp(velocityRevolutionsPerSecond, getPositionDegrees(), PivotConstants.STORE_POSITION_DEGREES, PivotConstants.DEPLOY_POSITION_DEGREES,
