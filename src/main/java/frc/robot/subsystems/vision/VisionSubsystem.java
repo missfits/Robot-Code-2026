@@ -143,7 +143,7 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
     double avgDist = totalDistance / m_lastEstPoses.size();
-    SmartDashboard.putNumber("vision/avgDistBetweenLastEstPoses", avgDist);
+    SmartDashboard.putNumber("vision/" + getName() + "/avgDistBetweenLastEstPoses", avgDist);
 
     return avgDist > VisionConstants.MAX_AVG_DIST_BETWEEN_LAST_EST_POSES;
   }
