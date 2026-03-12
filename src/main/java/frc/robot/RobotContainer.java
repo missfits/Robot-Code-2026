@@ -224,6 +224,8 @@ public class RobotContainer {
     // right trigger: score speed 3
     m_operatorJoystick.rightTrigger().whileTrue(m_robotCommandFactory.runShooterFarDistanceCommand());
 
+    m_operatorJoystick.povCenter().negate().whileTrue(new InstantCommand(() -> m_pivot.resetToDeployPosition()));
+
 
     m_drivetrain.registerTelemetry(logger::telemeterize);
 
