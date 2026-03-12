@@ -116,7 +116,7 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
 
     SmartDashboard.putNumber("shooter influencer IO/live current", m_influencerIO.getCurrent());
     SmartDashboard.putNumber("shooter influencer IO/live position", m_influencerIO.getPositionDegrees());
-    SmartDashboard.putNumber("shooter influencer IO/live velocity", m_influencerIO.getVelocityDegreesPerSecond());
+    SmartDashboard.putNumber("shooter influencer IO/live velocity", m_influencerIO.getVelocityRotationsPerSecond());
     SmartDashboard.putNumber("shooter influencer IO/live voltage", m_influencerIO.getVoltage());
 
     SmartDashboard.putBoolean("shooter/is current spiking", isCurrentSpiking().getAsBoolean());
