@@ -318,7 +318,7 @@ public class RobotCommandFactory {
   // score mode
   public Command scoreModeCommand(Supplier<JoystickVals> joystickValsSupplier) {
     return Commands.parallel(
-      snapToHubCommand(joystickValsSupplier),
+      snapToHubThenPointWheelsInXCommand(joystickValsSupplier), 
       shootWithVisionWithDisplacement(
         m_shooterVelocityInitialCalculatedSupplier,
         m_shooterVelocityCalculatedSupplier,
@@ -447,6 +447,14 @@ public class RobotCommandFactory {
     return m_drivetrainCommandFactory.snapToAngle( // drivetrain: snap to angle 
       joystickValsSupplier,
       () -> HubCalculations.angleToHub(m_drivetrain.getState().Pose));
+  }
+  
+  // snaps to hub, then points wheels in x
+  // warning: driver cannot drive while this is running
+  public Command snapToHubThenPointWheelsInXCommand(Supplier<JoystickVals> joystickValsSupplier) {
+    return Commands.sequence(
+      snapToHubCommand(joystickValsSupplier).until(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose))),
+      m_drivetrainCommandFactory.pointWheelsinX());
   }
 
   // auto
