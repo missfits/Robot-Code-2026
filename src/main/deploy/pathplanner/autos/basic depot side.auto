@@ -21,6 +21,12 @@
           "data": {
             "pathName": "finished depot pickup to shooting location"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "snap to hub command"
+          }
         }
       ]
     }

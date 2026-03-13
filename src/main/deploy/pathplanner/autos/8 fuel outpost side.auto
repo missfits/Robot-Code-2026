@@ -11,9 +11,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "shoot command"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "shoot command"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "snap to hub command"
+                }
+              }
+            ]
           }
         }
       ]

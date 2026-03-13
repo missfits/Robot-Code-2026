@@ -9,6 +9,12 @@
           "data": {
             "pathName": "outpost neutral zone"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "snap to hub command"
+          }
         }
       ]
     }
