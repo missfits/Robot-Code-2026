@@ -31,11 +31,6 @@ import frc.robot.utils.ShooterLookupTable;
 import frc.robot.utils.HubCalculations;
 
 public class RobotCommandFactory {
-  public enum RobotMode {
-    NEUTRAL,
-    INTAKE,
-    SCORE
-  }
 
   // subsystems
   private final CommandSwerveDrivetrain m_drivetrain;
@@ -64,8 +59,6 @@ public class RobotCommandFactory {
   private final Supplier<Double> m_shooterVelocityCalculatedSupplier = () -> calculateShooterVelocity(); 
   private final Supplier<Double> m_shooterVelocityInitialCalculatedSupplier = 
     () -> calculateShooterVelocity() + ShooterConstants.INTIAL_ADDITIONAL_VELOCITY;
-
-  public RobotMode m_robotMode = RobotMode.NEUTRAL;  
 
   public RobotCommandFactory(CommandSwerveDrivetrain drivetrain, 
       PivotSubsystem pivot, RollerSubsystem roller, IndexerSubsystem indexer, ColumnSubsystem column, 
@@ -308,7 +301,6 @@ public class RobotCommandFactory {
 
   public Command neutralModeCommand() {
     return Commands.parallel(
-      new InstantCommand(() -> m_robotMode = RobotMode.NEUTRAL),
       m_roller.offCommand(),
       m_indexer.offCommand(),
       m_column.offCommand(),
@@ -319,7 +311,6 @@ public class RobotCommandFactory {
   // intake mode
   public Command intakeModeCommand() {
     return Commands.parallel(
-      new InstantCommand(() -> m_robotMode = RobotMode.INTAKE),
       m_pivot.deployPivotCommand(),
       m_roller.velocityCommand(RollerConstants.INTAKE_VELOCITY),
       m_indexer.velocityCommand(IndexerConstants.INTAKE_VELOCITY),
@@ -330,7 +321,6 @@ public class RobotCommandFactory {
   // score mode
   public Command scoreModeCommand(Supplier<JoystickVals> joystickValsSupplier) {
     return Commands.parallel(
-      new InstantCommand(() -> m_robotMode = RobotMode.SCORE),
       snapToHubThenPointWheelsInXCommand(joystickValsSupplier),
       shootWithVisionWithDisplacement(
         m_shooterVelocityInitialCalculatedSupplier,
@@ -532,10 +522,6 @@ public class RobotCommandFactory {
 
   public double getCalculatedShooterVelocity() {
     return m_shooterVelocityCalculatedSupplier.get();
-  }
-
-  public Trigger robotModeTrigger(RobotMode robotMode) {
-    return new Trigger(() -> m_robotMode == robotMode);
   }
 
 }
