@@ -83,7 +83,11 @@ import com.ctre.phoenix6.SignalLogger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  public static record JoystickVals(double x, double y) {}
+  public static record JoystickVals(double x, double y) {
+    public boolean isMagnitudeGreaterThan(double threshold) {
+      return Math.hypot(x, y) > threshold;
+    }
+  }
 
   private final SendableChooser<Command> m_autoChooser; // Sendable chooser that holds the autos
   private final Telemetry logger = new Telemetry(DrivetrainConstants.MAX_TRANSLATION_SPEED);
@@ -121,7 +125,7 @@ public class RobotContainer {
     new CommandXboxController(OperatorConstants.kTestControllerPort);
 
   // Joystick suppliers
-  private final Supplier<JoystickVals> m_driverJoystickValsSupplier =
+  private final Supplier<JoystickVals> m_driverTranslationJoystickValsSupplier =
     () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY());
 
   private final Field2d m_actualField = new Field2d(); // field simulation
@@ -175,8 +179,10 @@ public class RobotContainer {
     // y (on true): neutral + led blue
     m_driverJoystick.y().and(m_driverJoystick.leftBumper().negate()).onTrue(m_robotCommandFactory.neutralModeCommand());
     // b (on true): score + led green
-    m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).onTrue(m_robotCommandFactory.scoreModeCommand(
+    m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).onTrue(m_robotCommandFactory.scoreModeCommand());
+    m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).onTrue(m_robotCommandFactory.scoreModeDrivetrain(
       () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY())));
+    
     // a: snap to bump
     m_driverJoystick.a().and(m_driverJoystick.leftBumper().negate()).whileTrue(
       m_drivetrainCommandFactory.snapToBump(() -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY())));
@@ -195,6 +201,12 @@ public class RobotContainer {
     m_driverJoystick.leftTrigger().whileTrue(m_robotCommandFactory.shuttleCommand());
     // right trigger: outtake / everything backwards (voltage -5)
     m_driverJoystick.rightTrigger().whileTrue(m_robotCommandFactory.outtakeCommand());
+
+    // return to default drive (interrupt scoreModeDrivetrain) when there is driver input in score mode
+    driverTranslationInputTrigger().and(m_robotCommandFactory.robotModeScoreTrigger()).onTrue(
+      m_drivetrainCommandFactory.defaultDrive(
+        m_driverTranslationJoystickValsSupplier,
+        () -> new JoystickVals(m_driverJoystick.getRightX(), m_driverJoystick.getRightY())));
 
     // ----------
 
@@ -422,6 +434,10 @@ public class RobotContainer {
     m_indexer.resetControllers();
     m_column.resetControllers();
     m_shooter.resetControllers();
+  }
+
+  private Trigger driverTranslationInputTrigger() {
+    return new Trigger(() -> m_driverTranslationJoystickValsSupplier.get().isMagnitudeGreaterThan(OperatorConstants.DRIVE_JOYSTICK_DEADBAND));
   }
 
 

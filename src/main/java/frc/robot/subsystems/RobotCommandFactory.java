@@ -10,8 +10,10 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ColumnConstants;
 import frc.robot.Constants.IndexerConstants;
 import frc.robot.Constants.RollerConstants;
@@ -29,6 +31,12 @@ import frc.robot.utils.ShooterLookupTable;
 import frc.robot.utils.HubCalculations;
 
 public class RobotCommandFactory {
+  public enum RobotMode {
+    NEUTRAL,
+    INTAKE,
+    SCORE
+  }
+
   // subsystems
   private final CommandSwerveDrivetrain m_drivetrain;
   private final PivotSubsystem m_pivot;
@@ -56,6 +64,8 @@ public class RobotCommandFactory {
   private final Supplier<Double> m_shooterVelocityCalculatedSupplier = () -> calculateShooterVelocity(); 
   private final Supplier<Double> m_shooterVelocityInitialCalculatedSupplier = 
     () -> calculateShooterVelocity() + ShooterConstants.INTIAL_ADDITIONAL_VELOCITY;
+
+  public RobotMode m_robotMode = RobotMode.NEUTRAL;  
 
   public RobotCommandFactory(CommandSwerveDrivetrain drivetrain, 
       PivotSubsystem pivot, RollerSubsystem roller, IndexerSubsystem indexer, ColumnSubsystem column, 
@@ -298,6 +308,7 @@ public class RobotCommandFactory {
 
   public Command neutralModeCommand() {
     return Commands.parallel(
+      new InstantCommand(() -> m_robotMode = RobotMode.NEUTRAL),
       m_roller.offCommand(),
       m_indexer.offCommand(),
       m_column.offCommand(),
@@ -308,6 +319,7 @@ public class RobotCommandFactory {
   // intake mode
   public Command intakeModeCommand() {
     return Commands.parallel(
+      new InstantCommand(() -> m_robotMode = RobotMode.INTAKE),
       m_pivot.deployPivotCommand(),
       m_roller.velocityCommand(RollerConstants.INTAKE_VELOCITY),
       m_indexer.velocityCommand(IndexerConstants.INTAKE_VELOCITY),
@@ -316,9 +328,9 @@ public class RobotCommandFactory {
   }
 
   // score mode
-  public Command scoreModeCommand(Supplier<JoystickVals> joystickValsSupplier) {
+  public Command scoreModeCommand() {
     return Commands.parallel(
-      snapToHubThenPointWheelsInXCommand(joystickValsSupplier), 
+      new InstantCommand(() -> m_robotMode = RobotMode.SCORE),
       shootWithVisionWithDisplacement(
         m_shooterVelocityInitialCalculatedSupplier,
         m_shooterVelocityCalculatedSupplier,
@@ -326,6 +338,10 @@ public class RobotCommandFactory {
         () -> IndexerConstants.SHOOT_VELOCITY,
         () -> RollerConstants.ROLLER_VELOCITY))
     .withName("scoreMode");
+  }
+
+  public Command scoreModeDrivetrain(Supplier<JoystickVals> joystickValsSupplier) {
+    return snapToHubThenPointWheelsInXCommand(joystickValsSupplier); 
   }
 
   // shoot helper commands
@@ -523,6 +539,10 @@ public class RobotCommandFactory {
 
   public double getCalculatedShooterVelocity() {
     return m_shooterVelocityCalculatedSupplier.get();
+  }
+
+  public Trigger robotModeScoreTrigger() {
+    return new Trigger(() -> m_robotMode == RobotMode.SCORE);
   }
 
 }
