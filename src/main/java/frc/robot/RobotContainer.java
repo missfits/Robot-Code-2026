@@ -29,6 +29,8 @@ import frc.robot.subsystems.intake.RollerSubsystem;
 import frc.robot.subsystems.scorer.ShooterSubsystem;
 import frc.robot.subsystems.LaserCANSensorBase;
 import frc.robot.subsystems.RobotCommandFactory;
+import frc.robot.subsystems.RobotCommandFactory.RobotMode;
+import frc.robot.subsystems.RobotCommandFactory.RobotMode;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.RollerConstants;
