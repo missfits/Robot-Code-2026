@@ -102,7 +102,7 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
   }
 
   public Trigger isFuelShot(double targetVelocity) {
-    return isCurrentSpiking().and(atTargetVelocityTrigger(targetVelocity));
+    return isCurrentSpiking().and(() -> m_influencerIO.getMotorVelocityRevolutionsPerSecond() > targetVelocity * ShooterConstants.FUEL_SHOT_DETECTION_PERCENTAGE);
   }
 
   @Override
