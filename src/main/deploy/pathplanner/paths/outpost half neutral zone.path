@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.6785093315972226,
-        "y": 2.618468605324074
+        "x": 3.679,
+        "y": 2.618
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.678509331597217,
-        "y": 2.618468605324074
+        "x": 4.678999999999995,
+        "y": 2.618
       },
       "isLocked": false,
       "linkedName": "outpost neutral zone start"
@@ -96,12 +96,12 @@
     },
     {
       "anchor": {
-        "x": 3.0768607494212965,
-        "y": 2.951114004629629
+        "x": 2.695,
+        "y": 2.946
       },
       "prevControl": {
-        "x": 3.33313548900463,
-        "y": 2.7036310763888878
+        "x": 2.9512747395833334,
+        "y": 2.698517071759259
       },
       "nextControl": null,
       "isLocked": false,
@@ -202,7 +202,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 45.0
+    "rotation": 29.500000000000004
   },
   "reversed": false,
   "folder": null,
