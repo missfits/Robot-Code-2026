@@ -171,8 +171,8 @@ public class RobotContainer {
     m_drivetrain.setDefaultCommand(
       // Drivetrain will execute this command periodically
       m_drivetrainCommandFactory.defaultDrive(
-        () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
-        () -> new JoystickVals(m_driverJoystick.getRightX(), m_driverJoystick.getRightY())
+        m_driverTranslationJoystickValsSupplier,
+        m_driverRotationJoystickValsSupplier
       )
     );
 
@@ -183,18 +183,18 @@ public class RobotContainer {
     // b (on true): score + led green
     m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).onTrue(m_robotCommandFactory.scoreModeCommand());
     m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).onTrue(m_robotCommandFactory.scoreModeDrivetrain(
-      () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY())));
+      m_driverTranslationJoystickValsSupplier));
     
     // a: snap to bump
     m_driverJoystick.a().and(m_driverJoystick.leftBumper().negate()).whileTrue(
-      m_drivetrainCommandFactory.snapToBump(() -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY())));
+      m_drivetrainCommandFactory.snapToBump(m_driverTranslationJoystickValsSupplier));
     // left bumper + x: deploy pivot
     m_driverJoystick.leftBumper().and(m_driverJoystick.x()).whileTrue(m_pivot.deployPivotCommand());
     // left bumper + y: store pivot
     m_driverJoystick.leftBumper().and(m_driverJoystick.y()).whileTrue(m_pivot.storePivotCommand());
     // left bumper + b: snap to hub
     m_driverJoystick.leftBumper().and(m_driverJoystick.b()).whileTrue(
-      m_robotCommandFactory.snapToHubCommand(() -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY())));
+      m_robotCommandFactory.snapToHubCommand(m_driverTranslationJoystickValsSupplier));
     // left bumper + a: point wheels in x
     m_driverJoystick.leftBumper().and(m_driverJoystick.a()).whileTrue(m_drivetrainCommandFactory.pointWheelsinX());
     // right bumper: slowmode
