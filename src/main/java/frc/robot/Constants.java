@@ -194,7 +194,7 @@ public final class Constants {
     public static double DISPLACE_FUEL_POSITION_DEGREES = 25;
     public static double DEPLOY_POSITION_DEGREES = 55;
     public static double RESET_DEPLOY_POSITION_DEGREES = DEPLOY_POSITION_DEGREES + 10;
-
+    public static double AUTO_RESET_DEPLOY_POSITION_DEGREES = DEPLOY_POSITION_DEGREES;
 
     // Timing values for displace fuel command 
     public static final double DISPLACE_FUEL_UP_TIMEOUT = 1; // TODO: tune
