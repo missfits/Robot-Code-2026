@@ -127,6 +127,8 @@ public class RobotContainer {
   // Joystick suppliers
   private final Supplier<JoystickVals> m_driverTranslationJoystickValsSupplier =
     () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY());
+  private final Supplier<JoystickVals> m_driverRotationJoystickValsSupplier =
+    () -> new JoystickVals(m_driverJoystick.getRightX(), m_driverJoystick.getRightY());
 
   private final Field2d m_actualField = new Field2d(); // field simulation
 
@@ -203,10 +205,12 @@ public class RobotContainer {
     m_driverJoystick.rightTrigger().whileTrue(m_robotCommandFactory.outtakeCommand());
 
     // return to default drive (interrupt scoreModeDrivetrain) when there is driver input in score mode
-    driverTranslationInputTrigger().and(m_robotCommandFactory.robotModeScoreTrigger()).onTrue(
+    driverTranslationInputTrigger().or(driverRotationInputTrigger()).and(m_robotCommandFactory.robotModeScoreTrigger()).onTrue(
       m_drivetrainCommandFactory.defaultDrive(
         m_driverTranslationJoystickValsSupplier,
-        () -> new JoystickVals(m_driverJoystick.getRightX(), m_driverJoystick.getRightY())));
+        m_driverRotationJoystickValsSupplier
+      )
+    );
 
     // ----------
 
@@ -438,6 +442,10 @@ public class RobotContainer {
 
   private Trigger driverTranslationInputTrigger() {
     return new Trigger(() -> m_driverTranslationJoystickValsSupplier.get().isMagnitudeGreaterThan(OperatorConstants.DRIVE_JOYSTICK_DEADBAND));
+  }
+
+  private Trigger driverRotationInputTrigger() {
+    return new Trigger(() -> m_driverRotationJoystickValsSupplier.get().isMagnitudeGreaterThan(OperatorConstants.STEER_JOYSTICK_DEADBAND));
   }
 
 
