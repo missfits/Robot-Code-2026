@@ -189,9 +189,9 @@ public class RobotContainer {
     m_driverJoystick.a().and(m_driverJoystick.leftBumper().negate()).whileTrue(
       m_drivetrainCommandFactory.snapToBump(m_driverTranslationJoystickValsSupplier));
     // left bumper + x: deploy pivot
-    m_driverJoystick.leftBumper().and(m_driverJoystick.x()).whileTrue(m_pivot.deployPivotCommand());
+    m_driverJoystick.leftBumper().and(m_driverJoystick.x()).onTrue(m_pivot.deployPivotCommand());
     // left bumper + y: store pivot
-    m_driverJoystick.leftBumper().and(m_driverJoystick.y()).whileTrue(m_pivot.storePivotCommand());
+    m_driverJoystick.leftBumper().and(m_driverJoystick.y()).onTrue(m_pivot.storePivotCommand());
     // left bumper + b: snap to hub
     m_driverJoystick.leftBumper().and(m_driverJoystick.b()).whileTrue(
       m_robotCommandFactory.snapToHubCommand(m_driverTranslationJoystickValsSupplier));
@@ -203,6 +203,9 @@ public class RobotContainer {
     m_driverJoystick.leftTrigger().whileTrue(m_robotCommandFactory.shuttleCommand());
     // right trigger: outtake / everything backwards (voltage -5)
     m_driverJoystick.rightTrigger().whileTrue(m_robotCommandFactory.outtakeCommand());
+
+    // center d-pad: zero pivot
+    m_driverJoystick.povCenter().negate().whileTrue(m_pivot.zeroPivotCommand());
 
     // return to default drive (interrupt scoreModeDrivetrain) when there is driver input in score mode
     driverTranslationInputTrigger().or(driverRotationInputTrigger()).and(m_robotCommandFactory.robotModeScoreTrigger()).onTrue(
@@ -237,6 +240,8 @@ public class RobotContainer {
     m_operatorJoystick.leftTrigger().whileTrue(m_robotCommandFactory.runShooterMediumDistanceCommand());
     // right trigger: score speed 3
     m_operatorJoystick.rightTrigger().whileTrue(m_robotCommandFactory.runShooterFarDistanceCommand());
+
+    m_operatorJoystick.povCenter().negate().whileTrue(new InstantCommand(() -> m_pivot.resetToDeployPosition()));
 
 
     m_drivetrain.registerTelemetry(logger::telemeterize);
@@ -455,14 +460,14 @@ public class RobotContainer {
    */
   private void createNamedCommands() {
 
-    new EventTrigger("deploy intake trigger").onTrue(m_pivot.zeroPivotCommand()); 
+    new EventTrigger("deploy intake trigger").onTrue(m_pivot.autoZeroPivotCommand()); 
     new EventTrigger("intake trigger").onTrue(m_robotCommandFactory.intakeModeCommand());
     new EventTrigger("shoot trigger").onTrue(m_robotCommandFactory.autoShootWithVisionCommand().withTimeout(5)); // TODO: tune timeout
 
     NamedCommands.registerCommand("intake command", 
       m_robotCommandFactory.intakeModeCommand()); // DOES NOT END 
      NamedCommands.registerCommand("deploy intake command", 
-      m_pivot.zeroPivotCommand());
+      m_pivot.autoZeroPivotCommand());
     NamedCommands.registerCommand("snap to hub command", 
       m_robotCommandFactory.snapToHubCommand(() -> new JoystickVals(0, 0))
         .withTimeout(0.5));
