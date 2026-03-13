@@ -208,7 +208,7 @@ public class RobotContainer {
     m_driverJoystick.povCenter().negate().whileTrue(m_pivot.zeroPivotCommand());
 
     // return to default drive (interrupt scoreModeDrivetrain) when there is driver input in score mode
-    driverTranslationInputTrigger().or(driverRotationInputTrigger()).and(m_robotCommandFactory.robotModeScoreTrigger()).onTrue(
+    driverTranslationInputTrigger().or(driverRotationInputTrigger()).and(m_robotCommandFactory.robotModeTrigger(RobotMode.SCORE)).onTrue(
       m_drivetrainCommandFactory.defaultDrive(
         m_driverTranslationJoystickValsSupplier,
         m_driverRotationJoystickValsSupplier

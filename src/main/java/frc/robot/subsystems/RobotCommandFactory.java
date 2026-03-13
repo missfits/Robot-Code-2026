@@ -537,8 +537,8 @@ public class RobotCommandFactory {
     return m_shooterVelocityCalculatedSupplier.get();
   }
 
-  public Trigger robotModeScoreTrigger() {
-    return new Trigger(() -> m_robotMode == RobotMode.SCORE);
+  public Trigger robotModeTrigger(RobotMode robotMode) {
+    return new Trigger(() -> m_robotMode == robotMode);
   }
 
 }
