@@ -156,7 +156,9 @@ public final class Constants {
     public static final double FEED_FORWARD = 0.0;
     public static final int SLOT = 0;
     public static final boolean OVERRIDE_BRAKE_DUR_NEUTRAL = false;
-    public static final double CURRENT_THRESHOLD = 60;
+    public static final double CURRENT_THRESHOLD = 40;
+    public static final double AUTO_CURRENT_THRESHOLD = 60;
+
 
     // Motor ID
     public static final int MOTOR_ID = 20;
@@ -176,6 +178,8 @@ public final class Constants {
     public static double STORE_VOLTAGE = -1.0*DEPLOY_VOLTAGE;
     public static double MAX_VOLTAGE = 6.0;
     public static double ZERO_PIVOT_VOLTAGE = 1.0;
+    public static double AUTO_ZERO_PIVOT_VOLTAGE = 1.0;
+
 
     // Pivot motor velocities
     public static double DEPLOY_VELOCITY = 1.0;
@@ -189,6 +193,8 @@ public final class Constants {
     public static double STORE_POSITION_DEGREES = 10;
     public static double DISPLACE_FUEL_POSITION_DEGREES = 25;
     public static double DEPLOY_POSITION_DEGREES = 55;
+    public static double RESET_DEPLOY_POSITION_DEGREES = DEPLOY_POSITION_DEGREES + 10;
+    public static double AUTO_RESET_DEPLOY_POSITION_DEGREES = DEPLOY_POSITION_DEGREES;
 
     // Timing values for displace fuel command 
     public static final double DISPLACE_FUEL_UP_TIMEOUT = 1; // TODO: tune
@@ -245,10 +251,10 @@ public final class Constants {
     public static double ROLLER_VELOCITY = 100.0;
     public static double MANUAL_VELOCITY = 80.0;
     public static double MANUAL_BACK_VELOCITY = -80.0;
-    public static double OUTTAKE_VELOCITY = 100.0;
-    public static double RECYCLE_VELOCITY = 100.0;
-    public static double INTAKE_VELOCITY = 100.0;
-    public static double SHOOT_VELOCITY = 100.0;
+    public static double OUTTAKE_VELOCITY = -80.0;
+    public static double RECYCLE_VELOCITY = 70.0;
+    public static double INTAKE_VELOCITY = 80.0;
+    public static double SHOOT_VELOCITY = 70.0;
 
     // Testing velocities
     public static double TESTING_VELOCITY = 0.0;
@@ -409,7 +415,7 @@ public final class Constants {
     public static double RECYCLE_VELOCITY = 10.0;
     public static double SHUTTLE_VELOCITY = 70.0;
     public static double OUTTAKE_VOLTAGE = -5.0;
-    public static double INTIAL_ADDITIONAL_VELOCITY = 5.0; // TODO: tune
+    public static double INTIAL_ADDITIONAL_VELOCITY = 10.0; // TODO: tune
 
     public static double SHOOTER_VOLTAGE = 1.0;
     public static double SHOOTER_BACK_VOLTAGE = -1.0;
@@ -534,14 +540,14 @@ public final class Constants {
           ROBOT_TO_CAM1_Z = Units.inchesToMeters(8.3);
           ROBOT_TO_CAM1_ROLL = 0;
           ROBOT_TO_CAM1_PITCH = Units.degreesToRadians(-20);
-          ROBOT_TO_CAM1_YAW = Units.degreesToRadians(135)-0.12;
+          ROBOT_TO_CAM1_YAW = Units.degreesToRadians(135)-0.12-0.02;
 
           ROBOT_TO_CAM2_X = Units.inchesToMeters(-21.0/2+2.25);
           ROBOT_TO_CAM2_Y = Units.inchesToMeters(33.0/2-6.5);
           ROBOT_TO_CAM2_Z = Units.inchesToMeters(8.5);
           ROBOT_TO_CAM2_ROLL = 0;
           ROBOT_TO_CAM2_PITCH = Units.degreesToRadians(-20);
-          ROBOT_TO_CAM2_YAW = Units.degreesToRadians(-135)+0.14;
+          ROBOT_TO_CAM2_YAW = Units.degreesToRadians(-135)+0.14-0.01;
  
           ROBOT_TO_CAM3_X = Units.inchesToMeters(21/2-0.75); 
           ROBOT_TO_CAM3_Y = Units.inchesToMeters(-33.0/2+2); 

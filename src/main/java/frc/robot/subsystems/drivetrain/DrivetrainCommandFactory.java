@@ -87,7 +87,9 @@ public class DrivetrainCommandFactory {
     public Command snapToAngle(Supplier<JoystickVals> translationSupplier, Supplier<Rotation2d> angleSupplier) {
         return m_drivetrain.getCommandFromRequest(() -> {
             targetAngle = angleSupplier.get();
-            SmartDashboard.putNumber("drivetrain/snapToAngle/targetAngle", targetAngle.getDegrees());
+            SmartDashboard.putNumber("drivetrain/snapToAngle/targetAngleDegrees", targetAngle.getDegrees());
+            SmartDashboard.putNumber("drivetrain/snapToAngle/targetAngleRadians", targetAngle.getRadians());
+
             JoystickVals translation = translationSupplier.get();
             boolean slowmode = slowmodeSupplier.getAsBoolean();
 
