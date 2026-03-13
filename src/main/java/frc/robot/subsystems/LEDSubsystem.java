@@ -113,15 +113,4 @@ public class LEDSubsystem extends SubsystemBase {
     return runPattern(pattern).withName("LED/scrolling yellow-blue");
   }
 
-  public Command runVisionStatus(java.util.function.BooleanSupplier visionHealthySupplier) {
-    LEDPattern base = LEDPattern.gradient(LEDPattern.GradientType.kDiscontinuous, Color.kYellow, Color.kBlue);
-    LEDPattern pattern = base.scrollAtRelativeSpeed(Percent.per(Second).of(100));
-
-    return run(() -> {
-      if (visionHealthySupplier.getAsBoolean())
-        pattern.applyTo(m_ledBuffer);
-      else
-        LEDPattern.solid(Color.kRed).applyTo(m_ledBuffer);
-    }).withName("LED/vision status");
-  }
 }

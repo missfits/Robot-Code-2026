@@ -148,7 +148,10 @@ public class RobotContainer {
     setRobotMode(RobotMode.NEUTRAL);
     
     // Vision LED indicator
-    m_led.setDefaultCommand(m_led.runVisionStatus(() -> m_vision.isVisionHealthy()));
+    m_led.setDefaultCommand(m_led.runScrollingYellowBlueCommand());
+    Trigger isVisionHealthy = new Trigger(() -> m_vision.isVisionHealthy());
+    isVisionHealthy.whileTrue(m_led.runScrollingYellowBlueCommand());
+    isVisionHealthy.whileFalse(m_led.runSolidRed());
 
     // Configure auto builder
     createNamedCommands();
