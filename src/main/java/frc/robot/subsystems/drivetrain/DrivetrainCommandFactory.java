@@ -144,7 +144,7 @@ public class DrivetrainCommandFactory {
     }
 
     public Command snapToBump(Supplier<JoystickVals> translationSupplier) {
-        return snapToAngle(translationSupplier, () -> getBumpAngle(m_drivetrain.getState().Pose)).withName("snapToBump");
+        return snapToAngle(translationSupplier, () -> calculateBumpAngle(m_drivetrain.getState().Pose)).withName("snapToBump");
     }
 
     /**
@@ -152,7 +152,7 @@ public class DrivetrainCommandFactory {
      * @param robotPose The robot's current field pose
      * @return The field-relative heading the robot should face
      */
-    private Rotation2d getBumpAngle(Pose2d robotPose) {
+    static Rotation2d calculateBumpAngle(Pose2d robotPose) {
         Pose2d blueAlliancePose = AllianceFlipUtil.apply(robotPose); // Normalize to the blue-alliance perspective to check with blue hub
         Rotation2d blueAllianceHeading;
         if (blueAlliancePose.getX() < FieldConstants.LinesVertical.hubCenter) { // If in alliance zone
