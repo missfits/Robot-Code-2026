@@ -328,9 +328,10 @@ public class RobotCommandFactory {
   }
 
   // score mode
-  public Command scoreModeCommand() {
+  public Command scoreModeCommand(Supplier<JoystickVals> joystickValsSupplier) {
     return Commands.parallel(
       new InstantCommand(() -> m_robotMode = RobotMode.SCORE),
+      snapToHubThenPointWheelsInXCommand(joystickValsSupplier),
       shootWithVisionWithDisplacement(
         m_shooterVelocityInitialCalculatedSupplier,
         m_shooterVelocityCalculatedSupplier,
@@ -338,10 +339,6 @@ public class RobotCommandFactory {
         () -> IndexerConstants.SHOOT_VELOCITY,
         () -> RollerConstants.ROLLER_VELOCITY))
     .withName("scoreMode");
-  }
-
-  public Command scoreModeDrivetrain(Supplier<JoystickVals> joystickValsSupplier) {
-    return snapToHubThenPointWheelsInXCommand(joystickValsSupplier); 
   }
 
   // shoot helper commands

@@ -183,10 +183,10 @@ public class RobotContainer {
     // y (on true): neutral + led blue
     m_driverJoystick.y().and(m_driverJoystick.leftBumper().negate()).onTrue(m_robotCommandFactory.neutralModeCommand());
     // b (on true): score + led green
-    m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).onTrue(m_robotCommandFactory.scoreModeCommand());
-    m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).onTrue(m_robotCommandFactory.scoreModeDrivetrain(
-      m_driverTranslationJoystickValsSupplier));
-    
+    m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).onTrue(
+      m_robotCommandFactory.scoreModeCommand(m_driverTranslationJoystickValsSupplier)
+        .until(driverInputTrigger()));
+
     // a: snap to bump
     m_driverJoystick.a().and(m_driverJoystick.leftBumper().negate()).whileTrue(
       m_drivetrainCommandFactory.snapToBump(m_driverTranslationJoystickValsSupplier));
@@ -208,14 +208,6 @@ public class RobotContainer {
 
     // center d-pad: zero pivot
     m_driverJoystick.povCenter().negate().whileTrue(m_pivot.zeroPivotCommand());
-
-    // return to default drive (interrupt scoreModeDrivetrain) when there is driver input in score mode
-    driverTranslationInputTrigger().or(driverRotationInputTrigger()).and(m_robotCommandFactory.robotModeTrigger(RobotMode.SCORE)).onTrue(
-      m_drivetrainCommandFactory.defaultDrive(
-        m_driverTranslationJoystickValsSupplier,
-        m_driverRotationJoystickValsSupplier
-      )
-    );
 
     // ----------
 
@@ -453,6 +445,10 @@ public class RobotContainer {
 
   private Trigger driverRotationInputTrigger() {
     return new Trigger(() -> m_driverRotationJoystickValsSupplier.get().isMagnitudeGreaterThan(OperatorConstants.STEER_JOYSTICK_DEADBAND));
+  }
+
+  private Trigger driverInputTrigger() {
+    return driverTranslationInputTrigger().or(driverRotationInputTrigger());
   }
 
 
