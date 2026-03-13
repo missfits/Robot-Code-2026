@@ -448,7 +448,7 @@ public class RobotCommandFactory {
   // auto
   public Command autoShootWithVisionCommand() {
     return Commands.parallel(
-      // snapToHubCommand(() -> new JoystickVals(0, 0)).withName("snapToHubProxied").asProxy(),
+      snapToHubCommand(() -> new JoystickVals(0, 0)).withName("snapToHubProxied").asProxy(),
       shootWithVisionWithDisplacement(
         m_shooterVelocityInitialCalculatedSupplier,
         m_shooterVelocityCalculatedSupplier,
