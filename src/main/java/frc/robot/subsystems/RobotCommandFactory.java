@@ -272,7 +272,6 @@ public class RobotCommandFactory {
   // neutral mode
   public Command outtakeCommand() {
     return Commands.parallel(
-      m_pivot.storePivotCommand(),
       m_roller.velocityCommand(RollerConstants.OUTTAKE_VELOCITY),
       m_indexer.velocityCommand(IndexerConstants.OUTTAKE_VELOCITY),
       m_column.velocityCommand(ColumnConstants.OUTTAKE_VELOCITY),
