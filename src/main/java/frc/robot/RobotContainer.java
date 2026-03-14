@@ -213,16 +213,16 @@ public class RobotContainer {
     // --- OPERATOR COMMANDS ---
     // x: intake + indexer forward
     m_operatorJoystick.x().and(m_operatorJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runRollerIndexerCommand());
-    // y: pivot up
-    m_operatorJoystick.y().and(m_operatorJoystick.leftBumper().negate()).whileTrue(m_pivot.deployPivotCommand());
+    // y: pivot down
+    m_operatorJoystick.y().and(m_operatorJoystick.leftBumper().negate()).whileTrue(m_pivot.voltageDeployPivotCommand());
     // b: indexer + column forward
     m_operatorJoystick.b().and(m_operatorJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runIndexerColumnCommand());
     // a: intake, indexer, column forwards
     m_operatorJoystick.a().and(m_operatorJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runAllRollersCommand());
     // left bumper + x: intake + indexer backwards
     m_operatorJoystick.leftBumper().and(m_operatorJoystick.x()).whileTrue(m_robotCommandFactory.runRollerIndexerBackCommand());
-    // left bumper + y: pivot down
-    m_operatorJoystick.leftBumper().and(m_operatorJoystick.y()).whileTrue(m_pivot.storePivotCommand());
+    // left bumper + y: pivot up
+    m_operatorJoystick.leftBumper().and(m_operatorJoystick.y()).whileTrue(m_pivot.voltageStorePivotCommand());
     // left bumper + b: indexer + column backwards
     m_operatorJoystick.leftBumper().and(m_operatorJoystick.b()).whileTrue(m_robotCommandFactory.runIndexerColumnBackCommand());
     // left bumper + a: intake, indexer, column backwards
