@@ -440,7 +440,7 @@ public final class Constants {
     public static final double CURRENT_SPIKE_THRESHOLD = 20;
 
     // % tolerance for shooter velocity check (isFuelShot check against targetVelocity)
-    public static final double FUEL_SHOT_DETECTION_PERCENTAGE = 0.5;
+    public static final double FUEL_SHOT_DETECTION_PERCENTAGE = 0.8;
   }
 
   public static class ClimberConstants {
