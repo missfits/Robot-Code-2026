@@ -451,6 +451,8 @@ public final class Constants {
     public static final double FUEL_SHOT_DETECTION_PERCENTAGE = 0.95;
 
     public static final double FUEL_SHOT_TIMEOUT = 1.5; // in seconds
+    
+    public static final double WAIT_FOR_SHOOTER_TIMEOUT = 0.5;
   }
 
   public static class ClimberConstants {

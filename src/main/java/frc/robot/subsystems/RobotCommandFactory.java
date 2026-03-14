@@ -390,22 +390,25 @@ public class RobotCommandFactory {
       Commands.sequence( 
         m_column.offCommand() // wait until 
           .until(m_shooter.atTargetVelocityTrigger(shooterSupplier) // shooter at target velocity 
-            .and(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))), // and facing hub
+            .and(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))) // and facing hub
+          .withTimeout(ShooterConstants.WAIT_FOR_SHOOTER_TIMEOUT),
         m_column.velocityCommand(columnSupplier)),
 
       // indexer 
       Commands.sequence(
         m_indexer.offCommand() // wait until 
           .until(m_shooter.atTargetVelocityTrigger(shooterSupplier) // shooter at target velocity 
-            .and(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))), // and facing hub
+            .and(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))) // and facing hub
+          .withTimeout(ShooterConstants.WAIT_FOR_SHOOTER_TIMEOUT),
         m_indexer.velocityCommand(indexerSupplier)),
 
       // roller
       Commands.sequence(
         m_roller.offCommand()  // wait until 
           .until(m_shooter.atTargetVelocityTrigger(shooterSupplier) // shooter at target velocity 
-            .and(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))), // and facing hub
-        m_roller.velocityCommand(rollerSupplier))
+            .and(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))) // and facing hub
+          .withTimeout(ShooterConstants.WAIT_FOR_SHOOTER_TIMEOUT),
+         m_roller.velocityCommand(rollerSupplier))
     ).withName("shootWithVision"); 
   }
 
@@ -437,17 +440,20 @@ public class RobotCommandFactory {
       // column 
       Commands.sequence(
         m_column.offCommand() // wait until 
-          .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity 
+          .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)) // shooter at target velocity 
+          .withTimeout(ShooterConstants.WAIT_FOR_SHOOTER_TIMEOUT),
         m_column.velocityCommand(columnSupplier)),
       // indexer
       Commands.sequence(
         m_indexer.offCommand() // wait until 
-          .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity
+          .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)) // shooter at target velocity
+          .withTimeout(ShooterConstants.WAIT_FOR_SHOOTER_TIMEOUT),
         m_indexer.velocityCommand(indexerSupplier)),
       // roller
       Commands.sequence(
         m_roller.offCommand()  // wait until 
-          .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity 
+          .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)) // shooter at target velocity 
+          .withTimeout(ShooterConstants.WAIT_FOR_SHOOTER_TIMEOUT),
         m_roller.velocityCommand(rollerSupplier))
     ).withName("shootWithoutVision");
   }
