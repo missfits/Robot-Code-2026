@@ -10,8 +10,10 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ColumnConstants;
 import frc.robot.Constants.IndexerConstants;
 import frc.robot.Constants.RollerConstants;
@@ -29,6 +31,7 @@ import frc.robot.utils.ShooterLookupTable;
 import frc.robot.utils.HubCalculations;
 
 public class RobotCommandFactory {
+
   // subsystems
   private final CommandSwerveDrivetrain m_drivetrain;
   private final PivotSubsystem m_pivot;
@@ -318,7 +321,7 @@ public class RobotCommandFactory {
   // score mode
   public Command scoreModeCommand(Supplier<JoystickVals> joystickValsSupplier) {
     return Commands.parallel(
-      snapToHubCommand(joystickValsSupplier),
+      snapToHubThenPointWheelsInXCommand(joystickValsSupplier),
       shootWithVisionWithDisplacement(
         m_shooterVelocityInitialCalculatedSupplier,
         m_shooterVelocityCalculatedSupplier,
@@ -443,6 +446,14 @@ public class RobotCommandFactory {
     return m_drivetrainCommandFactory.snapToAngle( // drivetrain: snap to angle 
       joystickValsSupplier,
       () -> HubCalculations.angleToHub(m_drivetrain.getState().Pose));
+  }
+  
+  // snaps to hub, then points wheels in x
+  // warning: driver cannot drive while this is running
+  public Command snapToHubThenPointWheelsInXCommand(Supplier<JoystickVals> joystickValsSupplier) {
+    return Commands.sequence(
+      snapToHubCommand(joystickValsSupplier).until(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose))),
+      m_drivetrainCommandFactory.pointWheelsinX());
   }
 
   // auto

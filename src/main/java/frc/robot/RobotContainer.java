@@ -83,7 +83,11 @@ import com.ctre.phoenix6.SignalLogger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  public static record JoystickVals(double x, double y) {}
+  public static record JoystickVals(double x, double y) {
+    public boolean isMagnitudeGreaterThan(double threshold) {
+      return Math.hypot(x, y) > threshold;
+    }
+  }
 
   private final SendableChooser<Command> m_autoChooser; // Sendable chooser that holds the autos
   private final Telemetry logger = new Telemetry(DrivetrainConstants.MAX_TRANSLATION_SPEED);
@@ -121,8 +125,10 @@ public class RobotContainer {
     new CommandXboxController(OperatorConstants.kTestControllerPort);
 
   // Joystick suppliers
-  private final Supplier<JoystickVals> m_driverJoystickValsSupplier =
+  private final Supplier<JoystickVals> m_driverTranslationJoystickValsSupplier =
     () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY());
+  private final Supplier<JoystickVals> m_driverRotationJoystickValsSupplier =
+    () -> new JoystickVals(m_driverJoystick.getRightX(), m_driverJoystick.getRightY());
 
   private final Field2d m_actualField = new Field2d(); // field simulation
 
@@ -165,8 +171,8 @@ public class RobotContainer {
     m_drivetrain.setDefaultCommand(
       // Drivetrain will execute this command periodically
       m_drivetrainCommandFactory.defaultDrive(
-        () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
-        () -> new JoystickVals(m_driverJoystick.getRightX(), m_driverJoystick.getRightY())
+        m_driverTranslationJoystickValsSupplier,
+        m_driverRotationJoystickValsSupplier
       )
     );
 
@@ -175,18 +181,20 @@ public class RobotContainer {
     // y (on true): neutral + led blue
     m_driverJoystick.y().and(m_driverJoystick.leftBumper().negate()).onTrue(m_robotCommandFactory.neutralModeCommand());
     // b (on true): score + led green
-    m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).onTrue(m_robotCommandFactory.scoreModeCommand(
-      () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY())));
+    m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).onTrue(
+      m_robotCommandFactory.scoreModeCommand(m_driverTranslationJoystickValsSupplier)
+        .until(driverInputTrigger()));
+
     // a: snap to bump
     m_driverJoystick.a().and(m_driverJoystick.leftBumper().negate()).whileTrue(
-      m_drivetrainCommandFactory.snapToBump(() -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY())));
+      m_drivetrainCommandFactory.snapToBump(m_driverTranslationJoystickValsSupplier));
     // left bumper + x: deploy pivot
     m_driverJoystick.leftBumper().and(m_driverJoystick.x()).onTrue(m_pivot.deployPivotCommand());
     // left bumper + y: store pivot
     m_driverJoystick.leftBumper().and(m_driverJoystick.y()).onTrue(m_pivot.storePivotCommand());
     // left bumper + b: snap to hub
     m_driverJoystick.leftBumper().and(m_driverJoystick.b()).whileTrue(
-      m_robotCommandFactory.snapToHubCommand(() -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY())));
+      m_robotCommandFactory.snapToHubCommand(m_driverTranslationJoystickValsSupplier));
     // left bumper + a: point wheels in x
     m_driverJoystick.leftBumper().and(m_driverJoystick.a()).whileTrue(m_drivetrainCommandFactory.pointWheelsinX());
     // right bumper: slowmode
@@ -196,6 +204,7 @@ public class RobotContainer {
     // right trigger: outtake / everything backwards (voltage -5)
     m_driverJoystick.rightTrigger().whileTrue(m_robotCommandFactory.outtakeCommand());
 
+    // center d-pad: zero pivot
     m_driverJoystick.povCenter().negate().whileTrue(m_pivot.zeroPivotCommand());
 
     // ----------
@@ -426,6 +435,18 @@ public class RobotContainer {
     m_indexer.resetControllers();
     m_column.resetControllers();
     m_shooter.resetControllers();
+  }
+
+  private Trigger driverTranslationInputTrigger() {
+    return new Trigger(() -> m_driverTranslationJoystickValsSupplier.get().isMagnitudeGreaterThan(OperatorConstants.DRIVE_JOYSTICK_DEADBAND));
+  }
+
+  private Trigger driverRotationInputTrigger() {
+    return new Trigger(() -> m_driverRotationJoystickValsSupplier.get().isMagnitudeGreaterThan(OperatorConstants.STEER_JOYSTICK_DEADBAND));
+  }
+
+  private Trigger driverInputTrigger() {
+    return driverTranslationInputTrigger().or(driverRotationInputTrigger());
   }
 
 
