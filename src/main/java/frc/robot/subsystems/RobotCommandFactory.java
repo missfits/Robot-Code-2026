@@ -376,13 +376,13 @@ public class RobotCommandFactory {
 
       // log isFuelShot
       Commands.run(() -> {
-        SmartDashboard.putBoolean("robot command factory/isFuelShot", m_shooter.isFuelShot(initialShooterSupplier).getAsBoolean());
+        SmartDashboard.putBoolean("robot command factory/isColumnHappy", m_column.isMotorVelocityOverPercentTolerance(columnSupplier).getAsBoolean());
       }),
 
       // shooter 
       Commands.sequence(
         m_shooter.shooterVelocityCommand(initialShooterSupplier)
-          .until(m_shooter.isFuelShot(initialShooterSupplier))
+          .until(m_column.isMotorVelocityOverPercentTolerance(columnSupplier))
           .withTimeout(ShooterConstants.FUEL_SHOT_TIMEOUT),
         m_shooter.shooterVelocityCommand(shooterSupplier)),  // run shooter at given velocity  
         
@@ -424,15 +424,16 @@ public class RobotCommandFactory {
     return Commands.parallel(
       // log isFuelShot
       Commands.run(() -> {
-        SmartDashboard.putBoolean("robot command factory/isFuelShot", m_shooter.isFuelShot(initialShooterSupplier).getAsBoolean());
+        SmartDashboard.putBoolean("robot command factory/isColumnHappy", m_column.isMotorVelocityOverPercentTolerance(columnSupplier).getAsBoolean());
       }),
 
       // shooter 
       Commands.sequence(
         m_shooter.shooterVelocityCommand(initialShooterSupplier)
-          .until(m_shooter.isFuelShot(initialShooterSupplier))
+          .until(m_column.isMotorVelocityOverPercentTolerance(columnSupplier))
           .withTimeout(ShooterConstants.FUEL_SHOT_TIMEOUT),
         m_shooter.shooterVelocityCommand(shooterSupplier)),  // run shooter at given velocity  
+        
       // column 
       Commands.sequence(
         m_column.offCommand() // wait until 
