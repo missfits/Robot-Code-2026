@@ -33,6 +33,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.RollerConstants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.ColumnConstants;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.IndexerConstants;
@@ -458,19 +459,18 @@ public class RobotContainer {
 
     new EventTrigger("deploy intake trigger").onTrue(m_pivot.autoZeroPivotCommand()); 
     new EventTrigger("intake trigger").onTrue(m_robotCommandFactory.intakeModeCommand());
-    new EventTrigger("shoot trigger").onTrue(m_robotCommandFactory.autoShootWithVisionCommand().withTimeout(5)); // TODO: tune timeout
+    new EventTrigger("shoot trigger").onTrue(m_robotCommandFactory.autoShootWithVisionCommand().withTimeout(AutoConstants.AUTO_SHOOT_TIMEOUT)); // TODO: tune timeout
 
     NamedCommands.registerCommand("intake command", 
       m_robotCommandFactory.intakeModeCommand()); // DOES NOT END 
      NamedCommands.registerCommand("deploy intake command", 
       m_pivot.autoZeroPivotCommand());
     NamedCommands.registerCommand("snap to hub command", 
-      m_robotCommandFactory.snapToHubCommand(() -> new JoystickVals(0, 0))
-        .withTimeout(0.5));
+      m_robotCommandFactory.snapToHubCommand(() -> new JoystickVals(0, 0)).withTimeout(AutoConstants.AUTO_SHOOT_TIMEOUT));
     NamedCommands.registerCommand("climb command", 
       new WaitCommand(1));
     NamedCommands.registerCommand("shoot command",
-       m_robotCommandFactory.autoShootWithVisionCommand());
+       m_robotCommandFactory.autoShootWithVisionCommand().withTimeout(AutoConstants.AUTO_SHOOT_TIMEOUT));
   }
 
   /**

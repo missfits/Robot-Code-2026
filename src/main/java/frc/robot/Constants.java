@@ -625,4 +625,8 @@ public final class Constants {
     public static final double INTAKE_SENSOR_MIN_DISTANCE = 100.0;
     public static final double FEEDER_SENSOR_MIN_DISTANCE = 100.0;
   }
+
+  public static class AutoConstants {
+    public static final double AUTO_SHOOT_TIMEOUT = 5; // in seconds; TODO: tune
+  }
 }
