@@ -69,6 +69,7 @@ public class VisionSubsystem extends SubsystemBase {
     cameras.add(new LocalizationCamera(VisionConstants.CAMERA1_NAME, VisionConstants.ROBOT_TO_CAM1_3D, robotHeadingSupplier));
     cameras.add(new LocalizationCamera(VisionConstants.CAMERA2_NAME, VisionConstants.ROBOT_TO_CAM2_3D, robotHeadingSupplier));
     cameras.add(new LocalizationCamera(VisionConstants.CAMERA3_NAME, VisionConstants.ROBOT_TO_CAM3_3D, robotHeadingSupplier));
+    cameras.add(new LocalizationCamera(VisionConstants.CAMERA4_NAME, VisionConstants.ROBOT_TO_CAM4_3D, robotHeadingSupplier));
   }
 
   public List<CameraReading> getValidCameraReadings(){

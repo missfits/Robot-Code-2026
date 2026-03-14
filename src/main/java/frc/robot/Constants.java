@@ -500,6 +500,7 @@ public final class Constants {
     public static final String CAMERA1_NAME;
     public static final String CAMERA2_NAME;
     public static final String CAMERA3_NAME;
+    public static final String CAMERA4_NAME;
 
     // Camera 1 position - robot-specific because camera mounting may differ
     public static final double ROBOT_TO_CAM1_X;
@@ -528,6 +529,15 @@ public final class Constants {
     public static final double ROBOT_TO_CAM3_YAW;
     public static final Transform3d ROBOT_TO_CAM3_3D;
 
+    // Camera 4 position - robot-specific
+    public static final double ROBOT_TO_CAM4_X;
+    public static final double ROBOT_TO_CAM4_Y;
+    public static final double ROBOT_TO_CAM4_Z;
+    public static final double ROBOT_TO_CAM4_ROLL;
+    public static final double ROBOT_TO_CAM4_PITCH;
+    public static final double ROBOT_TO_CAM4_YAW;
+    public static final Transform3d ROBOT_TO_CAM4_3D;
+
     static {
       switch (RobotConfig.getRobot()) {
         case CLEO:
@@ -535,7 +545,8 @@ public final class Constants {
 
           CAMERA1_NAME = "right_camera";
           CAMERA2_NAME = "left_camera";
-          CAMERA3_NAME = "front_camera";
+          CAMERA3_NAME = "front_right_camera";
+          CAMERA4_NAME = "front_left_camera"; 
 
           // Cleo camera positions
           ROBOT_TO_CAM1_X = Units.inchesToMeters(-21.0/2+2.0);
@@ -559,6 +570,13 @@ public final class Constants {
           ROBOT_TO_CAM3_PITCH = Units.degreesToRadians(-30); 
           ROBOT_TO_CAM3_YAW = Units.degreesToRadians(0); 
 
+          ROBOT_TO_CAM4_X = Units.inchesToMeters(-21/2+0.75); 
+          ROBOT_TO_CAM4_Y = Units.inchesToMeters(33.0/2-2); 
+          ROBOT_TO_CAM4_Z = Units.inchesToMeters(29); 
+          ROBOT_TO_CAM4_ROLL = 0;
+          ROBOT_TO_CAM4_PITCH = Units.degreesToRadians(-30); 
+          ROBOT_TO_CAM4_YAW = Units.degreesToRadians(0); 
+
           break;
 
         case CERIDWEN:
@@ -567,6 +585,7 @@ public final class Constants {
           CAMERA1_NAME = "camera1";
           CAMERA2_NAME = "camera2";
           CAMERA3_NAME = "camera3";
+          CAMERA4_NAME = "camera4"; 
 
           ROBOT_TO_CAM1_X = Units.inchesToMeters(2);
           ROBOT_TO_CAM1_Y = Units.inchesToMeters(-7);
@@ -588,6 +607,14 @@ public final class Constants {
           ROBOT_TO_CAM3_ROLL = 0;
           ROBOT_TO_CAM3_PITCH = 0;
           ROBOT_TO_CAM3_YAW = 0;
+
+          ROBOT_TO_CAM4_X = 0;
+          ROBOT_TO_CAM4_Y = 0;
+          ROBOT_TO_CAM4_Z = 0;
+          ROBOT_TO_CAM4_ROLL = 0;
+          ROBOT_TO_CAM4_PITCH = 0;
+          ROBOT_TO_CAM4_YAW = 0;
+
           break;
 
         default:
@@ -608,6 +635,11 @@ public final class Constants {
       ROBOT_TO_CAM3_3D = new Transform3d(
         new Translation3d(ROBOT_TO_CAM3_X, ROBOT_TO_CAM3_Y, ROBOT_TO_CAM3_Z),
         new Rotation3d(ROBOT_TO_CAM3_ROLL, ROBOT_TO_CAM3_PITCH, ROBOT_TO_CAM3_YAW)
+      );
+
+      ROBOT_TO_CAM4_3D = new Transform3d(
+        new Translation3d(ROBOT_TO_CAM4_X, ROBOT_TO_CAM4_Y, ROBOT_TO_CAM4_Z),
+        new Rotation3d(ROBOT_TO_CAM4_ROLL, ROBOT_TO_CAM4_PITCH, ROBOT_TO_CAM4_YAW)
       );
     }
   }
