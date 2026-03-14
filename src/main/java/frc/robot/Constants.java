@@ -574,7 +574,7 @@ public final class Constants {
           ROBOT_TO_CAM3_PITCH = Units.degreesToRadians(-30); 
           ROBOT_TO_CAM3_YAW = Units.degreesToRadians(0); 
 
-          ROBOT_TO_CAM4_X = Units.inchesToMeters(-21/2+0.75); 
+          ROBOT_TO_CAM4_X = Units.inchesToMeters(21/2-0.75); 
           ROBOT_TO_CAM4_Y = Units.inchesToMeters(33.0/2-2); 
           ROBOT_TO_CAM4_Z = Units.inchesToMeters(29); 
           ROBOT_TO_CAM4_ROLL = 0;
