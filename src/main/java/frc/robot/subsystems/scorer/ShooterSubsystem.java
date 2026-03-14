@@ -101,9 +101,12 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
     return atTargetVelocityTrigger(() -> targetVelocity);
   }
 
-  public Trigger isFuelShot(double targetVelocity) {
-    return isCurrentSpiking().and(atTargetVelocityTrigger(targetVelocity));
+  public Trigger isMotorVelocityWithinPercentTolerance(double targetVelocity) {
+    return new Trigger(() -> m_influencerIO.getMotorVelocityRevolutionsPerSecond() > targetVelocity * ShooterConstants.FUEL_SHOT_DETECTION_PERCENTAGE);
   }
+  public Trigger isFuelShot(double targetVelocity) {
+    return isCurrentSpiking().and(isMotorVelocityWithinPercentTolerance(targetVelocity));
+   }
 
   @Override
   public void periodic() {
