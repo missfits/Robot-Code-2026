@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.695007450810186,
-        "y": 2.9460619936342596
+        "x": 2.2582072610294124,
+        "y": 2.618468605324074
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.9283185040509268,
-        "y": 2.5066682581018513
+        "x": 2.7995968007915564,
+        "y": 2.591833154683377
       },
       "isLocked": false,
       "linkedName": "outpost shooting point"
@@ -112,12 +112,12 @@
     },
     {
       "anchor": {
-        "x": 2.695007450810186,
-        "y": 2.9460619936342596
+        "x": 2.2582072610294124,
+        "y": 2.618468605324074
       },
       "prevControl": {
-        "x": 2.954431495949075,
-        "y": 2.6341495225694436
+        "x": 2.6907672328496037,
+        "y": 2.580202973834653
       },
       "nextControl": null,
       "isLocked": false,
@@ -156,7 +156,7 @@
       "minWaypointRelativePos": 0.964375,
       "maxWaypointRelativePos": 2.036205357142857,
       "constraints": {
-        "maxVelocity": 1.25,
+        "maxVelocity": 2.0,
         "maxAcceleration": 2.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
@@ -169,7 +169,7 @@
       "minWaypointRelativePos": 4.999441964285711,
       "maxWaypointRelativePos": 5.743816964285706,
       "constraints": {
-        "maxVelocity": 1.25,
+        "maxVelocity": 2.0,
         "maxAcceleration": 2.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
