@@ -377,6 +377,10 @@ public class RobotCommandFactory {
       // log isFuelShot
       Commands.run(() -> {
         SmartDashboard.putBoolean("robot command factory/isColumnHappy", m_column.isMotorVelocityOverPercentTolerance(columnSupplier).getAsBoolean());
+        SmartDashboard.putBoolean("robot command factory/atAngleTrigger", m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)).getAsBoolean());
+        SmartDashboard.putBoolean("robot command factory/isMotorVelocityWithinPercentTolerance", m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier).getAsBoolean());
+
+
       }),
 
       // shooter 
@@ -389,7 +393,7 @@ public class RobotCommandFactory {
       // column 
       Commands.sequence( 
         m_column.offCommand() // wait until 
-          .until(m_shooter.atTargetVelocityTrigger(shooterSupplier) // shooter at target velocity 
+          .until(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier) // shooter at target velocity 
             .and(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))) // and facing hub
           .withTimeout(ShooterConstants.WAIT_FOR_SHOOTER_TIMEOUT),
         m_column.velocityCommand(columnSupplier)),
@@ -397,7 +401,7 @@ public class RobotCommandFactory {
       // indexer 
       Commands.sequence(
         m_indexer.offCommand() // wait until 
-          .until(m_shooter.atTargetVelocityTrigger(shooterSupplier) // shooter at target velocity 
+          .until(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier) // shooter at target velocity 
             .and(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))) // and facing hub
           .withTimeout(ShooterConstants.WAIT_FOR_SHOOTER_TIMEOUT),
         m_indexer.velocityCommand(indexerSupplier)),
@@ -405,7 +409,7 @@ public class RobotCommandFactory {
       // roller
       Commands.sequence(
         m_roller.offCommand()  // wait until 
-          .until(m_shooter.atTargetVelocityTrigger(shooterSupplier) // shooter at target velocity 
+          .until(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier) // shooter at target velocity 
             .and(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))) // and facing hub
           .withTimeout(ShooterConstants.WAIT_FOR_SHOOTER_TIMEOUT),
          m_roller.velocityCommand(rollerSupplier))

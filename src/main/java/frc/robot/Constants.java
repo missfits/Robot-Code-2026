@@ -146,7 +146,7 @@ public final class Constants {
     public static final double SNAP_TO_TARGET_DISTANCE_THRESHOLD = 0.05; // 5cm
 
     // angle tolerance (in radians) for atTargetAngle()
-    public static final double ANGLE_TOLERANCE = Math.toRadians(3);
+    public static final double ANGLE_TOLERANCE = Math.toRadians(5);
 
   }
 
@@ -442,7 +442,7 @@ public final class Constants {
     public static final double RUN_SHOOTER_TIME = 2.0;
 
     // Velocity tolerance for checking if shooter is at target (rotations per second)
-    public static final double VELOCITY_TOLERANCE = 2;
+    public static final double VELOCITY_TOLERANCE = 4;
 
     // Current spike threshold for checking if fuel is shot (amps)
     public static final double CURRENT_SPIKE_THRESHOLD = 20;
@@ -451,7 +451,7 @@ public final class Constants {
     public static final double FUEL_SHOT_DETECTION_PERCENTAGE = 0.95;
 
     public static final double FUEL_SHOT_TIMEOUT = 1.5; // in seconds
-    
+
     public static final double WAIT_FOR_SHOOTER_TIMEOUT = 0.5;
   }
 
