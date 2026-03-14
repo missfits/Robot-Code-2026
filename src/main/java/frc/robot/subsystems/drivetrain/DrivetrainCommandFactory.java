@@ -27,7 +27,7 @@ public class DrivetrainCommandFactory {
     private final SwerveRequest.FieldCentric m_drive = new SwerveRequest.FieldCentric()
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     private final SwerveRequest.FieldCentricFacingAngle m_driveFacingAngle = new SwerveRequest.FieldCentricFacingAngle()
-        .withDriveRequestType(DriveRequestType.Velocity).withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective);
+        .withDriveRequestType(DriveRequestType.Velocity).withForwardPerspective(ForwardPerspectiveValue.BlueAlliance);
     private final SwerveRequest.PointWheelsAt m_point = new SwerveRequest.PointWheelsAt();
     private final SwerveRequest.SwerveDriveBrake m_brake = new SwerveRequest.SwerveDriveBrake();
 
