@@ -1,5 +1,7 @@
 package frc.robot.utils;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -9,10 +11,10 @@ import frc.robot.FieldConstants;
 
 public class HubCalculations {
 
-    public static Translation2d hubTranslation = AllianceFlipUtil.apply(FieldConstants.Hub.innerCenterPoint.toTranslation2d());
+    public static Supplier<Translation2d> hubTranslationSupplier = () -> AllianceFlipUtil.apply(FieldConstants.Hub.innerCenterPoint.toTranslation2d());
 
     public static Rotation2d angleToHub(Pose2d robotPose) {
-        Translation2d hub = hubTranslation;
+        Translation2d hub = hubTranslationSupplier.get();
 
         Translation2d translationToTarget = hub.minus(robotPose.getTranslation());
 
@@ -25,7 +27,7 @@ public class HubCalculations {
     }
 
     public static double distanceToHub(Pose2d robotPose) {
-        Translation2d hub = hubTranslation;
+        Translation2d hub = hubTranslationSupplier.get();
         return hub.getDistance(robotPose.getTranslation());
     }
 }
