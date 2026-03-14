@@ -373,10 +373,16 @@ public class RobotCommandFactory {
    */
   public Command shootWithVision(Supplier<Double> initialShooterSupplier, Supplier<Double> shooterSupplier, Supplier<Double> columnSupplier, Supplier<Double> indexerSupplier, Supplier<Double> rollerSupplier) {
     return Commands.parallel(
+
+      // log isFuelShot
+      Commands.run(() -> {
+        SmartDashboard.putBoolean("robot command factory/isFuelShot", m_shooter.isFuelShot(initialShooterSupplier).getAsBoolean());
+      }),
+
       // shooter 
       Commands.sequence(
         m_shooter.shooterVelocityCommand(initialShooterSupplier)
-          .until(m_shooter.isFuelShot(initialShooterSupplier.get())),
+          .until(m_shooter.isFuelShot(initialShooterSupplier)),
         m_shooter.shooterVelocityCommand(shooterSupplier)),  // run shooter at given velocity  
         
       // column 
