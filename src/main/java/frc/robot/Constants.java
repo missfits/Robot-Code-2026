@@ -197,8 +197,8 @@ public final class Constants {
     public static double AUTO_RESET_DEPLOY_POSITION_DEGREES = DEPLOY_POSITION_DEGREES;
 
     // Timing values for displace fuel command 
-    public static final double DISPLACE_FUEL_UP_TIMEOUT = 1; // TODO: tune
-    public static final double DISPLACE_FUEL_DOWN_TIMEOUT = 1; 
+    public static final double DISPLACE_FUEL_UP_TIMEOUT = 0.75; // TODO: tune
+    public static final double DISPLACE_FUEL_DOWN_TIMEOUT = 0.75; 
     public static final double DISPLACE_FUEL_DELAY = 0; // time between repeats of displace fuel command
 
     // Max manual volts
@@ -215,8 +215,8 @@ public final class Constants {
     public static double kA = 0.0;
 
     // Motion Magic values
-    public static double CRUISE_VELOCITY = 0.2;
-    public static double ACCELERATION = 1;
+    public static double CRUISE_VELOCITY = 0.4;
+    public static double ACCELERATION = 2;
     public static double JERK = 100;
 
     public static final double GRAVITY_FEEDFORWARD_OFFSET = -55; // offset in degrees. 0 should be horizontal
@@ -417,7 +417,7 @@ public final class Constants {
     public static double RECYCLE_VELOCITY = 10.0;
     public static double SHUTTLE_VELOCITY = 50.0;
     public static double OUTTAKE_VOLTAGE = -3.0;
-    public static double INTIAL_ADDITIONAL_VELOCITY = 7.0; // TODO: tune
+    public static double INTIAL_ADDITIONAL_VELOCITY = 15.0; // TODO: tune
 
     public static double SHOOTER_VOLTAGE = 1.0;
     public static double SHOOTER_BACK_VOLTAGE = -1.0;
@@ -452,7 +452,7 @@ public final class Constants {
 
     public static final double FUEL_SHOT_TIMEOUT = 1.5; // in seconds
 
-    public static final double WAIT_FOR_SHOOTER_TIMEOUT = 0.5;
+    public static final double WAIT_FOR_SHOOTER_TIMEOUT = 1.5;
   }
 
   public static class ClimberConstants {

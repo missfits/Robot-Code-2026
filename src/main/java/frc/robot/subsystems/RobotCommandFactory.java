@@ -336,7 +336,7 @@ public class RobotCommandFactory {
     return Commands.parallel(
       shootWithVision(initialShooterSupplier, shooterSupplier, columnSupplier, indexerSupplier, rollerSupplier),
       Commands.sequence(
-        new WaitCommand(2), // wait 2 seconds for some of the fuel to be shot out 
+        new WaitCommand(1), // wait 1 second for some of the fuel to be shot out 
         m_pivot.repeatingDisplaceFuelCommand())
     ).withName("shootWithVisionWithDisplacement");
   }
@@ -355,7 +355,7 @@ public class RobotCommandFactory {
     return Commands.parallel(
       shootWithoutVision(initialShooterSupplier, shooterSupplier, columnSupplier, indexerSupplier, rollerSupplier),
       Commands.sequence(
-        new WaitCommand(2), // wait 2 seconds for some of the fuel to be shot out 
+        new WaitCommand(1), // wait 1 second for some of the fuel to be shot out 
         m_pivot.repeatingDisplaceFuelCommand())
     ).withName("shootWithoutVisionWithDisplacement");
   }
@@ -432,6 +432,8 @@ public class RobotCommandFactory {
       // log isFuelShot
       Commands.run(() -> {
         SmartDashboard.putBoolean("robot command factory/isColumnHappy", m_column.isMotorVelocityOverPercentTolerance(columnSupplier).getAsBoolean());
+        SmartDashboard.putBoolean("robot command factory/isMotorVelocityWithinPercentTolerance", m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier).getAsBoolean());
+
       }),
 
       // shooter 
@@ -444,19 +446,19 @@ public class RobotCommandFactory {
       // column 
       Commands.sequence(
         m_column.offCommand() // wait until 
-          .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)) // shooter at target velocity 
+          .until(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier)) // shooter at target velocity 
           .withTimeout(ShooterConstants.WAIT_FOR_SHOOTER_TIMEOUT),
         m_column.velocityCommand(columnSupplier)),
       // indexer
       Commands.sequence(
         m_indexer.offCommand() // wait until 
-          .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)) // shooter at target velocity
+          .until(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier)) // shooter at target velocity
           .withTimeout(ShooterConstants.WAIT_FOR_SHOOTER_TIMEOUT),
         m_indexer.velocityCommand(indexerSupplier)),
       // roller
       Commands.sequence(
         m_roller.offCommand()  // wait until 
-          .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)) // shooter at target velocity 
+          .until(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier)) // shooter at target velocity 
           .withTimeout(ShooterConstants.WAIT_FOR_SHOOTER_TIMEOUT),
         m_roller.velocityCommand(rollerSupplier))
     ).withName("shootWithoutVision");
