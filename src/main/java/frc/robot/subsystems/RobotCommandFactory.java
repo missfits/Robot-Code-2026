@@ -376,7 +376,7 @@ public class RobotCommandFactory {
 
       // log isFuelShot
       Commands.run(() -> {
-        SmartDashboard.putBoolean("robot command factory/isColumnHappy", m_column.isMotorVelocityOverPercentTolerance(columnSupplier).getAsBoolean());
+        SmartDashboard.putBoolean("robot command factory/isColumnHappy", m_column.isMotorVelocityOverPercentToleranceTrigger(columnSupplier).getAsBoolean());
         SmartDashboard.putBoolean("robot command factory/atAngleTrigger", m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)).getAsBoolean());
         SmartDashboard.putBoolean("robot command factory/isMotorVelocityWithinPercentTolerance", m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier).getAsBoolean());
 
@@ -386,7 +386,7 @@ public class RobotCommandFactory {
       // shooter 
       Commands.sequence(
         m_shooter.shooterVelocityCommand(initialShooterSupplier)
-          .until(m_column.isMotorVelocityOverPercentTolerance(columnSupplier))
+          .until(m_column.isMotorVelocityOverPercentToleranceTrigger(columnSupplier))
           .withTimeout(ShooterConstants.FUEL_SHOT_TIMEOUT),
         m_shooter.shooterVelocityCommand(shooterSupplier)),  // run shooter at given velocity  
         
@@ -431,7 +431,7 @@ public class RobotCommandFactory {
     return Commands.parallel(
       // log isFuelShot
       Commands.run(() -> {
-        SmartDashboard.putBoolean("robot command factory/isColumnHappy", m_column.isMotorVelocityOverPercentTolerance(columnSupplier).getAsBoolean());
+        SmartDashboard.putBoolean("robot command factory/isColumnHappy", m_column.isMotorVelocityOverPercentToleranceTrigger(columnSupplier).getAsBoolean());
         SmartDashboard.putBoolean("robot command factory/isMotorVelocityWithinPercentTolerance", m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier).getAsBoolean());
 
       }),
@@ -439,7 +439,7 @@ public class RobotCommandFactory {
       // shooter 
       Commands.sequence(
         m_shooter.shooterVelocityCommand(initialShooterSupplier)
-          .until(m_column.isMotorVelocityOverPercentTolerance(columnSupplier))
+          .until(m_column.isMotorVelocityOverPercentToleranceTrigger(columnSupplier))
           .withTimeout(ShooterConstants.FUEL_SHOT_TIMEOUT),
         m_shooter.shooterVelocityCommand(shooterSupplier)),  // run shooter at given velocity  
         

@@ -54,8 +54,18 @@ public class ColumnSubsystem extends MechanismsSubsystemBase {
     return velocityCommand(ColumnConstants.COLUMN_VELOCITY).withName("run column velocity");
   }
 
-  public Trigger isMotorVelocityOverPercentTolerance(Supplier<Double> targetVelocitySupplier) {
-    return new Trigger(() -> m_IO.getMotorVelocityRevolutionsPerSecond() > targetVelocitySupplier.get() * ColumnConstants.AT_VELOCITY_DETECTION_PERCENTAGE);
+  private boolean isMotorVelocityOverPercentTolerance(double currentVelocity, double targetVelocity) {
+    double thresholdVelocity = targetVelocity * ColumnConstants.AT_VELOCITY_DETECTION_PERCENTAGE;
+    return targetVelocity >= 0
+      ? currentVelocity > thresholdVelocity
+      : currentVelocity < thresholdVelocity;
+  }
+
+  public Trigger isMotorVelocityOverPercentToleranceTrigger(Supplier<Double> targetVelocitySupplier) {
+    return new Trigger(() -> isMotorVelocityOverPercentTolerance(
+      m_IO.getMotorVelocityRevolutionsPerSecond(),
+      targetVelocitySupplier.get()
+    ));
   }
 
   @Override

@@ -103,8 +103,18 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
     return atTargetVelocityTrigger(() -> targetVelocity);
   }
 
+  private boolean isVelocityWithinPercentTolerance(double currentVelocity, double targetVelocity) {
+    double thresholdVelocity = targetVelocity * ShooterConstants.FUEL_SHOT_DETECTION_PERCENTAGE;
+    return targetVelocity >= 0
+      ? currentVelocity > thresholdVelocity
+      : currentVelocity < thresholdVelocity;
+  }
+
   public Trigger isMotorVelocityWithinPercentTolerance(Supplier<Double> targetVelocitySupplier) {
-    return new Trigger(() -> m_influencerIO.getMotorVelocityRevolutionsPerSecond() > targetVelocitySupplier.get() * ShooterConstants.FUEL_SHOT_DETECTION_PERCENTAGE);
+    return new Trigger(() -> isVelocityWithinPercentTolerance(
+      m_influencerIO.getMotorVelocityRevolutionsPerSecond(),
+      targetVelocitySupplier.get()
+    ));
   }
   public Trigger isFuelShot(Supplier<Double> targetVelocitySupplier) {
     return isCurrentSpiking().and(isMotorVelocityWithinPercentTolerance(targetVelocitySupplier));
