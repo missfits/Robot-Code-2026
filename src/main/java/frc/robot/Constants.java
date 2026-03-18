@@ -34,7 +34,7 @@ public final class Constants {
     public static final double STEER_JOYSTICK_DEADBAND = 0.1;
 
     // Slowmode factor for reduced speed control
-    public static final double SLOWMODE_FACTOR = 0.3;
+    public static final double SLOWMODE_FACTOR = 0.6;
   }
 
   public static class DrivetrainConstants {
@@ -146,7 +146,7 @@ public final class Constants {
     public static final double SNAP_TO_TARGET_DISTANCE_THRESHOLD = 0.05; // 5cm
 
     // angle tolerance (in radians) for atTargetAngle()
-    public static final double ANGLE_TOLERANCE = Math.toRadians(3);
+    public static final double ANGLE_TOLERANCE = Math.toRadians(5);
 
   }
 
@@ -177,8 +177,8 @@ public final class Constants {
     public static double DEPLOY_VOLTAGE = 3.0;
     public static double STORE_VOLTAGE = -1.0*DEPLOY_VOLTAGE;
     public static double MAX_VOLTAGE = 6.0;
-    public static double ZERO_PIVOT_VOLTAGE = 1.0;
-    public static double AUTO_ZERO_PIVOT_VOLTAGE = 1.0;
+    public static double ZERO_PIVOT_VOLTAGE = 1.5;
+    public static double AUTO_ZERO_PIVOT_VOLTAGE = 1.5;
 
 
     // Pivot motor velocities
@@ -191,14 +191,14 @@ public final class Constants {
 
     // Pivot positions
     public static double STORE_POSITION_DEGREES = 10;
-    public static double DISPLACE_FUEL_POSITION_DEGREES = 25;
+    public static double DISPLACE_FUEL_POSITION_DEGREES = 10;
     public static double DEPLOY_POSITION_DEGREES = 55;
     public static double RESET_DEPLOY_POSITION_DEGREES = DEPLOY_POSITION_DEGREES + 10;
     public static double AUTO_RESET_DEPLOY_POSITION_DEGREES = DEPLOY_POSITION_DEGREES;
 
     // Timing values for displace fuel command 
-    public static final double DISPLACE_FUEL_UP_TIMEOUT = 1; // TODO: tune
-    public static final double DISPLACE_FUEL_DOWN_TIMEOUT = 1; 
+    public static final double DISPLACE_FUEL_UP_TIMEOUT = 0.75; // TODO: tune
+    public static final double DISPLACE_FUEL_DOWN_TIMEOUT = 0.75; 
     public static final double DISPLACE_FUEL_DELAY = 0; // time between repeats of displace fuel command
 
     // Max manual volts
@@ -215,8 +215,8 @@ public final class Constants {
     public static double kA = 0.0;
 
     // Motion Magic values
-    public static double CRUISE_VELOCITY = 0.2;
-    public static double ACCELERATION = 1;
+    public static double CRUISE_VELOCITY = 0.4;
+    public static double ACCELERATION = 2;
     public static double JERK = 100;
 
     public static final double GRAVITY_FEEDFORWARD_OFFSET = -55; // offset in degrees. 0 should be horizontal
@@ -234,7 +234,7 @@ public final class Constants {
     public static final int MOTOR_ID = 21;
 
     // Motor limits
-    public static final int MOTOR_STATOR_LIMIT = 40;
+    public static final int MOTOR_STATOR_LIMIT = 60;
 
     // Duty cycle limits
     public static final double PEAK_FORWARD_DUTY_CYCLE = 1;
@@ -287,7 +287,7 @@ public final class Constants {
     public static final int MOTOR_ID = 22;
 
     // Motor limits
-    public static final int MOTOR_STATOR_LIMIT = 40;
+    public static final int MOTOR_STATOR_LIMIT = 60;
 
     // Duty cycle limits
     public static final double PEAK_FORWARD_DUTY_CYCLE = 1;
@@ -360,6 +360,8 @@ public final class Constants {
     // Testing velocities
     public static double TESTING_VELOCITY = 0.0;
 
+    public static final double AT_VELOCITY_DETECTION_PERCENTAGE = 0.50;
+
     // PID gains
     // Tuned in shop 2/12
     public static double kP = 0.3;
@@ -413,9 +415,9 @@ public final class Constants {
     public static double TESTING_VELOCITY = 40.0;
 
     public static double RECYCLE_VELOCITY = 10.0;
-    public static double SHUTTLE_VELOCITY = 70.0;
-    public static double OUTTAKE_VOLTAGE = -5.0;
-    public static double INTIAL_ADDITIONAL_VELOCITY = 10.0; // TODO: tune
+    public static double SHUTTLE_VELOCITY = 50.0;
+    public static double OUTTAKE_VOLTAGE = -3.0;
+    public static double INTIAL_ADDITIONAL_VELOCITY = 15.0; // TODO: tune
 
     public static double SHOOTER_VOLTAGE = 1.0;
     public static double SHOOTER_BACK_VOLTAGE = -1.0;
@@ -440,13 +442,17 @@ public final class Constants {
     public static final double RUN_SHOOTER_TIME = 2.0;
 
     // Velocity tolerance for checking if shooter is at target (rotations per second)
-    public static final double VELOCITY_TOLERANCE = 2;
+    public static final double VELOCITY_TOLERANCE = 4;
 
     // Current spike threshold for checking if fuel is shot (amps)
     public static final double CURRENT_SPIKE_THRESHOLD = 20;
 
     // % tolerance for shooter velocity check (isFuelShot check against targetVelocity)
-    public static final double FUEL_SHOT_DETECTION_PERCENTAGE = 0.8;
+    public static final double FUEL_SHOT_DETECTION_PERCENTAGE = 0.95;
+
+    public static final double FUEL_SHOT_TIMEOUT = 1.5; // in seconds
+
+    public static final double WAIT_FOR_SHOOTER_TIMEOUT = 1.5;
   }
 
   public static class ClimberConstants {
@@ -500,6 +506,7 @@ public final class Constants {
     public static final String CAMERA1_NAME;
     public static final String CAMERA2_NAME;
     public static final String CAMERA3_NAME;
+    public static final String CAMERA4_NAME;
 
     // Camera 1 position - robot-specific because camera mounting may differ
     public static final double ROBOT_TO_CAM1_X;
@@ -528,6 +535,15 @@ public final class Constants {
     public static final double ROBOT_TO_CAM3_YAW;
     public static final Transform3d ROBOT_TO_CAM3_3D;
 
+    // Camera 4 position - robot-specific
+    public static final double ROBOT_TO_CAM4_X;
+    public static final double ROBOT_TO_CAM4_Y;
+    public static final double ROBOT_TO_CAM4_Z;
+    public static final double ROBOT_TO_CAM4_ROLL;
+    public static final double ROBOT_TO_CAM4_PITCH;
+    public static final double ROBOT_TO_CAM4_YAW;
+    public static final Transform3d ROBOT_TO_CAM4_3D;
+
     static {
       switch (RobotConfig.getRobot()) {
         case CLEO:
@@ -535,7 +551,8 @@ public final class Constants {
 
           CAMERA1_NAME = "right_camera";
           CAMERA2_NAME = "left_camera";
-          CAMERA3_NAME = "front_camera";
+          CAMERA3_NAME = "front_right_camera";
+          CAMERA4_NAME = "front_left_camera"; 
 
           // Cleo camera positions
           ROBOT_TO_CAM1_X = Units.inchesToMeters(-21.0/2+2.0);
@@ -552,12 +569,19 @@ public final class Constants {
           ROBOT_TO_CAM2_PITCH = Units.degreesToRadians(-20);
           ROBOT_TO_CAM2_YAW = Units.degreesToRadians(-135)+0.14-0.01;
  
-          ROBOT_TO_CAM3_X = Units.inchesToMeters(21/2-0.75); 
+          ROBOT_TO_CAM3_X = Units.inchesToMeters(21./2-0.75); 
           ROBOT_TO_CAM3_Y = Units.inchesToMeters(-33.0/2+2); 
           ROBOT_TO_CAM3_Z = Units.inchesToMeters(29); 
           ROBOT_TO_CAM3_ROLL = 0;
           ROBOT_TO_CAM3_PITCH = Units.degreesToRadians(-30); 
           ROBOT_TO_CAM3_YAW = Units.degreesToRadians(0); 
+
+          ROBOT_TO_CAM4_X = Units.inchesToMeters(21./2-0.75); 
+          ROBOT_TO_CAM4_Y = Units.inchesToMeters(33.0/2-2); 
+          ROBOT_TO_CAM4_Z = Units.inchesToMeters(29); 
+          ROBOT_TO_CAM4_ROLL = 0;
+          ROBOT_TO_CAM4_PITCH = Units.degreesToRadians(-30); 
+          ROBOT_TO_CAM4_YAW = Units.degreesToRadians(0); 
 
           break;
 
@@ -567,6 +591,7 @@ public final class Constants {
           CAMERA1_NAME = "camera1";
           CAMERA2_NAME = "camera2";
           CAMERA3_NAME = "camera3";
+          CAMERA4_NAME = "camera4"; 
 
           ROBOT_TO_CAM1_X = Units.inchesToMeters(2);
           ROBOT_TO_CAM1_Y = Units.inchesToMeters(-7);
@@ -588,6 +613,14 @@ public final class Constants {
           ROBOT_TO_CAM3_ROLL = 0;
           ROBOT_TO_CAM3_PITCH = 0;
           ROBOT_TO_CAM3_YAW = 0;
+
+          ROBOT_TO_CAM4_X = 0;
+          ROBOT_TO_CAM4_Y = 0;
+          ROBOT_TO_CAM4_Z = 0;
+          ROBOT_TO_CAM4_ROLL = 0;
+          ROBOT_TO_CAM4_PITCH = 0;
+          ROBOT_TO_CAM4_YAW = 0;
+
           break;
 
         default:
@@ -608,6 +641,11 @@ public final class Constants {
       ROBOT_TO_CAM3_3D = new Transform3d(
         new Translation3d(ROBOT_TO_CAM3_X, ROBOT_TO_CAM3_Y, ROBOT_TO_CAM3_Z),
         new Rotation3d(ROBOT_TO_CAM3_ROLL, ROBOT_TO_CAM3_PITCH, ROBOT_TO_CAM3_YAW)
+      );
+
+      ROBOT_TO_CAM4_3D = new Transform3d(
+        new Translation3d(ROBOT_TO_CAM4_X, ROBOT_TO_CAM4_Y, ROBOT_TO_CAM4_Z),
+        new Rotation3d(ROBOT_TO_CAM4_ROLL, ROBOT_TO_CAM4_PITCH, ROBOT_TO_CAM4_YAW)
       );
     }
   }

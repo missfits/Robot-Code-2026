@@ -272,7 +272,6 @@ public class RobotCommandFactory {
   // neutral mode
   public Command outtakeCommand() {
     return Commands.parallel(
-      m_pivot.storePivotCommand(),
       m_roller.velocityCommand(RollerConstants.OUTTAKE_VELOCITY),
       m_indexer.velocityCommand(IndexerConstants.OUTTAKE_VELOCITY),
       m_column.velocityCommand(ColumnConstants.OUTTAKE_VELOCITY),
@@ -337,7 +336,7 @@ public class RobotCommandFactory {
     return Commands.parallel(
       shootWithVision(initialShooterSupplier, shooterSupplier, columnSupplier, indexerSupplier, rollerSupplier),
       Commands.sequence(
-        new WaitCommand(2), // wait 2 seconds for some of the fuel to be shot out 
+        new WaitCommand(1), // wait 1 second for some of the fuel to be shot out 
         m_pivot.repeatingDisplaceFuelCommand())
     ).withName("shootWithVisionWithDisplacement");
   }
@@ -356,7 +355,7 @@ public class RobotCommandFactory {
     return Commands.parallel(
       shootWithoutVision(initialShooterSupplier, shooterSupplier, columnSupplier, indexerSupplier, rollerSupplier),
       Commands.sequence(
-        new WaitCommand(2), // wait 2 seconds for some of the fuel to be shot out 
+        new WaitCommand(1), // wait 1 second for some of the fuel to be shot out 
         m_pivot.repeatingDisplaceFuelCommand())
     ).withName("shootWithoutVisionWithDisplacement");
   }
@@ -374,34 +373,44 @@ public class RobotCommandFactory {
    */
   public Command shootWithVision(Supplier<Double> initialShooterSupplier, Supplier<Double> shooterSupplier, Supplier<Double> columnSupplier, Supplier<Double> indexerSupplier, Supplier<Double> rollerSupplier) {
     return Commands.parallel(
+
+      // log isFuelShot
+      Commands.run(() -> {
+        SmartDashboard.putBoolean("robot command factory/isColumnHappy", m_column.isMotorVelocityOverPercentToleranceTrigger(columnSupplier).getAsBoolean());
+        SmartDashboard.putBoolean("robot command factory/atAngleTrigger", m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)).getAsBoolean());
+        SmartDashboard.putBoolean("robot command factory/isMotorVelocityWithinPercentTolerance", m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier).getAsBoolean());
+      }),
+
       // shooter 
       Commands.sequence(
-        new WaitCommand(10000) // wait until (no timeout)
-          .until(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose))), // facing hub 
         m_shooter.shooterVelocityCommand(initialShooterSupplier)
-          .until(m_shooter.isFuelShot(initialShooterSupplier.get())),
+          .until(m_column.isMotorVelocityOverPercentToleranceTrigger(columnSupplier))
+          .withTimeout(ShooterConstants.FUEL_SHOT_TIMEOUT),
         m_shooter.shooterVelocityCommand(shooterSupplier)),  // run shooter at given velocity  
         
       // column 
       Commands.sequence( 
         m_column.offCommand() // wait until 
-          .until(m_shooter.atTargetVelocityTrigger(shooterSupplier) // shooter at target velocity 
-            .and(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))), // and facing hub
+          .until(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier) // shooter at target velocity 
+            .and(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))) // and facing hub
+          .withTimeout(ShooterConstants.WAIT_FOR_SHOOTER_TIMEOUT),
         m_column.velocityCommand(columnSupplier)),
 
       // indexer 
       Commands.sequence(
         m_indexer.offCommand() // wait until 
-          .until(m_shooter.atTargetVelocityTrigger(shooterSupplier) // shooter at target velocity 
-            .and(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))), // and facing hub
+          .until(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier) // shooter at target velocity 
+            .and(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))) // and facing hub
+          .withTimeout(ShooterConstants.WAIT_FOR_SHOOTER_TIMEOUT),
         m_indexer.velocityCommand(indexerSupplier)),
 
       // roller
       Commands.sequence(
         m_roller.offCommand()  // wait until 
-          .until(m_shooter.atTargetVelocityTrigger(shooterSupplier) // shooter at target velocity 
-            .and(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))), // and facing hub
-        m_roller.velocityCommand(rollerSupplier))
+          .until(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier) // shooter at target velocity 
+            .and(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))) // and facing hub
+          .withTimeout(ShooterConstants.WAIT_FOR_SHOOTER_TIMEOUT),
+         m_roller.velocityCommand(rollerSupplier))
     ).withName("shootWithVision"); 
   }
 
@@ -418,26 +427,36 @@ public class RobotCommandFactory {
    */
   public Command shootWithoutVision(Supplier<Double> initialShooterSupplier, Supplier<Double> shooterSupplier, Supplier<Double> columnSupplier, Supplier<Double> indexerSupplier, Supplier<Double> rollerSupplier) {
     return Commands.parallel(
+      // log isFuelShot
+      Commands.run(() -> {
+        SmartDashboard.putBoolean("robot command factory/isColumnHappy", m_column.isMotorVelocityOverPercentToleranceTrigger(columnSupplier).getAsBoolean());
+        SmartDashboard.putBoolean("robot command factory/isMotorVelocityWithinPercentTolerance", m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier).getAsBoolean());
+      }),
+
       // shooter 
       Commands.sequence(
-        // run shooter at slightly higher velocity until we shoot some fuel  
         m_shooter.shooterVelocityCommand(initialShooterSupplier)
-          .until(m_shooter.isFuelShot(initialShooterSupplier.get())),
+          .until(m_column.isMotorVelocityOverPercentToleranceTrigger(columnSupplier))
+          .withTimeout(ShooterConstants.FUEL_SHOT_TIMEOUT),
         m_shooter.shooterVelocityCommand(shooterSupplier)),  // run shooter at given velocity  
+        
       // column 
       Commands.sequence(
         m_column.offCommand() // wait until 
-          .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity 
+          .until(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier)) // shooter at target velocity 
+          .withTimeout(ShooterConstants.WAIT_FOR_SHOOTER_TIMEOUT),
         m_column.velocityCommand(columnSupplier)),
       // indexer
       Commands.sequence(
         m_indexer.offCommand() // wait until 
-          .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity
+          .until(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier)) // shooter at target velocity
+          .withTimeout(ShooterConstants.WAIT_FOR_SHOOTER_TIMEOUT),
         m_indexer.velocityCommand(indexerSupplier)),
       // roller
       Commands.sequence(
         m_roller.offCommand()  // wait until 
-          .until(m_shooter.atTargetVelocityTrigger(shooterSupplier)), // shooter at target velocity 
+          .until(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier)) // shooter at target velocity 
+          .withTimeout(ShooterConstants.WAIT_FOR_SHOOTER_TIMEOUT),
         m_roller.velocityCommand(rollerSupplier))
     ).withName("shootWithoutVision");
   }

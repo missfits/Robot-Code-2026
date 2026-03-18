@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.MechanismsSubsystemBase;
 import frc.robot.utils.ShooterLookupTable;
+
+import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 public class ShooterSubsystem extends MechanismsSubsystemBase {
@@ -101,11 +103,21 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
     return atTargetVelocityTrigger(() -> targetVelocity);
   }
 
-  public Trigger isMotorVelocityWithinPercentTolerance(double targetVelocity) {
-    return new Trigger(() -> m_influencerIO.getMotorVelocityRevolutionsPerSecond() > targetVelocity * ShooterConstants.FUEL_SHOT_DETECTION_PERCENTAGE);
+  private boolean isVelocityWithinPercentTolerance(double currentVelocity, double targetVelocity) {
+    double thresholdVelocity = targetVelocity * ShooterConstants.FUEL_SHOT_DETECTION_PERCENTAGE;
+    return targetVelocity >= 0
+      ? currentVelocity > thresholdVelocity
+      : currentVelocity < thresholdVelocity;
   }
-  public Trigger isFuelShot(double targetVelocity) {
-    return isCurrentSpiking().and(isMotorVelocityWithinPercentTolerance(targetVelocity));
+
+  public Trigger isMotorVelocityWithinPercentTolerance(Supplier<Double> targetVelocitySupplier) {
+    return new Trigger(() -> isVelocityWithinPercentTolerance(
+      m_influencerIO.getMotorVelocityRevolutionsPerSecond(),
+      targetVelocitySupplier.get()
+    ));
+  }
+  public Trigger isFuelShot(Supplier<Double> targetVelocitySupplier) {
+    return isCurrentSpiking().and(isMotorVelocityWithinPercentTolerance(targetVelocitySupplier));
    }
 
   @Override
