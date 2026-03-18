@@ -379,8 +379,6 @@ public class RobotCommandFactory {
         SmartDashboard.putBoolean("robot command factory/isColumnHappy", m_column.isMotorVelocityOverPercentToleranceTrigger(columnSupplier).getAsBoolean());
         SmartDashboard.putBoolean("robot command factory/atAngleTrigger", m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)).getAsBoolean());
         SmartDashboard.putBoolean("robot command factory/isMotorVelocityWithinPercentTolerance", m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier).getAsBoolean());
-
-
       }),
 
       // shooter 
@@ -433,7 +431,6 @@ public class RobotCommandFactory {
       Commands.run(() -> {
         SmartDashboard.putBoolean("robot command factory/isColumnHappy", m_column.isMotorVelocityOverPercentToleranceTrigger(columnSupplier).getAsBoolean());
         SmartDashboard.putBoolean("robot command factory/isMotorVelocityWithinPercentTolerance", m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier).getAsBoolean());
-
       }),
 
       // shooter 
