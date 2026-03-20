@@ -71,9 +71,10 @@ public class ColumnSubsystem extends MechanismsSubsystemBase {
   @Override
   public void periodic() {
     super.periodic();
-    SmartDashboard.putNumber("column IO/live current", m_IO.getCurrent());
-    SmartDashboard.putNumber("column IO/live position", m_IO.getPositionDegrees());
-    SmartDashboard.putNumber("column IO/live velocity", m_IO.getVelocityDegreesPerSecond());
-    SmartDashboard.putNumber("column IO/live voltage", m_IO.getVoltage());
+    SmartDashboard.putNumber("column/actualCurrent", m_IO.getCurrent());
+    SmartDashboard.putNumber("column/actualPositionDegrees", m_IO.getPositionDegrees());
+    SmartDashboard.putNumber("column/actualVelocityRotationsPerSecond", m_IO.getVelocityRotationsPerSecond());
+    SmartDashboard.putNumber("column/actualVelocityDegreesPerSecond", m_IO.getVelocityDegreesPerSecond());
+    SmartDashboard.putNumber("column/actualVoltage", m_IO.getVoltage());
   }
 }

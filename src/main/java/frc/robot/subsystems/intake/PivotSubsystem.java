@@ -52,10 +52,11 @@ public class PivotSubsystem extends MechanismsSubsystemBase {
   @Override
   public void periodic() {
     super.periodic();
-    SmartDashboard.putNumber("pivot IO/live current", m_IO.getCurrent());
-    SmartDashboard.putNumber("pivot IO/live position", m_IO.getPositionDegrees());
-    SmartDashboard.putNumber("pivot IO/live velocity", m_IO.getVelocityDegreesPerSecond());
-    SmartDashboard.putNumber("pivot IO/live voltage", m_IO.getVoltage());
+    SmartDashboard.putNumber("pivot/actualCurrent", m_IO.getCurrent());
+    SmartDashboard.putNumber("pivot/actualPositionDegrees", m_IO.getPositionDegrees());
+    SmartDashboard.putNumber("pivot/actualVelocityRotationsPerSecond", m_IO.getVelocityRotationsPerSecond());
+    SmartDashboard.putNumber("pivot/actualVelocityDegreesPerSecond", m_IO.getVelocityDegreesPerSecond());
+    SmartDashboard.putNumber("pivot/actualVoltage", m_IO.getVoltage());
   }
 
   public void resetControllers() {
@@ -104,7 +105,7 @@ public class PivotSubsystem extends MechanismsSubsystemBase {
   
   private Command motionMagicVoltageCommand(DoubleSupplier positionSupplier) {
     return this.run(() ->  {
-      SmartDashboard.putNumber("pivot IO/motion magic target position", positionSupplier.getAsDouble());
+      SmartDashboard.putNumber("pivot/targetPositionDegrees", positionSupplier.getAsDouble());
       MotionMagicVoltage request = new MotionMagicVoltage(m_IO.degreesToMotorRevolutions(positionSupplier.getAsDouble())).withUpdateFreqHz(30);
       m_IO.goToPositionProfiled(request);
     });

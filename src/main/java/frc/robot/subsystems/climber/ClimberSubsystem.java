@@ -36,6 +36,6 @@ public class ClimberSubsystem extends MechanismsSubsystemBase {
   @Override
   public void periodic() {
     super.periodic();
-    SmartDashboard.putNumber("climber/current", m_IO.getCurrent());
+    SmartDashboard.putNumber("climber/actualCurrent", m_IO.getCurrent());
   }
 }

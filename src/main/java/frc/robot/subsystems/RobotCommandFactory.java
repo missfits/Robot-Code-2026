@@ -376,9 +376,9 @@ public class RobotCommandFactory {
 
       // log isFuelShot
       Commands.run(() -> {
-        SmartDashboard.putBoolean("robot command factory/isColumnHappy", m_column.isMotorVelocityOverPercentToleranceTrigger(columnSupplier).getAsBoolean());
-        SmartDashboard.putBoolean("robot command factory/atAngleTrigger", m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)).getAsBoolean());
-        SmartDashboard.putBoolean("robot command factory/isMotorVelocityWithinPercentTolerance", m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier).getAsBoolean());
+        SmartDashboard.putBoolean("robotCommandFactory/isColumnHappy", m_column.isMotorVelocityOverPercentToleranceTrigger(columnSupplier).getAsBoolean());
+        SmartDashboard.putBoolean("robotCommandFactory/atAngleTrigger", m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)).getAsBoolean());
+        SmartDashboard.putBoolean("robotCommandFactory/isMotorVelocityWithinPercentTolerance", m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier).getAsBoolean());
       }),
 
       // shooter 
@@ -429,8 +429,8 @@ public class RobotCommandFactory {
     return Commands.parallel(
       // log isFuelShot
       Commands.run(() -> {
-        SmartDashboard.putBoolean("robot command factory/isColumnHappy", m_column.isMotorVelocityOverPercentToleranceTrigger(columnSupplier).getAsBoolean());
-        SmartDashboard.putBoolean("robot command factory/isMotorVelocityWithinPercentTolerance", m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier).getAsBoolean());
+        SmartDashboard.putBoolean("robotCommandFactory/isColumnHappy", m_column.isMotorVelocityOverPercentToleranceTrigger(columnSupplier).getAsBoolean());
+        SmartDashboard.putBoolean("robotCommandFactory/isMotorVelocityWithinPercentTolerance", m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier).getAsBoolean());
       }),
 
       // shooter 
@@ -489,23 +489,23 @@ public class RobotCommandFactory {
 
   // HELPER FUNCTIONS
   private Double setPivotVelocity() {
-    return SmartDashboard.getNumber("pivot IO/velocity", 1);
+    return SmartDashboard.getNumber("pivot/dashboardTestVelocityRotationsPerSecond", 1);
   }
 
   private Double setRollerVelocity() {
-    return SmartDashboard.getNumber("roller IO/velocity", RollerConstants.ROLLER_VELOCITY);
+    return SmartDashboard.getNumber("roller/dashboardTestVelocityRotationsPerSecond", RollerConstants.ROLLER_VELOCITY);
   }
 
   private Double setIndexerVelocity() {
-    return SmartDashboard.getNumber("indexer IO/velocity", IndexerConstants.INDEXER_VELOCITY);
+    return SmartDashboard.getNumber("indexer/dashboardTestVelocityRotationsPerSecond", IndexerConstants.INDEXER_VELOCITY);
   }
 
   private Double setColumnVelocity() {
-    return SmartDashboard.getNumber("column IO/velocity", ColumnConstants.COLUMN_VELOCITY);
+    return SmartDashboard.getNumber("column/dashboardTestVelocityRotationsPerSecond", ColumnConstants.COLUMN_VELOCITY);
   }
 
   private Double setShooterVelocity() {
-    return SmartDashboard.getNumber("shooter influencer IO/velocity", ShooterConstants.SHOOTER_VELOCITY);
+    return SmartDashboard.getNumber("shooter/influencer/dashboardTestVelocityRotationsPerSecond", ShooterConstants.SHOOTER_VELOCITY);
   }
 
   /** 

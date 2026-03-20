@@ -61,10 +61,10 @@ public class DrivetrainCommandFactory {
             JoystickVals shapedTrans = Controls.inputShape(translation, true, slowmode);
             JoystickVals shapedRot = Controls.inputShape(rotation, false, slowmode);
 
-            SmartDashboard.putNumber("controller/translation x", -shapedTrans.y());
-            SmartDashboard.putNumber("controller/translation y", -shapedTrans.x());
-            SmartDashboard.putNumber("controller/rotation x", -shapedRot.x());
-            SmartDashboard.putNumber("controller/rotation y", -shapedRot.y());
+            SmartDashboard.putNumber("controller/translationX", -shapedTrans.y());
+            SmartDashboard.putNumber("controller/translationY", -shapedTrans.x());
+            SmartDashboard.putNumber("controller/rotationX", -shapedRot.x());
+            SmartDashboard.putNumber("controller/rotationY", -shapedRot.y());
 
             return m_drive.withVelocityX(-shapedTrans.y() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive forward with negative Y (forward)
                 .withVelocityY(-shapedTrans.x() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive left with negative X (left)
@@ -133,9 +133,10 @@ public class DrivetrainCommandFactory {
             Rotation2d angleToTarget = calculateAngleToTarget(m_drivetrain.getState().Pose, targetPose);
             targetAngle = angleToTarget;
 
-            SmartDashboard.putNumber("drivetrain/snap to target/target x", targetPose.getX());
-            SmartDashboard.putNumber("drivetrain/snap to target/target y", targetPose.getY());
-            SmartDashboard.putNumber("drivetrain/snap to target/angle", angleToTarget.getRadians());
+            SmartDashboard.putNumber("drivetrain/snapToTarget/targetXMeters", targetPose.getX());
+            SmartDashboard.putNumber("drivetrain/snapToTarget/targetYMeters", targetPose.getY());
+            SmartDashboard.putNumber("drivetrain/snapToTarget/targetAngleDegrees", angleToTarget.getDegrees());
+            SmartDashboard.putNumber("drivetrain/snapToTarget/targetAngleRadians", angleToTarget.getRadians());
 
             return m_driveFacingAngle.withVelocityX(-shapedValues.y() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive forward with negative Y (forward)
                 .withVelocityY(-shapedValues.x() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive left with negative X (left)

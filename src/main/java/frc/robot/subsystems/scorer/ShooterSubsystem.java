@@ -124,16 +124,18 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
   public void periodic() {
     super.periodic();
 
-    SmartDashboard.putNumber("shooter follower IO/live current", m_followerIO.getCurrent());
-    SmartDashboard.putNumber("shooter follower IO/live position", m_followerIO.getPositionDegrees());
-    SmartDashboard.putNumber("shooter follower IO/live velocity", m_followerIO.getVelocityDegreesPerSecond());
-    SmartDashboard.putNumber("shooter follower IO/live voltage", m_followerIO.getVoltage());
+    SmartDashboard.putNumber("shooter/follower/actualCurrent", m_followerIO.getCurrent());
+    SmartDashboard.putNumber("shooter/follower/actualPositionDegrees", m_followerIO.getPositionDegrees());
+    SmartDashboard.putNumber("shooter/follower/actualVelocityRotationsPerSecond", m_followerIO.getVelocityRotationsPerSecond());
+    SmartDashboard.putNumber("shooter/follower/actualVelocityDegreesPerSecond", m_followerIO.getVelocityDegreesPerSecond());
+    SmartDashboard.putNumber("shooter/follower/actualVoltage", m_followerIO.getVoltage());
 
-    SmartDashboard.putNumber("shooter influencer IO/live current", m_influencerIO.getCurrent());
-    SmartDashboard.putNumber("shooter influencer IO/live position", m_influencerIO.getPositionDegrees());
-    SmartDashboard.putNumber("shooter influencer IO/live velocity", m_influencerIO.getVelocityRotationsPerSecond());
-    SmartDashboard.putNumber("shooter influencer IO/live voltage", m_influencerIO.getVoltage());
+    SmartDashboard.putNumber("shooter/influencer/actualCurrent", m_influencerIO.getCurrent());
+    SmartDashboard.putNumber("shooter/influencer/actualPositionDegrees", m_influencerIO.getPositionDegrees());
+    SmartDashboard.putNumber("shooter/influencer/actualVelocityRotationsPerSecond", m_influencerIO.getVelocityRotationsPerSecond());
+    SmartDashboard.putNumber("shooter/influencer/actualVelocityDegreesPerSecond", m_influencerIO.getVelocityDegreesPerSecond());
+    SmartDashboard.putNumber("shooter/influencer/actualVoltage", m_influencerIO.getVoltage());
 
-    SmartDashboard.putBoolean("shooter/is current spiking", isCurrentSpiking().getAsBoolean());
+    SmartDashboard.putBoolean("shooter/isCurrentSpiking", isCurrentSpiking().getAsBoolean());
   }
 }
