@@ -41,25 +41,25 @@ public class RollerSubsystem extends MechanismsSubsystemBase {
 
   // Commands
   public Command rollerVoltageCommand() {
-    return voltageCommand(RollerConstants.ROLLER_VOLTAGE).withName("run roller voltage");
+    return voltageCommand(RollerConstants.ROLLER_VOLTAGE).withName("rollerVoltageCommand");
   }
 
   public Command rollerBackVoltageCommand() {
-    return voltageCommand(RollerConstants.ROLLER_BACK_VOLTAGE).withName("run roller back voltage");
+    return voltageCommand(RollerConstants.ROLLER_BACK_VOLTAGE).withName("rollerBackVoltageCommand");
   }
 
   public Command rollerWithTimeoutVoltageCommand() {
     return voltageCommand(RollerConstants.ROLLER_VOLTAGE)
     .withTimeout(RollerConstants.RUN_INTAKE_TIME)
-    .withName("run intake voltage timeout");
+    .withName("rollerWithTimeoutVoltageCommand");
   }
 
   public Command rollerVelocityCommand() { 
-    return velocityCommand(RollerConstants.ROLLER_VELOCITY);
+    return velocityCommand(RollerConstants.ROLLER_VELOCITY).withName("rollerVelocityCommand");
   }
 
   public Command rollerBackVelocityCommand() { 
-    return velocityCommand(-RollerConstants.ROLLER_VELOCITY);
+    return velocityCommand(-RollerConstants.ROLLER_VELOCITY).withName("rollerBackVelocityCommand");
   }
 
   @Override

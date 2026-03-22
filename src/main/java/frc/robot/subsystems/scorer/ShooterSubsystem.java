@@ -40,11 +40,7 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
   }
 
   public Command runShooterOff() {
-    return new RunCommand(() -> {
-        m_influencerIO.setVoltage(0);
-      },
-      this
-    );
+    return offCommand().withName("runShooterOff");
   }
 
   public void resetControllers() {
@@ -59,35 +55,34 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
 
   // Commands
   public Command shooterVelocityCommand(double velocity) {
-    return velocityCommand(velocity).withName("run shooter velocity " + velocity);
+    return velocityCommand(velocity).withName("shooterVelocityCommand");
   }
 
   public Command shooterVelocityCommand(Supplier<Double> velocitySupplier) {
-    return run(() -> { m_influencerIO.setVelocityVoltage(velocitySupplier.get());});
-    //return velocityCommand(velocitySupplier.get()).withName("run shooter velocity from supplier");
+    return velocityCommand(velocitySupplier).withName("shooterVelocityCommand");
   }
 
   public Command shooterVoltageCommand() {
     return voltageCommand(
       ShooterConstants.SHOOTER_VOLTAGE
-    ).withName("run shooter voltage");
+    ).withName("shooterVoltageCommand");
   }
   
   public Command shooterBackVoltageCommand() {
     return voltageCommand(
       ShooterConstants.SHOOTER_BACK_VOLTAGE
-    ).withName("run shooter back voltage");
+    ).withName("shooterBackVoltageCommand");
   }
 
   public Command shooterWithTimeoutVoltageCommand() {
     return voltageCommand(
       ShooterConstants.SHOOTER_VOLTAGE
-    ).withTimeout(ShooterConstants.RUN_SHOOTER_TIME).withName("run shooter timeout");
+    ).withTimeout(ShooterConstants.RUN_SHOOTER_TIME).withName("shooterWithTimeoutVoltageCommand");
   }
 
   public Command shooterAutoCommand() {
     return velocityCommand(ShooterConstants.SHOOTER_VELOCITY)
-      .withTimeout(ShooterConstants.RUN_SHOOTER_TIME).withName("run shooter auto");
+      .withTimeout(ShooterConstants.RUN_SHOOTER_TIME).withName("shooterAutoCommand");
   }
 
   public Trigger isCurrentSpiking() {

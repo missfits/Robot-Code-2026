@@ -41,15 +41,15 @@ public class IndexerSubsystem extends MechanismsSubsystemBase {
 
   // Commands
   public Command indexerVoltageCommand() {
-    return voltageCommand(IndexerConstants.INDEXER_VOLTAGE).withName("run indexer voltage");
+    return voltageCommand(IndexerConstants.INDEXER_VOLTAGE).withName("indexerVoltageCommand");
   }
 
   public Command indexerBackVoltageCommand() {
-    return voltageCommand(-IndexerConstants.INDEXER_VOLTAGE).withName("run indexer back voltage");
+    return voltageCommand(-IndexerConstants.INDEXER_VOLTAGE).withName("indexerBackVoltageCommand");
   }
 
   public Command indexerVelocityCommand() {
-    return velocityCommand(IndexerConstants.INDEXER_VELOCITY).withName("run indexer velocity");
+    return velocityCommand(IndexerConstants.INDEXER_VELOCITY).withName("indexerVelocityCommand");
   }
 
   @Override

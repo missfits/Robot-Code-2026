@@ -61,36 +61,36 @@ public abstract class MechanismsSubsystemBase extends SubsystemBase {
 
   // voltage
   public Command voltageCommand(double volts) {
-    return this.run(() -> setVoltage(volts), mechanismName + "voltageCommand");
+    return this.run(() -> setVoltage(volts), "voltageCommand");
   }
 
   public Command voltageCommandWithTimeout(double volts, double time) {
-    return this.run(() -> {setVoltage(volts);}, mechanismName + "voltageCommand with " + time + " second timeout").withTimeout(time);
+    return this.run(() -> {setVoltage(volts);}, "voltageCommandWithTimeout").withTimeout(time);
   }
 
   public Command voltageCommand(Supplier<Double> voltageSupplier) {
-    return this.run(() -> setVoltage(voltageSupplier.get()), mechanismName + "voltageCommand with supplier");
+    return this.run(() -> setVoltage(voltageSupplier.get()), "voltageCommand");
   }
 
   public Command voltageCommandWithTimeout(Supplier<Double> voltageSupplier, double time) {
-    return this.run(() -> {setVoltage(voltageSupplier.get());}, mechanismName + "voltageCommand with supplier and " + time + " second timeout").withTimeout(time);
+    return this.run(() -> {setVoltage(voltageSupplier.get());}, "voltageCommandWithTimeout").withTimeout(time);
   }
 
   // velocity
   public Command velocityCommand(double velocity) {
-    return this.run(() -> runClosedLoopVelocity(velocity), mechanismName + "velocityCommand");
+    return this.run(() -> runClosedLoopVelocity(velocity), "velocityCommand");
   } 
 
   public Command velocityCommand(double velocityOne, double velocityTwo) {
-    return this.run(()-> runClosedLoopVelocity(velocityOne, velocityTwo), mechanismName + "velocityCommand");
+    return this.run(()-> runClosedLoopVelocity(velocityOne, velocityTwo), "velocityCommand");
   }
 
   public Command velocityCommand(Supplier<Double> velocitySupplier) {
-    return this.run(() -> runClosedLoopVelocity(velocitySupplier.get()), mechanismName + "velocityCommand with supplier");
+    return this.run(() -> runClosedLoopVelocity(velocitySupplier.get()), "velocityCommand");
   }
 
   public Command velocityCommand(Supplier<Double> velocitySupplierOne, Supplier<Double> velocitySupplierTwo) {
-    return this.run(() -> runClosedLoopVelocity(velocitySupplierOne.get(), velocitySupplierTwo.get()), mechanismName + "velocityCommand with two suppliers");
+    return this.run(() -> runClosedLoopVelocity(velocitySupplierOne.get(), velocitySupplierTwo.get()), "velocityCommand");
   }
 
   protected void runClosedLoopVelocity(double velocity) {
@@ -103,7 +103,7 @@ public abstract class MechanismsSubsystemBase extends SubsystemBase {
 
   // off
   public Command offCommand() {
-    return loggedCommand(mechanismName + "off", new RunCommand(() -> setVoltage(0), this));
+    return loggedCommand("offCommand", new RunCommand(() -> setVoltage(0), this));
   }
 
   @Override
@@ -115,4 +115,4 @@ public abstract class MechanismsSubsystemBase extends SubsystemBase {
     SmartDashboard.putString(mechanismName + "/currentlyRunningOuterCommand",
     current != null ? current.getName() : "None");
   }
-}  
+}

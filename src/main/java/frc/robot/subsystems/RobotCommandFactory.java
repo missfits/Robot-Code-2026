@@ -91,7 +91,7 @@ public class RobotCommandFactory {
       m_indexer.offCommand(),
       m_column.offCommand(),
       m_shooter.shooterVelocityCommand(10)
-    );
+    ).withName("offCommand");
   }
 
   public void resetPosition() {
@@ -105,38 +105,38 @@ public class RobotCommandFactory {
   // --- TESTING COMMANDS ---
   // pivot
   public Command deployPivotTestCommand() {
-    return m_pivot.velocityCommand(m_pivotDeployVelocitySupplier).withName("deployPivot");
+    return m_pivot.velocityCommand(m_pivotDeployVelocitySupplier).withName("deployPivotTestCommand");
   }
 
   public Command storePivotTestCommand() {
-    return m_pivot.velocityCommand(m_pivotStoreVelocitySupplier).withName("storePivot");
+    return m_pivot.velocityCommand(m_pivotStoreVelocitySupplier).withName("storePivotTestCommand");
   }
 
   // rollers
   public Command runRollerTestCommand() {
-    return m_roller.velocityCommand(m_rollerVelocitySupplier).withName("runRoller");
+    return m_roller.velocityCommand(m_rollerVelocitySupplier).withName("runRollerTestCommand");
   }
 
   public Command runRollerBackTestCommand() {
-    return m_roller.velocityCommand(m_rollerBackVelocitySupplier).withName("runRollerBack");
+    return m_roller.velocityCommand(m_rollerBackVelocitySupplier).withName("runRollerBackTestCommand");
   }
 
   // indexer
   public Command runIndexerTestCommand() {
-    return m_indexer.velocityCommand(m_indexerVelocitySupplier).withName("runIndexer");
+    return m_indexer.velocityCommand(m_indexerVelocitySupplier).withName("runIndexerTestCommand");
   }
 
   public Command runIndexerBackTestCommand() {
-    return m_indexer.velocityCommand(m_indexerBackVelocitySupplier).withName("runIndexerBack");
+    return m_indexer.velocityCommand(m_indexerBackVelocitySupplier).withName("runIndexerBackTestCommand");
   }
 
   // column
   public Command runColumnTestCommand() {
-    return m_column.velocityCommand(m_columnVelocitySupplier).withName("runColumn");
+    return m_column.velocityCommand(m_columnVelocitySupplier).withName("runColumnTestCommand");
   }
 
   public Command runColumnBackTestCommand() {
-    return m_column.velocityCommand(() -> -m_columnVelocitySupplier.get()).withName("runColumnBack");
+    return m_column.velocityCommand(() -> -m_columnVelocitySupplier.get()).withName("runColumnBackTestCommand");
   }
 
   // shooter
@@ -145,11 +145,12 @@ public class RobotCommandFactory {
    */
   public Command runShooterTestCommand() {
     return m_shooter.shooterVelocityCommand(m_shooterVelocitySupplier)
-      .withName("runShooterTest");
+      .withName("runShooterTestCommand");
   }
 
   public Command runShooterBackTestCommand() {
-    return m_shooter.velocityCommand(m_shooterBackVelocitySupplier);
+    return m_shooter.shooterVelocityCommand(m_shooterBackVelocitySupplier)
+      .withName("runShooterBackTestCommand");
   }
 
   /**
@@ -160,7 +161,7 @@ public class RobotCommandFactory {
     return Commands.parallel(
       snapToHubCommand(joystickValsSupplier),
       shootWithoutVisionWithDisplacement(m_shooterVelocityInitialSupplier, m_shooterVelocitySupplier, m_columnVelocitySupplier, m_indexerVelocitySupplier, m_rollerVelocitySupplier))
-    .withName("shootWithoutVisionTest");
+    .withName("shootWithoutVisionTestCommand");
   }
 
   /**
@@ -171,13 +172,14 @@ public class RobotCommandFactory {
     return Commands.parallel(
       snapToHubCommand(joystickValsSupplier),
       shootWithVisionWithDisplacement(m_shooterVelocityInitialCalculatedSupplier, m_shooterVelocityCalculatedSupplier, m_columnVelocitySupplier, m_indexerVelocitySupplier, m_rollerVelocitySupplier))
-    .withName("shootWithVisionTest");
+    .withName("shootWithVisionTestCommand");
   }
   /**
    * Command that shoots based on distance to hub using vision
    */
   public Command shootByDistanceTestCommand() {
-    return m_shooter.shooterVelocityCommand(m_shooterVelocityCalculatedSupplier);
+    return m_shooter.shooterVelocityCommand(m_shooterVelocityCalculatedSupplier)
+      .withName("shootByDistanceTestCommand");
   }
 
   // --- COMPETITION COMMANDS ---
@@ -187,28 +189,28 @@ public class RobotCommandFactory {
     return Commands.parallel(
       m_roller.velocityCommand(RollerConstants.MANUAL_VELOCITY),
       m_indexer.velocityCommand(IndexerConstants.MANUAL_VELOCITY)
-    ).withName("runRollerIndexer");
+    ).withName("runRollerIndexerCommand");
   }
 
   public Command runRollerIndexerBackCommand() {
     return Commands.parallel(
       m_roller.velocityCommand(RollerConstants.MANUAL_BACK_VELOCITY),
       m_indexer.velocityCommand(IndexerConstants.MANUAL_BACK_VELOCITY)
-    ).withName("runRollerIndexerBack");
+    ).withName("runRollerIndexerBackCommand");
   }
 
   public Command runIndexerColumnCommand() {
     return Commands.parallel(
       m_indexer.velocityCommand(IndexerConstants.MANUAL_VELOCITY),
       m_column.velocityCommand(ColumnConstants.MANUAL_VELOCITY)
-    ).withName("runIndexerColumn");
+    ).withName("runIndexerColumnCommand");
   }
 
   public Command runIndexerColumnBackCommand() {
     return Commands.parallel(
       m_indexer.velocityCommand(IndexerConstants.MANUAL_BACK_VELOCITY),
       m_column.velocityCommand(ColumnConstants.MANUAL_BACK_VELOCITY)
-    ).withName("runIndexerColumnBack");
+    ).withName("runIndexerColumnBackCommand");
   }
 
   public Command runAllRollersCommand() {
@@ -216,7 +218,7 @@ public class RobotCommandFactory {
       m_roller.velocityCommand(RollerConstants.MANUAL_VELOCITY),
       m_indexer.velocityCommand(IndexerConstants.MANUAL_VELOCITY),
       m_column.velocityCommand(ColumnConstants.MANUAL_VELOCITY)
-    ).withName("runAllRollers");
+    ).withName("runAllRollersCommand");
   }
 
   public Command runAllRollersBackCommand() {
@@ -224,7 +226,7 @@ public class RobotCommandFactory {
       m_roller.velocityCommand(RollerConstants.MANUAL_BACK_VELOCITY), 
       m_indexer.velocityCommand(IndexerConstants.MANUAL_BACK_VELOCITY),
       m_column.velocityCommand(ColumnConstants.MANUAL_BACK_VELOCITY)
-    ).withName("runAllRollersBack");
+    ).withName("runAllRollersBackCommand");
   }
 
   public Command runShooterCloseDistanceCommand() {
@@ -234,7 +236,7 @@ public class RobotCommandFactory {
       () -> ColumnConstants.SHOOT_VELOCITY,
       () -> IndexerConstants.SHOOT_VELOCITY,
       () -> RollerConstants.SHOOT_VELOCITY
-    );
+    ).withName("runShooterCloseDistanceCommand");
   }
 
   public Command runShooterMediumDistanceCommand() {
@@ -244,7 +246,7 @@ public class RobotCommandFactory {
       () -> ColumnConstants.SHOOT_VELOCITY,
       () -> IndexerConstants.SHOOT_VELOCITY,
       () -> RollerConstants.SHOOT_VELOCITY
-    );
+    ).withName("runShooterMediumDistanceCommand");
   }
 
   public Command runShooterFarDistanceCommand() {
@@ -254,7 +256,7 @@ public class RobotCommandFactory {
       () -> ColumnConstants.SHOOT_VELOCITY,
       () -> IndexerConstants.SHOOT_VELOCITY,
       () -> RollerConstants.SHOOT_VELOCITY
-    );
+    ).withName("runShooterFarDistanceCommand");
   }
 
   public Command backupScoreCommand(double shooterVelocity) {
@@ -264,7 +266,7 @@ public class RobotCommandFactory {
       () -> ColumnConstants.SHOOT_VELOCITY,
       () -> IndexerConstants.SHOOT_VELOCITY,
       () -> RollerConstants.SHOOT_VELOCITY
-    );
+    ).withName("backupScoreCommand");
   }
 
   // - driver commands -
@@ -276,7 +278,7 @@ public class RobotCommandFactory {
       m_indexer.velocityCommand(IndexerConstants.OUTTAKE_VELOCITY),
       m_column.velocityCommand(ColumnConstants.OUTTAKE_VELOCITY),
       m_shooter.voltageCommand(ShooterConstants.OUTTAKE_VOLTAGE)
-    ).withName("outtake");
+    ).withName("outtakeCommand");
   }
 
   public Command recycleFuelCommand() {
@@ -285,7 +287,7 @@ public class RobotCommandFactory {
       m_indexer.velocityCommand(IndexerConstants.RECYCLE_VELOCITY),
       m_column.velocityCommand(ColumnConstants.RECYCLE_VELOCITY),
       m_shooter.velocityCommand(ShooterConstants.RECYCLE_VELOCITY)
-    ).withName("recycleFuel");
+    ).withName("recycleFuelCommand");
   }
 
   public Command shuttleCommand() {
@@ -295,7 +297,7 @@ public class RobotCommandFactory {
         () -> ColumnConstants.SHUTTLE_VELOCITY,
         () -> IndexerConstants.SHUTTLE_VELOCITY,
         () -> RollerConstants.ROLLER_VELOCITY
-      ).withName("shuttle");
+      ).withName("shuttleCommand");
   }
 
   public Command neutralModeCommand() {
@@ -304,7 +306,7 @@ public class RobotCommandFactory {
       m_indexer.offCommand(),
       m_column.offCommand(),
       m_shooter.shooterVelocityCommand(10)
-    ).withName("neutralMode");
+    ).withName("neutralModeCommand");
   }
 
   // intake mode
@@ -314,7 +316,7 @@ public class RobotCommandFactory {
       m_roller.velocityCommand(RollerConstants.INTAKE_VELOCITY),
       m_indexer.velocityCommand(IndexerConstants.INTAKE_VELOCITY),
       m_column.velocityCommand(ColumnConstants.INTAKE_VELOCITY) // will run backwards
-    ).withName("intakeMode");
+    ).withName("intakeModeCommand");
   }
 
   // score mode
@@ -327,7 +329,7 @@ public class RobotCommandFactory {
         () -> ColumnConstants.SHOOT_VELOCITY,
         () -> IndexerConstants.SHOOT_VELOCITY,
         () -> RollerConstants.ROLLER_VELOCITY))
-    .withName("scoreMode");
+    .withName("scoreModeCommand");
   }
 
   // shoot helper commands
@@ -464,7 +466,7 @@ public class RobotCommandFactory {
   public Command snapToHubCommand(Supplier<JoystickVals> joystickValsSupplier) {
     return m_drivetrainCommandFactory.snapToAngle( // drivetrain: snap to angle 
       joystickValsSupplier,
-      () -> HubCalculations.angleToHub(m_drivetrain.getState().Pose));
+      () -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)).withName("snapToHubCommand");
   }
   
   // snaps to hub, then points wheels in x
@@ -472,7 +474,7 @@ public class RobotCommandFactory {
   public Command snapToHubThenPointWheelsInXCommand(Supplier<JoystickVals> joystickValsSupplier) {
     return Commands.sequence(
       snapToHubCommand(joystickValsSupplier).until(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose))),
-      m_drivetrainCommandFactory.pointWheelsinX());
+      m_drivetrainCommandFactory.pointWheelsinX()).withName("snapToHubThenPointWheelsInXCommand");
   }
 
   // auto
@@ -484,7 +486,7 @@ public class RobotCommandFactory {
         () -> ColumnConstants.SHOOT_VELOCITY,
         () -> IndexerConstants.SHOOT_VELOCITY,
         () -> RollerConstants.SHOOT_VELOCITY)
-    ).withName("autoShootWithVision");
+    ).withName("autoShootWithVisionCommand");
   }
 
   // HELPER FUNCTIONS

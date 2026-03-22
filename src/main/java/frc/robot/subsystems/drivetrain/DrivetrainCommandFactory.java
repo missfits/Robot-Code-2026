@@ -70,7 +70,7 @@ public class DrivetrainCommandFactory {
                 .withVelocityY(-shapedTrans.x() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive left with negative X (left)
                 .withRotationalRate(-shapedRot.x() * DrivetrainConstants.MAX_ROTATION_SPEED); // Drive counterclockwise with negative X (left)
             }
-            );
+            ).withName("defaultDrive");
     }
 
     // ----- SNAP TO ANGLE -----
@@ -170,12 +170,12 @@ public class DrivetrainCommandFactory {
     }
 
     public Command resetRotation() {
-        return new InstantCommand(() -> m_drivetrain.setRotation(0));
+        return new InstantCommand(() -> m_drivetrain.setRotation(0)).withName("resetRotation");
     }
 
     // ----- POINT WHEELS IN X -----
     public Command pointWheelsinX() {
-        return m_drivetrain.getCommandFromRequest(() -> m_brake);
+        return m_drivetrain.getCommandFromRequest(() -> m_brake).withName("pointWheelsinX");
     }
 
     // ----- POINT -----
@@ -183,7 +183,7 @@ public class DrivetrainCommandFactory {
         return m_drivetrain.getCommandFromRequest(() -> {
             JoystickVals vals = joystickSupplier.get();
             return m_point.withModuleDirection(new Rotation2d(-vals.y(), -vals.x()));
-        });
+        }).withName("pointWheelsAt");
     }
 
     private boolean atAngle(Supplier<Rotation2d> angleSupplier) {

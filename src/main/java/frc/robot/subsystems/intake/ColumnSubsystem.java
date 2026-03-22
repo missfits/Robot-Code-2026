@@ -43,15 +43,15 @@ public class ColumnSubsystem extends MechanismsSubsystemBase {
 
   // Commands
   public Command columnVoltageCommand() {
-    return voltageCommand(ColumnConstants.COLUMN_VOLTAGE).withName("run column voltage");
+    return voltageCommand(ColumnConstants.COLUMN_VOLTAGE).withName("columnVoltageCommand");
   }
 
   public Command columnBackVoltageCommand() {
-    return voltageCommand(-ColumnConstants.COLUMN_VOLTAGE).withName("run column back voltage");
+    return voltageCommand(-ColumnConstants.COLUMN_VOLTAGE).withName("columnBackVoltageCommand");
   }
 
   public Command columnVelocityCommand() {
-    return velocityCommand(ColumnConstants.COLUMN_VELOCITY).withName("run column velocity");
+    return velocityCommand(ColumnConstants.COLUMN_VELOCITY).withName("columnVelocityCommand");
   }
 
   private boolean isMotorVelocityOverPercentTolerance(double currentVelocity, double targetVelocity) {
