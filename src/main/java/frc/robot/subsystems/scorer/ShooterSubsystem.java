@@ -16,11 +16,13 @@ import java.util.function.Supplier;
 public class ShooterSubsystem extends MechanismsSubsystemBase {
   private final ShooterIOHardware m_influencerIO = new ShooterIOHardware(ShooterMotorType.INFLUENCER);
   private final ShooterIOHardware m_followerIO = new ShooterIOHardware(ShooterMotorType.FOLLOWER);
+  private final ShooterIOHardware m_thirdIO = new ShooterIOHardware(ShooterMotorType.THIRD);
 
   public ShooterSubsystem() {
     super("shooter");
     resetPosition();
     m_followerIO.followMotor(m_influencerIO, false);
+    m_thirdIO.followMotor(m_influencerIO, false);
   }
 
   protected void setVoltage(double volts) {
@@ -50,11 +52,13 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
   public void resetControllers() {
     m_influencerIO.resetSlot0Gains();
     m_followerIO.resetSlot0Gains();
+    m_thirdIO.resetSlot0Gains();
   }
 
   public void resetPosition() {
     m_influencerIO.resetPosition();
     m_followerIO.resetPosition();
+    m_thirdIO.resetPosition();
   }
 
   // Commands
@@ -133,6 +137,11 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
     SmartDashboard.putNumber("shooter influencer IO/live position", m_influencerIO.getPositionDegrees());
     SmartDashboard.putNumber("shooter influencer IO/live velocity", m_influencerIO.getVelocityRotationsPerSecond());
     SmartDashboard.putNumber("shooter influencer IO/live voltage", m_influencerIO.getVoltage());
+
+    SmartDashboard.putNumber("shooter third IO/live current", m_thirdIO.getCurrent());
+    SmartDashboard.putNumber("shooter third IO/live position", m_thirdIO.getPositionDegrees());
+    SmartDashboard.putNumber("shooter third IO/live velocity", m_thirdIO.getVelocityDegreesPerSecond());
+    SmartDashboard.putNumber("shooter third IO/live voltage", m_thirdIO.getVoltage());
 
     SmartDashboard.putBoolean("shooter/is current spiking", isCurrentSpiking().getAsBoolean());
   }

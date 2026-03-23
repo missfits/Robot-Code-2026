@@ -7,8 +7,13 @@ import frc.robot.subsystems.MechanismsIOHardwareBase;
 
 public class ColumnIOHardware extends MechanismsIOHardwareBase {
 
-  public ColumnIOHardware(int motorID) {
-    super(motorID, ColumnConstants.MOTOR_STATOR_LIMIT, ColumnConstants.PEAK_FORWARD_DUTY_CYCLE, ColumnConstants.PEAK_REVERSE_DUTY_CYCLE, "columnIO/");
+  private final ColumnMotorType type;
+
+  public ColumnIOHardware(ColumnMotorType type) {
+    super(type.id, type.statorLimit,
+          ColumnConstants.PEAK_FORWARD_DUTY_CYCLE, ColumnConstants.PEAK_REVERSE_DUTY_CYCLE,
+          type.logPrefix);
+    this.type = type;
     resetSlot0Gains();
   }
 
@@ -46,15 +51,14 @@ public class ColumnIOHardware extends MechanismsIOHardwareBase {
     var talonFXConfigs = new TalonFXConfiguration();
     var slot0Configs = talonFXConfigs.Slot0;
 
-    //PID
-    slot0Configs.kP = ColumnConstants.kP;
-    slot0Configs.kI = ColumnConstants.kI;
-    slot0Configs.kD = ColumnConstants.kD;
-
-    //feed forward values
-    slot0Configs.kS = ColumnConstants.kS;
-    slot0Configs.kV = ColumnConstants.kV;
-    slot0Configs.kA = ColumnConstants.kA;
+    // Get current gains from ColumnConstants to support runtime tuning
+    var gains = type.gains();
+    slot0Configs.kP = gains.kP();
+    slot0Configs.kI = gains.kI();
+    slot0Configs.kD = gains.kD();
+    slot0Configs.kS = gains.kS();
+    slot0Configs.kV = gains.kV();
+    slot0Configs.kA = gains.kA();
 
     motor.getConfigurator().apply(talonFXConfigs);
   }

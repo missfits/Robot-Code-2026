@@ -331,10 +331,12 @@ public final class Constants {
     public static final boolean OVERRIDE_BRAKE_DUR_NEUTRAL = false;
 
     // Motor ID
-    public static final int MOTOR_ID = 23;
+    public static final int INFLUENCER_ID = 23;
+    public static final int FOLLOWER_ID = 24;
 
     // Motor limits
-    public static final int MOTOR_STATOR_LIMIT = 40;
+    public static final int INFLUENCER_STATOR_LIMIT = 40;
+    public static final int FOLLOWER_STATOR_LIMIT = 40;
 
     // Duty cycle limits
     public static final double PEAK_FORWARD_DUTY_CYCLE = 1;
@@ -364,15 +366,27 @@ public final class Constants {
 
     // PID gains
     // Tuned in shop 2/12
-    public static double kP = 0.3;
-    public static double kI = 0.4;
-    public static double kD = 0;
+    public static double INFLUENCER_kP = 0.3;
+    public static double INFLUENCER_kI = 0.4;
+    public static double INFLUENCER_kD = 0;
 
     // Feed forward values
     // Tuned in shop 2/12
-    public static double kS = 0;
-    public static double kV = 0.13;
-    public static double kA = 0;
+    public static double INFLUENCER_kS = 0;
+    public static double INFLUENCER_kV = 0.13;
+    public static double INFLUENCER_kA = 0;
+
+     // PID gains
+    // Tuned in shop 2/12
+    public static double FOLLLOWER_kP = 0.3;
+    public static double FOLLLOWER_kI = 0.4;
+    public static double FOLLLOWER_kD = 0;
+
+    // Feed forward values
+    // Tuned in shop 2/12
+    public static double FOLLLOWER_kS = 0;
+    public static double FOLLLOWER_kV = 0.13;
+    public static double FOLLLOWER_kA = 0;
   }
 
   public static class ShooterConstants {
@@ -388,13 +402,23 @@ public final class Constants {
     public static final int FOLLOWER_SLOT = 0;
     public static final boolean FOLLOWER_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
 
+    // Velocity voltage constants - Third
+    public static final boolean THIRD_ENABLE_FOC = false;
+    public static final double THIRD_FEED_FORWARD = 0.0;
+    public static final int THIRD_SLOT = 0;
+    public static final boolean THIRD_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
+
+
     // Motor IDs
-    public static final int INFLUENCER_MOTOR_ID = 24;
-    public static final int FOLLOWER_MOTOR_ID = 25;
+    public static final int INFLUENCER_MOTOR_ID = 25;
+    public static final int FOLLOWER_MOTOR_ID = 26;
+    public static final int THIRD_MOTOR_ID = 27;
 
     // Motor limits
     public static final int INFLUENCER_MOTOR_STATOR_LIMIT = 80;
     public static final int FOLLOWER_MOTOR_STATOR_LIMIT = 80;
+    public static final int THIRD_MOTOR_STATOR_LIMIT = 80;
+
 
     // Duty cycle limits
     public static final double PEAK_FORWARD_DUTY_CYCLE = 1;
@@ -437,6 +461,14 @@ public final class Constants {
     public static double FOLLOWER_kS = 0.2;
     public static double FOLLOWER_kV = 0.115;
     public static double FOLLOWER_kA = 0;
+
+    // Third PID/FF gains
+    public static double THIRD_kP = 0.1;
+    public static double THIRD_kI = 0;
+    public static double THIRD_kD = 0;
+    public static double THIRD_kS = 0.2;
+    public static double THIRD_kV = 0.115;
+    public static double THIRD_kA = 0;
 
     // Timing
     public static final double RUN_SHOOTER_TIME = 2.0;

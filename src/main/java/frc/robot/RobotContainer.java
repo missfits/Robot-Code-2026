@@ -27,6 +27,7 @@ import frc.robot.utils.HubCalculations;
 import frc.robot.subsystems.drivetrain.Telemetry;
 import frc.robot.subsystems.intake.RollerSubsystem;
 import frc.robot.subsystems.scorer.ShooterSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.LaserCANSensorBase;
 import frc.robot.subsystems.RobotCommandFactory;
 import frc.robot.Constants.OperatorConstants;
@@ -113,6 +114,8 @@ public class RobotContainer {
     "shooter/sensor",
     SensorConstants.FEEDER_SENSOR_MIN_DISTANCE
   );
+
+  private final LEDSubsystem m_ledSubsystem = new LEDSubsystem();
 
   // Command factories
   private final DrivetrainCommandFactory m_drivetrainCommandFactory = new DrivetrainCommandFactory(m_drivetrain);
@@ -326,6 +329,7 @@ public class RobotContainer {
 
   private void configureDefaultCommands() {
     m_robotCommandFactory.setDefaultCommand();
+    m_ledSubsystem.setDefaultCommand(m_ledSubsystem.runGradientBlueYellow());
   }
 
   public void resetPosition() {
@@ -342,9 +346,9 @@ public class RobotContainer {
     SmartDashboard.putNumber("indexer IO/voltage", SmartDashboard.getNumber("indexer/voltage", IndexerConstants.INDEXER_VOLTAGE));
 
     // Column
-    SmartDashboard.putNumber("column IO/kP", SmartDashboard.getNumber("column IO/kP", ColumnConstants.kP));
-    SmartDashboard.putNumber("column IO/kI", SmartDashboard.getNumber("column IO/kI", ColumnConstants.kI));
-    SmartDashboard.putNumber("column IO/kD", SmartDashboard.getNumber("column IO/kD", ColumnConstants.kD));
+    SmartDashboard.putNumber("column IO/kP", SmartDashboard.getNumber("column IO/kP", ColumnConstants.INFLUENCER_kP));
+    SmartDashboard.putNumber("column IO/kI", SmartDashboard.getNumber("column IO/kI", ColumnConstants.INFLUENCER_kI));
+    SmartDashboard.putNumber("column IO/kD", SmartDashboard.getNumber("column IO/kD", ColumnConstants.INFLUENCER_kD));
     SmartDashboard.putNumber("column IO/velocity", SmartDashboard.getNumber("column IO/velocity", ColumnConstants.COLUMN_VELOCITY));
     SmartDashboard.putNumber("column IO/voltage", SmartDashboard.getNumber("column/voltage", ColumnConstants.COLUMN_VOLTAGE));
 
@@ -402,9 +406,9 @@ public class RobotContainer {
     IndexerConstants.kI = SmartDashboard.getNumber("indexer IO/kI", 0);
     IndexerConstants.kD = SmartDashboard.getNumber("indexer IO/kD", 0);
     // Column
-    ColumnConstants.kP = SmartDashboard.getNumber("column IO/kP", 0);
-    ColumnConstants.kI = SmartDashboard.getNumber("column IO/kI", 0);
-    ColumnConstants.kD = SmartDashboard.getNumber("column IO/kD", 0);
+    ColumnConstants.INFLUENCER_kP = SmartDashboard.getNumber("column IO/kP", 0);
+    ColumnConstants.INFLUENCER_kI = SmartDashboard.getNumber("column IO/kI", 0);
+    ColumnConstants.INFLUENCER_kD = SmartDashboard.getNumber("column IO/kD", 0);
 
     // Roller
     RollerConstants.kP = SmartDashboard.getNumber("roller IO/kP", 0);

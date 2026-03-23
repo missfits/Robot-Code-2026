@@ -12,6 +12,11 @@ public enum ShooterMotorType {
       ShooterConstants.FOLLOWER_MOTOR_ID,
       ShooterConstants.FOLLOWER_MOTOR_STATOR_LIMIT,
       "shooter/follower/"
+  ),
+  THIRD (
+      ShooterConstants.THIRD_MOTOR_ID,
+      ShooterConstants.THIRD_MOTOR_STATOR_LIMIT,
+      "shooter/third/"
   );
 
   public final int id;
@@ -45,6 +50,14 @@ public enum ShooterMotorType {
           ShooterConstants.FOLLOWER_kS,
           ShooterConstants.FOLLOWER_kV,
           ShooterConstants.FOLLOWER_kA
+      );
+      case THIRD -> new Gains(
+          ShooterConstants.THIRD_kP,
+          ShooterConstants.THIRD_kI,
+          ShooterConstants.THIRD_kD,
+          ShooterConstants.THIRD_kS,
+          ShooterConstants.THIRD_kV,
+          ShooterConstants.THIRD_kA
       );
     };
   }
