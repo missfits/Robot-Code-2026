@@ -394,9 +394,9 @@ public class RobotCommandFactory {
           .until(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier) // shooter at target velocity 
             .and(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))) // and facing hub
           .withTimeout(ShooterConstants.WAIT_FOR_SHOOTER_TIMEOUT),
-        m_column.velocityCommand(columnSupplier)) // shoot until 
+        m_column.velocityCommand(columnSupplier) // shoot until 
           .until(not(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier)) // shooter not at target velocity 
-            .or(not(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose))))), // or not facing hub
+            .or(not(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))))), // or not facing hub
 
       // indexer 
       Commands.repeatingSequence(
