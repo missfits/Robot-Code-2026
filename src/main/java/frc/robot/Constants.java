@@ -378,15 +378,15 @@ public final class Constants {
 
      // PID gains
     // Tuned in shop 2/12
-    public static double FOLLLOWER_kP = 0.3;
-    public static double FOLLLOWER_kI = 0.4;
-    public static double FOLLLOWER_kD = 0;
+    public static double FOLLOWER_kP = 0.3;
+    public static double FOLLOWER_kI = 0.4;
+    public static double FOLLOWER_kD = 0;
 
     // Feed forward values
     // Tuned in shop 2/12
-    public static double FOLLLOWER_kS = 0;
-    public static double FOLLLOWER_kV = 0.13;
-    public static double FOLLLOWER_kA = 0;
+    public static double FOLLOWER_kS = 0;
+    public static double FOLLOWER_kV = 0.13;
+    public static double FOLLOWER_kA = 0;
   }
 
   public static class ShooterConstants {

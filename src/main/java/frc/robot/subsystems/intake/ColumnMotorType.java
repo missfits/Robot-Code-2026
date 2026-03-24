@@ -39,12 +39,12 @@ public enum ColumnMotorType {
           ColumnConstants.INFLUENCER_kA
       );
       case FOLLOWER -> new Gains(
-          ColumnConstants.FOLLLOWER_kP,
-          ColumnConstants.FOLLLOWER_kI,
-          ColumnConstants.FOLLLOWER_kD,
-          ColumnConstants.FOLLLOWER_kS,
-          ColumnConstants.FOLLLOWER_kV,
-          ColumnConstants.FOLLLOWER_kA
+          ColumnConstants.FOLLOWER_kP,
+          ColumnConstants.FOLLOWER_kI,
+          ColumnConstants.FOLLOWER_kD,
+          ColumnConstants.FOLLOWER_kS,
+          ColumnConstants.FOLLOWER_kV,
+          ColumnConstants.FOLLOWER_kA
       );
     };
   }
