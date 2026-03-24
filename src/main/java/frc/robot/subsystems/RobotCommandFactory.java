@@ -396,7 +396,7 @@ public class RobotCommandFactory {
           .withTimeout(ShooterConstants.WAIT_FOR_SHOOTER_TIMEOUT),
         m_column.velocityCommand(columnSupplier)) // shoot until 
           .until(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier).negate() // shooter not at target velocity 
-            .or(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose))).negate()), // or not facing hub
+            .or(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)).negate())), // or not facing hub
 
       // indexer 
       Commands.repeatingSequence(
@@ -406,7 +406,7 @@ public class RobotCommandFactory {
           .withTimeout(ShooterConstants.WAIT_FOR_SHOOTER_TIMEOUT),
         m_indexer.velocityCommand(indexerSupplier)
           .until(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier).negate() // shooter not at target velocity 
-            .or(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose))).negate()), // or not facing hub
+            .or(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)).negate())), // or not facing hub
 
       // roller
       Commands.repeatingSequence(
@@ -416,7 +416,7 @@ public class RobotCommandFactory {
           .withTimeout(ShooterConstants.WAIT_FOR_SHOOTER_TIMEOUT),
          m_roller.velocityCommand(rollerSupplier)
           .until(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier).negate() // shooter not at target velocity 
-            .or(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose))).negate()))) // or not facing hub
+            .or(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)).negate())))) // or not facing hub
     ).withName("shootWithVision"); 
   }
 
