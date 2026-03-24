@@ -130,7 +130,7 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
 
     SmartDashboard.putNumber("shooter follower IO/live current", m_followerIO.getCurrent());
     SmartDashboard.putNumber("shooter follower IO/live position", m_followerIO.getPositionDegrees());
-    SmartDashboard.putNumber("shooter follower IO/live velocity", m_followerIO.getVelocityDegreesPerSecond());
+    SmartDashboard.putNumber("shooter follower IO/live velocity", m_followerIO.getVelocityRotationsPerSecond());
     SmartDashboard.putNumber("shooter follower IO/live voltage", m_followerIO.getVoltage());
 
     SmartDashboard.putNumber("shooter influencer IO/live current", m_influencerIO.getCurrent());
@@ -140,7 +140,7 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
 
     SmartDashboard.putNumber("shooter third IO/live current", m_thirdIO.getCurrent());
     SmartDashboard.putNumber("shooter third IO/live position", m_thirdIO.getPositionDegrees());
-    SmartDashboard.putNumber("shooter third IO/live velocity", m_thirdIO.getVelocityDegreesPerSecond());
+    SmartDashboard.putNumber("shooter third IO/live velocity", m_thirdIO.getVelocityRotationsPerSecond());
     SmartDashboard.putNumber("shooter third IO/live voltage", m_thirdIO.getVoltage());
 
     SmartDashboard.putBoolean("shooter/is current spiking", isCurrentSpiking().getAsBoolean());
