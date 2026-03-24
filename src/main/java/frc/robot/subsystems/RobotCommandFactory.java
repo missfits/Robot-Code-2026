@@ -477,9 +477,8 @@ public class RobotCommandFactory {
   // warning: driver cannot drive while this is running
   public Command snapToHubThenPointWheelsInXCommand(Supplier<JoystickVals> joystickValsSupplier, Trigger driverInputTrigger) {
     return Commands.repeatingSequence(
-      snapToHubCommand(joystickValsSupplier) // snap to hub until at angle and no driver input
-        .until(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose))
-        .and(not(driverInputTrigger))),
+      snapToHubCommand(joystickValsSupplier) // snap to hub until at angle 
+        .until(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose))),
       m_drivetrainCommandFactory.pointWheelsinX() // snap to hub until not at angle or driver input
         .until(not(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))
         .or(driverInputTrigger)));
