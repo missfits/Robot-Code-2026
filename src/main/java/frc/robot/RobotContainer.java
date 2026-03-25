@@ -27,7 +27,6 @@ import frc.robot.utils.HubCalculations;
 import frc.robot.subsystems.drivetrain.Telemetry;
 import frc.robot.subsystems.intake.RollerSubsystem;
 import frc.robot.subsystems.scorer.ShooterSubsystem;
-import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.LaserCANSensorBase;
 import frc.robot.subsystems.RobotCommandFactory;
 import frc.robot.Constants.OperatorConstants;
@@ -114,8 +113,6 @@ public class RobotContainer {
     "shooter/sensor",
     SensorConstants.FEEDER_SENSOR_MIN_DISTANCE
   );
-
-  private final LEDSubsystem m_ledSubsystem = new LEDSubsystem();
 
   // Command factories
   private final DrivetrainCommandFactory m_drivetrainCommandFactory = new DrivetrainCommandFactory(m_drivetrain);
@@ -337,7 +334,6 @@ public class RobotContainer {
 
   private void configureDefaultCommands() {
     m_robotCommandFactory.setDefaultCommand();
-    m_ledSubsystem.setDefaultCommand(m_ledSubsystem.runGradientBlueYellow());
   }
 
   public void resetPosition() {
