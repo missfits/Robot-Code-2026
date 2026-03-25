@@ -45,17 +45,17 @@ public class RobotCommandFactory {
   private final DrivetrainCommandFactory m_drivetrainCommandFactory;
 
   // velocity suppliers
-  private final Supplier<Double> m_pivotDeployVelocitySupplier = () -> setPivotVelocity();
-  private final Supplier<Double> m_pivotStoreVelocitySupplier = () -> -setPivotVelocity();
-  private final Supplier<Double> m_rollerVelocitySupplier = () -> setRollerVelocity();
-  private final Supplier<Double> m_rollerBackVelocitySupplier = () -> -setRollerVelocity();
-  private final Supplier<Double> m_indexerVelocitySupplier = () -> setIndexerVelocity();
-  private final Supplier<Double> m_indexerBackVelocitySupplier = () -> -setIndexerVelocity();
-  private final Supplier<Double> m_columnVelocitySupplier = () -> setColumnVelocity();
-  private final Supplier<Double> m_shooterVelocitySupplier = () -> setShooterVelocity(); 
-  private final Supplier<Double> m_shooterVelocityInitialSupplier = 
-    () -> setShooterVelocity() + ShooterConstants.INTIAL_ADDITIONAL_VELOCITY;
-  private final Supplier<Double> m_shooterBackVelocitySupplier = () -> -setShooterVelocity(); 
+  private final Supplier<Double> m_pivotDeployDashboardSupplier = () -> getPivotVelocityFromDashboard();
+  private final Supplier<Double> m_pivotStoreDashboardSupplier = () -> -getPivotVelocityFromDashboard();
+  private final Supplier<Double> m_rollerDashboardSupplier = () -> getRollerVelocityFromDashboard();
+  private final Supplier<Double> m_rollerBackDashboardySupplier = () -> -getRollerVelocityFromDashboard();
+  private final Supplier<Double> m_indexerDashboardSupplier = () -> geIndexerVelocityFromDashboard();
+  private final Supplier<Double> m_indexerBackDashboardSupplier = () -> -geIndexerVelocityFromDashboard();
+  private final Supplier<Double> m_columnDashboardSupplier = () -> getColumnVelocityFromDashboard();
+  private final Supplier<Double> m_shooterDashboardSupplier = () -> getShooterVelocityFromDashboard(); 
+  private final Supplier<Double> m_shooterDashboardInitialSupplier = 
+    () -> getShooterVelocityFromDashboard() + ShooterConstants.INTIAL_ADDITIONAL_VELOCITY;
+  private final Supplier<Double> m_shooterBackVelocitySupplier = () -> -getShooterVelocityFromDashboard(); 
   private final Supplier<Double> m_shooterVelocityCalculatedSupplier = () -> calculateShooterVelocity(); 
   private final Supplier<Double> m_shooterVelocityInitialCalculatedSupplier = 
     () -> calculateShooterVelocity() + ShooterConstants.INTIAL_ADDITIONAL_VELOCITY;
@@ -105,38 +105,38 @@ public class RobotCommandFactory {
   // --- TESTING COMMANDS ---
   // pivot
   public Command deployPivotTestCommand() {
-    return m_pivot.velocityCommand(m_pivotDeployVelocitySupplier).withName("deployPivotTestCommand");
+    return m_pivot.velocityCommand(m_pivotDeployDashboardSupplier).withName("deployPivotTestCommand");
   }
 
   public Command storePivotTestCommand() {
-    return m_pivot.velocityCommand(m_pivotStoreVelocitySupplier).withName("storePivotTestCommand");
+    return m_pivot.velocityCommand(m_pivotStoreDashboardSupplier).withName("storePivotTestCommand");
   }
 
   // rollers
   public Command runRollerTestCommand() {
-    return m_roller.velocityCommand(m_rollerVelocitySupplier).withName("runRollerTestCommand");
+    return m_roller.velocityCommand(m_rollerDashboardSupplier).withName("runRollerTestCommand");
   }
 
   public Command runRollerBackTestCommand() {
-    return m_roller.velocityCommand(m_rollerBackVelocitySupplier).withName("runRollerBackTestCommand");
+    return m_roller.velocityCommand(m_rollerBackDashboardySupplier).withName("runRollerBackTestCommand");
   }
 
   // indexer
   public Command runIndexerTestCommand() {
-    return m_indexer.velocityCommand(m_indexerVelocitySupplier).withName("runIndexerTestCommand");
+    return m_indexer.velocityCommand(m_indexerDashboardSupplier).withName("runIndexerTestCommand");
   }
 
   public Command runIndexerBackTestCommand() {
-    return m_indexer.velocityCommand(m_indexerBackVelocitySupplier).withName("runIndexerBackTestCommand");
+    return m_indexer.velocityCommand(m_indexerBackDashboardSupplier).withName("runIndexerBackTestCommand");
   }
 
   // column
   public Command runColumnTestCommand() {
-    return m_column.velocityCommand(m_columnVelocitySupplier).withName("runColumnTestCommand");
+    return m_column.velocityCommand(m_columnDashboardSupplier).withName("runColumnTestCommand");
   }
 
   public Command runColumnBackTestCommand() {
-    return m_column.velocityCommand(() -> -m_columnVelocitySupplier.get()).withName("runColumnBackTestCommand");
+    return m_column.velocityCommand(() -> -m_columnDashboardSupplier.get()).withName("runColumnBackTestCommand");
   }
 
   // shooter
@@ -144,7 +144,7 @@ public class RobotCommandFactory {
    * Run shooter with shooter velocity supplier
    */
   public Command runShooterTestCommand() {
-    return m_shooter.shooterVelocityCommand(m_shooterVelocitySupplier)
+    return m_shooter.shooterVelocityCommand(m_shooterDashboardSupplier)
       .withName("runShooterTestCommand");
   }
 
@@ -160,7 +160,7 @@ public class RobotCommandFactory {
   public Command shootWithoutVisionTestCommand(Supplier<JoystickVals> joystickValsSupplier) {
     return Commands.parallel(
       snapToHubCommand(joystickValsSupplier),
-      shootWithoutVisionWithDisplacement(m_shooterVelocityInitialSupplier, m_shooterVelocitySupplier, m_columnVelocitySupplier, m_indexerVelocitySupplier, m_rollerVelocitySupplier))
+      shootWithoutVisionWithDisplacement(m_shooterDashboardInitialSupplier, m_shooterDashboardSupplier, m_columnDashboardSupplier, m_indexerDashboardSupplier, m_rollerDashboardSupplier))
     .withName("shootWithoutVisionTestCommand");
   }
 
@@ -171,7 +171,7 @@ public class RobotCommandFactory {
   public Command shootWithVisionTestCommand(Supplier<JoystickVals> joystickValsSupplier) {
     return Commands.parallel(
       snapToHubCommand(joystickValsSupplier),
-      shootWithVisionWithDisplacement(m_shooterVelocityInitialCalculatedSupplier, m_shooterVelocityCalculatedSupplier, m_columnVelocitySupplier, m_indexerVelocitySupplier, m_rollerVelocitySupplier))
+      shootWithVisionWithDisplacement(m_shooterVelocityInitialCalculatedSupplier, m_shooterVelocityCalculatedSupplier, m_columnDashboardSupplier, m_indexerDashboardSupplier, m_rollerDashboardSupplier))
     .withName("shootWithVisionTestCommand");
   }
   /**
@@ -490,23 +490,23 @@ public class RobotCommandFactory {
   }
 
   // HELPER FUNCTIONS
-  private Double setPivotVelocity() {
+  private Double getPivotVelocityFromDashboard() {
     return SmartDashboard.getNumber("pivot/dashboardTestVelocityRotationsPerSecond", 1);
   }
 
-  private Double setRollerVelocity() {
+  private Double getRollerVelocityFromDashboard() {
     return SmartDashboard.getNumber("roller/dashboardTestVelocityRotationsPerSecond", RollerConstants.ROLLER_VELOCITY);
   }
 
-  private Double setIndexerVelocity() {
+  private Double geIndexerVelocityFromDashboard() {
     return SmartDashboard.getNumber("indexer/dashboardTestVelocityRotationsPerSecond", IndexerConstants.INDEXER_VELOCITY);
   }
 
-  private Double setColumnVelocity() {
+  private Double getColumnVelocityFromDashboard() {
     return SmartDashboard.getNumber("column/dashboardTestVelocityRotationsPerSecond", ColumnConstants.COLUMN_VELOCITY);
   }
 
-  private Double setShooterVelocity() {
+  private Double getShooterVelocityFromDashboard() {
     return SmartDashboard.getNumber("shooter/influencer/dashboardTestVelocityRotationsPerSecond", ShooterConstants.SHOOTER_VELOCITY);
   }
 
@@ -537,7 +537,7 @@ public class RobotCommandFactory {
   }
 
   public double getTargetShooterVelocity() {
-    return m_shooterVelocitySupplier.get();
+    return m_shooterDashboardSupplier.get();
   }
 
   public double getCalculatedShooterVelocity() {
