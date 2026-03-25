@@ -143,7 +143,7 @@ public class RobotContainer {
     if (Utils.isSimulation()) {
       configureBindingsSimulation();
     } else {
-      configureBindingsCompetition();
+      configureBindingsTestingMechanisms();
       configureBindingsVision();
     }
 
@@ -252,9 +252,17 @@ public class RobotContainer {
     // y: store pivot
     m_testJoystick.y().and(m_testJoystick.leftBumper().negate()).whileTrue(m_pivot.storePivotCommand());
     // b: run roller
-    m_testJoystick.b().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runRollerBackTestCommand());
+    // m_testJoystick.b().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runRollerBackTestCommand());
+
+    // b: run column 
+
+    m_testJoystick.b().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runColumnTestCommand());
+
     // a: run roller and indexer 
-    m_testJoystick.a().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runRollerIndexerBackCommand());
+    // m_testJoystick.a().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runRollerIndexerBackCommand());
+
+    // a: run shooter 
+    m_testJoystick.a().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runShooterTestCommand());
 
     // left bumper + x: deploy pivot motion magic
     m_testJoystick.leftBumper().and(m_testJoystick.x()).whileTrue(m_pivot.deployPivotCommand());
