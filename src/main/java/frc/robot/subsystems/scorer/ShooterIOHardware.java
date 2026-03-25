@@ -40,7 +40,7 @@ public class ShooterIOHardware extends MechanismsIOHardwareBase {
     motorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
 
     var currentLimitsConfigs = configs.CurrentLimits;
-    currentLimitsConfigs.StatorCurrentLimit = PivotConstants.MOTOR_STATOR_LIMIT;
+    currentLimitsConfigs.StatorCurrentLimit = ShooterConstants.INFLUENCER_MOTOR_STATOR_LIMIT;
     currentLimitsConfigs.StatorCurrentLimitEnable = true; 
 
     motor.getConfigurator().apply(configs);

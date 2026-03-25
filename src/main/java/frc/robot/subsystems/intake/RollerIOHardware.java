@@ -36,7 +36,7 @@ public class RollerIOHardware extends MechanismsIOHardwareBase {
     motorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
 
     var currentLimitsConfigs = talonFXConfigs.CurrentLimits;
-    currentLimitsConfigs.StatorCurrentLimit = PivotConstants.MOTOR_STATOR_LIMIT;
+    currentLimitsConfigs.StatorCurrentLimit = RollerConstants.MOTOR_STATOR_LIMIT;
     currentLimitsConfigs.StatorCurrentLimitEnable = true; 
    
     motor.getConfigurator().apply(talonFXConfigs);
