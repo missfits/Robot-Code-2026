@@ -453,6 +453,11 @@ public final class Constants {
     public static final double FUEL_SHOT_TIMEOUT = 1.5; // in seconds
 
     public static final double WAIT_FOR_SHOOTER_TIMEOUT = 1.5;
+
+    // SOTM constants
+    public static final double SHOOTER_RPS_TO_MPS = Units.inchesToMeters(2*Math.PI*4);
+    public static final double SHOOTER_SLIP_FACTOR = 0.8; // fudge factor for slippage between shooter and fuel; TODO: tune
+    public static final double SHOOTER_ANGLE_DEGREES = 71.2393048349; // measured in CAD
   }
 
   public static class ClimberConstants {
@@ -669,5 +674,9 @@ public final class Constants {
 
   public static class AutoConstants {
     public static final double AUTO_SHOOT_TIMEOUT = 5; // in seconds; TODO: tune
+  }
+
+  public static class TeleopConstants {
+    public static final double LATENCY_COMPENSATION = 0.1; // compensate for shooter spin up + code processing time, etc. TODO: tune
   }
 }

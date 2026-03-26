@@ -5,6 +5,9 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -58,6 +61,10 @@ public class RobotCommandFactory {
   private final Supplier<Double> m_shooterBackVelocitySupplier = () -> -getShooterVelocityFromDashboard(); 
   private final Supplier<Double> m_shooterVelocityCalculatedSupplier = () -> calculateShooterVelocity(); 
   private final Supplier<Double> m_shooterVelocityInitialCalculatedSupplier = 
+    () -> calculateShooterVelocity() + ShooterConstants.INTIAL_ADDITIONAL_VELOCITY;
+    // For a fixed shooter, SOTF uses the same velocity as stationary - only the angle changes
+  private final Supplier<Double> m_shooterVelocitySOTFSupplier = () -> calculateShooterVelocity();
+  private final Supplier<Double> m_shooterVelocityInitialSOTFSupplier =
     () -> calculateShooterVelocity() + ShooterConstants.INTIAL_ADDITIONAL_VELOCITY;
 
   public RobotCommandFactory(CommandSwerveDrivetrain drivetrain, 
@@ -528,6 +535,31 @@ public class RobotCommandFactory {
     }
   }
 
+  /**
+   * Calculates the required field-relative drivetrain angle for shooting on the fly.
+   * (NOTE: for a fixed shooter, the RPM doesn't change - only the angle does)
+   */
+  private Rotation2d calculateShootOnTheFlyAngle() {
+    // Get robot state
+    Pose2d robotPose = m_drivetrain.getState().Pose;
+    ChassisSpeeds robotSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(
+      m_drivetrain.getState().Speeds,
+      robotPose.getRotation());
+
+    // Calculate SOTF shot vector using HubCalculations
+    Rotation2d drivetrainAngle = HubCalculations.calculateShootOnTheFlyAngle(robotPose, robotSpeeds);
+
+    if (drivetrainAngle == null) {
+      // Distance out of range, fall back to stationary angle (which will be like 0 lol)
+      return HubCalculations.angleToHub(robotPose);
+    }
+
+    SmartDashboard.putNumber("robotCommandFactory/SOTFdrivetrainAngleDegrees", drivetrainAngle.getDegrees());
+    SmartDashboard.putNumber("robotCommandFactory/SOTFdrivetrainAngleRadians", drivetrainAngle.getRadians());
+
+    return drivetrainAngle;
+  }
+
   public double getDistanceToHub() {
     return HubCalculations.distanceToHub(m_drivetrain.getState().Pose);
   }
@@ -542,6 +574,22 @@ public class RobotCommandFactory {
 
   public double getCalculatedShooterVelocity() {
     return m_shooterVelocityCalculatedSupplier.get();
+  }
+
+  /**
+   * Gets the calculated shooter velocity for shooting on the fly
+   * @return SOTF shooter velocity in rotations per second
+   */
+  public double getSOTFShooterVelocity() {
+    return m_shooterVelocitySOTFSupplier.get();
+  }
+
+  /**
+   * Gets the calculated angle for shooting on the fly
+   * @return SOTF angle in degrees
+   */
+  public double getSOTFAngle() {
+    return calculateShootOnTheFlyAngle().getDegrees();
   }
 
 }
