@@ -189,7 +189,7 @@ public class RobotCommandFactory {
   public Command shootWithVisionDynamicTestCommand(Supplier<JoystickVals> joystickValsSupplier) {
     return Commands.parallel(
       snapToHubCommand(joystickValsSupplier),
-      shootWithVisionDynamicWithDisplacement(m_shooterVelocityInitialCalculatedSupplier, m_shooterVelocityCalculatedSupplier, m_columnVelocitySupplier, m_indexerVelocitySupplier, m_rollerVelocitySupplier))
+      shootWithVisionDynamicWithDisplacement(m_shooterVelocityInitialCalculatedSupplier, m_shooterVelocityCalculatedSupplier, m_columnDashboardSupplier, m_indexerDashboardSupplier, m_rollerDashboardSupplier))
     .withName("shootWithVisionDynamicTest");
   }
 
@@ -704,7 +704,7 @@ public class RobotCommandFactory {
   public double getCalculatedShooterVelocity() {
     return m_shooterVelocityCalculatedSupplier.get();
   }
-  
+
   /**
    * Gets the calculated shooter velocity for shooting on the fly
    * @return SOTF shooter velocity in rotations per second
@@ -725,4 +725,5 @@ public class RobotCommandFactory {
   private Trigger not(Trigger trigger) {
     return trigger.negate();
     
+  }
 }
