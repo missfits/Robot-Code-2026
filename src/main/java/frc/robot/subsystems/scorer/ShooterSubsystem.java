@@ -40,11 +40,7 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
   }
 
   public Command runShooterOff() {
-    return new RunCommand(() -> {
-        m_influencerIO.setVoltage(0);
-      },
-      this
-    );
+    return offCommand().withName("runShooterOff");
   }
 
   public void resetControllers() {
@@ -59,35 +55,34 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
 
   // Commands
   public Command shooterVelocityCommand(double velocity) {
-    return velocityCommand(velocity).withName("run shooter velocity " + velocity);
+    return velocityCommand(velocity).withName("shooterVelocityCommand");
   }
 
   public Command shooterVelocityCommand(Supplier<Double> velocitySupplier) {
-    return run(() -> { m_influencerIO.setVelocityVoltage(velocitySupplier.get());});
-    //return velocityCommand(velocitySupplier.get()).withName("run shooter velocity from supplier");
+    return velocityCommand(velocitySupplier).withName("shooterVelocityCommand");
   }
 
   public Command shooterVoltageCommand() {
     return voltageCommand(
       ShooterConstants.SHOOTER_VOLTAGE
-    ).withName("run shooter voltage");
+    ).withName("shooterVoltageCommand");
   }
   
   public Command shooterBackVoltageCommand() {
     return voltageCommand(
       ShooterConstants.SHOOTER_BACK_VOLTAGE
-    ).withName("run shooter back voltage");
+    ).withName("shooterBackVoltageCommand");
   }
 
   public Command shooterWithTimeoutVoltageCommand() {
     return voltageCommand(
       ShooterConstants.SHOOTER_VOLTAGE
-    ).withTimeout(ShooterConstants.RUN_SHOOTER_TIME).withName("run shooter timeout");
+    ).withTimeout(ShooterConstants.RUN_SHOOTER_TIME).withName("shooterWithTimeoutVoltageCommand");
   }
 
   public Command shooterAutoCommand() {
     return velocityCommand(ShooterConstants.SHOOTER_VELOCITY)
-      .withTimeout(ShooterConstants.RUN_SHOOTER_TIME).withName("run shooter auto");
+      .withTimeout(ShooterConstants.RUN_SHOOTER_TIME).withName("shooterAutoCommand");
   }
 
   public Trigger isCurrentSpiking() {
@@ -124,16 +119,18 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
   public void periodic() {
     super.periodic();
 
-    SmartDashboard.putNumber("shooter follower IO/live current", m_followerIO.getCurrent());
-    SmartDashboard.putNumber("shooter follower IO/live position", m_followerIO.getPositionDegrees());
-    SmartDashboard.putNumber("shooter follower IO/live velocity", m_followerIO.getVelocityDegreesPerSecond());
-    SmartDashboard.putNumber("shooter follower IO/live voltage", m_followerIO.getVoltage());
+    SmartDashboard.putNumber("shooter/follower/actualCurrent", m_followerIO.getCurrent());
+    SmartDashboard.putNumber("shooter/follower/actualPositionDegrees", m_followerIO.getPositionDegrees());
+    SmartDashboard.putNumber("shooter/follower/actualVelocityRotationsPerSecond", m_followerIO.getVelocityRotationsPerSecond());
+    SmartDashboard.putNumber("shooter/follower/actualVelocityDegreesPerSecond", m_followerIO.getVelocityDegreesPerSecond());
+    SmartDashboard.putNumber("shooter/follower/actualVoltage", m_followerIO.getVoltage());
 
-    SmartDashboard.putNumber("shooter influencer IO/live current", m_influencerIO.getCurrent());
-    SmartDashboard.putNumber("shooter influencer IO/live position", m_influencerIO.getPositionDegrees());
-    SmartDashboard.putNumber("shooter influencer IO/live velocity", m_influencerIO.getVelocityRotationsPerSecond());
-    SmartDashboard.putNumber("shooter influencer IO/live voltage", m_influencerIO.getVoltage());
+    SmartDashboard.putNumber("shooter/influencer/actualCurrent", m_influencerIO.getCurrent());
+    SmartDashboard.putNumber("shooter/influencer/actualPositionDegrees", m_influencerIO.getPositionDegrees());
+    SmartDashboard.putNumber("shooter/influencer/actualVelocityRotationsPerSecond", m_influencerIO.getVelocityRotationsPerSecond());
+    SmartDashboard.putNumber("shooter/influencer/actualVelocityDegreesPerSecond", m_influencerIO.getVelocityDegreesPerSecond());
+    SmartDashboard.putNumber("shooter/influencer/actualVoltage", m_influencerIO.getVoltage());
 
-    SmartDashboard.putBoolean("shooter/is current spiking", isCurrentSpiking().getAsBoolean());
+    SmartDashboard.putBoolean("shooter/isCurrentSpiking", isCurrentSpiking().getAsBoolean());
   }
 }

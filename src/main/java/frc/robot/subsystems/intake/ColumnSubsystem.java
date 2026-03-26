@@ -43,15 +43,15 @@ public class ColumnSubsystem extends MechanismsSubsystemBase {
 
   // Commands
   public Command columnVoltageCommand() {
-    return voltageCommand(ColumnConstants.COLUMN_VOLTAGE).withName("run column voltage");
+    return voltageCommand(ColumnConstants.COLUMN_VOLTAGE).withName("columnVoltageCommand");
   }
 
   public Command columnBackVoltageCommand() {
-    return voltageCommand(-ColumnConstants.COLUMN_VOLTAGE).withName("run column back voltage");
+    return voltageCommand(-ColumnConstants.COLUMN_VOLTAGE).withName("columnBackVoltageCommand");
   }
 
   public Command columnVelocityCommand() {
-    return velocityCommand(ColumnConstants.COLUMN_VELOCITY).withName("run column velocity");
+    return velocityCommand(ColumnConstants.COLUMN_VELOCITY).withName("columnVelocityCommand");
   }
 
   private boolean isMotorVelocityOverPercentTolerance(double currentVelocity, double targetVelocity) {
@@ -71,9 +71,10 @@ public class ColumnSubsystem extends MechanismsSubsystemBase {
   @Override
   public void periodic() {
     super.periodic();
-    SmartDashboard.putNumber("column IO/live current", m_IO.getCurrent());
-    SmartDashboard.putNumber("column IO/live position", m_IO.getPositionDegrees());
-    SmartDashboard.putNumber("column IO/live velocity", m_IO.getVelocityDegreesPerSecond());
-    SmartDashboard.putNumber("column IO/live voltage", m_IO.getVoltage());
+    SmartDashboard.putNumber("column/actualCurrent", m_IO.getCurrent());
+    SmartDashboard.putNumber("column/actualPositionDegrees", m_IO.getPositionDegrees());
+    SmartDashboard.putNumber("column/actualVelocityRotationsPerSecond", m_IO.getVelocityRotationsPerSecond());
+    SmartDashboard.putNumber("column/actualVelocityDegreesPerSecond", m_IO.getVelocityDegreesPerSecond());
+    SmartDashboard.putNumber("column/actualVoltage", m_IO.getVoltage());
   }
 }
