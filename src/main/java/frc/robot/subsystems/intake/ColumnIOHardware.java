@@ -33,6 +33,10 @@ public class ColumnIOHardware extends MechanismsIOHardwareBase {
     return getMotorVelocityRevolutionsPerSecond() * ColumnConstants.DEGREES_PER_REVOLUTION;
   }
 
+  public double getVelocityRotationsPerSecond() {
+    return getVelocityDegreesPerSecond() / 360.0;
+  }
+
   public void setPositionRadians(double radians) {
     double revolutions = Math.toDegrees(radians) / ColumnConstants.DEGREES_PER_REVOLUTION;
     setPositionRevolutions(revolutions);
