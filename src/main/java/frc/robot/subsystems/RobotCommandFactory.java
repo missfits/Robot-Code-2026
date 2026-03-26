@@ -164,7 +164,7 @@ public class RobotCommandFactory {
   }
 
   /**
-   * Command that shoots based on distance to hub using vision
+   * Command that shoots based on distance to hub using vision (ORIGINAL VERSION)
    * Simultaneously runs the shooter and snap to angle, then runs column and indexer
   */
   public Command shootWithVisionTestCommand(Supplier<JoystickVals> joystickValsSupplier) {
@@ -173,6 +173,18 @@ public class RobotCommandFactory {
       shootWithVisionWithDisplacement(m_shooterVelocityInitialCalculatedSupplier, m_shooterVelocityCalculatedSupplier, m_columnVelocitySupplier, m_indexerVelocitySupplier, m_rollerVelocitySupplier))
     .withName("shootWithVisionTest");
   }
+
+  /**
+   * Command that shoots based on distance to hub using vision (DYNAMIC VERSION)
+   * Simultaneously runs the shooter and snap to angle, then runs column and indexer
+  */
+  public Command shootWithVisionDynamicTestCommand(Supplier<JoystickVals> joystickValsSupplier) {
+    return Commands.parallel(
+      snapToHubCommand(joystickValsSupplier),
+      shootWithVisionDynamicWithDisplacement(m_shooterVelocityInitialCalculatedSupplier, m_shooterVelocityCalculatedSupplier, m_columnVelocitySupplier, m_indexerVelocitySupplier, m_rollerVelocitySupplier))
+    .withName("shootWithVisionDynamicTest");
+  }
+
   /**
    * Command that shoots based on distance to hub using vision
    */
@@ -318,6 +330,10 @@ public class RobotCommandFactory {
   }
 
   // score mode
+
+  /**
+   * ORIGINAL VERSION: Score mode with simple sequences
+   */
   public Command scoreModeCommand(Supplier<JoystickVals> joystickValsSupplier, Trigger driverInputTrigger) {
     return Commands.parallel(
       snapToHubThenPointWheelsInXCommand(joystickValsSupplier, driverInputTrigger),
@@ -330,8 +346,26 @@ public class RobotCommandFactory {
     .withName("scoreMode");
   }
 
+  /**
+   * DYNAMIC VERSION: Score mode with dynamic stop/start feeding
+   */
+  public Command scoreModeDynamicCommand(Supplier<JoystickVals> joystickValsSupplier, Trigger driverInputTrigger) {
+    return Commands.parallel(
+      snapToHubThenPointWheelsInXCommand(joystickValsSupplier, driverInputTrigger),
+      shootWithVisionDynamicWithDisplacement(
+        m_shooterVelocityInitialCalculatedSupplier,
+        m_shooterVelocityCalculatedSupplier,
+        () -> ColumnConstants.SHOOT_VELOCITY,
+        () -> IndexerConstants.SHOOT_VELOCITY,
+        () -> RollerConstants.ROLLER_VELOCITY))
+    .withName("scoreModeDynamic");
+  }
+
   // shoot helper commands
 
+  /**
+   * ORIGINAL VERSION: Wraps shootWithVision (simple sequences) with displacement
+   */
   public Command shootWithVisionWithDisplacement(Supplier<Double> initialShooterSupplier, Supplier<Double> shooterSupplier, Supplier<Double> columnSupplier, Supplier<Double> indexerSupplier, Supplier<Double> rollerSupplier) {
     return Commands.parallel(
       shootWithVision(initialShooterSupplier, shooterSupplier, columnSupplier, indexerSupplier, rollerSupplier),
@@ -339,6 +373,18 @@ public class RobotCommandFactory {
         new WaitCommand(1), // wait 1 second for some of the fuel to be shot out 
         m_pivot.repeatingDisplaceFuelCommand())
     ).withName("shootWithVisionWithDisplacement");
+  }
+
+  /**
+   * DYNAMIC VERSION: Wraps shootWithVisionDynamic (repeating sequences) with displacement
+   */
+  public Command shootWithVisionDynamicWithDisplacement(Supplier<Double> initialShooterSupplier, Supplier<Double> shooterSupplier, Supplier<Double> columnSupplier, Supplier<Double> indexerSupplier, Supplier<Double> rollerSupplier) {
+    return Commands.parallel(
+      shootWithVisionDynamic(initialShooterSupplier, shooterSupplier, columnSupplier, indexerSupplier, rollerSupplier),
+      Commands.sequence(
+        new WaitCommand(1), // wait 1 second for some of the fuel to be shot out
+        m_pivot.repeatingDisplaceFuelCommand())
+    ).withName("shootWithVisionDynamicWithDisplacement");
   }
 
   /**
@@ -363,7 +409,69 @@ public class RobotCommandFactory {
    /**
    * Command that shoots with shooter, column, indexer velocity supplier
    * Simultaneously runs the shooter, then runs column and indexer **once the drivetrain is at the correct angle**
-   * 
+   * DYNAMIC VERSION: Uses repeating sequences to dynamically stop/start feeding based on conditions
+   *
+   * @param initialShooterSupplier Supplier for shooter velocity
+   * @param shooterSupplier Supplier for shooter velocity
+   * @param columnSupplier Supplier for column velocity
+   * @param indexerSupplier Supplier for indexer velocity
+   * @param rollerSupplier Supplier for roller velocity
+   * @return Command that shoots with given velocity suppliers
+   */
+  public Command shootWithVisionDynamic(Supplier<Double> initialShooterSupplier, Supplier<Double> shooterSupplier, Supplier<Double> columnSupplier, Supplier<Double> indexerSupplier, Supplier<Double> rollerSupplier) {
+    return Commands.parallel(
+
+      // log isFuelShot
+      Commands.run(() -> {
+        SmartDashboard.putBoolean("robot command factory/isColumnHappy", m_column.isMotorVelocityOverPercentToleranceTrigger(columnSupplier).getAsBoolean());
+        SmartDashboard.putBoolean("robot command factory/atAngleTrigger", m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)).getAsBoolean());
+        SmartDashboard.putBoolean("robot command factory/isMotorVelocityWithinPercentTolerance", m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier).getAsBoolean());
+      }),
+
+      // shooter 
+      Commands.sequence(
+        m_shooter.shooterVelocityCommand(initialShooterSupplier)
+          .until(m_column.isMotorVelocityOverPercentToleranceTrigger(columnSupplier))
+          .withTimeout(ShooterConstants.FUEL_SHOT_TIMEOUT),
+        m_shooter.shooterVelocityCommand(shooterSupplier)),  // run shooter at given velocity
+
+      // column
+      Commands.repeatingSequence(
+        m_column.offCommand() // wait until
+          .until(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier) // shooter at target velocity
+            .and(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))) // and facing hub
+          .withTimeout(ShooterConstants.WAIT_FOR_SHOOTER_TIMEOUT),
+        m_column.velocityCommand(columnSupplier) // shoot until
+          .until(not(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier)) // shooter not at target velocity
+            .or(not(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))))), // or not facing hub
+
+      // indexer
+      Commands.repeatingSequence(
+        m_indexer.offCommand() // wait until
+          .until(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier) // shooter at target velocity
+            .and(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))) // and facing hub
+          .withTimeout(ShooterConstants.WAIT_FOR_SHOOTER_TIMEOUT),
+        m_indexer.velocityCommand(indexerSupplier)
+          .until(not(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier)) // shooter not at target velocity
+            .or(not(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))))), // or not facing hub
+
+      // roller
+      Commands.repeatingSequence(
+        m_roller.offCommand()  // wait until
+          .until(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier) // shooter at target velocity
+            .and(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))) // and facing hub
+          .withTimeout(ShooterConstants.WAIT_FOR_SHOOTER_TIMEOUT),
+         m_roller.velocityCommand(rollerSupplier)
+          .until(not(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier)) // shooter not at target velocity
+            .or(not(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))))) // or not facing hub
+    ).withName("shootWithVisionDynamic");
+  }
+
+   /**
+   * Command that shoots with shooter, column, indexer velocity supplier
+   * Simultaneously runs the shooter, then runs column and indexer **once the drivetrain is at the correct angle**
+   * ORIGINAL VERSION: Uses simple sequences - column/indexer/roller run continuously after conditions met
+   *
    * @param initialShooterSupplier Supplier for shooter velocity
    * @param shooterSupplier Supplier for shooter velocity
    * @param columnSupplier Supplier for column velocity
@@ -381,43 +489,37 @@ public class RobotCommandFactory {
         SmartDashboard.putBoolean("robot command factory/isMotorVelocityWithinPercentTolerance", m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier).getAsBoolean());
       }),
 
-      // shooter 
+      // shooter
       Commands.sequence(
         m_shooter.shooterVelocityCommand(initialShooterSupplier)
           .until(m_column.isMotorVelocityOverPercentToleranceTrigger(columnSupplier))
           .withTimeout(ShooterConstants.FUEL_SHOT_TIMEOUT),
-        m_shooter.shooterVelocityCommand(shooterSupplier)),  // run shooter at given velocity  
-        
-      // column 
-      Commands.repeatingSequence( 
-        m_column.offCommand() // wait until 
-          .until(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier) // shooter at target velocity 
-            .and(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))) // and facing hub
-          .withTimeout(ShooterConstants.WAIT_FOR_SHOOTER_TIMEOUT),
-        m_column.velocityCommand(columnSupplier) // shoot until 
-          .until(not(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier)) // shooter not at target velocity 
-            .or(not(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))))), // or not facing hub
+        m_shooter.shooterVelocityCommand(shooterSupplier)),  // run shooter at given velocity
 
-      // indexer 
-      Commands.repeatingSequence(
-        m_indexer.offCommand() // wait until 
-          .until(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier) // shooter at target velocity 
+      // column
+      Commands.sequence(
+        m_column.offCommand() // wait until
+          .until(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier) // shooter at target velocity
             .and(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))) // and facing hub
           .withTimeout(ShooterConstants.WAIT_FOR_SHOOTER_TIMEOUT),
-        m_indexer.velocityCommand(indexerSupplier)
-          .until(not(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier)) // shooter not at target velocity 
-            .or(not(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))))), // or not facing hub
+        m_column.velocityCommand(columnSupplier)),
+
+      // indexer
+      Commands.sequence(
+        m_indexer.offCommand() // wait until
+          .until(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier) // shooter at target velocity
+            .and(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))) // and facing hub
+          .withTimeout(ShooterConstants.WAIT_FOR_SHOOTER_TIMEOUT),
+        m_indexer.velocityCommand(indexerSupplier)),
 
       // roller
-      Commands.repeatingSequence(
-        m_roller.offCommand()  // wait until 
-          .until(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier) // shooter at target velocity 
+      Commands.sequence(
+        m_roller.offCommand()  // wait until
+          .until(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier) // shooter at target velocity
             .and(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))) // and facing hub
           .withTimeout(ShooterConstants.WAIT_FOR_SHOOTER_TIMEOUT),
-         m_roller.velocityCommand(rollerSupplier)
-          .until(not(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier)) // shooter not at target velocity 
-            .or(not(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))))) // or not facing hub
-    ).withName("shootWithVision"); 
+         m_roller.velocityCommand(rollerSupplier))
+    ).withName("shootWithVision");
   }
 
   /**
@@ -485,6 +587,10 @@ public class RobotCommandFactory {
   }
 
   // auto
+
+  /**
+   * ORIGINAL VERSION: Auto shoot with vision using simple sequences
+   */
   public Command autoShootWithVisionCommand() {
     return Commands.parallel(
       shootWithVisionWithDisplacement(
@@ -494,6 +600,20 @@ public class RobotCommandFactory {
         () -> IndexerConstants.SHOOT_VELOCITY,
         () -> RollerConstants.SHOOT_VELOCITY)
     ).withName("autoShootWithVision");
+  }
+
+  /**
+   * DYNAMIC VERSION: Auto shoot with vision using dynamic stop/start feeding
+   */
+  public Command autoShootWithVisionDynamicCommand() {
+    return Commands.parallel(
+      shootWithVisionDynamicWithDisplacement(
+        m_shooterVelocityInitialCalculatedSupplier,
+        m_shooterVelocityCalculatedSupplier,
+        () -> ColumnConstants.SHOOT_VELOCITY,
+        () -> IndexerConstants.SHOOT_VELOCITY,
+        () -> RollerConstants.SHOOT_VELOCITY)
+    ).withName("autoShootWithVisionDynamic");
   }
 
   // HELPER FUNCTIONS
