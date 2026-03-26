@@ -37,7 +37,6 @@ public class ShooterIOHardware extends MechanismsIOHardwareBase {
     var motorOutputConfigs = configs.MotorOutput;
     motorOutputConfigs.PeakForwardDutyCycle = ShooterConstants.PEAK_FORWARD_DUTY_CYCLE;
     motorOutputConfigs.PeakReverseDutyCycle = ShooterConstants.PEAK_REVERSE_DUTY_CYCLE;
-    motorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
 
     var currentLimitsConfigs = configs.CurrentLimits;
     currentLimitsConfigs.StatorCurrentLimit = ShooterConstants.INFLUENCER_MOTOR_STATOR_LIMIT;

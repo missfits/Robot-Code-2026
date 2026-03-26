@@ -58,9 +58,6 @@ public class ColumnIOHardware extends MechanismsIOHardwareBase {
     slot0Configs.kV = ColumnConstants.kV;
     slot0Configs.kA = ColumnConstants.kA;
 
-    var motorOutputConfigs = talonFXConfigs.MotorOutput;
-    motorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
-
     var currentLimitsConfigs = talonFXConfigs.CurrentLimits;
     currentLimitsConfigs.StatorCurrentLimit = ColumnConstants.MOTOR_STATOR_LIMIT;
     currentLimitsConfigs.StatorCurrentLimitEnable = true; 

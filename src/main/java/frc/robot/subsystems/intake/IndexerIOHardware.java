@@ -56,9 +56,6 @@ public class IndexerIOHardware extends MechanismsIOHardwareBase {
     slot0Configs.kV = IndexerConstants.kV;
     slot0Configs.kA = IndexerConstants.kA;
 
-    var motorOutputConfigs = talonFXConfigs.MotorOutput;
-    motorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
-
     var currentLimitsConfigs = talonFXConfigs.CurrentLimits;
     currentLimitsConfigs.StatorCurrentLimit = IndexerConstants.MOTOR_STATOR_LIMIT;
     currentLimitsConfigs.StatorCurrentLimitEnable = true; 

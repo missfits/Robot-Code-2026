@@ -33,8 +33,6 @@ public class RollerIOHardware extends MechanismsIOHardwareBase {
     motorOutputConfigs.PeakForwardDutyCycle = RollerConstants.PEAK_FORWARD_DUTY_CYCLE;
     motorOutputConfigs.PeakReverseDutyCycle = RollerConstants.PEAK_REVERSE_DUTY_CYCLE;
 
-    motorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
-
     var currentLimitsConfigs = talonFXConfigs.CurrentLimits;
     currentLimitsConfigs.StatorCurrentLimit = RollerConstants.MOTOR_STATOR_LIMIT;
     currentLimitsConfigs.StatorCurrentLimitEnable = true; 
