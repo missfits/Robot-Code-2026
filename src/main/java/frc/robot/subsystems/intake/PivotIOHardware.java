@@ -15,7 +15,7 @@ public class PivotIOHardware extends MechanismsIOHardwareBase {
 
   public PivotIOHardware(int motorID) {
     super(motorID, PivotConstants.MOTOR_STATOR_LIMIT,
-        PivotConstants.PEAK_FORWARD_DUTY_CYCLE, PivotConstants.PEAK_REVERSE_DUTY_CYCLE, "pivotIO/");
+        PivotConstants.PEAK_FORWARD_DUTY_CYCLE, PivotConstants.PEAK_REVERSE_DUTY_CYCLE, "pivot/");
     resetSlot0Gains();
     setNeutralMode(NeutralModeValue.Brake);
   }
@@ -36,6 +36,10 @@ public class PivotIOHardware extends MechanismsIOHardwareBase {
     return getMotorVelocityRevolutionsPerSecond() * PivotConstants.DEGREES_PER_REVOLUTION;
   }
 
+  public double getVelocityRotationsPerSecond() {
+    return getVelocityDegreesPerSecond() / 360.0;
+  }
+
   public void setPositionRadians(double radians) {
     double revolutions = Math.toDegrees(radians) / PivotConstants.DEGREES_PER_REVOLUTION;
     setPositionRevolutions(revolutions);
@@ -54,7 +58,7 @@ public class PivotIOHardware extends MechanismsIOHardwareBase {
   public void setVelocityVoltage(double velocityRevolutionsPerSecond) {
     velocityRevolutionsPerSecond = MechanismUtil.clamp(velocityRevolutionsPerSecond, getPositionDegrees(), PivotConstants.STORE_POSITION_DEGREES, PivotConstants.DEPLOY_POSITION_DEGREES,
         -PivotConstants.MAX_VELOCITY, PivotConstants.MAX_VELOCITY, 0, 0);
-    SmartDashboard.putNumber(logPrefix + "targetVelocityRevolutionsPerSecond", velocityRevolutionsPerSecond);
+    SmartDashboard.putNumber(logPrefix + "targetVelocityRotationsPerSecond", velocityRevolutionsPerSecond);
     motor.setControl(new VelocityVoltage(velocityRevolutionsPerSecond));
   }
 

@@ -52,10 +52,11 @@ public class PivotSubsystem extends MechanismsSubsystemBase {
   @Override
   public void periodic() {
     super.periodic();
-    SmartDashboard.putNumber("pivot IO/live current", m_IO.getCurrent());
-    SmartDashboard.putNumber("pivot IO/live position", m_IO.getPositionDegrees());
-    SmartDashboard.putNumber("pivot IO/live velocity", m_IO.getVelocityDegreesPerSecond());
-    SmartDashboard.putNumber("pivot IO/live voltage", m_IO.getVoltage());
+    SmartDashboard.putNumber("pivot/actualCurrent", m_IO.getCurrent());
+    SmartDashboard.putNumber("pivot/actualPositionDegrees", m_IO.getPositionDegrees());
+    SmartDashboard.putNumber("pivot/actualVelocityRotationsPerSecond", m_IO.getVelocityRotationsPerSecond());
+    SmartDashboard.putNumber("pivot/actualVelocityDegreesPerSecond", m_IO.getVelocityDegreesPerSecond());
+    SmartDashboard.putNumber("pivot/actualVoltage", m_IO.getVoltage());
   }
 
   public void resetControllers() {
@@ -64,58 +65,66 @@ public class PivotSubsystem extends MechanismsSubsystemBase {
 
   // Commands 
   public Command voltageDeployPivotCommand() {
-    return voltageCommand(PivotConstants.DEPLOY_VOLTAGE).withName("deploy pivot voltage");
+    return voltageCommand(PivotConstants.DEPLOY_VOLTAGE).withName("voltageDeployPivotCommand");
   }
 
   public Command voltageStorePivotCommand() {
-    return voltageCommand(PivotConstants.STORE_VOLTAGE).withName("store pivot voltage");
+    return voltageCommand(PivotConstants.STORE_VOLTAGE).withName("voltageStorePivotCommand");
   }
 
   public Command velocityDeployPivotCommand() {
-    return velocityCommand(PivotConstants.DEPLOY_VELOCITY).withName("deploy pivot velocity");
+    return velocityCommand(PivotConstants.DEPLOY_VELOCITY).withName("velocityDeployPivotCommand");
   }
 
   public Command velocityStorePivotCommand() {
-    return velocityCommand(PivotConstants.STORE_VELOCITY).withName("store pivot velocity");
+    return velocityCommand(PivotConstants.STORE_VELOCITY).withName("velocityStorePivotCommand");
   }
 
   public Command deployPivotCommand() {
-    return motionMagicVoltageCommand (() -> PivotConstants.DEPLOY_POSITION_DEGREES);
+    return motionMagicVoltageCommand(() -> PivotConstants.DEPLOY_POSITION_DEGREES)
+      .withName("deployPivotCommand");
   }
 
   public Command storePivotCommand() {
-    return motionMagicVoltageCommand (() -> PivotConstants.STORE_POSITION_DEGREES);
+    return motionMagicVoltageCommand(() -> PivotConstants.STORE_POSITION_DEGREES)
+      .withName("storePivotCommand");
   }
 
   public Command displaceFuelCommand() {
     return Commands.sequence(
       motionMagicVoltageCommand(() -> PivotConstants.DISPLACE_FUEL_POSITION_DEGREES).withTimeout(PivotConstants.DISPLACE_FUEL_UP_TIMEOUT), 
       motionMagicVoltageCommand(() -> PivotConstants.DEPLOY_POSITION_DEGREES).withTimeout(PivotConstants.DISPLACE_FUEL_DOWN_TIMEOUT)
-    );
+    ).withName("displaceFuelCommand");
   }
 
   public Command repeatingDisplaceFuelCommand() {
     return Commands.repeatingSequence(
       displaceFuelCommand(),
       Commands.waitSeconds(PivotConstants.DISPLACE_FUEL_DELAY)
-    );
+    ).withName("repeatingDisplaceFuelCommand");
   }
 
   
   private Command motionMagicVoltageCommand(DoubleSupplier positionSupplier) {
     return this.run(() ->  {
-      SmartDashboard.putNumber("pivot IO/motion magic target position", positionSupplier.getAsDouble());
+      SmartDashboard.putNumber("pivot/targetPositionDegrees", positionSupplier.getAsDouble());
       MotionMagicVoltage request = new MotionMagicVoltage(m_IO.degreesToMotorRevolutions(positionSupplier.getAsDouble())).withUpdateFreqHz(30);
       m_IO.goToPositionProfiled(request);
     });
   }
 
   public Command zeroPivotCommand() {
-      return this.run(() -> m_IO.setVoltage(PivotConstants.ZERO_PIVOT_VOLTAGE), "running pivot down").until(() -> m_IO.getCurrent() > PivotConstants.CURRENT_THRESHOLD).andThen(new InstantCommand(() -> this.resetPosition(PivotConstants.RESET_DEPLOY_POSITION_DEGREES)).withName("reset pivot position")).withName("zero pivot");
+      return this.run(() -> setVoltage(PivotConstants.ZERO_PIVOT_VOLTAGE))
+        .until(() -> m_IO.getCurrent() > PivotConstants.CURRENT_THRESHOLD)
+        .andThen(new InstantCommand(() -> this.resetPosition(PivotConstants.RESET_DEPLOY_POSITION_DEGREES)))
+        .withName("zeroPivotCommand");
   }
 
 
   public Command autoZeroPivotCommand() {
-      return this.run(() -> setVoltage(PivotConstants.AUTO_ZERO_PIVOT_VOLTAGE), "running pivot down").until(() -> m_IO.getCurrent() > PivotConstants.AUTO_CURRENT_THRESHOLD).andThen(new InstantCommand(() -> this.resetPosition(PivotConstants.AUTO_RESET_DEPLOY_POSITION_DEGREES)).withName("reset pivot position")).withName("zero pivot");
+      return this.run(() -> setVoltage(PivotConstants.AUTO_ZERO_PIVOT_VOLTAGE))
+        .until(() -> m_IO.getCurrent() > PivotConstants.AUTO_CURRENT_THRESHOLD)
+        .andThen(new InstantCommand(() -> this.resetPosition(PivotConstants.AUTO_RESET_DEPLOY_POSITION_DEGREES)))
+        .withName("autoZeroPivotCommand");
   }
 }

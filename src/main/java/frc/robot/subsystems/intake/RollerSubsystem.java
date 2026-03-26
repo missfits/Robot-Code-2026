@@ -41,33 +41,34 @@ public class RollerSubsystem extends MechanismsSubsystemBase {
 
   // Commands
   public Command rollerVoltageCommand() {
-    return voltageCommand(RollerConstants.ROLLER_VOLTAGE).withName("run roller voltage");
+    return voltageCommand(RollerConstants.ROLLER_VOLTAGE).withName("rollerVoltageCommand");
   }
 
   public Command rollerBackVoltageCommand() {
-    return voltageCommand(RollerConstants.ROLLER_BACK_VOLTAGE).withName("run roller back voltage");
+    return voltageCommand(RollerConstants.ROLLER_BACK_VOLTAGE).withName("rollerBackVoltageCommand");
   }
 
   public Command rollerWithTimeoutVoltageCommand() {
     return voltageCommand(RollerConstants.ROLLER_VOLTAGE)
     .withTimeout(RollerConstants.RUN_INTAKE_TIME)
-    .withName("run intake voltage timeout");
+    .withName("rollerWithTimeoutVoltageCommand");
   }
 
   public Command rollerVelocityCommand() { 
-    return velocityCommand(RollerConstants.ROLLER_VELOCITY);
+    return velocityCommand(RollerConstants.ROLLER_VELOCITY).withName("rollerVelocityCommand");
   }
 
   public Command rollerBackVelocityCommand() { 
-    return velocityCommand(-RollerConstants.ROLLER_VELOCITY);
+    return velocityCommand(-RollerConstants.ROLLER_VELOCITY).withName("rollerBackVelocityCommand");
   }
 
   @Override
   public void periodic() {
     super.periodic();
-    SmartDashboard.putNumber("roller IO/live current", m_IO.getCurrent());
-    SmartDashboard.putNumber("roller IO/live position", m_IO.getPositionDegrees());
-    SmartDashboard.putNumber("roller IO/live velocity", m_IO.getVelocityDegreesPerSecond());
-    SmartDashboard.putNumber("roller IO/live voltage", m_IO.getVoltage());
+    SmartDashboard.putNumber("roller/actualCurrent", m_IO.getCurrent());
+    SmartDashboard.putNumber("roller/actualPositionDegrees", m_IO.getPositionDegrees());
+    SmartDashboard.putNumber("roller/actualVelocityRotationsPerSecond", m_IO.getVelocityRotationsPerSecond());
+    SmartDashboard.putNumber("roller/actualVelocityDegreesPerSecond", m_IO.getVelocityDegreesPerSecond());
+    SmartDashboard.putNumber("roller/actualVoltage", m_IO.getVoltage());
   }
 }
