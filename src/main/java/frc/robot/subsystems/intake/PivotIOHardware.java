@@ -107,5 +107,6 @@ public class PivotIOHardware extends MechanismsIOHardwareBase {
     currentLimitsConfigs.StatorCurrentLimitEnable = true; 
 
     motor.getConfigurator().apply(talonFXConfigs);
+    setInverted(PivotConstants.IS_INVERTED);
   }
 }

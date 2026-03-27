@@ -43,6 +43,7 @@ public class ShooterIOHardware extends MechanismsIOHardwareBase {
     currentLimitsConfigs.StatorCurrentLimitEnable = true; 
 
     motor.getConfigurator().apply(configs);
+    setInverted(ShooterConstants.IS_INFLUENCER_INVERTED);
   }
 
   private double getDegreesPerRevolution() {
