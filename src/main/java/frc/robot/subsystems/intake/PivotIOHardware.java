@@ -108,5 +108,6 @@ public class PivotIOHardware extends MechanismsIOHardwareBase {
 
     motor.getConfigurator().apply(talonFXConfigs);
     setInverted(PivotConstants.IS_INVERTED);
+    setNeutralMode(NeutralModeValue.Brake);
   }
 }
