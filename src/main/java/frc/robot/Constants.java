@@ -440,9 +440,9 @@ public final class Constants {
     public static double SHOOTER_VELOCITY = 10.0;
     public static double SHOOTER_BACK_VELOCITY = -1.0;
 
-    public static double SHOOTER_DISTANCE1_VELOCITY = 45.0;
-    public static double SHOOTER_DISTANCE2_VELOCITY = 50.0;
-    public static double SHOOTER_DISTANCE3_VELOCITY = 55.0;
+    public static double SHOOTER_DISTANCE1_VELOCITY = 47.3; // between trench and bump 
+    public static double SHOOTER_DISTANCE2_VELOCITY = 49.;  // tower 
+    public static double SHOOTER_DISTANCE3_VELOCITY = 63.;  // corner 
 
     // Testing velocities
     public static double TESTING_VELOCITY = 40.0;
