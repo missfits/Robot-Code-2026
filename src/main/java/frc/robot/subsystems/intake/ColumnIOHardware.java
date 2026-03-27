@@ -1,8 +1,10 @@
 package frc.robot.subsystems.intake;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import frc.robot.Constants.ColumnConstants;
+import frc.robot.Constants.PivotConstants;
 import frc.robot.subsystems.MechanismsIOHardwareBase;
 
 public class ColumnIOHardware extends MechanismsIOHardwareBase {
@@ -63,6 +65,10 @@ public class ColumnIOHardware extends MechanismsIOHardwareBase {
     slot0Configs.kS = gains.kS();
     slot0Configs.kV = gains.kV();
     slot0Configs.kA = gains.kA();
+
+    var currentLimitsConfigs = talonFXConfigs.CurrentLimits;
+    currentLimitsConfigs.StatorCurrentLimit = ColumnConstants.INFLUENCER_STATOR_LIMIT;
+    currentLimitsConfigs.StatorCurrentLimitEnable = true; 
 
     motor.getConfigurator().apply(talonFXConfigs);
   }

@@ -102,6 +102,10 @@ public class PivotIOHardware extends MechanismsIOHardwareBase {
     motorOutputConfigs.PeakForwardDutyCycle = PivotConstants.PEAK_FORWARD_DUTY_CYCLE;
     motorOutputConfigs.PeakReverseDutyCycle = PivotConstants.PEAK_REVERSE_DUTY_CYCLE;
 
+    var currentLimitsConfigs = talonFXConfigs.CurrentLimits;
+    currentLimitsConfigs.StatorCurrentLimit = PivotConstants.MOTOR_STATOR_LIMIT;
+    currentLimitsConfigs.StatorCurrentLimitEnable = true; 
+
     motor.getConfigurator().apply(talonFXConfigs);
   }
 }

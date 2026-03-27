@@ -3,8 +3,10 @@ package frc.robot.subsystems.intake;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import frc.robot.Constants.IndexerConstants;
+import frc.robot.Constants.PivotConstants;
 import frc.robot.subsystems.MechanismsIOHardwareBase;
 
 public class IndexerIOHardware extends MechanismsIOHardwareBase {
@@ -57,6 +59,10 @@ public class IndexerIOHardware extends MechanismsIOHardwareBase {
     slot0Configs.kS = IndexerConstants.kS;
     slot0Configs.kV = IndexerConstants.kV;
     slot0Configs.kA = IndexerConstants.kA;
+
+    var currentLimitsConfigs = talonFXConfigs.CurrentLimits;
+    currentLimitsConfigs.StatorCurrentLimit = IndexerConstants.MOTOR_STATOR_LIMIT;
+    currentLimitsConfigs.StatorCurrentLimitEnable = true; 
 
     motor.getConfigurator().apply(talonFXConfigs);
   }
