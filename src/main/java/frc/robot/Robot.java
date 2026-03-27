@@ -8,6 +8,7 @@ import org.ironmaple.simulation.SimulatedArena;
 
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
@@ -93,8 +94,11 @@ public class Robot extends TimedRobot {
     double visionTime = Timer.getFPGATimestamp() - visionStart;
     SmartDashboard.putNumber("controlLoopTiming/visionMs", visionTime * 1000); // time for updatePoseEst() to run
 
+    // logging 
     // m_robotContainer.logToSmartDashboard();
     m_robotContainer.logShootByDistanceValues();
+
+    SmartDashboard.putNumber("batteryVoltage", RobotController.getBatteryVoltage());
 
     // --- LOOP TIMING END ---
     double loopEndTime = Timer.getFPGATimestamp();
