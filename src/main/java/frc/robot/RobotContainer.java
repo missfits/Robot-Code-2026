@@ -139,6 +139,7 @@ public class RobotContainer {
       configureBindingsSimulation();
     } else {
       configureBindingsCompetition();
+      configureBindingsTestingMechanisms();
       configureBindingsVision();
     }
 
