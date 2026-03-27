@@ -236,7 +236,7 @@ public final class Constants {
     public static final int MOTOR_ID = 21;
 
     // Motor limits
-    public static final int MOTOR_STATOR_LIMIT = 60;
+    public static final int MOTOR_STATOR_LIMIT = 80;
 
     public static final boolean IS_INVERTED = true;
 
