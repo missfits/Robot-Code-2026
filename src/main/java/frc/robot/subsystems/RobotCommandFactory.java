@@ -356,7 +356,7 @@ public class RobotCommandFactory {
   public Command scoreModeCommand(Supplier<JoystickVals> joystickValsSupplier, Trigger driverInputTrigger) {
     return Commands.parallel(
       snapToHubThenPointWheelsInXCommand(joystickValsSupplier, driverInputTrigger),
-      shootWithVisionWithDisplacement(
+      shootWithVisionDynamicWithDisplacement(
         m_shooterVelocityInitialCalculatedSupplier,
         m_shooterVelocityCalculatedSupplier,
         () -> ColumnConstants.SHOOT_VELOCITY,
