@@ -374,7 +374,7 @@ public final class Constants {
 
     // PID gains
     // Tuned in shop 2/12
-    public static double INFLUENCER_kP = 0.3;
+    public static double INFLUENCER_kP = 1.2;
     public static double INFLUENCER_kI = 0.4;
     public static double INFLUENCER_kD = 0;
 
