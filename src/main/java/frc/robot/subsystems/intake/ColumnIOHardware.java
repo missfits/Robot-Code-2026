@@ -10,7 +10,7 @@ import frc.robot.subsystems.MechanismsIOHardwareBase;
 public class ColumnIOHardware extends MechanismsIOHardwareBase {
 
   public ColumnIOHardware(int motorID) {
-    super(motorID, ColumnConstants.MOTOR_STATOR_LIMIT, ColumnConstants.PEAK_FORWARD_DUTY_CYCLE, ColumnConstants.PEAK_REVERSE_DUTY_CYCLE, "columnIO/");
+    super(motorID, ColumnConstants.MOTOR_STATOR_LIMIT, ColumnConstants.PEAK_FORWARD_DUTY_CYCLE, ColumnConstants.PEAK_REVERSE_DUTY_CYCLE, "column/");
     resetSlot0Gains();
   }
 
@@ -28,6 +28,10 @@ public class ColumnIOHardware extends MechanismsIOHardwareBase {
 
   public double getVelocityDegreesPerSecond() {
     return getMotorVelocityRevolutionsPerSecond() * ColumnConstants.DEGREES_PER_REVOLUTION;
+  }
+
+  public double getVelocityRotationsPerSecond() {
+    return getVelocityDegreesPerSecond() / 360.0;
   }
 
   public void setPositionRadians(double radians) {

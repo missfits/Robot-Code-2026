@@ -59,16 +59,16 @@ public class LocalizationCamera {
     poseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, robotToCam);
 
     pose2dPublisher = NetworkTableInstance.getDefault()
-            .getStructTopic("SmartDashboard/" + m_logString + "/estimatedRobotPose2D", Pose2d.struct).publish();
+            .getStructTopic("SmartDashboard/" + m_logString + "/estimatedRobotPose2d", Pose2d.struct).publish();
 
     pose3dPublisher = NetworkTableInstance.getDefault()
-            .getStructTopic("SmartDashboard/" + m_logString + "/estimatedRobotPose3D", Pose3d.struct).publish();
+            .getStructTopic("SmartDashboard/" + m_logString + "/estimatedRobotPose3d", Pose3d.struct).publish();
 
 
     // Initialize Field2d widget for this camera (NOT THE SAME AS FUSEDPOSE)
-    SmartDashboard.putData(m_logString + "/est pose field/" + m_cameraName, m_estPoseField);
+    SmartDashboard.putData(m_logString + "/estimatedPoseField", m_estPoseField);
 
-    SmartDashboard.putBoolean("isConnected/" + m_cameraName, m_camera.isConnected());
+    SmartDashboard.putBoolean(m_logString + "/isConnected", m_camera.isConnected());
   }
 
   public String getCameraName() {
@@ -94,7 +94,7 @@ public class LocalizationCamera {
     m_camera.setDriverMode(rawVideoMode);
 
     // log state of SINGLE CAMERA "RAW VIDEO MODE" to SmartDashboard
-    SmartDashboard.putBoolean(m_logString + "/driverMode", rawVideoMode);
+    SmartDashboard.putBoolean(m_logString + "/rawVideoModeEnabled", rawVideoMode);
   }
 
   // --- filtering methods ---
@@ -120,18 +120,22 @@ public class LocalizationCamera {
       }
 
       // logging all cameraReading data to SmartDashboard
-      SmartDashboard.putBoolean(m_logString + "/reading-is-Present", true);
+      SmartDashboard.putBoolean(m_logString + "/hasReading", true);
 
-      SmartDashboard.putNumber(m_logString + "/reading-num-targets-seen", newReading.get().numTargets());
-      SmartDashboard.putNumberArray(m_logString + "/reading-standard-devs", newReading.get().stdDevs().getData());
-      SmartDashboard.putNumber(m_logString + "/reading-timestamp", newReading.get().timestampSeconds());
-      SmartDashboard.putString(m_logString + "/reading-is-multiTag", newReading.get().numTargets() > 1 ? "multitagReading" : "singleTagReading");
+      SmartDashboard.putNumber(m_logString + "/numTargetsSeen", newReading.get().numTargets());
+      SmartDashboard.putNumberArray(m_logString + "/standardDeviations", newReading.get().stdDevs().getData());
+      SmartDashboard.putNumber(m_logString + "/timestampSeconds", newReading.get().timestampSeconds());
+      SmartDashboard.putString(m_logString + "/readingType", newReading.get().numTargets() > 1 ? "multitagReading" : "singleTagReading");
+      SmartDashboard.putNumber(m_logString + "/estimatedHeadingDegrees",
+          newReading.get().robotPose().estimatedPose.toPose2d().getRotation().getDegrees());
+      SmartDashboard.putNumber(m_logString + "/estimatedHeadingRadians",
+          newReading.get().robotPose().estimatedPose.toPose2d().getRotation().getRadians());
 
     } else {
-      SmartDashboard.putBoolean(m_logString + "/reading-is-Present", false);
+      SmartDashboard.putBoolean(m_logString + "/hasReading", false);
     }
     // no matter what, want to publish isConnected to NetworkTables
-    SmartDashboard.putBoolean("isConnected/" + m_cameraName, m_camera.isConnected());
+    SmartDashboard.putBoolean(m_logString + "/isConnected", m_camera.isConnected());
 
     // publish estimated robot Pose2d to NetworkTables
     // uses map for efficient unwrapping of Optional<CameraReading>
@@ -188,7 +192,7 @@ public class LocalizationCamera {
           // the robot's current heading and keep the one that is more consistent.
           var resolvedPose = resolveHighAmbiguityPose(candidatePoseEstimator, result.getBestTarget(), estimatedPose);
           if (resolvedPose.isEmpty()) {
-            SmartDashboard.putString(m_logString + "/filtering/" + "poseAmbiguity", "rejectedHighAmbiguity"); // alternate pose DNE
+            SmartDashboard.putString(m_logString + "/filtering/poseAmbiguityStatus", "rejectedHighAmbiguity"); // alternate pose DNE
             return Optional.empty();
           }
 
@@ -209,7 +213,7 @@ public class LocalizationCamera {
         updateField(newReading.robotPose().estimatedPose.toPose2d());
         poseEstimator = candidatePoseEstimator;
 
-        SmartDashboard.putString(m_logString + "/filtering/" + "poseAmbiguity", poseAmbiguityStatus);
+        SmartDashboard.putString(m_logString + "/filtering/poseAmbiguityStatus", poseAmbiguityStatus);
         return Optional.of(newReading);
       }
     }
@@ -288,16 +292,16 @@ public class LocalizationCamera {
 
     if (numTags == 0) {
       // No tags visible. Default to single-tag std devs
-      SmartDashboard.putString("vision/" + m_cameraName + "/standardDeviation-state", "no tags visible");
+      SmartDashboard.putString(m_logString + "/standardDeviationState", "no tags visible");
       return VisionConstants.kSingleTagStdDevs;
     } else if (numTags == 1 && avgDist > VisionConstants.VISION_DISTANCE_DISCARD) {
-      SmartDashboard.putString("vision/" + m_cameraName + "/standardDeviation-state", "target too far");
+      SmartDashboard.putString(m_logString + "/standardDeviationState", "target too far");
       return VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
     } else {
       var unscaledStdDevs = numTags > 1 ? VisionConstants.kMultiTagStdDevs : VisionConstants.kSingleTagStdDevs;
       avgDist /= numTags;
       // increase std devs based on (average) distance
-      SmartDashboard.putString("vision/" + m_cameraName + "/standardDeviation-state", "good :)");
+      SmartDashboard.putString(m_logString + "/standardDeviationState", "good :)");
       return unscaledStdDevs.times(1 + (avgDist * avgDist / VisionConstants.STD_DEV_SCALAR));
     }
   }
