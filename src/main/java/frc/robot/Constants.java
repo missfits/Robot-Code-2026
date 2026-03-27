@@ -606,18 +606,18 @@ public final class Constants {
           ROBOT_TO_CAM2_PITCH = Units.degreesToRadians(-20);
           ROBOT_TO_CAM2_YAW = Units.degreesToRadians(-135)+0.14-0.01;
  
-          ROBOT_TO_CAM3_X = Units.inchesToMeters(21./2-0.75); 
-          ROBOT_TO_CAM3_Y = Units.inchesToMeters(-33.0/2+2); 
-          ROBOT_TO_CAM3_Z = Units.inchesToMeters(29); 
+          ROBOT_TO_CAM3_X = Units.inchesToMeters(-21./2+3); 
+          ROBOT_TO_CAM3_Y = Units.inchesToMeters(-33.0/2+(6.5-1.25)); 
+          ROBOT_TO_CAM3_Z = Units.inchesToMeters(27); 
           ROBOT_TO_CAM3_ROLL = 0;
-          ROBOT_TO_CAM3_PITCH = Units.degreesToRadians(-30); 
+          ROBOT_TO_CAM3_PITCH = Units.degreesToRadians(-25); 
           ROBOT_TO_CAM3_YAW = Units.degreesToRadians(0); 
 
-          ROBOT_TO_CAM4_X = Units.inchesToMeters(21./2-0.75); 
-          ROBOT_TO_CAM4_Y = Units.inchesToMeters(33.0/2-2); 
-          ROBOT_TO_CAM4_Z = Units.inchesToMeters(29); 
+          ROBOT_TO_CAM4_X = Units.inchesToMeters(-21./2+3); 
+          ROBOT_TO_CAM4_Y = Units.inchesToMeters(33.0/2-(6.5-1.25)); 
+          ROBOT_TO_CAM4_Z = Units.inchesToMeters(26.75); 
           ROBOT_TO_CAM4_ROLL = 0;
-          ROBOT_TO_CAM4_PITCH = Units.degreesToRadians(-30); 
+          ROBOT_TO_CAM4_PITCH = Units.degreesToRadians(-25); 
           ROBOT_TO_CAM4_YAW = Units.degreesToRadians(0); 
 
           break;
