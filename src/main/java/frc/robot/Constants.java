@@ -291,7 +291,7 @@ public final class Constants {
     public static final int MOTOR_ID = 22;
 
     // Motor limits
-    public static final int MOTOR_STATOR_LIMIT = 60;
+    public static final int MOTOR_STATOR_LIMIT = 40;
 
     public static final boolean IS_INVERTED = true;
 
@@ -308,13 +308,13 @@ public final class Constants {
     // Indexer motor velocity
     public static double INDEXER_VELOCITY = 70.0;
 
-    public static double SHOOT_VELOCITY = 100.0;
+    public static double SHOOT_VELOCITY = 50.0;
     public static double MANUAL_VELOCITY = 80.0;
     public static double MANUAL_BACK_VELOCITY = -80.0;
-    public static double OUTTAKE_VELOCITY = -100.0;
-    public static double RECYCLE_VELOCITY = 100.0;
-    public static double SHUTTLE_VELOCITY = 100.0;
-    public static double INTAKE_VELOCITY = 100.0;
+    public static double OUTTAKE_VELOCITY = -80.0;
+    public static double RECYCLE_VELOCITY = 50.0;
+    public static double SHUTTLE_VELOCITY = 50.0;
+    public static double INTAKE_VELOCITY = 80.0;
 
     // Testing velocities
     public static double TESTING_VELOCITY = 0.0;
