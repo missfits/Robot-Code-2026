@@ -20,7 +20,6 @@ public class ColumnSubsystem extends MechanismsSubsystemBase {
     m_influencerIO.resetPosition();
     m_followerIO.resetPosition();
     m_followerIO.followMotor(m_influencerIO, false);
-    m_influencerIO.setInverted(ColumnConstants.IS_INFLUENCER_INVERTED);
   }
 
   protected void setVoltage(double volts) {
