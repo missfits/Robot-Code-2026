@@ -146,7 +146,7 @@ public final class Constants {
     public static final double SNAP_TO_TARGET_DISTANCE_THRESHOLD = 0.05; // 5cm
 
     // angle tolerance (in radians) for atTargetAngle()
-    public static final double ANGLE_TOLERANCE = Math.toRadians(5);
+    public static final double ANGLE_TOLERANCE = Math.toRadians(3);
 
   }
 
@@ -497,7 +497,7 @@ public final class Constants {
 
     // SOTM constants
     public static final double SHOOTER_RPS_TO_MPS = Units.inchesToMeters(2*Math.PI*4);
-    public static final double SHOOTER_SLIP_FACTOR = 0.8; // fudge factor for slippage between shooter and fuel; TODO: tune
+    public static final double SHOOTER_SLIP_FACTOR = 1; // fudge factor for slippage between shooter and fuel; TODO: tune
     public static final double SHOOTER_ANGLE_DEGREES = 71.2393048349; // measured in CAD
   }
   
@@ -701,7 +701,7 @@ public final class Constants {
   }
 
   public static class TeleopConstants {
-    public static final double LATENCY_COMPENSATION = 0.1; // compensate for shooter spin up + code processing time, etc. TODO: tune
+    public static final double LATENCY_COMPENSATION = 0.05; // compensate for shooter spin up + code processing time, etc. TODO: tune
   }
 
   public static class RobotConstants {
