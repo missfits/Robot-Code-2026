@@ -166,6 +166,8 @@ public final class Constants {
     // Motor limits
     public static final int MOTOR_STATOR_LIMIT = 40;
 
+    public static final boolean IS_INVERTED = true;
+
     // Duty cycle limits
     public static final double PEAK_FORWARD_DUTY_CYCLE = 1;
     public static final double PEAK_REVERSE_DUTY_CYCLE = -1;
@@ -236,6 +238,8 @@ public final class Constants {
     // Motor limits
     public static final int MOTOR_STATOR_LIMIT = 60;
 
+    public static final boolean IS_INVERTED = true;
+
     // Duty cycle limits
     public static final double PEAK_FORWARD_DUTY_CYCLE = 1;
     public static final double PEAK_REVERSE_DUTY_CYCLE = -1;
@@ -289,6 +293,8 @@ public final class Constants {
     // Motor limits
     public static final int MOTOR_STATOR_LIMIT = 60;
 
+    public static final boolean IS_INVERTED = true;
+
     // Duty cycle limits
     public static final double PEAK_FORWARD_DUTY_CYCLE = 1;
     public static final double PEAK_REVERSE_DUTY_CYCLE = -1;
@@ -337,6 +343,8 @@ public final class Constants {
     // Motor limits
     public static final int INFLUENCER_STATOR_LIMIT = 40;
     public static final int FOLLOWER_STATOR_LIMIT = 40;
+
+    public static final boolean IS_INFLUENCER_INVERTED = false;
 
     // Duty cycle limits
     public static final double PEAK_FORWARD_DUTY_CYCLE = 1;
@@ -419,7 +427,8 @@ public final class Constants {
     public static final int FOLLOWER_MOTOR_STATOR_LIMIT = 80;
     public static final int THIRD_MOTOR_STATOR_LIMIT = 80;
 
-
+    public static final boolean IS_INFLUENCER_INVERTED = false;
+    
     // Duty cycle limits
     public static final double PEAK_FORWARD_DUTY_CYCLE = 1;
     public static final double PEAK_REVERSE_DUTY_CYCLE = -1;
