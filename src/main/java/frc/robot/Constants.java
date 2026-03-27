@@ -703,4 +703,8 @@ public final class Constants {
   public static class TeleopConstants {
     public static final double LATENCY_COMPENSATION = 0.1; // compensate for shooter spin up + code processing time, etc. TODO: tune
   }
+
+  public static class RobotConstants {
+    public static final double BROWNOUT_VOLTAGE = 6.25;
+  }
 }

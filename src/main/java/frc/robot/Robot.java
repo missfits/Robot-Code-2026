@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Constants.RobotConstants;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -52,6 +53,7 @@ public class Robot extends TimedRobot {
     m_intake = root.append(new MechanismLigament2d("intake", 1, 0));
     SmartDashboard.putData("Mech2D", mech);
 
+    RobotController.setBrownoutVoltage(RobotConstants.BROWNOUT_VOLTAGE);
 
   }
 
