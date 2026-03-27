@@ -341,8 +341,8 @@ public final class Constants {
     public static final int FOLLOWER_ID = 24;
 
     // Motor limits
-    public static final int INFLUENCER_STATOR_LIMIT = 40;
-    public static final int FOLLOWER_STATOR_LIMIT = 40;
+    public static final int INFLUENCER_STATOR_LIMIT = 60;
+    public static final int FOLLOWER_STATOR_LIMIT = 60;
 
     public static final boolean IS_INFLUENCER_INVERTED = false;
 
