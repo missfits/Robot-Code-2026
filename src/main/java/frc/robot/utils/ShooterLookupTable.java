@@ -22,8 +22,10 @@ public class ShooterLookupTable {
     DISTANCE_TO_VELOCITY_MAP.put(1.5, 37.);   
     DISTANCE_TO_VELOCITY_MAP.put(2.0, 40.);   
     DISTANCE_TO_VELOCITY_MAP.put(2.5, 45.);   
-    DISTANCE_TO_VELOCITY_MAP.put(3.0, 49.);   
-    DISTANCE_TO_VELOCITY_MAP.put(3.5, 53.);   
+    DISTANCE_TO_VELOCITY_MAP.put(3.0, 49.);
+    DISTANCE_TO_VELOCITY_MAP.put(3.15, 49.);  // tower 
+    DISTANCE_TO_VELOCITY_MAP.put(3.5, 53.);
+    DISTANCE_TO_VELOCITY_MAP.put(3.7, 53.);   
     DISTANCE_TO_VELOCITY_MAP.put(4.0, 55.);   
     DISTANCE_TO_VELOCITY_MAP.put(4.5, 57.);   
     DISTANCE_TO_VELOCITY_MAP.put(5.1, 63.);   
