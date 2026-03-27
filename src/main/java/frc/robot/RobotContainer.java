@@ -72,8 +72,6 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.events.EventTrigger;
 
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-
 import com.ctre.phoenix6.SignalLogger;
 
 
@@ -526,8 +524,6 @@ public class RobotContainer {
       m_pivot.autoZeroPivotCommand());
     NamedCommands.registerCommand("snap to hub command", 
       m_robotCommandFactory.snapToHubCommand(() -> new JoystickVals(0, 0)).withTimeout(AutoConstants.AUTO_SHOOT_TIMEOUT));
-    NamedCommands.registerCommand("climb command", 
-      new WaitCommand(1));
     NamedCommands.registerCommand("shoot command",
        m_robotCommandFactory.autoShootWithVisionCommand().withTimeout(AutoConstants.AUTO_SHOOT_TIMEOUT));
   }
