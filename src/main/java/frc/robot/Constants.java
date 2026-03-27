@@ -359,13 +359,13 @@ public final class Constants {
     // Column motor velocities
     public static double COLUMN_VELOCITY = 100.0;
     
-    public static double SHOOT_VELOCITY = 100.0;
+    public static double SHOOT_VELOCITY = 90.0;
     public static double MANUAL_VELOCITY = 80.0;
     public static double MANUAL_BACK_VELOCITY = -80.0;
-    public static double OUTTAKE_VELOCITY = -100.0;
-    public static double RECYCLE_VELOCITY = 100.0;
-    public static double SHUTTLE_VELOCITY = 100.0;
-    public static double INTAKE_VELOCITY = -100.0;
+    public static double OUTTAKE_VELOCITY = -90.0;
+    public static double RECYCLE_VELOCITY = 90.0;
+    public static double SHUTTLE_VELOCITY = 90.0;
+    public static double INTAKE_VELOCITY = -40.0;
 
     // Testing velocities
     public static double TESTING_VELOCITY = 0.0;
