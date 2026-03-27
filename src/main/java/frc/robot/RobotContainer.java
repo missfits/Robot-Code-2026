@@ -182,8 +182,7 @@ public class RobotContainer {
     m_driverJoystick.y().and(m_driverJoystick.leftBumper().negate()).onTrue(m_robotCommandFactory.neutralModeCommand());
     // b (on true): score + led green
     m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).onTrue(
-      m_robotCommandFactory.scoreModeCommand(m_driverTranslationJoystickValsSupplier)
-        .until(driverInputTrigger()));
+      m_robotCommandFactory.scoreModeCommand(m_driverTranslationJoystickValsSupplier, driverInputTrigger()));
 
     // a: snap to bump
     m_driverJoystick.a().and(m_driverJoystick.leftBumper().negate()).whileTrue(
