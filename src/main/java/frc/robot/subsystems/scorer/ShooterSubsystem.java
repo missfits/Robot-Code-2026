@@ -16,11 +16,13 @@ import java.util.function.Supplier;
 public class ShooterSubsystem extends MechanismsSubsystemBase {
   private final ShooterIOHardware m_influencerIO = new ShooterIOHardware(ShooterMotorType.INFLUENCER);
   private final ShooterIOHardware m_followerIO = new ShooterIOHardware(ShooterMotorType.FOLLOWER);
+  private final ShooterIOHardware m_thirdIO = new ShooterIOHardware(ShooterMotorType.THIRD);
 
   public ShooterSubsystem() {
     super("shooter");
     resetPosition();
     m_followerIO.followMotor(m_influencerIO, false);
+    m_thirdIO.followMotor(m_influencerIO, false);
   }
 
   protected void setVoltage(double volts) {
@@ -46,11 +48,13 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
   public void resetControllers() {
     m_influencerIO.resetSlot0Gains();
     m_followerIO.resetSlot0Gains();
+    m_thirdIO.resetSlot0Gains();
   }
 
   public void resetPosition() {
     m_influencerIO.resetPosition();
     m_followerIO.resetPosition();
+    m_thirdIO.resetPosition();
   }
 
   // Commands
@@ -130,6 +134,12 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
     SmartDashboard.putNumber("shooter/influencer/actualVelocityRotationsPerSecond", m_influencerIO.getVelocityRotationsPerSecond());
     SmartDashboard.putNumber("shooter/influencer/actualVelocityDegreesPerSecond", m_influencerIO.getVelocityDegreesPerSecond());
     SmartDashboard.putNumber("shooter/influencer/actualVoltage", m_influencerIO.getVoltage());
+
+    SmartDashboard.putNumber("shooter/third/actualCurrent", m_thirdIO.getCurrent());
+    SmartDashboard.putNumber("shooter/third/actualPositionDegrees", m_thirdIO.getPositionDegrees());
+    SmartDashboard.putNumber("shooter/third/actualVelocityRotationsPerSecond", m_thirdIO.getVelocityRotationsPerSecond());
+    SmartDashboard.putNumber("shooter/third/actualVelocityDegreesPerSecond", m_thirdIO.getVelocityDegreesPerSecond());
+    SmartDashboard.putNumber("shooter/third/actualVoltage", m_thirdIO.getVoltage());
 
     SmartDashboard.putBoolean("shooter/isCurrentSpiking", isCurrentSpiking().getAsBoolean());
   }
