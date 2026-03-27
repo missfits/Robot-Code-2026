@@ -41,23 +41,24 @@ public class IndexerSubsystem extends MechanismsSubsystemBase {
 
   // Commands
   public Command indexerVoltageCommand() {
-    return voltageCommand(IndexerConstants.INDEXER_VOLTAGE).withName("run indexer voltage");
+    return voltageCommand(IndexerConstants.INDEXER_VOLTAGE).withName("indexerVoltageCommand");
   }
 
   public Command indexerBackVoltageCommand() {
-    return voltageCommand(-IndexerConstants.INDEXER_VOLTAGE).withName("run indexer back voltage");
+    return voltageCommand(-IndexerConstants.INDEXER_VOLTAGE).withName("indexerBackVoltageCommand");
   }
 
   public Command indexerVelocityCommand() {
-    return velocityCommand(IndexerConstants.INDEXER_VELOCITY).withName("run indexer velocity");
+    return velocityCommand(IndexerConstants.INDEXER_VELOCITY).withName("indexerVelocityCommand");
   }
 
   @Override
   public void periodic() {
     super.periodic();
-    SmartDashboard.putNumber("indexer IO/live current", m_IO.getCurrent());
-    SmartDashboard.putNumber("indexer IO/live position", m_IO.getPositionDegrees());
-    SmartDashboard.putNumber("indexer IO/live velocity", m_IO.getVelocityDegreesPerSecond());
-    SmartDashboard.putNumber("indexer IO/live voltage", m_IO.getVoltage());
+    SmartDashboard.putNumber("indexer/actualCurrent", m_IO.getCurrent());
+    SmartDashboard.putNumber("indexer/actualPositionDegrees", m_IO.getPositionDegrees());
+    SmartDashboard.putNumber("indexer/actualVelocityRotationsPerSecond", m_IO.getVelocityRotationsPerSecond());
+    SmartDashboard.putNumber("indexer/actualVelocityDegreesPerSecond", m_IO.getVelocityDegreesPerSecond());
+    SmartDashboard.putNumber("indexer/actualVoltage", m_IO.getVoltage());
   }
 }

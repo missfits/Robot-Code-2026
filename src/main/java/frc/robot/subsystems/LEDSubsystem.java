@@ -37,8 +37,7 @@ public class LEDSubsystem extends SubsystemBase {
     // Set the default command to turn the strip off, otherwise the last colors written by
     // the last command to run will continue to be displayed.
     // Note: Other default patterns could be used instead!
-    // default command has been set in robot container
-    // setDefaultCommand((runScrollingYellowBlueCommand()).withName("LED/default colors"));
+    setDefaultCommand(runScrollingYellowBlueCommand());
   }
 
 
@@ -54,63 +53,63 @@ public class LEDSubsystem extends SubsystemBase {
    * @param pattern the LED pattern to run
    */
   public Command runPattern(LEDPattern pattern) {
-    return run(() -> pattern.applyTo(m_ledBuffer)).ignoringDisable(true);
+    return run(() -> pattern.applyTo(m_ledBuffer)).ignoringDisable(true).withName("runPattern");
   }
 
   public Command runBlinkGreen() {
     return runPattern(LEDPattern.solid(Color.kGreen).blink(Time.ofBaseUnits(0.25, Units.Seconds)))
-      .withName("LED/blink green");
+      .withName("runBlinkGreen");
   }
 
   public Command runSolidYellow() {
     return runPattern(LEDPattern.solid(Color.kYellow))
-      .withName("LED/solid yellow");
+      .withName("runSolidYellow");
   }
 
   public Command runSolidBlue() {
     return runPattern(LEDPattern.solid(Color.kDarkBlue))
-      .withName("LED/solid blue");
+      .withName("runSolidBlue");
   }
 
   public Command runSolidOrange() {
     return runPattern(LEDPattern.solid(Color.kOrange))
-      .withName("LED/solid orange");
+      .withName("runSolidOrange");
   }
 
   public Command runSolidGreen() {
     return runPattern(LEDPattern.solid(Color.kGreen))
-      .withName("LED/solid green");
+      .withName("runSolidGreen");
   }
 
   public Command runSolidRed() {
     return runPattern(LEDPattern.solid(Color.kRed))
-      .withName("LED/solid red");
+      .withName("runSolidRed");
   }
 
   public Command runSolidWhite() {
     return runPattern(LEDPattern.solid(Color.kWhite))
-      .withName("LED/solid white");
+      .withName("runSolidWhite");
   }
 
   public Command runSolidPink() {
     return runPattern(LEDPattern.solid(Color.kPink))
-      .withName("LED/solid pink");
+      .withName("runSolidPink");
   }
 
   public Command runSolidPurple() {
     return runPattern(LEDPattern.solid(Color.kPurple))
-      .withName("LED/solid purple");
+      .withName("runSolidPurple");
   }
   
   public Command runGradientBlueYellow() {
     LEDPattern gradient = LEDPattern.gradient(LEDPattern.GradientType.kDiscontinuous, Color.kYellow, Color.kBlue);
-    return runPattern(gradient).withName("LED/gradient blue-yellow");
+    return runPattern(gradient).withName("runGradientBlueYellow");
   }
 
   public Command runScrollingYellowBlueCommand() {
     LEDPattern base = LEDPattern.gradient(LEDPattern.GradientType.kDiscontinuous, Color.kYellow, Color.kBlue);
     LEDPattern pattern = base.scrollAtRelativeSpeed(Percent.per(Second).of(100));
-    return runPattern(pattern).withName("LED/scrolling yellow-blue");
+    return runPattern(pattern).withName("runScrollingYellowBlueCommand");
   }
 
 }

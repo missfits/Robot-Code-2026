@@ -34,10 +34,12 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.RollerConstants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.ColumnConstants;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.IndexerConstants;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.RobotContainer.JoystickVals;
 import frc.robot.Constants.SensorConstants;
 
 import edu.wpi.first.wpilibj.DataLogManager;
@@ -83,23 +85,20 @@ import com.ctre.phoenix6.SignalLogger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  public static record JoystickVals(double x, double y) {}
-
-  public enum RobotMode {
-    NEUTRAL,
-    INTAKE,
-    SHOOT
+  public static record JoystickVals(double x, double y) {
+    public boolean isMagnitudeGreaterThan(double threshold) {
+      return Math.hypot(x, y) > threshold;
+    }
   }
 
   private final SendableChooser<Command> m_autoChooser; // Sendable chooser that holds the autos
   private final Telemetry logger = new Telemetry(DrivetrainConstants.MAX_TRANSLATION_SPEED);
-  private RobotMode m_robotMode;
 
   // Subsystems
   public final CommandSwerveDrivetrain m_drivetrain = TunerConstants.createDrivetrain();
   public final RollerSubsystem m_roller = new RollerSubsystem();
   public final ShooterSubsystem m_shooter = new ShooterSubsystem();
-  public final VisionSubsystem m_vision = new VisionSubsystem();
+  public final VisionSubsystem m_vision = new VisionSubsystem(() -> m_drivetrain.getState().Pose.getRotation());
   public final IndexerSubsystem m_indexer = new IndexerSubsystem();
   public final PivotSubsystem m_pivot = new PivotSubsystem();
   public final ColumnSubsystem m_column = new ColumnSubsystem();
@@ -129,8 +128,10 @@ public class RobotContainer {
     new CommandXboxController(OperatorConstants.kTestControllerPort);
 
   // Joystick suppliers
-  private final Supplier<JoystickVals> m_driverJoystickValsSupplier =
+  private final Supplier<JoystickVals> m_driverTranslationJoystickValsSupplier =
     () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY());
+  private final Supplier<JoystickVals> m_driverRotationJoystickValsSupplier =
+    () -> new JoystickVals(m_driverJoystick.getRightX(), m_driverJoystick.getRightY());
 
   private final Field2d m_actualField = new Field2d(); // field simulation
 
@@ -141,11 +142,9 @@ public class RobotContainer {
     if (Utils.isSimulation()) {
       configureBindingsSimulation();
     } else {
-      configureBindingsPracticeField();
-
+      configureBindingsCompetition();
+      configureBindingsVision();
     }
-
-    setRobotMode(RobotMode.NEUTRAL);
     
     // Vision LED indicator
     m_led.setDefaultCommand(m_led.runScrollingYellowBlueCommand());
@@ -166,8 +165,6 @@ public class RobotContainer {
     logToSmartDashboard();
 
     SignalLogger.start();
-
-    configureBindingsVision();
   }
 
 
@@ -177,145 +174,92 @@ public class RobotContainer {
    * Define trigger -> command mappings
    */
   private void configureBindingsCompetition() {
+
+    // --- DRIVER COMMANDS ---
     // Default drive
     m_drivetrain.setDefaultCommand(
       // Drivetrain will execute this command periodically
       m_drivetrainCommandFactory.defaultDrive(
-        () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
-        () -> new JoystickVals(m_driverJoystick.getRightX(), m_driverJoystick.getRightY())
+        m_driverTranslationJoystickValsSupplier,
+        m_driverRotationJoystickValsSupplier
       )
     );
 
-    // Drive in slowmode while right bumper is pressed
+    // x (on true): intake + led red
+    m_driverJoystick.x().and(m_driverJoystick.leftBumper().negate()).onTrue(m_robotCommandFactory.intakeModeCommand());
+    // y (on true): neutral + led blue
+    m_driverJoystick.y().and(m_driverJoystick.leftBumper().negate()).onTrue(m_robotCommandFactory.neutralModeCommand());
+    // b (on true): score + led green
+    m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).onTrue(
+      m_robotCommandFactory.scoreModeCommand(m_driverTranslationJoystickValsSupplier)
+        .until(driverInputTrigger()));
+
+    // a: snap to bump
+    m_driverJoystick.a().and(m_driverJoystick.leftBumper().negate()).whileTrue(
+      m_drivetrainCommandFactory.snapToBump(m_driverTranslationJoystickValsSupplier));
+    // left bumper + x: deploy pivot
+    m_driverJoystick.leftBumper().and(m_driverJoystick.x()).onTrue(m_pivot.deployPivotCommand());
+    // left bumper + y: store pivot
+    m_driverJoystick.leftBumper().and(m_driverJoystick.y()).onTrue(m_pivot.storePivotCommand());
+    // left bumper + b: snap to hub
+    m_driverJoystick.leftBumper().and(m_driverJoystick.b()).whileTrue(
+      m_robotCommandFactory.snapToHubCommand(m_driverTranslationJoystickValsSupplier));
+    // left bumper + a: point wheels in x
+    m_driverJoystick.leftBumper().and(m_driverJoystick.a()).whileTrue(m_drivetrainCommandFactory.pointWheelsinX());
+    // right bumper: slowmode
     m_drivetrainCommandFactory.setSlowmodeButton(m_driverJoystick.rightBumper());
+    // left trigger: shuttle
+    m_driverJoystick.leftTrigger().whileTrue(m_robotCommandFactory.shuttleCommand());
+    // right trigger: outtake / everything backwards (voltage -5)
+    m_driverJoystick.rightTrigger().whileTrue(m_robotCommandFactory.outtakeCommand());
+
+    // center d-pad: zero pivot
+    m_driverJoystick.povCenter().negate().whileTrue(m_pivot.zeroPivotCommand());
+
+    // ----------
+
+    // --- OPERATOR COMMANDS ---
+    // x: intake + indexer forward
+    m_operatorJoystick.x().and(m_operatorJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runRollerIndexerCommand());
+    // y: pivot down
+    m_operatorJoystick.y().and(m_operatorJoystick.leftBumper().negate()).whileTrue(m_pivot.voltageDeployPivotCommand());
+    // b: indexer + column forward
+    m_operatorJoystick.b().and(m_operatorJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runIndexerColumnCommand());
+    // a: intake, indexer, column forwards
+    m_operatorJoystick.a().and(m_operatorJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runAllRollersCommand());
+    // left bumper + x: intake + indexer backwards
+    m_operatorJoystick.leftBumper().and(m_operatorJoystick.x()).whileTrue(m_robotCommandFactory.runRollerIndexerBackCommand());
+    // left bumper + y: pivot up
+    m_operatorJoystick.leftBumper().and(m_operatorJoystick.y()).whileTrue(m_pivot.voltageStorePivotCommand());
+    // left bumper + b: indexer + column backwards
+    m_operatorJoystick.leftBumper().and(m_operatorJoystick.b()).whileTrue(m_robotCommandFactory.runIndexerColumnBackCommand());
+    // left bumper + a: intake, indexer, column backwards
+    m_operatorJoystick.leftBumper().and(m_operatorJoystick.a()).whileTrue(m_robotCommandFactory.runAllRollersBackCommand());
+    // right bumper: score speed 1
+    m_operatorJoystick.rightBumper().whileTrue(m_robotCommandFactory.runShooterCloseDistanceCommand());
+    // left trigger: score speed 2
+    m_operatorJoystick.leftTrigger().whileTrue(m_robotCommandFactory.runShooterMediumDistanceCommand());
+    // right trigger: score speed 3
+    m_operatorJoystick.rightTrigger().whileTrue(m_robotCommandFactory.runShooterFarDistanceCommand());
+
+    m_operatorJoystick.povCenter().negate().whileTrue(new InstantCommand(() -> m_pivot.resetToDeployPosition()));
 
 
-    m_driverJoystick.leftBumper().and(m_driverJoystick.x()).onTrue(
-      new InstantCommand(() -> setRobotMode(RobotMode.NEUTRAL))
-    );
-   
-    // // TODO: change -- this is for testing
-    // m_driverJoystick.y().and(m_driverJoystick.leftBumper().negate()).whileTrue(
-    //   m_drivetrainCommandFactory.snapToAngle(
-    //     () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
-    //     0
-    //   )
-    // );
-
-    // // TODO: change -- this is for testing
-    // m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).onTrue(
-    //   m_drivetrainCommandFactory.snapToTarget(
-    //     () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
-    //     () -> new Pose2d(Units.inchesToMeters(182), Units.inchesToMeters(182), new Rotation2d())
-    //   )
-    // );
-
-    m_driverJoystick.leftBumper().and(m_driverJoystick.y()).onTrue(
-      new InstantCommand(() -> setRobotMode(RobotMode.INTAKE))
-    );
-
-    // reset the field-centric heading on a button press
-    m_driverJoystick.leftBumper().and(m_driverJoystick.b()).onTrue(
-      m_drivetrain.runOnce(() -> m_drivetrain.resetRotation(AllianceFlipUtil.apply(new Rotation2d(0))))
-    );
-
-    m_driverJoystick.leftBumper().and(m_driverJoystick.a()).onTrue(
-      new InstantCommand(() -> setRobotMode(RobotMode.SHOOT))
-    );
-
-    m_driverJoystick.povCenter().negate().onTrue(new InstantCommand(() -> resetControllerConstantsSmartDashboard()));
     m_drivetrain.registerTelemetry(logger::telemeterize);
 
-    configureDefaultCommandCompetition();
-  }
-
-  private void configureBindingsPracticeField() {
-    // Default drive
-    m_drivetrain.setDefaultCommand(
-      // Drivetrain will execute this command periodically
-      m_drivetrainCommandFactory.defaultDrive(
-        () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
-        () -> new JoystickVals(m_driverJoystick.getRightX(), m_driverJoystick.getRightY())
-      )
-    );
-
-    // Drive in slowmode while right bumper is pressed
-    m_drivetrainCommandFactory.setSlowmodeButton(m_driverJoystick.rightBumper());
-
-    // INTAKE TESTING
-    // x: run roller and indexer
-    m_driverJoystick.x().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runIntakeRollersCommand());
-    // y: run column
-    m_driverJoystick.y().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runColumnCommand());
-    // // b: run roller back 
-    // m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).whileTrue(
-    //   m_drivetrainCommandFactory.snapToAngle( // drivetrain: snap to angle 
-    //     () -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY()),
-    //     () -> HubCalculations.angleToHub(m_drivetrain.getState().Pose))
-    // );
-
-
-    // a: run roller and indexer back
-    m_driverJoystick.a().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.shootWithoutDistance());
-
-    // left bumper + x: deploy pivot motion magic
-    m_driverJoystick.leftBumper().and(m_driverJoystick.x()).whileTrue(m_pivot.storePivotCommand());
-    // left bumper + y: store pivot motion magic
-    m_driverJoystick.leftBumper().and(m_driverJoystick.y()).whileTrue(m_pivot.displaceFuelCommand());
-    // left bumper + b: reset drivetrain rotation 
-    m_driverJoystick.leftBumper().and(m_driverJoystick.b()).whileTrue(
-      new InstantCommand(() -> m_drivetrain.resetRotation(AllianceFlipUtil.apply(new Rotation2d(0)))));
-    // left bumper + a: reset pivot to deploy position 
-    m_driverJoystick.leftBumper().and(m_driverJoystick.a()).whileTrue(new InstantCommand(
-      () -> m_pivot.resetToDeployPosition()));
-
-    // run shooter
-    m_driverJoystick.leftTrigger().and(m_driverJoystick.leftBumper().negate()).onTrue(m_robotCommandFactory.shootByDistanceCommand(() -> new JoystickVals(m_driverJoystick.getLeftX(), m_driverJoystick.getLeftY())));
-    m_driverJoystick.leftTrigger().and(m_driverJoystick.leftBumper()).onTrue(m_robotCommandFactory.offCommand());
-
-    m_driverJoystick.povCenter().negate().onTrue(new InstantCommand(() -> resetControllerConstantsSmartDashboard()));
-
-    // OPERATOR
-    // x: manual shoot at closest distance
-    m_operatorJoystick.x().and(m_operatorJoystick.leftBumper().negate()).whileTrue(
-      m_robotCommandFactory.backupScoreCommand(ShooterConstants.SHOOTER_DISTANCE1_VELOCITY)
-    );
-    // y: manual shoot at close distance
-    m_operatorJoystick.y().and(m_operatorJoystick.leftBumper().negate()).whileTrue(
-      m_robotCommandFactory.backupScoreCommand(ShooterConstants.SHOOTER_DISTANCE2_VELOCITY)
-    );
-    // b: manual shoot at far distance
-    m_operatorJoystick.b().and(m_operatorJoystick.leftBumper().negate()).whileTrue(
-      m_robotCommandFactory.backupScoreCommand(ShooterConstants.SHOOTER_DISTANCE3_VELOCITY)
-    );
-    // a: manual shoot at furthest distance
-    m_operatorJoystick.a().and(m_operatorJoystick.leftBumper().negate()).whileTrue(
-      m_robotCommandFactory.backupScoreCommand(ShooterConstants.SHOOTER_DISTANCE4_VELOCITY)
-    );
-    // left bumper + x: run roller back
-    m_operatorJoystick.leftBumper().and(m_operatorJoystick.x()).whileTrue(m_robotCommandFactory.runRollerBackCommand());
-    // left bumper + y: run indexer back
-    m_operatorJoystick.leftBumper().and(m_operatorJoystick.y()).whileTrue(m_robotCommandFactory.runIndexerBackCommand());
-    // left bumper + b: run column back
-    m_operatorJoystick.leftBumper().and(m_operatorJoystick.b()).whileTrue(m_robotCommandFactory.runColumnBackCommand());
-    // left bumper + a: run shooter back
-    m_operatorJoystick.leftBumper().and(m_operatorJoystick.a()).whileTrue(m_robotCommandFactory.runShooterBackCommand());
-
-
-    configureDefaultCommandTesting();
-
+    configureDefaultCommands();
   }
 
   // updated 3/1/26
   private void configureBindingsTestingMechanisms() {
     // x: deploy pivot
-    m_testJoystick.x().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.deployPivotCommand());
+    m_testJoystick.x().and(m_testJoystick.leftBumper().negate()).whileTrue(m_pivot.deployPivotCommand());
     // y: store pivot
-    m_testJoystick.y().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.storePivotCommand());
+    m_testJoystick.y().and(m_testJoystick.leftBumper().negate()).whileTrue(m_pivot.storePivotCommand());
     // b: run roller
-    m_testJoystick.b().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runRollerBackCommand());
+    m_testJoystick.b().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runRollerBackTestCommand());
     // a: run roller and indexer 
-    m_testJoystick.a().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runIntakeRollersBackCommand());
+    m_testJoystick.a().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runRollerIndexerBackCommand());
 
     // left bumper + x: deploy pivot motion magic
     m_testJoystick.leftBumper().and(m_testJoystick.x()).whileTrue(m_pivot.deployPivotCommand());
@@ -329,15 +273,15 @@ public class RobotContainer {
     m_testJoystick.leftTrigger().whileTrue(m_pivot.storePivotCommand());
     m_testJoystick.rightTrigger().whileTrue(
       new ParallelCommandGroup(
-        m_robotCommandFactory.runIntakeRollersCommand(),
-        m_robotCommandFactory.shootManualTestCommand(),
+        m_robotCommandFactory.runRollerIndexerCommand(),
+        m_robotCommandFactory.runShooterTestCommand(),
         m_column.columnVelocityCommand()
       )
     );
 
     m_testJoystick.povCenter().negate().onTrue(new InstantCommand(() -> resetControllerConstantsSmartDashboard()));
 
-    configureDefaultCommandTesting();
+    configureDefaultCommands();
   }
 
   private void configureBindingsTestingDrivetrain() {
@@ -361,7 +305,7 @@ public class RobotContainer {
 
      // Add local filters
     localPipeline.addFilter("poseZRollPitch", new LocalPoseZRollPitchFilter());
-    localPipeline.addFilter("LocalCameraPoseConsistencyDistanceToFusedPose", new LocalCameraPoseConsistencyDistanceToFusedPoseFilter(m_drivetrain));
+    localPipeline.addFilter("localCameraPoseConsistencyDistanceToFusedPose", new LocalCameraPoseConsistencyDistanceToFusedPoseFilter(m_drivetrain));
 
     m_vision.setGlobalFilterPipeline(globalPipeline);
     m_vision.setLocalFilteringPipeline(localPipeline);
@@ -383,24 +327,12 @@ public class RobotContainer {
     // Drive in slowmode while right bumper is pressed
     m_drivetrainCommandFactory.setSlowmodeButton(m_driverJoystick.rightBumper());
 
-
     Consumer<SwerveDriveState> telemetry =  ((CommandSwerveDrivetrainSim) m_drivetrain)
       .getSimTelemetryConsumer().andThen(logger::telemeterize);
     m_drivetrain.registerTelemetry(telemetry);
   }
 
-  private void configureDefaultCommandCompetition() {
-    switch (m_robotMode) {
-      case NEUTRAL:
-        break;
-      case INTAKE:
-        break;
-      case SHOOT:
-        break;
-    }
-  }
-
-  private void configureDefaultCommandTesting() {
+  private void configureDefaultCommands() {
     m_robotCommandFactory.setDefaultCommand();
   }
 
@@ -408,117 +340,141 @@ public class RobotContainer {
     m_robotCommandFactory.resetPosition();
   }
 
-  public void setRobotMode(RobotMode newMode) {
-    m_robotMode = newMode;
-    configureDefaultCommandCompetition();
-    SmartDashboard.putString("robot/mode", m_robotMode.toString());
-  }
-
-
   // ----- LOGGING -----
   public void logToSmartDashboard() {
     // Indexer
-    SmartDashboard.putNumber("indexer IO/kP", SmartDashboard.getNumber("indexer IO/kP", IndexerConstants.kP));
-    SmartDashboard.putNumber("indexer IO/kI", SmartDashboard.getNumber("indexer IO/kI", IndexerConstants.kI));
-    SmartDashboard.putNumber("indexer IO/kD", SmartDashboard.getNumber("indexer IO/kD", IndexerConstants.kD));
-    SmartDashboard.putNumber("indexer IO/velocity", SmartDashboard.getNumber("indexer IO/velocity", IndexerConstants.INDEXER_VELOCITY));
-    SmartDashboard.putNumber("indexer IO/voltage", SmartDashboard.getNumber("indexer/voltage", IndexerConstants.INDEXER_VOLTAGE));
+    SmartDashboard.putNumber("indexer/kP", SmartDashboard.getNumber("indexer/kP", IndexerConstants.kP));
+    SmartDashboard.putNumber("indexer/kI", SmartDashboard.getNumber("indexer/kI", IndexerConstants.kI));
+    SmartDashboard.putNumber("indexer/kD", SmartDashboard.getNumber("indexer/kD", IndexerConstants.kD));
+    SmartDashboard.putNumber("indexer/dashboardTestVelocityRotationsPerSecond",
+        SmartDashboard.getNumber("indexer/dashboardTestVelocityRotationsPerSecond", IndexerConstants.INDEXER_VELOCITY));
+    SmartDashboard.putNumber("indexer/dashboardTestVoltage",
+        SmartDashboard.getNumber("indexer/dashboardTestVoltage", IndexerConstants.INDEXER_VOLTAGE));
 
     // Column
-    SmartDashboard.putNumber("column IO/kP", SmartDashboard.getNumber("column IO/kP", ColumnConstants.kP));
-    SmartDashboard.putNumber("column IO/kI", SmartDashboard.getNumber("column IO/kI", ColumnConstants.kI));
-    SmartDashboard.putNumber("column IO/kD", SmartDashboard.getNumber("column IO/kD", ColumnConstants.kD));
-    SmartDashboard.putNumber("column IO/velocity", SmartDashboard.getNumber("column IO/velocity", ColumnConstants.COLUMN_VELOCITY));
-    SmartDashboard.putNumber("column IO/voltage", SmartDashboard.getNumber("column/voltage", ColumnConstants.COLUMN_VOLTAGE));
+    SmartDashboard.putNumber("column/kP", SmartDashboard.getNumber("column/kP", ColumnConstants.kP));
+    SmartDashboard.putNumber("column/kI", SmartDashboard.getNumber("column/kI", ColumnConstants.kI));
+    SmartDashboard.putNumber("column/kD", SmartDashboard.getNumber("column/kD", ColumnConstants.kD));
+    SmartDashboard.putNumber("column/dashboardTestVelocityRotationsPerSecond",
+        SmartDashboard.getNumber("column/dashboardTestVelocityRotationsPerSecond", ColumnConstants.COLUMN_VELOCITY));
+    SmartDashboard.putNumber("column/dashboardTestVoltage",
+        SmartDashboard.getNumber("column/dashboardTestVoltage", ColumnConstants.COLUMN_VOLTAGE));
 
     // Roller
-    SmartDashboard.putNumber("roller IO/kP", SmartDashboard.getNumber("roller IO/kP", RollerConstants.kP));
-    SmartDashboard.putNumber("roller IO/kI", SmartDashboard.getNumber("roller IO/kI", RollerConstants.kI));
-    SmartDashboard.putNumber("roller IO/kD", SmartDashboard.getNumber("roller IO/kD", RollerConstants.kD));
-    SmartDashboard.putNumber("roller IO/velocity", SmartDashboard.getNumber("roller IO/velocity", RollerConstants.ROLLER_VELOCITY));
-    SmartDashboard.putNumber("roller IO/voltage", SmartDashboard.getNumber("roller/voltage", RollerConstants.ROLLER_VOLTAGE));
+    SmartDashboard.putNumber("roller/kP", SmartDashboard.getNumber("roller/kP", RollerConstants.kP));
+    SmartDashboard.putNumber("roller/kI", SmartDashboard.getNumber("roller/kI", RollerConstants.kI));
+    SmartDashboard.putNumber("roller/kD", SmartDashboard.getNumber("roller/kD", RollerConstants.kD));
+    SmartDashboard.putNumber("roller/dashboardTestVelocityRotationsPerSecond",
+        SmartDashboard.getNumber("roller/dashboardTestVelocityRotationsPerSecond", RollerConstants.ROLLER_VELOCITY));
+    SmartDashboard.putNumber("roller/dashboardTestVoltage",
+        SmartDashboard.getNumber("roller/dashboardTestVoltage", RollerConstants.ROLLER_VOLTAGE));
 
     // Pivot
-    SmartDashboard.putNumber("pivot IO/kP", SmartDashboard.getNumber("pivot IO/kP", PivotConstants.kP));
-    SmartDashboard.putNumber("pivot IO/kI", SmartDashboard.getNumber("pivot IO/kI", PivotConstants.kI));
-    SmartDashboard.putNumber("pivot IO/kD", SmartDashboard.getNumber("pivot IO/kD", PivotConstants.kD));
-    SmartDashboard.putNumber("pivot IO/kS", SmartDashboard.getNumber("pivot IO/kS", PivotConstants.kS));
-    SmartDashboard.putNumber("pivot IO/kV", SmartDashboard.getNumber("pivot IO/kV", PivotConstants.kV));
-    SmartDashboard.putNumber("pivot IO/kA", SmartDashboard.getNumber("pivot IO/kA", PivotConstants.kA));
-    SmartDashboard.putNumber("pivot IO/velocity", SmartDashboard.getNumber("pivot IO/velocity", PivotConstants.DEPLOY_VELOCITY));
-    SmartDashboard.putNumber("pivot IO/voltage", SmartDashboard.getNumber("pivot/voltage", PivotConstants.DEPLOY_VOLTAGE));
+    SmartDashboard.putNumber("pivot/kP", SmartDashboard.getNumber("pivot/kP", PivotConstants.kP));
+    SmartDashboard.putNumber("pivot/kI", SmartDashboard.getNumber("pivot/kI", PivotConstants.kI));
+    SmartDashboard.putNumber("pivot/kD", SmartDashboard.getNumber("pivot/kD", PivotConstants.kD));
+    SmartDashboard.putNumber("pivot/kS", SmartDashboard.getNumber("pivot/kS", PivotConstants.kS));
+    SmartDashboard.putNumber("pivot/kV", SmartDashboard.getNumber("pivot/kV", PivotConstants.kV));
+    SmartDashboard.putNumber("pivot/kA", SmartDashboard.getNumber("pivot/kA", PivotConstants.kA));
+    SmartDashboard.putNumber("pivot/dashboardTestVelocityRotationsPerSecond",
+        SmartDashboard.getNumber("pivot/dashboardTestVelocityRotationsPerSecond", PivotConstants.DEPLOY_VELOCITY));
+    SmartDashboard.putNumber("pivot/dashboardTestVoltage",
+        SmartDashboard.getNumber("pivot/dashboardTestVoltage", PivotConstants.DEPLOY_VOLTAGE));
 
-    SmartDashboard.putNumber("pivot IO/motion magic velocity", SmartDashboard.getNumber("pivot IO/motion magic velocity", PivotConstants.CRUISE_VELOCITY));
-    SmartDashboard.putNumber("pivot IO/motion magic acceleration", SmartDashboard.getNumber("pivot IO/motion magic acceleration", PivotConstants.ACCELERATION));
-    SmartDashboard.putNumber("pivot IO/motion magic jerk", SmartDashboard.getNumber("pivot IO/motion magic jerk", PivotConstants.JERK));
+    SmartDashboard.putNumber("pivot/motionMagicCruiseVelocity",
+        SmartDashboard.getNumber("pivot/motionMagicCruiseVelocity", PivotConstants.CRUISE_VELOCITY));
+    SmartDashboard.putNumber("pivot/motionMagicAcceleration",
+        SmartDashboard.getNumber("pivot/motionMagicAcceleration", PivotConstants.ACCELERATION));
+    SmartDashboard.putNumber("pivot/motionMagicJerk",
+        SmartDashboard.getNumber("pivot/motionMagicJerk", PivotConstants.JERK));
 
-    SmartDashboard.putNumber("pivot/store position", SmartDashboard.getNumber("pivot/store position", PivotConstants.STORE_POSITION_DEGREES));
-    SmartDashboard.putNumber("pivot/deploy position", SmartDashboard.getNumber("pivot/deploy position", PivotConstants.DEPLOY_POSITION_DEGREES));
+    SmartDashboard.putNumber("pivot/dashboardTestStorePositionDegrees",
+        SmartDashboard.getNumber("pivot/dashboardTestStorePositionDegrees", PivotConstants.STORE_POSITION_DEGREES));
+    SmartDashboard.putNumber("pivot/dashboardTestDeployPositionDegrees",
+        SmartDashboard.getNumber("pivot/dashboardTestDeployPositionDegrees", PivotConstants.DEPLOY_POSITION_DEGREES));
 
 
     // Shooter Influencer
-    SmartDashboard.putNumber("shooter influencer IO/kP", SmartDashboard.getNumber("shooter influencer IO/kP", ShooterConstants.INFLUENCER_kP));
-    SmartDashboard.putNumber("shooter influencer IO/kI", SmartDashboard.getNumber("shooter influencer IO/kI", ShooterConstants.INFLUENCER_kI));
-    SmartDashboard.putNumber("shooter influencer IO/kD", SmartDashboard.getNumber("shooter influencer IO/kD", ShooterConstants.INFLUENCER_kD));
-    SmartDashboard.putNumber("shooter influencer IO/velocity", SmartDashboard.getNumber("shooter influencer IO/velocity", ShooterConstants.SHOOTER_VELOCITY));
-    SmartDashboard.putNumber("shooter influencer IO/out voltage", SmartDashboard.getNumber("shooter/out voltage", ShooterConstants.SHOOTER_VOLTAGE));
+    SmartDashboard.putNumber("shooter/influencer/kP", SmartDashboard.getNumber("shooter/influencer/kP", ShooterConstants.INFLUENCER_kP));
+    SmartDashboard.putNumber("shooter/influencer/kI", SmartDashboard.getNumber("shooter/influencer/kI", ShooterConstants.INFLUENCER_kI));
+    SmartDashboard.putNumber("shooter/influencer/kD", SmartDashboard.getNumber("shooter/influencer/kD", ShooterConstants.INFLUENCER_kD));
+    SmartDashboard.putNumber("shooter/influencer/dashboardTestVelocityRotationsPerSecond",
+        SmartDashboard.getNumber("shooter/influencer/dashboardTestVelocityRotationsPerSecond", ShooterConstants.SHOOTER_VELOCITY));
+    SmartDashboard.putNumber("shooter/influencer/dashboardTestVoltage",
+        SmartDashboard.getNumber("shooter/influencer/dashboardTestVoltage", ShooterConstants.SHOOTER_VOLTAGE));
 
     // Robot Command Factory Logging 
-    SmartDashboard.putNumber("robot command factory/distance to hub", m_robotCommandFactory.getDistanceToHub());
-    SmartDashboard.putNumber("robot command factory/angle to hub", m_robotCommandFactory.getAngleToHub());
-    SmartDashboard.putNumber("robot command factory/to hub shooter velocity", m_robotCommandFactory.getTargetShooterVelocity());
+    SmartDashboard.putNumber("robotCommandFactory/distanceToHubMeters", m_robotCommandFactory.getDistanceToHub());
+    SmartDashboard.putNumber("robotCommandFactory/angleToHubDegrees", m_robotCommandFactory.getAngleToHub());
+    SmartDashboard.putNumber("robotCommandFactory/angleToHubRadians", Math.toRadians(m_robotCommandFactory.getAngleToHub()));
+    SmartDashboard.putNumber("robotCommandFactory/dashboardTestShooterVelocityRotationsPerSecond",
+        m_robotCommandFactory.getTargetShooterVelocity());
   }
 
 
   public void logShootByDistanceValues() {
     // Robot Command Factory Logging 
-    SmartDashboard.putNumber("robot command factory/distance to hub", m_robotCommandFactory.getDistanceToHub());
-    SmartDashboard.putNumber("robot command factory/angle to hub", m_robotCommandFactory.getAngleToHub());
-    SmartDashboard.putNumber("robot command factory/to hub shooter velocity", m_robotCommandFactory.getCalculatedShooterVelocity());
+    SmartDashboard.putNumber("robotCommandFactory/distanceToHubMeters", m_robotCommandFactory.getDistanceToHub());
+    SmartDashboard.putNumber("robotCommandFactory/angleToHubDegrees", m_robotCommandFactory.getAngleToHub());
+    SmartDashboard.putNumber("robotCommandFactory/angleToHubRadians", Math.toRadians(m_robotCommandFactory.getAngleToHub()));
+    SmartDashboard.putNumber("robotCommandFactory/calculatedShooterVelocityRotationsPerSecond",
+        m_robotCommandFactory.getCalculatedShooterVelocity());
 
   }
 
   private void resetControllerConstantsSmartDashboard() {
     // Indexer
-    IndexerConstants.kP = SmartDashboard.getNumber("indexer IO/kP", 0);
-    IndexerConstants.kI = SmartDashboard.getNumber("indexer IO/kI", 0);
-    IndexerConstants.kD = SmartDashboard.getNumber("indexer IO/kD", 0);
+    IndexerConstants.kP = SmartDashboard.getNumber("indexer/kP", 0);
+    IndexerConstants.kI = SmartDashboard.getNumber("indexer/kI", 0);
+    IndexerConstants.kD = SmartDashboard.getNumber("indexer/kD", 0);
     // Column
-    ColumnConstants.kP = SmartDashboard.getNumber("column IO/kP", 0);
-    ColumnConstants.kI = SmartDashboard.getNumber("column IO/kI", 0);
-    ColumnConstants.kD = SmartDashboard.getNumber("column IO/kD", 0);
+    ColumnConstants.kP = SmartDashboard.getNumber("column/kP", 0);
+    ColumnConstants.kI = SmartDashboard.getNumber("column/kI", 0);
+    ColumnConstants.kD = SmartDashboard.getNumber("column/kD", 0);
 
     // Roller
-    RollerConstants.kP = SmartDashboard.getNumber("roller IO/kP", 0);
-    RollerConstants.kI = SmartDashboard.getNumber("roller IO/kI", 0);
-    RollerConstants.kD = SmartDashboard.getNumber("roller IO/kD", 0);
+    RollerConstants.kP = SmartDashboard.getNumber("roller/kP", 0);
+    RollerConstants.kI = SmartDashboard.getNumber("roller/kI", 0);
+    RollerConstants.kD = SmartDashboard.getNumber("roller/kD", 0);
 
     // Pivot
-    PivotConstants.kP = SmartDashboard.getNumber("pivot IO/kP", 0);
-    PivotConstants.kI = SmartDashboard.getNumber("pivot IO/kI", 0);
-    PivotConstants.kD = SmartDashboard.getNumber("pivot IO/kD", 0);
+    PivotConstants.kP = SmartDashboard.getNumber("pivot/kP", 0);
+    PivotConstants.kI = SmartDashboard.getNumber("pivot/kI", 0);
+    PivotConstants.kD = SmartDashboard.getNumber("pivot/kD", 0);
 
-    PivotConstants.kS = SmartDashboard.getNumber("pivot IO/kS", 0);
-    PivotConstants.kV = SmartDashboard.getNumber("pivot IO/kV", 0);
-    PivotConstants.kA = SmartDashboard.getNumber("pivot IO/kA", 0);
+    PivotConstants.kS = SmartDashboard.getNumber("pivot/kS", 0);
+    PivotConstants.kV = SmartDashboard.getNumber("pivot/kV", 0);
+    PivotConstants.kA = SmartDashboard.getNumber("pivot/kA", 0);
 
-    PivotConstants.CRUISE_VELOCITY = SmartDashboard.getNumber("pivot IO/motion magic velocity", 0);
-    PivotConstants.ACCELERATION = SmartDashboard.getNumber("pivot IO/motion magic acceleration", 0);
-    PivotConstants.JERK = SmartDashboard.getNumber("pivot IO/motion magic jerk", 0);
+    PivotConstants.CRUISE_VELOCITY = SmartDashboard.getNumber("pivot/motionMagicCruiseVelocity", 0);
+    PivotConstants.ACCELERATION = SmartDashboard.getNumber("pivot/motionMagicAcceleration", 0);
+    PivotConstants.JERK = SmartDashboard.getNumber("pivot/motionMagicJerk", 0);
 
-    PivotConstants.STORE_POSITION_DEGREES = SmartDashboard.getNumber("pivot/store position", 0);
-    PivotConstants.DEPLOY_POSITION_DEGREES = SmartDashboard.getNumber("pivot/deploy position", 0);
+    PivotConstants.STORE_POSITION_DEGREES = SmartDashboard.getNumber("pivot/dashboardTestStorePositionDegrees", 0);
+    PivotConstants.DEPLOY_POSITION_DEGREES = SmartDashboard.getNumber("pivot/dashboardTestDeployPositionDegrees", 0);
 
     // Shooter
-    ShooterConstants.INFLUENCER_kP = SmartDashboard.getNumber("shooter influencer IO/kP", 0);
-    ShooterConstants.INFLUENCER_kI = SmartDashboard.getNumber("shooter influencer IO/kI", 0);
-    ShooterConstants.INFLUENCER_kD = SmartDashboard.getNumber("shooter influencer IO/kD", 0);
+    ShooterConstants.INFLUENCER_kP = SmartDashboard.getNumber("shooter/influencer/kP", 0);
+    ShooterConstants.INFLUENCER_kI = SmartDashboard.getNumber("shooter/influencer/kI", 0);
+    ShooterConstants.INFLUENCER_kD = SmartDashboard.getNumber("shooter/influencer/kD", 0);
 
     m_pivot.resetControllers();
     m_roller.resetControllers();
     m_indexer.resetControllers();
     m_column.resetControllers();
     m_shooter.resetControllers();
+  }
+
+  private Trigger driverTranslationInputTrigger() {
+    return new Trigger(() -> m_driverTranslationJoystickValsSupplier.get().isMagnitudeGreaterThan(OperatorConstants.DRIVE_JOYSTICK_DEADBAND));
+  }
+
+  private Trigger driverRotationInputTrigger() {
+    return new Trigger(() -> m_driverRotationJoystickValsSupplier.get().isMagnitudeGreaterThan(OperatorConstants.STEER_JOYSTICK_DEADBAND));
+  }
+
+  private Trigger driverInputTrigger() {
+    return driverTranslationInputTrigger().or(driverRotationInputTrigger());
   }
 
 
@@ -528,20 +484,20 @@ public class RobotContainer {
    */
   private void createNamedCommands() {
 
-    new EventTrigger("trigger intake").onTrue(m_robotCommandFactory.runIntakeRollersCommand());
-    new EventTrigger("shoot").onTrue(m_robotCommandFactory.shootByDistanceCommand(() -> new JoystickVals(0, 0)));
+    new EventTrigger("deploy intake trigger").onTrue(m_pivot.autoZeroPivotCommand()); 
+    new EventTrigger("intake trigger").onTrue(m_robotCommandFactory.intakeModeCommand());
+    new EventTrigger("shoot trigger").onTrue(m_robotCommandFactory.autoShootWithVisionCommand().withTimeout(AutoConstants.AUTO_SHOOT_TIMEOUT)); // TODO: tune timeout
 
-    NamedCommands.registerCommand("trigger intake", 
-      m_robotCommandFactory.runIntakeRollersCommand()); // DOES NOT END 
-     NamedCommands.registerCommand("deploy intake", 
-      m_pivot.deployPivotCommand());
-    NamedCommands.registerCommand("snap to hub", 
-      m_robotCommandFactory.snapToHubCommand(() -> new JoystickVals(0, 0))
-        .withTimeout(0.5));
-    NamedCommands.registerCommand("climb", 
+    NamedCommands.registerCommand("intake command", 
+      m_robotCommandFactory.intakeModeCommand()); // DOES NOT END 
+     NamedCommands.registerCommand("deploy intake command", 
+      m_pivot.autoZeroPivotCommand());
+    NamedCommands.registerCommand("snap to hub command", 
+      m_robotCommandFactory.snapToHubCommand(() -> new JoystickVals(0, 0)).withTimeout(AutoConstants.AUTO_SHOOT_TIMEOUT));
+    NamedCommands.registerCommand("climb command", 
       new WaitCommand(1));
-    NamedCommands.registerCommand("shoot",
-       m_robotCommandFactory.shootByDistanceCommand(() -> new JoystickVals(0, 0)));
+    NamedCommands.registerCommand("shoot command",
+       m_robotCommandFactory.autoShootWithVisionCommand().withTimeout(AutoConstants.AUTO_SHOOT_TIMEOUT));
   }
 
   /**
@@ -563,20 +519,28 @@ public class RobotContainer {
       EstimatedRobotPose robotPose = reading.robotPose();
 
       // Sample drivetrain fusedPose before updating
-      SmartDashboard.putNumberArray("fusedVision/" + reading.cameraName() + "/drivetrainBeforeUpdate", new double [] {
+      SmartDashboard.putNumberArray("fusedVision/" + reading.cameraName() + "/drivetrainPoseBeforeUpdate", new double [] {
       m_drivetrain.getState().Pose.getX(), m_drivetrain.getState().Pose.getY(), m_drivetrain.getState().Pose.getRotation().getRadians()});
+      SmartDashboard.putNumber("fusedVision/" + reading.cameraName() + "/drivetrainHeadingBeforeUpdateDegrees",
+          m_drivetrain.getState().Pose.getRotation().getDegrees());
+      SmartDashboard.putNumber("fusedVision/" + reading.cameraName() + "/drivetrainHeadingBeforeUpdateRadians",
+          m_drivetrain.getState().Pose.getRotation().getRadians());
 
       // Update fusedPose
       m_drivetrain.setVisionMeasurementStdDevs(reading.stdDevs());
       m_drivetrain.addVisionMeasurement(robotPose.estimatedPose.toPose2d(), robotPose.timestampSeconds);
 
       // sample drivetrain fusedPose after updating
-      SmartDashboard.putNumberArray("fusedVision/" + reading.cameraName() + "/drivetrainAfterUpdate", new double [] {
+      SmartDashboard.putNumberArray("fusedVision/" + reading.cameraName() + "/drivetrainPoseAfterUpdate", new double [] {
         m_drivetrain.getState().Pose.getX(), m_drivetrain.getState().Pose.getY(), m_drivetrain.getState().Pose.getRotation().getRadians()});
+      SmartDashboard.putNumber("fusedVision/" + reading.cameraName() + "/drivetrainHeadingAfterUpdateDegrees",
+          m_drivetrain.getState().Pose.getRotation().getDegrees());
+      SmartDashboard.putNumber("fusedVision/" + reading.cameraName() + "/drivetrainHeadingAfterUpdateRadians",
+          m_drivetrain.getState().Pose.getRotation().getRadians());
     }
     
     m_actualField.setRobotPose(m_drivetrain.getState().Pose);
-    SmartDashboard.putData("fusedVision/" + "actual field/", m_actualField);
+    SmartDashboard.putData("fusedVision/actualField", m_actualField);
   }
 /*   public void displaySimFieldToAdvantageScope() {
     if (Constants.currentMode != Constants.Mode.SIM) return;

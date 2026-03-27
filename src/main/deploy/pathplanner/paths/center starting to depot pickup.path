@@ -3,35 +3,48 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.2582072610294124,
-        "y": 2.618468605324074
+        "x": 3.6410488051470598,
+        "y": 4.042836213235294
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.861001097834968,
-        "y": 2.556925925925925
+        "x": 2.3508246323529414,
+        "y": 4.172467187500001
       },
       "isLocked": false,
-      "linkedName": "outpost shooting point"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.061385256057269,
-        "y": 2.723642288773149
+        "x": 1.3400187355324078,
+        "y": 5.95
       },
       "prevControl": {
-        "x": 1.3113798900487652,
-        "y": 2.7220043096958078
+        "x": 1.0900187355324078,
+        "y": 5.95
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "outpost climb"
+      "linkedName": "depot pickup point"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "deploy intake trigger",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "intake trigger",
+      "waypointRelativePos": 0.3749218750000006,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -41,14 +54,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 0.0
+    "velocity": 1.0,
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 29.500000000000004
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

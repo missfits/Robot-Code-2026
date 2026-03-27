@@ -7,13 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "outpost neutral zone"
+            "pathName": "depot half neutral zone"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "snap to hub command"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "2nd pass depot half neutral zone"
           }
         }
       ]

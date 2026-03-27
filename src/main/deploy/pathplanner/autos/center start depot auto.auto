@@ -7,7 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "outpost neutral zone"
+            "pathName": "center starting to depot pickup"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "depot pickup drive-in"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "finished depot pickup to shooting location"
           }
         },
         {

@@ -45,7 +45,7 @@ class LocalizationCameraTest {
         new Rotation3d(0, Math.toRadians(-15), 0)
     );
     
-    m_camera = new LocalizationCamera("test_camera", m_robotToCam);
+    m_camera = new LocalizationCamera("test_camera", m_robotToCam, Rotation2d::new);
   }
 
   @AfterEach

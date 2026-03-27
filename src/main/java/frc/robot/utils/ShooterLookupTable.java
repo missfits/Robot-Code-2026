@@ -22,7 +22,7 @@ public class ShooterLookupTable {
     DISTANCE_TO_VELOCITY_MAP.put(1.5, 37.);   // 1.5m 
     DISTANCE_TO_VELOCITY_MAP.put(2.0, 40.);   // 2.0m 
     DISTANCE_TO_VELOCITY_MAP.put(2.5, 45.);   // 2.5m 
-    // DISTANCE_TO_VELOCITY_MAP.put(3.0, 45.);   // 3.0m 
+    DISTANCE_TO_VELOCITY_MAP.put(3.0, 49.);   // 3.0m 
     DISTANCE_TO_VELOCITY_MAP.put(3.5, 53.);   // 3.5m 
     DISTANCE_TO_VELOCITY_MAP.put(4.0, 57.);   // 4.0m 
     DISTANCE_TO_VELOCITY_MAP.put(4.5, 57.);   // 4.5m 

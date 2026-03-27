@@ -3,109 +3,109 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.6785093315972226,
-        "y": 2.618468605324074
+        "x": 3.686382595486111,
+        "y": 5.611555483217593
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.678509331597217,
-        "y": 2.618468605324074
-      },
-      "isLocked": false,
-      "linkedName": "outpost neutral zone start"
-    },
-    {
-      "anchor": {
-        "x": 5.722277416087963,
-        "y": 2.393555700231482
-      },
-      "prevControl": {
-        "x": 5.403475839120371,
-        "y": 2.6382829861111112
-      },
-      "nextControl": {
-        "x": 6.130067770809516,
-        "y": 2.0805163869753818
+        "x": 4.686382595486106,
+        "y": 5.611555483217593
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.621899160879629,
-        "y": 0.921583405671297
+        "x": 5.659422526041667,
+        "y": 5.476660228587963
       },
       "prevControl": {
-        "x": 6.639761937308039,
-        "y": 0.9390684906556604
+        "x": 5.427557031595391,
+        "y": 5.570139597890414
       },
       "nextControl": {
-        "x": 7.9904335214120366,
-        "y": 0.9150223524305556
+        "x": 6.136219701482461,
+        "y": 5.2844336993588685
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.621899160879629,
-        "y": 6.437723307291667
+        "x": 7.452558376736111,
+        "y": 7.3741824363425925
       },
       "prevControl": {
-        "x": 7.726240148071654,
-        "y": 6.210538452180694
+        "x": 6.470421153164522,
+        "y": 7.391667521326956
       },
       "nextControl": {
-        "x": 7.083564742476852,
-        "y": 7.60985546875
+        "x": 7.821092737268519,
+        "y": 7.367621383101851
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.47308861400463,
-        "y": 2.541507450810185
+        "x": 7.662774522569444,
+        "y": 4.468816840277778
       },
       "prevControl": {
-        "x": 6.932988570601853,
-        "y": 2.551414641203704
+        "x": 7.9398634533050085,
+        "y": 4.44379487016893
       },
       "nextControl": {
-        "x": 4.78741402679043,
-        "y": 2.536854317797316
+        "x": 6.580200737847221,
+        "y": 4.566576533564816
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.6785093315972226,
-        "y": 2.541507450810185
+        "x": 5.075488787615741,
+        "y": 5.611555483217593
       },
       "prevControl": {
-        "x": 3.9254942207109527,
-        "y": 2.5027974450044694
+        "x": 6.8083941695601835,
+        "y": 5.6237590422453705
       },
       "nextControl": {
-        "x": 3.1832810329861116,
-        "y": 2.6191247106481477
+        "x": 4.389815414213844,
+        "y": 5.606726797489411
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.2582072610294124,
-        "y": 2.618468605324074
+        "x": 3.686382595486111,
+        "y": 5.611555483217593
       },
       "prevControl": {
-        "x": 2.5500429091775603,
-        "y": 2.39690183738426
+        "x": 3.936356685367322,
+        "y": 5.615154703697212
+      },
+      "nextControl": {
+        "x": 2.9098123488346523,
+        "y": 5.600374134234828
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.89229832175926,
+        "y": 5.260670355902778
+      },
+      "prevControl": {
+        "x": 3.426382740734634,
+        "y": 5.413550103678052
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "outpost shooting point"
+      "linkedName": "depot shooting location"
     }
   ],
   "rotationTargets": [
@@ -115,18 +115,18 @@
     },
     {
       "waypointRelativePos": 1.9728474650349659,
-      "rotationDegrees": 90.0
+      "rotationDegrees": -110.0
     },
     {
       "waypointRelativePos": 3.1451595279720275,
-      "rotationDegrees": 90.0
+      "rotationDegrees": -110.0
     },
     {
       "waypointRelativePos": 3.905048076923084,
       "rotationDegrees": 0.0
     },
     {
-      "waypointRelativePos": 4.9420345279720275,
+      "waypointRelativePos": 4.914608828671325,
       "rotationDegrees": 0.0
     }
   ],
@@ -136,7 +136,7 @@
       "minWaypointRelativePos": 0.0,
       "maxWaypointRelativePos": 1.0362053571428569,
       "constraints": {
-        "maxVelocity": 1.25,
+        "maxVelocity": 2.0,
         "maxAcceleration": 2.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
@@ -146,10 +146,10 @@
     },
     {
       "name": "come back over the bump",
-      "minWaypointRelativePos": 3.999441964285711,
-      "maxWaypointRelativePos": 4.743816964285706,
+      "minWaypointRelativePos": 3.9766071428571426,
+      "maxWaypointRelativePos": 5.05,
       "constraints": {
-        "maxVelocity": 1.25,
+        "maxVelocity": 2.0,
         "maxAcceleration": 2.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
@@ -181,13 +181,13 @@
     },
     {
       "name": "intake trigger",
-      "waypointRelativePos": 0.708816964285714,
+      "waypointRelativePos": 0.6679687499999999,
       "endWaypointRelativePos": null,
       "command": null
     },
     {
       "name": "shoot trigger",
-      "waypointRelativePos": 5.785513392857137,
+      "waypointRelativePos": 5.885959821428568,
       "endWaypointRelativePos": null,
       "command": null
     }
@@ -201,8 +201,8 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 29.500000000000004
+    "velocity": 0.0,
+    "rotation": -28.08
   },
   "reversed": false,
   "folder": null,
