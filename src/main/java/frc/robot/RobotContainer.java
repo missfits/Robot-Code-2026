@@ -257,7 +257,7 @@ public class RobotContainer {
     // m_testJoystick.a().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runRollerIndexerBackCommand());
 
     // a: run shooter 
-    m_testJoystick.a().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runShooterTestCommand());
+    m_testJoystick.a().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.dashboardScoreCommand());
 
     // left bumper + x: deploy pivot motion magic
     m_testJoystick.leftBumper().and(m_testJoystick.x()).whileTrue(m_pivot.deployPivotCommand());

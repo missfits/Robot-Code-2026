@@ -278,6 +278,16 @@ public class RobotCommandFactory {
     ).withName("runShooterFarDistanceCommand");
   }
 
+  public Command dashboardScoreCommand() {
+    return shootWithoutVisionWithDisplacement(
+      () -> getShooterVelocityFromDashboard() + ShooterConstants.INTIAL_ADDITIONAL_VELOCITY,
+      () -> getShooterVelocityFromDashboard(),
+      () -> ColumnConstants.SHOOT_VELOCITY,
+      () -> IndexerConstants.SHOOT_VELOCITY,
+      () -> RollerConstants.SHOOT_VELOCITY
+    ).withName("dashboardScoreCommand");
+  }
+
   public Command backupScoreCommand(double shooterVelocity) {
     return shootWithoutVisionWithDisplacement(
       () -> shooterVelocity + ShooterConstants.INTIAL_ADDITIONAL_VELOCITY,
