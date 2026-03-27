@@ -71,5 +71,6 @@ public class ColumnIOHardware extends MechanismsIOHardwareBase {
     currentLimitsConfigs.StatorCurrentLimitEnable = true; 
 
     motor.getConfigurator().apply(talonFXConfigs);
+    setInverted(ColumnConstants.IS_INFLUENCER_INVERTED);
   }
 }

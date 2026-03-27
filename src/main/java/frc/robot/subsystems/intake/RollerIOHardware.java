@@ -38,6 +38,7 @@ public class RollerIOHardware extends MechanismsIOHardwareBase {
     currentLimitsConfigs.StatorCurrentLimitEnable = true; 
    
     motor.getConfigurator().apply(talonFXConfigs);
+    setInverted(RollerConstants.IS_INVERTED);
   }
 
   public double getPositionRadians() {
