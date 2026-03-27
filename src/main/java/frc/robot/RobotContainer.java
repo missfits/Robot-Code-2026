@@ -420,9 +420,10 @@ public class RobotContainer {
     SmartDashboard.putNumber("robotCommandFactory/distanceToHubMeters", m_robotCommandFactory.getDistanceToHub());
     SmartDashboard.putNumber("robotCommandFactory/angleToHubDegrees", m_robotCommandFactory.getAngleToHub());
     SmartDashboard.putNumber("robotCommandFactory/angleToHubRadians", Math.toRadians(m_robotCommandFactory.getAngleToHub()));
+    SmartDashboard.putNumber("robotCommandFactory/SOTFAngleToHubDegrees", m_robotCommandFactory.getSOTFAngle().getDegrees());
+    SmartDashboard.putNumber("robotCommandFactory/SOTFAngleToHubRadians", m_robotCommandFactory.getSOTFAngle().getRadians());
     SmartDashboard.putNumber("robotCommandFactory/calculatedShooterVelocityRotationsPerSecond",
-        m_robotCommandFactory.getCalculatedShooterVelocity());
-
+        m_robotCommandFactory.getCalculatedShooterVelocity()); 
   }
 
   private void resetControllerConstantsSmartDashboard() {

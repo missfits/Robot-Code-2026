@@ -591,7 +591,7 @@ public class RobotCommandFactory {
   public Command snapToHubCommand(Supplier<JoystickVals> joystickValsSupplier) {
     return m_drivetrainCommandFactory.snapToAngle( // drivetrain: snap to angle 
       joystickValsSupplier,
-      () -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)).withName("snapToHubCommand");
+      () -> getSOTFAngle()).withName("snapToHubCommand");
   }
   
   // snaps to hub, then points wheels in x
@@ -727,8 +727,8 @@ public class RobotCommandFactory {
    * Gets the calculated angle for shooting on the fly
    * @return SOTF angle in degrees
    */
-  public double getSOTFAngle() {
-    return calculateShootOnTheFlyAngle().getDegrees();
+  public Rotation2d getSOTFAngle() {
+    return calculateShootOnTheFlyAngle();
   }
   
   // syntactic sugar
