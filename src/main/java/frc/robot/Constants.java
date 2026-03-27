@@ -500,23 +500,6 @@ public final class Constants {
     public static final double SHOOTER_SLIP_FACTOR = 0.8; // fudge factor for slippage between shooter and fuel; TODO: tune
     public static final double SHOOTER_ANGLE_DEGREES = 71.2393048349; // measured in CAD
   }
-
-  public static class ClimberConstants {
-    //Velocity voltage constants
-    public static final boolean CLIMBER_ENABLE_FOC = false;
-    public static final double CLIMBER_FEED_FORWARD = 0.0;
-    public static final int CLIMBER_SLOT = 0;
-    public static final boolean CLIMBER_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
-
-    public static final int CLIMBER_MOTOR_ID = 40;
-    public static final int CLIMBER_MOTOR_STATOR_LIMIT = 40;
-
-    // Duty cycle limits
-    public static final double PEAK_FORWARD_DUTY_CYCLE = 1;
-    public static final double PEAK_REVERSE_DUTY_CYCLE = -1;
-
-    public static final double CLIMBER_METERS_PER_REVOLUTION = 360./10.;
-  }
   
   public static class VisionConstants {
     // --- vision utils ---
