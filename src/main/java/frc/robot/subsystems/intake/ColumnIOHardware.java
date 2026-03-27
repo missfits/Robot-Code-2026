@@ -67,7 +67,7 @@ public class ColumnIOHardware extends MechanismsIOHardwareBase {
     slot0Configs.kA = gains.kA();
 
     var currentLimitsConfigs = talonFXConfigs.CurrentLimits;
-    currentLimitsConfigs.StatorCurrentLimit = ColumnConstants.MOTOR_STATOR_LIMIT;
+    currentLimitsConfigs.StatorCurrentLimit = ColumnConstants.INFLUENCER_STATOR_LIMIT;
     currentLimitsConfigs.StatorCurrentLimitEnable = true; 
 
     motor.getConfigurator().apply(talonFXConfigs);
