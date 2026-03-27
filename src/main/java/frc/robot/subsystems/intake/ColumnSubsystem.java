@@ -12,15 +12,18 @@ import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.MechanismsSubsystemBase;
 
 public class ColumnSubsystem extends MechanismsSubsystemBase {
-  private final ColumnIOHardware m_IO = new ColumnIOHardware(ColumnConstants.MOTOR_ID);
+  private final ColumnIOHardware m_influencerIO = new ColumnIOHardware(ColumnMotorType.INFLUENCER);
+  private final ColumnIOHardware m_followerIO = new ColumnIOHardware(ColumnMotorType.FOLLOWER);
 
   public ColumnSubsystem() {
     super("column");
-    m_IO.resetPosition();
+    m_influencerIO.resetPosition();
+    m_followerIO.resetPosition();
+    m_followerIO.followMotor(m_influencerIO, false);
   }
 
   protected void setVoltage(double volts) {
-    m_IO.setVoltage(volts);
+    m_influencerIO.setVoltage(volts);
   }
 
   @Override
@@ -30,15 +33,17 @@ public class ColumnSubsystem extends MechanismsSubsystemBase {
     .withFeedForward(ColumnConstants.FEED_FORWARD)
     .withSlot(ColumnConstants.SLOT)
     .withOverrideBrakeDurNeutral(ColumnConstants.OVERRIDE_BRAKE_DUR_NEUTRAL);
-    m_IO.setVelocityVoltage(request);
+    m_influencerIO.setVelocityVoltage(request);
   }
 
   public void resetControllers() {
-    m_IO.resetSlot0Gains();
+    m_influencerIO.resetSlot0Gains();
+    m_followerIO.resetSlot0Gains();
   }
 
   public void resetPosition() {
-    m_IO.resetPosition();
+    m_influencerIO.resetPosition();
+    m_followerIO.resetPosition();
   }
 
   // Commands
@@ -63,7 +68,7 @@ public class ColumnSubsystem extends MechanismsSubsystemBase {
 
   public Trigger isMotorVelocityOverPercentToleranceTrigger(Supplier<Double> targetVelocitySupplier) {
     return new Trigger(() -> isMotorVelocityOverPercentTolerance(
-      m_IO.getMotorVelocityRevolutionsPerSecond(),
+      m_influencerIO.getMotorVelocityRevolutionsPerSecond(),
       targetVelocitySupplier.get()
     ));
   }
@@ -71,10 +76,16 @@ public class ColumnSubsystem extends MechanismsSubsystemBase {
   @Override
   public void periodic() {
     super.periodic();
-    SmartDashboard.putNumber("column/actualCurrent", m_IO.getCurrent());
-    SmartDashboard.putNumber("column/actualPositionDegrees", m_IO.getPositionDegrees());
-    SmartDashboard.putNumber("column/actualVelocityRotationsPerSecond", m_IO.getVelocityRotationsPerSecond());
-    SmartDashboard.putNumber("column/actualVelocityDegreesPerSecond", m_IO.getVelocityDegreesPerSecond());
-    SmartDashboard.putNumber("column/actualVoltage", m_IO.getVoltage());
+    SmartDashboard.putNumber("column/influencer/actualCurrent", m_influencerIO.getCurrent());
+    SmartDashboard.putNumber("column/influencer/actualPositionDegrees", m_influencerIO.getPositionDegrees());
+    SmartDashboard.putNumber("column/influencer/actualVelocityRotationsPerSecond", m_influencerIO.getVelocityRotationsPerSecond());
+    SmartDashboard.putNumber("column/influencer/actualVelocityDegreesPerSecond", m_influencerIO.getVelocityDegreesPerSecond());
+    SmartDashboard.putNumber("column/influencer/actualVoltage", m_influencerIO.getVoltage());
+
+    SmartDashboard.putNumber("column/follower/actualCurrent", m_followerIO.getCurrent());
+    SmartDashboard.putNumber("column/follower/actualPositionDegrees", m_followerIO.getPositionDegrees());
+    SmartDashboard.putNumber("column/follower/actualVelocityRotationsPerSecond", m_followerIO.getVelocityRotationsPerSecond());
+    SmartDashboard.putNumber("column/follower/actualVelocityDegreesPerSecond", m_followerIO.getVelocityDegreesPerSecond());
+    SmartDashboard.putNumber("column/follower/actualVoltage", m_followerIO.getVoltage());
   }
 }
