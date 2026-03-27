@@ -140,6 +140,7 @@ public class RobotContainer {
     if (Utils.isSimulation()) {
       configureBindingsSimulation();
     } else {
+      configureBindingsCompetition();
       configureBindingsTestingMechanisms();
       configureBindingsVision();
     }

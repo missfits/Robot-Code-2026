@@ -65,5 +65,6 @@ public class IndexerIOHardware extends MechanismsIOHardwareBase {
     currentLimitsConfigs.StatorCurrentLimitEnable = true; 
 
     motor.getConfigurator().apply(talonFXConfigs);
+    setInverted(IndexerConstants.IS_INVERTED);
   }
 }
