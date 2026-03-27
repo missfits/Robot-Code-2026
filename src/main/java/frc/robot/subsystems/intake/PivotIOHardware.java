@@ -17,7 +17,6 @@ public class PivotIOHardware extends MechanismsIOHardwareBase {
     super(motorID, PivotConstants.MOTOR_STATOR_LIMIT,
         PivotConstants.PEAK_FORWARD_DUTY_CYCLE, PivotConstants.PEAK_REVERSE_DUTY_CYCLE, "pivot/");
     resetSlot0Gains();
-    setNeutralMode(NeutralModeValue.Brake);
   }
 
   public double getPositionRadians() {
@@ -101,6 +100,7 @@ public class PivotIOHardware extends MechanismsIOHardwareBase {
     var motorOutputConfigs = talonFXConfigs.MotorOutput;
     motorOutputConfigs.PeakForwardDutyCycle = PivotConstants.PEAK_FORWARD_DUTY_CYCLE;
     motorOutputConfigs.PeakReverseDutyCycle = PivotConstants.PEAK_REVERSE_DUTY_CYCLE;
+    motorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
 
     var currentLimitsConfigs = talonFXConfigs.CurrentLimits;
     currentLimitsConfigs.StatorCurrentLimit = PivotConstants.MOTOR_STATOR_LIMIT;
