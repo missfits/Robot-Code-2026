@@ -145,7 +145,7 @@ public class RobotContainer {
 
     // Configure auto builder
     createNamedCommands();
-    m_autoChooser = AutoBuilder.buildAutoChooser("drive forward 1m");
+    m_autoChooser = AutoBuilder.buildAutoChooser("don't move");
     SmartDashboard.putData("Auto Chooser", m_autoChooser);
 
     // Data logging
@@ -256,8 +256,8 @@ public class RobotContainer {
     // a: run roller and indexer 
     // m_testJoystick.a().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runRollerIndexerBackCommand());
 
-    // a: run shooter 
-    m_testJoystick.a().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runShooterTestCommand());
+    // a: run score command using dashboard shooter speeds
+    m_testJoystick.a().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.dashboardScoreCommand());
 
     // left bumper + x: deploy pivot motion magic
     m_testJoystick.leftBumper().and(m_testJoystick.x()).whileTrue(m_pivot.deployPivotCommand());
@@ -420,9 +420,10 @@ public class RobotContainer {
     SmartDashboard.putNumber("robotCommandFactory/distanceToHubMeters", m_robotCommandFactory.getDistanceToHub());
     SmartDashboard.putNumber("robotCommandFactory/angleToHubDegrees", m_robotCommandFactory.getAngleToHub());
     SmartDashboard.putNumber("robotCommandFactory/angleToHubRadians", Math.toRadians(m_robotCommandFactory.getAngleToHub()));
+    SmartDashboard.putNumber("robotCommandFactory/SOTFAngleToHubDegrees", m_robotCommandFactory.getSOTFAngle().getDegrees());
+    SmartDashboard.putNumber("robotCommandFactory/SOTFAngleToHubRadians", m_robotCommandFactory.getSOTFAngle().getRadians());
     SmartDashboard.putNumber("robotCommandFactory/calculatedShooterVelocityRotationsPerSecond",
-        m_robotCommandFactory.getCalculatedShooterVelocity());
-
+        m_robotCommandFactory.getCalculatedShooterVelocity()); 
   }
 
   private void resetControllerConstantsSmartDashboard() {

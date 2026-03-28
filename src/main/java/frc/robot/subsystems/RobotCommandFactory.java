@@ -67,6 +67,8 @@ public class RobotCommandFactory {
   private final Supplier<Double> m_shooterVelocityInitialSOTFSupplier =
     () -> calculateShooterVelocity() + ShooterConstants.INTIAL_ADDITIONAL_VELOCITY;
 
+  private final Supplier<Rotation2d> m_drivetrainAngleSupplier = () -> calculateShootOnTheFlyAngle();
+
   public RobotCommandFactory(CommandSwerveDrivetrain drivetrain, 
       PivotSubsystem pivot, RollerSubsystem roller, IndexerSubsystem indexer, ColumnSubsystem column, 
       ShooterSubsystem shooter, LaserCANSensorBase intakeSensor, LaserCANSensorBase shooterSensor, 
@@ -278,6 +280,16 @@ public class RobotCommandFactory {
     ).withName("runShooterFarDistanceCommand");
   }
 
+  public Command dashboardScoreCommand() {
+    return shootWithoutVisionWithDisplacement(
+      () -> getShooterVelocityFromDashboard() + ShooterConstants.INTIAL_ADDITIONAL_VELOCITY,
+      () -> getShooterVelocityFromDashboard(),
+      () -> ColumnConstants.SHOOT_VELOCITY,
+      () -> IndexerConstants.SHOOT_VELOCITY,
+      () -> RollerConstants.SHOOT_VELOCITY
+    ).withName("dashboardScoreCommand");
+  }
+
   public Command backupScoreCommand(double shooterVelocity) {
     return shootWithoutVisionWithDisplacement(
       () -> shooterVelocity + ShooterConstants.INTIAL_ADDITIONAL_VELOCITY,
@@ -346,7 +358,7 @@ public class RobotCommandFactory {
   public Command scoreModeCommand(Supplier<JoystickVals> joystickValsSupplier, Trigger driverInputTrigger) {
     return Commands.parallel(
       snapToHubThenPointWheelsInXCommand(joystickValsSupplier, driverInputTrigger),
-      shootWithVisionWithDisplacement(
+      shootWithVisionDynamicWithDisplacement(
         m_shooterVelocityInitialCalculatedSupplier,
         m_shooterVelocityCalculatedSupplier,
         () -> ColumnConstants.SHOOT_VELOCITY,
@@ -433,7 +445,7 @@ public class RobotCommandFactory {
       // log isFuelShot
       Commands.run(() -> {
         SmartDashboard.putBoolean("robot command factory/isColumnHappy", m_column.isMotorVelocityOverPercentToleranceTrigger(columnSupplier).getAsBoolean());
-        SmartDashboard.putBoolean("robot command factory/atAngleTrigger", m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)).getAsBoolean());
+        SmartDashboard.putBoolean("robot command factory/atAngleTrigger", m_drivetrainCommandFactory.atAngleTrigger(m_drivetrainAngleSupplier).getAsBoolean());
         SmartDashboard.putBoolean("robot command factory/isMotorVelocityWithinPercentTolerance", m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier).getAsBoolean());
       }),
 
@@ -448,31 +460,31 @@ public class RobotCommandFactory {
       Commands.repeatingSequence(
         m_column.offCommand() // wait until
           .until(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier) // shooter at target velocity
-            .and(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))) // and facing hub
+            .and(m_drivetrainCommandFactory.atAngleTrigger(m_drivetrainAngleSupplier))) // and facing hub
           .withTimeout(ShooterConstants.WAIT_FOR_SHOOTER_TIMEOUT),
         m_column.velocityCommand(columnSupplier) // shoot until
           .until(not(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier)) // shooter not at target velocity
-            .or(not(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))))), // or not facing hub
+            .or(not(m_drivetrainCommandFactory.atAngleTrigger(m_drivetrainAngleSupplier))))), // or not facing hub
 
       // indexer
       Commands.repeatingSequence(
         m_indexer.offCommand() // wait until
           .until(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier) // shooter at target velocity
-            .and(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))) // and facing hub
+            .and(m_drivetrainCommandFactory.atAngleTrigger(m_drivetrainAngleSupplier))) // and facing hub
           .withTimeout(ShooterConstants.WAIT_FOR_SHOOTER_TIMEOUT),
         m_indexer.velocityCommand(indexerSupplier)
           .until(not(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier)) // shooter not at target velocity
-            .or(not(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))))), // or not facing hub
+            .or(not(m_drivetrainCommandFactory.atAngleTrigger(m_drivetrainAngleSupplier))))), // or not facing hub
 
       // roller
       Commands.repeatingSequence(
         m_roller.offCommand()  // wait until
           .until(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier) // shooter at target velocity
-            .and(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))) // and facing hub
+            .and(m_drivetrainCommandFactory.atAngleTrigger(m_drivetrainAngleSupplier))) // and facing hub
           .withTimeout(ShooterConstants.WAIT_FOR_SHOOTER_TIMEOUT),
          m_roller.velocityCommand(rollerSupplier)
           .until(not(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier)) // shooter not at target velocity
-            .or(not(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))))) // or not facing hub
+            .or(not(m_drivetrainCommandFactory.atAngleTrigger(m_drivetrainAngleSupplier))))) // or not facing hub
     ).withName("shootWithVisionDynamic");
   }
 
@@ -494,7 +506,7 @@ public class RobotCommandFactory {
       // log isFuelShot
       Commands.run(() -> {
         SmartDashboard.putBoolean("robotCommandFactory/isColumnHappy", m_column.isMotorVelocityOverPercentToleranceTrigger(columnSupplier).getAsBoolean());
-        SmartDashboard.putBoolean("robotCommandFactory/atAngleTrigger", m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)).getAsBoolean());
+        SmartDashboard.putBoolean("robotCommandFactory/atAngleTrigger", m_drivetrainCommandFactory.atAngleTrigger(m_drivetrainAngleSupplier).getAsBoolean());
         SmartDashboard.putBoolean("robotCommandFactory/isMotorVelocityWithinPercentTolerance", m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier).getAsBoolean());
       }),
 
@@ -509,7 +521,7 @@ public class RobotCommandFactory {
       Commands.sequence(
         m_column.offCommand() // wait until
           .until(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier) // shooter at target velocity
-            .and(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))) // and facing hub
+            .and(m_drivetrainCommandFactory.atAngleTrigger(m_drivetrainAngleSupplier))) // and facing hub
           .withTimeout(ShooterConstants.WAIT_FOR_SHOOTER_TIMEOUT),
         m_column.velocityCommand(columnSupplier)),
 
@@ -517,7 +529,7 @@ public class RobotCommandFactory {
       Commands.sequence(
         m_indexer.offCommand() // wait until
           .until(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier) // shooter at target velocity
-            .and(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))) // and facing hub
+            .and(m_drivetrainCommandFactory.atAngleTrigger(m_drivetrainAngleSupplier))) // and facing hub
           .withTimeout(ShooterConstants.WAIT_FOR_SHOOTER_TIMEOUT),
         m_indexer.velocityCommand(indexerSupplier)),
 
@@ -525,7 +537,7 @@ public class RobotCommandFactory {
       Commands.sequence(
         m_roller.offCommand()  // wait until
           .until(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier) // shooter at target velocity
-            .and(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))) // and facing hub
+            .and(m_drivetrainCommandFactory.atAngleTrigger(m_drivetrainAngleSupplier))) // and facing hub
           .withTimeout(ShooterConstants.WAIT_FOR_SHOOTER_TIMEOUT),
          m_roller.velocityCommand(rollerSupplier))
     ).withName("shootWithVision");
@@ -581,7 +593,7 @@ public class RobotCommandFactory {
   public Command snapToHubCommand(Supplier<JoystickVals> joystickValsSupplier) {
     return m_drivetrainCommandFactory.snapToAngle( // drivetrain: snap to angle 
       joystickValsSupplier,
-      () -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)).withName("snapToHubCommand");
+      m_drivetrainAngleSupplier).withName("snapToHubCommand");
   }
   
   // snaps to hub, then points wheels in x
@@ -589,9 +601,9 @@ public class RobotCommandFactory {
   public Command snapToHubThenPointWheelsInXCommand(Supplier<JoystickVals> joystickValsSupplier, Trigger driverInputTrigger) {
     return Commands.repeatingSequence(
       snapToHubCommand(joystickValsSupplier) // snap to hub until at angle 
-        .until(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose))),
+        .until(m_drivetrainCommandFactory.atAngleTrigger(m_drivetrainAngleSupplier)),
       m_drivetrainCommandFactory.pointWheelsinX() // snap to hub until not at angle or driver input
-        .until(not(m_drivetrainCommandFactory.atAngleTrigger(() -> HubCalculations.angleToHub(m_drivetrain.getState().Pose)))
+        .until(not(m_drivetrainCommandFactory.atAngleTrigger(m_drivetrainAngleSupplier))
         .or(driverInputTrigger))).withName("snapToHubThenPointWheelsInXCommand");
   }
 
@@ -694,7 +706,7 @@ public class RobotCommandFactory {
   }
 
   public double getAngleToHub() {
-    return HubCalculations.angleToHub(m_drivetrain.getState().Pose).getDegrees();
+    return m_drivetrainAngleSupplier.get().getDegrees();
   }
 
   public double getTargetShooterVelocity() {
@@ -715,10 +727,10 @@ public class RobotCommandFactory {
 
   /**
    * Gets the calculated angle for shooting on the fly
-   * @return SOTF angle in degrees
+   * @return SOTF angle 
    */
-  public double getSOTFAngle() {
-    return calculateShootOnTheFlyAngle().getDegrees();
+  public Rotation2d getSOTFAngle() {
+    return calculateShootOnTheFlyAngle();
   }
   
   // syntactic sugar

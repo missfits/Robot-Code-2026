@@ -61,7 +61,7 @@ public final class Constants {
     public static final double MAX_ROTATION_SPEED = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a revolution per second max angular velocity
 
     // Rotation heading controller PID gains
-    public static double ROTATION_KP = 7.0;
+    public static double ROTATION_KP = 5.0;
     public static double ROTATION_KI = 0.0;
     public static double ROTATION_KD = 0.0;
 
@@ -146,7 +146,7 @@ public final class Constants {
     public static final double SNAP_TO_TARGET_DISTANCE_THRESHOLD = 0.05; // 5cm
 
     // angle tolerance (in radians) for atTargetAngle()
-    public static final double ANGLE_TOLERANCE = Math.toRadians(5);
+    public static final double ANGLE_TOLERANCE = Math.toRadians(3);
 
   }
 
@@ -164,7 +164,7 @@ public final class Constants {
     public static final int MOTOR_ID = 20;
 
     // Motor limits
-    public static final int MOTOR_STATOR_LIMIT = 40;
+    public static final int MOTOR_STATOR_LIMIT = 60;
 
     public static final boolean IS_INVERTED = true;
 
@@ -236,7 +236,7 @@ public final class Constants {
     public static final int MOTOR_ID = 21;
 
     // Motor limits
-    public static final int MOTOR_STATOR_LIMIT = 60;
+    public static final int MOTOR_STATOR_LIMIT = 80;
 
     public static final boolean IS_INVERTED = true;
 
@@ -291,7 +291,7 @@ public final class Constants {
     public static final int MOTOR_ID = 22;
 
     // Motor limits
-    public static final int MOTOR_STATOR_LIMIT = 60;
+    public static final int MOTOR_STATOR_LIMIT = 40;
 
     public static final boolean IS_INVERTED = true;
 
@@ -308,13 +308,13 @@ public final class Constants {
     // Indexer motor velocity
     public static double INDEXER_VELOCITY = 70.0;
 
-    public static double SHOOT_VELOCITY = 100.0;
+    public static double SHOOT_VELOCITY = 50.0;
     public static double MANUAL_VELOCITY = 80.0;
     public static double MANUAL_BACK_VELOCITY = -80.0;
-    public static double OUTTAKE_VELOCITY = -100.0;
-    public static double RECYCLE_VELOCITY = 100.0;
-    public static double SHUTTLE_VELOCITY = 100.0;
-    public static double INTAKE_VELOCITY = 100.0;
+    public static double OUTTAKE_VELOCITY = -80.0;
+    public static double RECYCLE_VELOCITY = 50.0;
+    public static double SHUTTLE_VELOCITY = 50.0;
+    public static double INTAKE_VELOCITY = 80.0;
 
     // Testing velocities
     public static double TESTING_VELOCITY = 0.0;
@@ -359,13 +359,13 @@ public final class Constants {
     // Column motor velocities
     public static double COLUMN_VELOCITY = 100.0;
     
-    public static double SHOOT_VELOCITY = 100.0;
-    public static double MANUAL_VELOCITY = 80.0;
-    public static double MANUAL_BACK_VELOCITY = -80.0;
-    public static double OUTTAKE_VELOCITY = -100.0;
-    public static double RECYCLE_VELOCITY = 100.0;
-    public static double SHUTTLE_VELOCITY = 100.0;
-    public static double INTAKE_VELOCITY = -100.0;
+    public static double SHOOT_VELOCITY = 70.0;
+    public static double MANUAL_VELOCITY = 70.0;
+    public static double MANUAL_BACK_VELOCITY = -70.0;
+    public static double OUTTAKE_VELOCITY = -70.0;
+    public static double RECYCLE_VELOCITY = 70.0;
+    public static double SHUTTLE_VELOCITY = 70.0;
+    public static double INTAKE_VELOCITY = -40.0;
 
     // Testing velocities
     public static double TESTING_VELOCITY = 0.0;
@@ -440,9 +440,9 @@ public final class Constants {
     public static double SHOOTER_VELOCITY = 10.0;
     public static double SHOOTER_BACK_VELOCITY = -1.0;
 
-    public static double SHOOTER_DISTANCE1_VELOCITY = 45.0;
-    public static double SHOOTER_DISTANCE2_VELOCITY = 50.0;
-    public static double SHOOTER_DISTANCE3_VELOCITY = 55.0;
+    public static double SHOOTER_DISTANCE1_VELOCITY = 47.3; // between trench and bump 
+    public static double SHOOTER_DISTANCE2_VELOCITY = 49.;  // tower 
+    public static double SHOOTER_DISTANCE3_VELOCITY = 63.;  // corner 
 
     // Testing velocities
     public static double TESTING_VELOCITY = 40.0;
@@ -497,7 +497,7 @@ public final class Constants {
 
     // SOTM constants
     public static final double SHOOTER_RPS_TO_MPS = Units.inchesToMeters(2*Math.PI*4);
-    public static final double SHOOTER_SLIP_FACTOR = 0.8; // fudge factor for slippage between shooter and fuel; TODO: tune
+    public static final double SHOOTER_SLIP_FACTOR = 1; // fudge factor for slippage between shooter and fuel; TODO: tune
     public static final double SHOOTER_ANGLE_DEGREES = 71.2393048349; // measured in CAD
   }
   
@@ -701,6 +701,10 @@ public final class Constants {
   }
 
   public static class TeleopConstants {
-    public static final double LATENCY_COMPENSATION = 0.1; // compensate for shooter spin up + code processing time, etc. TODO: tune
+    public static final double LATENCY_COMPENSATION = 0.05; // compensate for shooter spin up + code processing time, etc. TODO: tune
+  }
+
+  public static class RobotConstants {
+    public static final double BROWNOUT_VOLTAGE = 6.25;
   }
 }

@@ -27,7 +27,7 @@ public class DrivetrainCommandFactory {
     private final SwerveRequest.FieldCentric m_drive = new SwerveRequest.FieldCentric()
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     private final SwerveRequest.FieldCentricFacingAngle m_driveFacingAngle = new SwerveRequest.FieldCentricFacingAngle()
-        .withDriveRequestType(DriveRequestType.Velocity).withForwardPerspective(ForwardPerspectiveValue.BlueAlliance);
+        .withDriveRequestType(DriveRequestType.Velocity).withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective);
     private final SwerveRequest.PointWheelsAt m_point = new SwerveRequest.PointWheelsAt();
     private final SwerveRequest.SwerveDriveBrake m_brake = new SwerveRequest.SwerveDriveBrake();
 
@@ -97,7 +97,7 @@ public class DrivetrainCommandFactory {
 
             return m_driveFacingAngle.withVelocityX(-shapedValues.y() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive forward with negative Y (forward)
             .withVelocityY(-shapedValues.x() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive left with negative X (left)
-            .withTargetDirection(targetAngle);
+            .withTargetDirection(AllianceFlipUtil.apply(targetAngle));
         }).withName("snapToAngle");
     }
 
