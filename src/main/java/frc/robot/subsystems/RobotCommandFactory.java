@@ -727,7 +727,7 @@ public class RobotCommandFactory {
 
   /**
    * Gets the calculated angle for shooting on the fly
-   * @return SOTF angle in degrees
+   * @return SOTF angle 
    */
   public Rotation2d getSOTFAngle() {
     return calculateShootOnTheFlyAngle();
