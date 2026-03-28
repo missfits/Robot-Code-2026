@@ -145,7 +145,7 @@ public class RobotContainer {
 
     // Configure auto builder
     createNamedCommands();
-    m_autoChooser = AutoBuilder.buildAutoChooser("drive forward 1m");
+    m_autoChooser = AutoBuilder.buildAutoChooser("don't move");
     SmartDashboard.putData("Auto Chooser", m_autoChooser);
 
     // Data logging
