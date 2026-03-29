@@ -48,6 +48,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -131,6 +132,8 @@ public class RobotContainer {
 
   private final Field2d m_actualField = new Field2d(); // field simulation
 
+  private boolean scoreMode = false;
+
   /** The container for the robot. Contains subsystems and commands. */
   public RobotContainer() {
 
@@ -176,14 +179,26 @@ public class RobotContainer {
       )
     );
 
-    // x (on true): intake + led red
+    // x (on true): intake + set scoreMode to false
     m_driverJoystick.x().and(m_driverJoystick.leftBumper().negate()).onTrue(m_robotCommandFactory.intakeModeCommand());
-    // y (on true): neutral + led blue
-    m_driverJoystick.y().and(m_driverJoystick.leftBumper().negate()).onTrue(m_robotCommandFactory.neutralModeCommand());
-    // b (on true): score + led green
-    m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).onTrue(
-      m_robotCommandFactory.scoreModeCommand(m_driverTranslationJoystickValsSupplier, driverInputTrigger()));
+    m_driverJoystick.x().and(m_driverJoystick.leftBumper().negate()).onTrue(
+      Commands.runOnce(() -> scoreMode = false));
 
+    // y (on true): neutral + set scoreMode to false
+    m_driverJoystick.y().and(m_driverJoystick.leftBumper().negate()).onTrue(m_robotCommandFactory.neutralModeCommand());
+    m_driverJoystick.y().and(m_driverJoystick.leftBumper().negate()).onTrue(
+      Commands.runOnce(() -> scoreMode = false));
+    
+    // b (on true): aim and spin up shooter; set scoreMode to true
+    m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).onTrue(
+      m_robotCommandFactory.aimAndSpinUpShooterCommand(m_driverTranslationJoystickValsSupplier, driverInputTrigger()));
+    m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).onTrue(
+      Commands.runOnce(() -> scoreMode = true));
+
+    m_robotCommandFactory.readyToShootTrigger() // feed gamepiece when ready to shoot and shootMode is true
+      .and(new Trigger(() -> scoreMode))
+      .whileTrue(m_robotCommandFactory.feedGamepieceCommand());
+      
     // a: snap to bump
     m_driverJoystick.a().and(m_driverJoystick.leftBumper().negate()).whileTrue(
       m_drivetrainCommandFactory.snapToBump(m_driverTranslationJoystickValsSupplier));
