@@ -382,6 +382,109 @@ public class RobotCommandFactory {
     .withName("scoreModeDynamic");
   }
 
+  /**
+   * REFACTORED VERSION: Score mode using trigger-based approach with debouncing.
+   * This version separates the preparation (spin up + aim) from the feeding logic,
+   * and uses the readyToShootTrigger to control when gamepieces are fed.
+   *
+   * @param joystickValsSupplier Supplier for driver translation joystick input
+   * @param driverInputTrigger Trigger that detects driver input for wheel unlocking
+   * @return Command that prepares and shoots with vision-based aiming
+   */
+  public Command scoreModeRefactoredCommand(Supplier<JoystickVals> joystickValsSupplier, Trigger driverInputTrigger) {
+    return Commands.parallel(
+      // Prepare shooter and aim 
+      prepareShootCommand(
+        joystickValsSupplier,
+        driverInputTrigger,
+        m_shooterVelocityInitialCalculatedSupplier,
+        m_shooterVelocityCalculatedSupplier),
+
+      // Feed gamepieces when ready 
+      feedGamepieceCommand(
+        m_shooterVelocityCalculatedSupplier,
+        () -> ColumnConstants.SHOOT_VELOCITY,
+        () -> IndexerConstants.SHOOT_VELOCITY,
+        () -> RollerConstants.ROLLER_VELOCITY)
+    ).withName("scoreModeRefactored");
+  }
+
+  // Refactored shoot commands using trigger-based approach
+
+  /**
+   * Prepares the robot to shoot by spinning up the shooter and aiming the drivetrain.
+   * This command does NOT feed gamepieces - use feedGamepieceCommand() for that.
+   *
+   * @param joystickValsSupplier Supplier for driver translation joystick input
+   * @param driverInputTrigger Trigger that detects driver input for wheel unlocking
+   * @param initialShooterSupplier Supplier for initial shooter velocity (higher for quick spin-up)
+   * @param shooterSupplier Supplier for target shooter velocity
+   * @return Command that prepares the robot to shoot
+   */
+  public Command prepareShootCommand(Supplier<JoystickVals> joystickValsSupplier, Trigger driverInputTrigger,
+      Supplier<Double> initialShooterSupplier, Supplier<Double> shooterSupplier) {
+    return Commands.parallel(
+      // Aim the drivetrain at the target, then lock wheels in X when aligned
+      snapToHubThenPointWheelsInXCommand(joystickValsSupplier, driverInputTrigger),
+
+      // Spin up shooter with initial velocity boost, then maintain target velocity
+      Commands.sequence(
+        m_shooter.shooterVelocityCommand(initialShooterSupplier)
+          .until(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier))
+          .withTimeout(ShooterConstants.WAIT_FOR_SHOOTER_TIMEOUT),
+        m_shooter.shooterVelocityCommand(shooterSupplier)),
+
+      // Log readiness status
+      Commands.run(() -> {
+        SmartDashboard.putBoolean("robotCommandFactory/readyToShoot",
+          readyToShootTrigger(shooterSupplier).getAsBoolean());
+      })
+    ).withName("prepareShootCommand");
+  }
+
+  /**
+   * Feeds gamepieces through the column, indexer, and roller when ready to shoot.
+   * Should be run in parallel with prepareShootCommand().
+   * Uses a trigger-based approach with debouncing to start/stop feeding based on shooting conditions.
+   *
+   * @param shooterSupplier Supplier for target shooter velocity
+   * @param columnSupplier Supplier for column velocity
+   * @param indexerSupplier Supplier for indexer velocity
+   * @param rollerSupplier Supplier for roller velocity
+   * @return Command that feeds gamepieces when ready to shoot
+   */
+  public Command feedGamepieceCommand(Supplier<Double> shooterSupplier, Supplier<Double> columnSupplier,
+      Supplier<Double> indexerSupplier, Supplier<Double> rollerSupplier) {
+
+    Trigger readyTrigger = readyToShootTrigger(shooterSupplier);
+
+    return Commands.parallel(
+      // Column - runs when ready to shoot
+      Commands.either(
+        m_column.velocityCommand(columnSupplier),
+        m_column.offCommand(),
+        readyTrigger),
+
+      // Indexer - runs when ready to shoot
+      Commands.either(
+        m_indexer.velocityCommand(indexerSupplier),
+        m_indexer.offCommand(),
+        readyTrigger),
+
+      // Roller - runs when ready to shoot
+      Commands.either(
+        m_roller.velocityCommand(rollerSupplier),
+        m_roller.offCommand(),
+        readyTrigger),
+
+      // Pivot displacement - runs when ready to shoot (same logic as other mechanisms)
+      Commands.either(
+        m_pivot.repeatingDisplaceFuelCommand(),
+        m_pivot.offCommand(),
+        readyTrigger)
+    ).withName("feedGamepieceCommand");
+  }
+
   // shoot helper commands
 
   /**
@@ -732,7 +835,43 @@ public class RobotCommandFactory {
   public Rotation2d getSOTFAngle() {
     return calculateShootOnTheFlyAngle();
   }
-  
+
+  /**
+   * Checks if the robot's speed is low enough to shoot accurately
+   * @return true if robot speed is below threshold
+   */
+  private boolean isRobotSpeedLowEnough() {
+    ChassisSpeeds robotSpeeds = m_drivetrain.getState().Speeds;
+    double robotSpeed = Math.hypot(robotSpeeds.vxMetersPerSecond, robotSpeeds.vyMetersPerSecond);
+
+    SmartDashboard.putNumber("robotCommandFactory/robotSpeed", robotSpeed);
+    SmartDashboard.putBoolean("robotCommandFactory/isRobotSpeedLowEnough",
+      robotSpeed < ShooterConstants.MAX_ROBOT_SPEED_TO_SHOOT);
+
+    return robotSpeed < ShooterConstants.MAX_ROBOT_SPEED_TO_SHOOT;
+  }
+
+  /**
+   * Creates a trigger that indicates the robot is ready to shoot.
+   * Combines shooter velocity, heading, and robot speed checks with debouncing.
+   *
+   * @param shooterVelocitySupplier Supplier for target shooter velocity
+   * @return Trigger that is true when all shooting conditions are met
+   */
+  public Trigger readyToShootTrigger(Supplier<Double> shooterVelocitySupplier) {
+    Trigger shooterAtVelocity = m_shooter.isMotorVelocityWithinPercentTolerance(shooterVelocitySupplier);
+    Trigger robotHeadingCorrect = m_drivetrainCommandFactory.atAngleTrigger(m_drivetrainAngleSupplier);
+    Trigger robotSpeedLow = new Trigger(this::isRobotSpeedLowEnough);
+
+    // Combine all conditions
+    Trigger readyTrigger = shooterAtVelocity
+      .and(robotHeadingCorrect)
+      .and(robotSpeedLow);
+
+    // Add debouncing - especially important on the falling edge to prevent rapid on/off
+    return readyTrigger.debounce(ShooterConstants.READY_TO_SHOOT_DEBOUNCE_TIME);
+  }
+
   // syntactic sugar
   private Trigger not(Trigger trigger) {
     return trigger.negate();
