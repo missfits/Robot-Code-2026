@@ -32,6 +32,7 @@ import frc.robot.subsystems.intake.RollerSubsystem;
 import frc.robot.subsystems.scorer.ShooterSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.robot.utils.ShooterLookupTable;
+import lombok.experimental.PackagePrivate;
 import frc.robot.utils.HubCalculations;
 
 public class RobotCommandFactory {
@@ -71,6 +72,7 @@ public class RobotCommandFactory {
   private final Supplier<Rotation2d> m_drivetrainAngleSupplier = () -> calculateShootOnTheFlyAngle();
 
   private final Supplier<Double> m_dynamicShooterVelocitySupplier;
+  private final Trigger m_readyToShootTrigger;
 
   // Getters for suppliers (used in RobotContainer for trigger bindings)
   public Supplier<Double> getShooterVelocityCalculatedSupplier() {
@@ -99,6 +101,8 @@ public class RobotCommandFactory {
           ? m_shooterVelocityCalculatedSupplier.get()
           : m_shooterVelocityInitialCalculatedSupplier.get();
     };
+
+    m_readyToShootTrigger = readyToShootTrigger();
   }
 
   public void setDefaultCommand() {
@@ -803,13 +807,17 @@ public class RobotCommandFactory {
     return robotSpeed < ShooterConstants.MAX_ROBOT_SPEED_TO_SHOOT;
   }
 
+  public Trigger getReadyToShootTrigger() {
+    return m_readyToShootTrigger;
+  }
+
   /**
    * Creates a trigger that indicates the robot is ready to shoot.
    * Combines shooter velocity, heading, and robot speed checks with debouncing.
    *
    * @return Trigger that is true when all shooting conditions are met
    */
-  public Trigger readyToShootTrigger() {
+  private Trigger readyToShootTrigger() {
     Trigger shooterAtVelocity = m_shooter.isMotorVelocityWithinPercentTolerance(m_dynamicShooterVelocitySupplier);
     Trigger robotHeadingCorrect = m_drivetrainCommandFactory.atAngleTrigger(m_drivetrainAngleSupplier);
     Trigger robotSpeedLow = new Trigger(this::isRobotSpeedLowEnough);

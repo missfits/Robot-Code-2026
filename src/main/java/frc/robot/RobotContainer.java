@@ -195,7 +195,7 @@ public class RobotContainer {
     m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).onTrue(
       Commands.runOnce(() -> scoreMode = true));
 
-    m_robotCommandFactory.readyToShootTrigger() // feed gamepiece when ready to shoot and shootMode is true
+    m_robotCommandFactory.getReadyToShootTrigger() // feed gamepiece when ready to shoot and shootMode is true
       .and(new Trigger(() -> scoreMode))
       .whileTrue(m_robotCommandFactory.feedGamepieceCommand());
       
@@ -430,7 +430,7 @@ public class RobotContainer {
   }
 
 
-  public void logShootByDistanceValues() {
+  public void logRobotCommandFactoryValues() {
     // Robot Command Factory Logging 
     SmartDashboard.putNumber("robotCommandFactory/distanceToHubMeters", m_robotCommandFactory.getDistanceToHub());
     SmartDashboard.putNumber("robotCommandFactory/angleToHubDegrees", m_robotCommandFactory.getAngleToHub());
@@ -439,6 +439,9 @@ public class RobotContainer {
     SmartDashboard.putNumber("robotCommandFactory/SOTFAngleToHubRadians", m_robotCommandFactory.getSOTFAngle().getRadians());
     SmartDashboard.putNumber("robotCommandFactory/calculatedShooterVelocityRotationsPerSecond",
         m_robotCommandFactory.getCalculatedShooterVelocity()); 
+
+    SmartDashboard.putBoolean("robotCommandFactory/readyToShootTrigger", m_robotCommandFactory.getReadyToShootTrigger().getAsBoolean());
+    SmartDashboard.putBoolean("robotCommandFactory/scoreMode", scoreMode);
   }
 
   private void resetControllerConstantsSmartDashboard() {
