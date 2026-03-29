@@ -398,7 +398,8 @@ public class RobotCommandFactory {
         joystickValsSupplier,
         driverInputTrigger,
         m_shooterVelocityInitialCalculatedSupplier,
-        m_shooterVelocityCalculatedSupplier),
+        m_shooterVelocityCalculatedSupplier,
+        () -> ColumnConstants.SHOOT_VELOCITY),
 
       // Feed gamepieces when ready 
       feedGamepieceCommand(
@@ -414,30 +415,32 @@ public class RobotCommandFactory {
   /**
    * Prepares the robot to shoot by spinning up the shooter and aiming the drivetrain.
    * This command does NOT feed gamepieces - use feedGamepieceCommand() for that.
+   * The shooter runs at initial velocity until the column spins up, then switches to target velocity.
    *
    * @param joystickValsSupplier Supplier for driver translation joystick input
    * @param driverInputTrigger Trigger that detects driver input for wheel unlocking
    * @param initialShooterSupplier Supplier for initial shooter velocity (higher for quick spin-up)
    * @param shooterSupplier Supplier for target shooter velocity
+   * @param columnSupplier Supplier for column velocity (used to detect when column is spinning)
    * @return Command that prepares the robot to shoot
    */
   public Command prepareShootCommand(Supplier<JoystickVals> joystickValsSupplier, Trigger driverInputTrigger,
-      Supplier<Double> initialShooterSupplier, Supplier<Double> shooterSupplier) {
+      Supplier<Double> initialShooterSupplier, Supplier<Double> shooterSupplier, Supplier<Double> columnSupplier) {
     return Commands.parallel(
       // Aim the drivetrain at the target, then lock wheels in X when aligned
       snapToHubThenPointWheelsInXCommand(joystickValsSupplier, driverInputTrigger),
-
-      // Spin up shooter with initial velocity boost, then maintain target velocity
-      Commands.sequence(
-        m_shooter.shooterVelocityCommand(initialShooterSupplier)
-          .until(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier))
-          .withTimeout(ShooterConstants.WAIT_FOR_SHOOTER_TIMEOUT),
-        m_shooter.shooterVelocityCommand(shooterSupplier)),
+      
+      Commands.either(
+        m_shooter.shooterVelocityCommand(shooterSupplier),  // Run at target velocity when column is spinning up
+        m_shooter.shooterVelocityCommand(initialShooterSupplier),  // Run at initial velocity otherwise
+        m_column.isMotorVelocityOverPercentToleranceTrigger(columnSupplier)),
 
       // Log readiness status
       Commands.run(() -> {
         SmartDashboard.putBoolean("robotCommandFactory/readyToShoot",
           readyToShootTrigger(shooterSupplier).getAsBoolean());
+        SmartDashboard.putBoolean("robotCommandFactory/isColumnAtVelocity",
+          m_column.isMotorVelocityOverPercentToleranceTrigger(columnSupplier).getAsBoolean());
       })
     ).withName("prepareShootCommand");
   }
