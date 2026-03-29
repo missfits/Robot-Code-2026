@@ -72,8 +72,6 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.events.EventTrigger;
 
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-
 import com.ctre.phoenix6.SignalLogger;
 
 
@@ -141,12 +139,13 @@ public class RobotContainer {
       configureBindingsSimulation();
     } else {
       configureBindingsCompetition();
+      configureBindingsTestingMechanisms();
       configureBindingsVision();
     }
 
     // Configure auto builder
     createNamedCommands();
-    m_autoChooser = AutoBuilder.buildAutoChooser("drive forward 1m");
+    m_autoChooser = AutoBuilder.buildAutoChooser("don't move");
     SmartDashboard.putData("Auto Chooser", m_autoChooser);
 
     // Data logging
@@ -183,8 +182,7 @@ public class RobotContainer {
     m_driverJoystick.y().and(m_driverJoystick.leftBumper().negate()).onTrue(m_robotCommandFactory.neutralModeCommand());
     // b (on true): score + led green
     m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).onTrue(
-      m_robotCommandFactory.scoreModeCommand(m_driverTranslationJoystickValsSupplier)
-        .until(driverInputTrigger()));
+      m_robotCommandFactory.scoreModeCommand(m_driverTranslationJoystickValsSupplier, driverInputTrigger()));
 
     // a: snap to bump
     m_driverJoystick.a().and(m_driverJoystick.leftBumper().negate()).whileTrue(
@@ -249,9 +247,17 @@ public class RobotContainer {
     // y: store pivot
     m_testJoystick.y().and(m_testJoystick.leftBumper().negate()).whileTrue(m_pivot.storePivotCommand());
     // b: run roller
-    m_testJoystick.b().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runRollerBackTestCommand());
+    // m_testJoystick.b().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runRollerBackTestCommand());
+
+    // b: run column 
+
+    m_testJoystick.b().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runColumnTestCommand());
+
     // a: run roller and indexer 
-    m_testJoystick.a().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runRollerIndexerBackCommand());
+    // m_testJoystick.a().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runRollerIndexerBackCommand());
+
+    // a: run score command using dashboard shooter speeds
+    m_testJoystick.a().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.dashboardScoreCommand());
 
     // left bumper + x: deploy pivot motion magic
     m_testJoystick.leftBumper().and(m_testJoystick.x()).whileTrue(m_pivot.deployPivotCommand());
@@ -297,7 +303,7 @@ public class RobotContainer {
 
      // Add local filters
     localPipeline.addFilter("poseZRollPitch", new LocalPoseZRollPitchFilter());
-    localPipeline.addFilter("LocalCameraPoseConsistencyDistanceToFusedPose", new LocalCameraPoseConsistencyDistanceToFusedPoseFilter(m_drivetrain));
+    localPipeline.addFilter("localCameraPoseConsistencyDistanceToFusedPose", new LocalCameraPoseConsistencyDistanceToFusedPoseFilter(m_drivetrain));
 
     m_vision.setGlobalFilterPipeline(globalPipeline);
     m_vision.setLocalFilteringPipeline(localPipeline);
@@ -335,102 +341,153 @@ public class RobotContainer {
   // ----- LOGGING -----
   public void logToSmartDashboard() {
     // Indexer
-    SmartDashboard.putNumber("indexer IO/kP", SmartDashboard.getNumber("indexer IO/kP", IndexerConstants.kP));
-    SmartDashboard.putNumber("indexer IO/kI", SmartDashboard.getNumber("indexer IO/kI", IndexerConstants.kI));
-    SmartDashboard.putNumber("indexer IO/kD", SmartDashboard.getNumber("indexer IO/kD", IndexerConstants.kD));
-    SmartDashboard.putNumber("indexer IO/velocity", SmartDashboard.getNumber("indexer IO/velocity", IndexerConstants.INDEXER_VELOCITY));
-    SmartDashboard.putNumber("indexer IO/voltage", SmartDashboard.getNumber("indexer/voltage", IndexerConstants.INDEXER_VOLTAGE));
+    SmartDashboard.putNumber("indexer/kP", SmartDashboard.getNumber("indexer/kP", IndexerConstants.kP));
+    SmartDashboard.putNumber("indexer/kI", SmartDashboard.getNumber("indexer/kI", IndexerConstants.kI));
+    SmartDashboard.putNumber("indexer/kD", SmartDashboard.getNumber("indexer/kD", IndexerConstants.kD));
+    SmartDashboard.putNumber("indexer/dashboardTestVelocityRotationsPerSecond",
+        SmartDashboard.getNumber("indexer/dashboardTestVelocityRotationsPerSecond", IndexerConstants.INDEXER_VELOCITY));
+    SmartDashboard.putNumber("indexer/dashboardTestVoltage",
+        SmartDashboard.getNumber("indexer/dashboardTestVoltage", IndexerConstants.INDEXER_VOLTAGE));
 
     // Column
-    SmartDashboard.putNumber("column IO/kP", SmartDashboard.getNumber("column IO/kP", ColumnConstants.kP));
-    SmartDashboard.putNumber("column IO/kI", SmartDashboard.getNumber("column IO/kI", ColumnConstants.kI));
-    SmartDashboard.putNumber("column IO/kD", SmartDashboard.getNumber("column IO/kD", ColumnConstants.kD));
-    SmartDashboard.putNumber("column IO/velocity", SmartDashboard.getNumber("column IO/velocity", ColumnConstants.COLUMN_VELOCITY));
-    SmartDashboard.putNumber("column IO/voltage", SmartDashboard.getNumber("column/voltage", ColumnConstants.COLUMN_VOLTAGE));
+    SmartDashboard.putNumber("column/kP", SmartDashboard.getNumber("column/kP", ColumnConstants.INFLUENCER_kP));
+    SmartDashboard.putNumber("column/kI", SmartDashboard.getNumber("column/kI", ColumnConstants.INFLUENCER_kI));
+    SmartDashboard.putNumber("column/kD", SmartDashboard.getNumber("column/kD", ColumnConstants.INFLUENCER_kD));
+    SmartDashboard.putNumber("column/kS", SmartDashboard.getNumber("column/kS", ColumnConstants.INFLUENCER_kS));
+    SmartDashboard.putNumber("column/kV", SmartDashboard.getNumber("column/kV", ColumnConstants.INFLUENCER_kV));
+    SmartDashboard.putNumber("column/kA", SmartDashboard.getNumber("column/kA", ColumnConstants.INFLUENCER_kA));
+    SmartDashboard.putNumber("column/dashboardTestVelocityRotationsPerSecond",
+        SmartDashboard.getNumber("column/dashboardTestVelocityRotationsPerSecond", ColumnConstants.COLUMN_VELOCITY));
+    SmartDashboard.putNumber("column/dashboardTestVoltage",
+        SmartDashboard.getNumber("column/dashboardTestVoltage", ColumnConstants.COLUMN_VOLTAGE));
 
     // Roller
-    SmartDashboard.putNumber("roller IO/kP", SmartDashboard.getNumber("roller IO/kP", RollerConstants.kP));
-    SmartDashboard.putNumber("roller IO/kI", SmartDashboard.getNumber("roller IO/kI", RollerConstants.kI));
-    SmartDashboard.putNumber("roller IO/kD", SmartDashboard.getNumber("roller IO/kD", RollerConstants.kD));
-    SmartDashboard.putNumber("roller IO/velocity", SmartDashboard.getNumber("roller IO/velocity", RollerConstants.ROLLER_VELOCITY));
-    SmartDashboard.putNumber("roller IO/voltage", SmartDashboard.getNumber("roller/voltage", RollerConstants.ROLLER_VOLTAGE));
+    SmartDashboard.putNumber("roller/kP", SmartDashboard.getNumber("roller/kP", RollerConstants.kP));
+    SmartDashboard.putNumber("roller/kI", SmartDashboard.getNumber("roller/kI", RollerConstants.kI));
+    SmartDashboard.putNumber("roller/kD", SmartDashboard.getNumber("roller/kD", RollerConstants.kD));
+    SmartDashboard.putNumber("roller/dashboardTestVelocityRotationsPerSecond",
+        SmartDashboard.getNumber("roller/dashboardTestVelocityRotationsPerSecond", RollerConstants.ROLLER_VELOCITY));
+    SmartDashboard.putNumber("roller/dashboardTestVoltage",
+        SmartDashboard.getNumber("roller/dashboardTestVoltage", RollerConstants.ROLLER_VOLTAGE));
 
     // Pivot
-    SmartDashboard.putNumber("pivot IO/kP", SmartDashboard.getNumber("pivot IO/kP", PivotConstants.kP));
-    SmartDashboard.putNumber("pivot IO/kI", SmartDashboard.getNumber("pivot IO/kI", PivotConstants.kI));
-    SmartDashboard.putNumber("pivot IO/kD", SmartDashboard.getNumber("pivot IO/kD", PivotConstants.kD));
-    SmartDashboard.putNumber("pivot IO/kS", SmartDashboard.getNumber("pivot IO/kS", PivotConstants.kS));
-    SmartDashboard.putNumber("pivot IO/kV", SmartDashboard.getNumber("pivot IO/kV", PivotConstants.kV));
-    SmartDashboard.putNumber("pivot IO/kA", SmartDashboard.getNumber("pivot IO/kA", PivotConstants.kA));
-    SmartDashboard.putNumber("pivot IO/velocity", SmartDashboard.getNumber("pivot IO/velocity", PivotConstants.DEPLOY_VELOCITY));
-    SmartDashboard.putNumber("pivot IO/voltage", SmartDashboard.getNumber("pivot/voltage", PivotConstants.DEPLOY_VOLTAGE));
+    SmartDashboard.putNumber("pivot/kP", SmartDashboard.getNumber("pivot/kP", PivotConstants.kP));
+    SmartDashboard.putNumber("pivot/kI", SmartDashboard.getNumber("pivot/kI", PivotConstants.kI));
+    SmartDashboard.putNumber("pivot/kD", SmartDashboard.getNumber("pivot/kD", PivotConstants.kD));
+    SmartDashboard.putNumber("pivot/kS", SmartDashboard.getNumber("pivot/kS", PivotConstants.kS));
+    SmartDashboard.putNumber("pivot/kV", SmartDashboard.getNumber("pivot/kV", PivotConstants.kV));
+    SmartDashboard.putNumber("pivot/kA", SmartDashboard.getNumber("pivot/kA", PivotConstants.kA));
+    SmartDashboard.putNumber("pivot/dashboardTestVelocityRotationsPerSecond",
+        SmartDashboard.getNumber("pivot/dashboardTestVelocityRotationsPerSecond", PivotConstants.DEPLOY_VELOCITY));
+    SmartDashboard.putNumber("pivot/dashboardTestVoltage",
+        SmartDashboard.getNumber("pivot/dashboardTestVoltage", PivotConstants.DEPLOY_VOLTAGE));
 
-    SmartDashboard.putNumber("pivot IO/motion magic velocity", SmartDashboard.getNumber("pivot IO/motion magic velocity", PivotConstants.CRUISE_VELOCITY));
-    SmartDashboard.putNumber("pivot IO/motion magic acceleration", SmartDashboard.getNumber("pivot IO/motion magic acceleration", PivotConstants.ACCELERATION));
-    SmartDashboard.putNumber("pivot IO/motion magic jerk", SmartDashboard.getNumber("pivot IO/motion magic jerk", PivotConstants.JERK));
+    SmartDashboard.putNumber("pivot/motionMagicCruiseVelocity",
+        SmartDashboard.getNumber("pivot/motionMagicCruiseVelocity", PivotConstants.CRUISE_VELOCITY));
+    SmartDashboard.putNumber("pivot/motionMagicAcceleration",
+        SmartDashboard.getNumber("pivot/motionMagicAcceleration", PivotConstants.ACCELERATION));
+    SmartDashboard.putNumber("pivot/motionMagicJerk",
+        SmartDashboard.getNumber("pivot/motionMagicJerk", PivotConstants.JERK));
 
-    SmartDashboard.putNumber("pivot/store position", SmartDashboard.getNumber("pivot/store position", PivotConstants.STORE_POSITION_DEGREES));
-    SmartDashboard.putNumber("pivot/deploy position", SmartDashboard.getNumber("pivot/deploy position", PivotConstants.DEPLOY_POSITION_DEGREES));
-
+    SmartDashboard.putNumber("pivot/dashboardTestStorePositionDegrees",
+        SmartDashboard.getNumber("pivot/dashboardTestStorePositionDegrees", PivotConstants.STORE_POSITION_DEGREES));
+    SmartDashboard.putNumber("pivot/dashboardTestDeployPositionDegrees",
+        SmartDashboard.getNumber("pivot/dashboardTestDeployPositionDegrees", PivotConstants.DEPLOY_POSITION_DEGREES));
 
     // Shooter Influencer
-    SmartDashboard.putNumber("shooter influencer IO/kP", SmartDashboard.getNumber("shooter influencer IO/kP", ShooterConstants.INFLUENCER_kP));
-    SmartDashboard.putNumber("shooter influencer IO/kI", SmartDashboard.getNumber("shooter influencer IO/kI", ShooterConstants.INFLUENCER_kI));
-    SmartDashboard.putNumber("shooter influencer IO/kD", SmartDashboard.getNumber("shooter influencer IO/kD", ShooterConstants.INFLUENCER_kD));
-    SmartDashboard.putNumber("shooter influencer IO/velocity", SmartDashboard.getNumber("shooter influencer IO/velocity", ShooterConstants.SHOOTER_VELOCITY));
-    SmartDashboard.putNumber("shooter influencer IO/out voltage", SmartDashboard.getNumber("shooter/out voltage", ShooterConstants.SHOOTER_VOLTAGE));
+    SmartDashboard.putNumber("shooter/influencer/kP", SmartDashboard.getNumber("shooter/influencer/kP", ShooterConstants.INFLUENCER_kP));
+    SmartDashboard.putNumber("shooter/influencer/kI", SmartDashboard.getNumber("shooter/influencer/kI", ShooterConstants.INFLUENCER_kI));
+    SmartDashboard.putNumber("shooter/influencer/kD", SmartDashboard.getNumber("shooter/influencer/kD", ShooterConstants.INFLUENCER_kD));
+    SmartDashboard.putNumber("shooter/influencer/kS", SmartDashboard.getNumber("shooter/influencer/kS", ShooterConstants.INFLUENCER_kS));
+    SmartDashboard.putNumber("shooter/influencer/kV", SmartDashboard.getNumber("shooter/influencer/kV", ShooterConstants.INFLUENCER_kV));
+    SmartDashboard.putNumber("shooter/influencer/kA", SmartDashboard.getNumber("shooter/influencer/kA", ShooterConstants.INFLUENCER_kA));
+    SmartDashboard.putNumber("shooter/influencer/dashboardTestVelocityRotationsPerSecond",
+        SmartDashboard.getNumber("shooter/influencer/dashboardTestVelocityRotationsPerSecond", ShooterConstants.SHOOTER_VELOCITY));
+    SmartDashboard.putNumber("shooter/influencer/dashboardTestVoltage",
+        SmartDashboard.getNumber("shooter/influencer/dashboardTestVoltage", ShooterConstants.SHOOTER_VOLTAGE));
 
     // Robot Command Factory Logging 
-    SmartDashboard.putNumber("robot command factory/distance to hub", m_robotCommandFactory.getDistanceToHub());
-    SmartDashboard.putNumber("robot command factory/angle to hub", m_robotCommandFactory.getAngleToHub());
-    SmartDashboard.putNumber("robot command factory/to hub shooter velocity", m_robotCommandFactory.getTargetShooterVelocity());
+    SmartDashboard.putNumber("robotCommandFactory/distanceToHubMeters", m_robotCommandFactory.getDistanceToHub());
+    SmartDashboard.putNumber("robotCommandFactory/angleToHubDegrees", m_robotCommandFactory.getAngleToHub());
+    SmartDashboard.putNumber("robotCommandFactory/angleToHubRadians", Math.toRadians(m_robotCommandFactory.getAngleToHub()));
+    SmartDashboard.putNumber("robotCommandFactory/dashboardTestShooterVelocityRotationsPerSecond",
+        m_robotCommandFactory.getTargetShooterVelocity());
   }
 
 
   public void logShootByDistanceValues() {
     // Robot Command Factory Logging 
-    SmartDashboard.putNumber("robot command factory/distance to hub", m_robotCommandFactory.getDistanceToHub());
-    SmartDashboard.putNumber("robot command factory/angle to hub", m_robotCommandFactory.getAngleToHub());
-    SmartDashboard.putNumber("robot command factory/angle to hubRadians", Math.toRadians(m_robotCommandFactory.getAngleToHub()));
-    SmartDashboard.putNumber("robot command factory/to hub shooter velocity", m_robotCommandFactory.getCalculatedShooterVelocity());
-
+    SmartDashboard.putNumber("robotCommandFactory/distanceToHubMeters", m_robotCommandFactory.getDistanceToHub());
+    SmartDashboard.putNumber("robotCommandFactory/angleToHubDegrees", m_robotCommandFactory.getAngleToHub());
+    SmartDashboard.putNumber("robotCommandFactory/angleToHubRadians", Math.toRadians(m_robotCommandFactory.getAngleToHub()));
+    SmartDashboard.putNumber("robotCommandFactory/SOTFAngleToHubDegrees", m_robotCommandFactory.getSOTFAngle().getDegrees());
+    SmartDashboard.putNumber("robotCommandFactory/SOTFAngleToHubRadians", m_robotCommandFactory.getSOTFAngle().getRadians());
+    SmartDashboard.putNumber("robotCommandFactory/calculatedShooterVelocityRotationsPerSecond",
+        m_robotCommandFactory.getCalculatedShooterVelocity()); 
   }
 
   private void resetControllerConstantsSmartDashboard() {
     // Indexer
-    IndexerConstants.kP = SmartDashboard.getNumber("indexer IO/kP", 0);
-    IndexerConstants.kI = SmartDashboard.getNumber("indexer IO/kI", 0);
-    IndexerConstants.kD = SmartDashboard.getNumber("indexer IO/kD", 0);
+    IndexerConstants.kP = SmartDashboard.getNumber("indexer/kP", 0);
+    IndexerConstants.kI = SmartDashboard.getNumber("indexer/kI", 0);
+    IndexerConstants.kD = SmartDashboard.getNumber("indexer/kD", 0);
     // Column
-    ColumnConstants.kP = SmartDashboard.getNumber("column IO/kP", 0);
-    ColumnConstants.kI = SmartDashboard.getNumber("column IO/kI", 0);
-    ColumnConstants.kD = SmartDashboard.getNumber("column IO/kD", 0);
+    ColumnConstants.INFLUENCER_kP = SmartDashboard.getNumber("column/kP", 0);
+    ColumnConstants.INFLUENCER_kI = SmartDashboard.getNumber("column/kI", 0);
+    ColumnConstants.INFLUENCER_kD = SmartDashboard.getNumber("column/kD", 0);
+    ColumnConstants.INFLUENCER_kS = SmartDashboard.getNumber("column/kS", 0);
+    ColumnConstants.INFLUENCER_kA = SmartDashboard.getNumber("column/kA", 0);
+    ColumnConstants.INFLUENCER_kV = SmartDashboard.getNumber("column/kV", 0);
+
+    ColumnConstants.FOLLOWER_kP = ColumnConstants.INFLUENCER_kP;
+    ColumnConstants.FOLLOWER_kI = ColumnConstants.INFLUENCER_kI;
+    ColumnConstants.FOLLOWER_kD = ColumnConstants.INFLUENCER_kD; 
+    ColumnConstants.FOLLOWER_kS = ColumnConstants.INFLUENCER_kS;
+    ColumnConstants.FOLLOWER_kA = ColumnConstants.INFLUENCER_kA;
+    ColumnConstants.FOLLOWER_kV = ColumnConstants.INFLUENCER_kV;
 
     // Roller
-    RollerConstants.kP = SmartDashboard.getNumber("roller IO/kP", 0);
-    RollerConstants.kI = SmartDashboard.getNumber("roller IO/kI", 0);
-    RollerConstants.kD = SmartDashboard.getNumber("roller IO/kD", 0);
+    RollerConstants.kP = SmartDashboard.getNumber("roller/kP", 0);
+    RollerConstants.kI = SmartDashboard.getNumber("roller/kI", 0);
+    RollerConstants.kD = SmartDashboard.getNumber("roller/kD", 0);
 
     // Pivot
-    PivotConstants.kP = SmartDashboard.getNumber("pivot IO/kP", 0);
-    PivotConstants.kI = SmartDashboard.getNumber("pivot IO/kI", 0);
-    PivotConstants.kD = SmartDashboard.getNumber("pivot IO/kD", 0);
+    PivotConstants.kP = SmartDashboard.getNumber("pivot/kP", 0);
+    PivotConstants.kI = SmartDashboard.getNumber("pivot/kI", 0);
+    PivotConstants.kD = SmartDashboard.getNumber("pivot/kD", 0);
 
-    PivotConstants.kS = SmartDashboard.getNumber("pivot IO/kS", 0);
-    PivotConstants.kV = SmartDashboard.getNumber("pivot IO/kV", 0);
-    PivotConstants.kA = SmartDashboard.getNumber("pivot IO/kA", 0);
+    PivotConstants.kS = SmartDashboard.getNumber("pivot/kS", 0);
+    PivotConstants.kV = SmartDashboard.getNumber("pivot/kV", 0);
+    PivotConstants.kA = SmartDashboard.getNumber("pivot/kA", 0);
 
-    PivotConstants.CRUISE_VELOCITY = SmartDashboard.getNumber("pivot IO/motion magic velocity", 0);
-    PivotConstants.ACCELERATION = SmartDashboard.getNumber("pivot IO/motion magic acceleration", 0);
-    PivotConstants.JERK = SmartDashboard.getNumber("pivot IO/motion magic jerk", 0);
+    PivotConstants.CRUISE_VELOCITY = SmartDashboard.getNumber("pivot/motionMagicCruiseVelocity", 0);
+    PivotConstants.ACCELERATION = SmartDashboard.getNumber("pivot/motionMagicAcceleration", 0);
+    PivotConstants.JERK = SmartDashboard.getNumber("pivot/motionMagicJerk", 0);
 
-    PivotConstants.STORE_POSITION_DEGREES = SmartDashboard.getNumber("pivot/store position", 0);
-    PivotConstants.DEPLOY_POSITION_DEGREES = SmartDashboard.getNumber("pivot/deploy position", 0);
+    PivotConstants.STORE_POSITION_DEGREES = SmartDashboard.getNumber("pivot/dashboardTestStorePositionDegrees", 0);
+    PivotConstants.DEPLOY_POSITION_DEGREES = SmartDashboard.getNumber("pivot/dashboardTestDeployPositionDegrees", 0);
 
     // Shooter
-    ShooterConstants.INFLUENCER_kP = SmartDashboard.getNumber("shooter influencer IO/kP", 0);
-    ShooterConstants.INFLUENCER_kI = SmartDashboard.getNumber("shooter influencer IO/kI", 0);
-    ShooterConstants.INFLUENCER_kD = SmartDashboard.getNumber("shooter influencer IO/kD", 0);
+    ShooterConstants.INFLUENCER_kP = SmartDashboard.getNumber("shooter/influencer/kP", 0);
+    ShooterConstants.INFLUENCER_kI = SmartDashboard.getNumber("shooter/influencer/kI", 0);
+    ShooterConstants.INFLUENCER_kD = SmartDashboard.getNumber("shooter/influencer/kD", 0);
+    ShooterConstants.INFLUENCER_kS = SmartDashboard.getNumber("shooter/influencer/kS", 0);
+    ShooterConstants.INFLUENCER_kA = SmartDashboard.getNumber("shooter/influencer/kA", 0);
+    ShooterConstants.INFLUENCER_kV = SmartDashboard.getNumber("shooter/influencer/kV", 0);
+
+    ShooterConstants.FOLLOWER_kP = ShooterConstants.INFLUENCER_kP;
+    ShooterConstants.FOLLOWER_kI = ShooterConstants.INFLUENCER_kI;
+    ShooterConstants.FOLLOWER_kD = ShooterConstants.INFLUENCER_kD;
+    ShooterConstants.FOLLOWER_kS = ShooterConstants.INFLUENCER_kS;
+    ShooterConstants.FOLLOWER_kA = ShooterConstants.INFLUENCER_kA;
+    ShooterConstants.FOLLOWER_kV = ShooterConstants.INFLUENCER_kV;
+
+    ShooterConstants.THIRD_kP = ShooterConstants.INFLUENCER_kP;
+    ShooterConstants.THIRD_kI = ShooterConstants.INFLUENCER_kI;
+    ShooterConstants.THIRD_kD = ShooterConstants.INFLUENCER_kD;
+    ShooterConstants.THIRD_kS = ShooterConstants.INFLUENCER_kS;
+    ShooterConstants.THIRD_kA = ShooterConstants.INFLUENCER_kA;
+    ShooterConstants.THIRD_kV = ShooterConstants.INFLUENCER_kV;
 
     m_pivot.resetControllers();
     m_roller.resetControllers();
@@ -468,8 +525,6 @@ public class RobotContainer {
       m_pivot.autoZeroPivotCommand());
     NamedCommands.registerCommand("snap to hub command", 
       m_robotCommandFactory.snapToHubCommand(() -> new JoystickVals(0, 0)).withTimeout(AutoConstants.AUTO_SHOOT_TIMEOUT));
-    NamedCommands.registerCommand("climb command", 
-      new WaitCommand(1));
     NamedCommands.registerCommand("shoot command",
        m_robotCommandFactory.autoShootWithVisionCommand().withTimeout(AutoConstants.AUTO_SHOOT_TIMEOUT));
   }
@@ -493,20 +548,28 @@ public class RobotContainer {
       EstimatedRobotPose robotPose = reading.robotPose();
 
       // Sample drivetrain fusedPose before updating
-      SmartDashboard.putNumberArray("fusedVision/" + reading.cameraName() + "/drivetrainBeforeUpdate", new double [] {
+      SmartDashboard.putNumberArray("fusedVision/" + reading.cameraName() + "/drivetrainPoseBeforeUpdate", new double [] {
       m_drivetrain.getState().Pose.getX(), m_drivetrain.getState().Pose.getY(), m_drivetrain.getState().Pose.getRotation().getRadians()});
+      SmartDashboard.putNumber("fusedVision/" + reading.cameraName() + "/drivetrainHeadingBeforeUpdateDegrees",
+          m_drivetrain.getState().Pose.getRotation().getDegrees());
+      SmartDashboard.putNumber("fusedVision/" + reading.cameraName() + "/drivetrainHeadingBeforeUpdateRadians",
+          m_drivetrain.getState().Pose.getRotation().getRadians());
 
       // Update fusedPose
       m_drivetrain.setVisionMeasurementStdDevs(reading.stdDevs());
       m_drivetrain.addVisionMeasurement(robotPose.estimatedPose.toPose2d(), robotPose.timestampSeconds);
 
       // sample drivetrain fusedPose after updating
-      SmartDashboard.putNumberArray("fusedVision/" + reading.cameraName() + "/drivetrainAfterUpdate", new double [] {
+      SmartDashboard.putNumberArray("fusedVision/" + reading.cameraName() + "/drivetrainPoseAfterUpdate", new double [] {
         m_drivetrain.getState().Pose.getX(), m_drivetrain.getState().Pose.getY(), m_drivetrain.getState().Pose.getRotation().getRadians()});
+      SmartDashboard.putNumber("fusedVision/" + reading.cameraName() + "/drivetrainHeadingAfterUpdateDegrees",
+          m_drivetrain.getState().Pose.getRotation().getDegrees());
+      SmartDashboard.putNumber("fusedVision/" + reading.cameraName() + "/drivetrainHeadingAfterUpdateRadians",
+          m_drivetrain.getState().Pose.getRotation().getRadians());
     }
     
     m_actualField.setRobotPose(m_drivetrain.getState().Pose);
-    SmartDashboard.putData("fusedVision/" + "actual field/", m_actualField);
+    SmartDashboard.putData("fusedVision/actualField", m_actualField);
   }
 /*   public void displaySimFieldToAdvantageScope() {
     if (Constants.currentMode != Constants.Mode.SIM) return;

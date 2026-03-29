@@ -27,7 +27,7 @@ public class DrivetrainCommandFactory {
     private final SwerveRequest.FieldCentric m_drive = new SwerveRequest.FieldCentric()
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     private final SwerveRequest.FieldCentricFacingAngle m_driveFacingAngle = new SwerveRequest.FieldCentricFacingAngle()
-        .withDriveRequestType(DriveRequestType.Velocity).withForwardPerspective(ForwardPerspectiveValue.BlueAlliance);
+        .withDriveRequestType(DriveRequestType.Velocity).withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective);
     private final SwerveRequest.PointWheelsAt m_point = new SwerveRequest.PointWheelsAt();
     private final SwerveRequest.SwerveDriveBrake m_brake = new SwerveRequest.SwerveDriveBrake();
 
@@ -61,16 +61,16 @@ public class DrivetrainCommandFactory {
             JoystickVals shapedTrans = Controls.inputShape(translation, true, slowmode);
             JoystickVals shapedRot = Controls.inputShape(rotation, false, slowmode);
 
-            SmartDashboard.putNumber("controller/translation x", -shapedTrans.y());
-            SmartDashboard.putNumber("controller/translation y", -shapedTrans.x());
-            SmartDashboard.putNumber("controller/rotation x", -shapedRot.x());
-            SmartDashboard.putNumber("controller/rotation y", -shapedRot.y());
+            SmartDashboard.putNumber("controller/translationX", -shapedTrans.y());
+            SmartDashboard.putNumber("controller/translationY", -shapedTrans.x());
+            SmartDashboard.putNumber("controller/rotationX", -shapedRot.x());
+            SmartDashboard.putNumber("controller/rotationY", -shapedRot.y());
 
             return m_drive.withVelocityX(-shapedTrans.y() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive forward with negative Y (forward)
                 .withVelocityY(-shapedTrans.x() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive left with negative X (left)
                 .withRotationalRate(-shapedRot.x() * DrivetrainConstants.MAX_ROTATION_SPEED); // Drive counterclockwise with negative X (left)
             }
-            );
+            ).withName("defaultDrive");
     }
 
     // ----- SNAP TO ANGLE -----
@@ -97,7 +97,7 @@ public class DrivetrainCommandFactory {
 
             return m_driveFacingAngle.withVelocityX(-shapedValues.y() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive forward with negative Y (forward)
             .withVelocityY(-shapedValues.x() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive left with negative X (left)
-            .withTargetDirection(targetAngle);
+            .withTargetDirection(AllianceFlipUtil.apply(targetAngle));
         }).withName("snapToAngle");
     }
 
@@ -133,9 +133,10 @@ public class DrivetrainCommandFactory {
             Rotation2d angleToTarget = calculateAngleToTarget(m_drivetrain.getState().Pose, targetPose);
             targetAngle = angleToTarget;
 
-            SmartDashboard.putNumber("drivetrain/snap to target/target x", targetPose.getX());
-            SmartDashboard.putNumber("drivetrain/snap to target/target y", targetPose.getY());
-            SmartDashboard.putNumber("drivetrain/snap to target/angle", angleToTarget.getRadians());
+            SmartDashboard.putNumber("drivetrain/snapToTarget/targetXMeters", targetPose.getX());
+            SmartDashboard.putNumber("drivetrain/snapToTarget/targetYMeters", targetPose.getY());
+            SmartDashboard.putNumber("drivetrain/snapToTarget/targetAngleDegrees", angleToTarget.getDegrees());
+            SmartDashboard.putNumber("drivetrain/snapToTarget/targetAngleRadians", angleToTarget.getRadians());
 
             return m_driveFacingAngle.withVelocityX(-shapedValues.y() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive forward with negative Y (forward)
                 .withVelocityY(-shapedValues.x() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive left with negative X (left)
@@ -169,12 +170,12 @@ public class DrivetrainCommandFactory {
     }
 
     public Command resetRotation() {
-        return new InstantCommand(() -> m_drivetrain.setRotation(0));
+        return new InstantCommand(() -> m_drivetrain.setRotation(0)).withName("resetRotation");
     }
 
     // ----- POINT WHEELS IN X -----
     public Command pointWheelsinX() {
-        return m_drivetrain.getCommandFromRequest(() -> m_brake);
+        return m_drivetrain.getCommandFromRequest(() -> m_brake).withName("pointWheelsinX");
     }
 
     // ----- POINT -----
@@ -182,7 +183,7 @@ public class DrivetrainCommandFactory {
         return m_drivetrain.getCommandFromRequest(() -> {
             JoystickVals vals = joystickSupplier.get();
             return m_point.withModuleDirection(new Rotation2d(-vals.y(), -vals.x()));
-        });
+        }).withName("pointWheelsAt");
     }
 
     private boolean atAngle(Supplier<Rotation2d> angleSupplier) {

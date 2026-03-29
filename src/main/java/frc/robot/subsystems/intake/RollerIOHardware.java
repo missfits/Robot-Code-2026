@@ -1,7 +1,9 @@
 package frc.robot.subsystems.intake;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.RollerConstants;
 import frc.robot.subsystems.MechanismsIOHardwareBase;
 
@@ -9,7 +11,7 @@ public class RollerIOHardware extends MechanismsIOHardwareBase {
 
   public RollerIOHardware(int motorID) {
     super(motorID, RollerConstants.MOTOR_STATOR_LIMIT,
-        RollerConstants.PEAK_FORWARD_DUTY_CYCLE, RollerConstants.PEAK_REVERSE_DUTY_CYCLE, "rollerIO/");
+        RollerConstants.PEAK_FORWARD_DUTY_CYCLE, RollerConstants.PEAK_REVERSE_DUTY_CYCLE, "roller/");
     resetSlot0Gains();
   }
 
@@ -31,7 +33,12 @@ public class RollerIOHardware extends MechanismsIOHardwareBase {
     motorOutputConfigs.PeakForwardDutyCycle = RollerConstants.PEAK_FORWARD_DUTY_CYCLE;
     motorOutputConfigs.PeakReverseDutyCycle = RollerConstants.PEAK_REVERSE_DUTY_CYCLE;
 
+    var currentLimitsConfigs = talonFXConfigs.CurrentLimits;
+    currentLimitsConfigs.StatorCurrentLimit = RollerConstants.MOTOR_STATOR_LIMIT;
+    currentLimitsConfigs.StatorCurrentLimitEnable = true; 
+   
     motor.getConfigurator().apply(talonFXConfigs);
+    setInverted(RollerConstants.IS_INVERTED);
   }
 
   public double getPositionRadians() {
@@ -48,6 +55,10 @@ public class RollerIOHardware extends MechanismsIOHardwareBase {
 
   public double getVelocityDegreesPerSecond() {
     return getMotorVelocityRevolutionsPerSecond() * RollerConstants.DEGREES_PER_REVOLUTION;
+  }
+
+  public double getVelocityRotationsPerSecond() {
+    return getVelocityDegreesPerSecond() / 360.0;
   }
 
   public void setPositionRadians(double radians) {

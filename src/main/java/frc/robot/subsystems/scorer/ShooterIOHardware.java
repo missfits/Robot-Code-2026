@@ -2,7 +2,9 @@ package frc.robot.subsystems.scorer;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.MechanismsIOHardwareBase;
 
@@ -36,7 +38,12 @@ public class ShooterIOHardware extends MechanismsIOHardwareBase {
     motorOutputConfigs.PeakForwardDutyCycle = ShooterConstants.PEAK_FORWARD_DUTY_CYCLE;
     motorOutputConfigs.PeakReverseDutyCycle = ShooterConstants.PEAK_REVERSE_DUTY_CYCLE;
 
+    var currentLimitsConfigs = configs.CurrentLimits;
+    currentLimitsConfigs.StatorCurrentLimit = ShooterConstants.INFLUENCER_MOTOR_STATOR_LIMIT;
+    currentLimitsConfigs.StatorCurrentLimitEnable = true; 
+
     motor.getConfigurator().apply(configs);
+    setInverted(ShooterConstants.IS_INFLUENCER_INVERTED);
   }
 
   private double getDegreesPerRevolution() {

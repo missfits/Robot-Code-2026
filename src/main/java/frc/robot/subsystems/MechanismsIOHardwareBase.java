@@ -92,12 +92,12 @@ public abstract class MechanismsIOHardwareBase {
   }
 
   public void setVoltage(double volts) {
-    SmartDashboard.putNumber(logPrefix + "commandedVoltage", volts);
+    SmartDashboard.putNumber(logPrefix + "targetVoltage", volts);
     motor.setControl(new VoltageOut(volts));
   }
 
   public void setVelocityVoltage(double velocityRevolutionsPerSecond) {
-    SmartDashboard.putNumber(logPrefix + "targetVelocityRevolutionsPerSecond", velocityRevolutionsPerSecond);
+    SmartDashboard.putNumber(logPrefix + "targetVelocityRotationsPerSecond", velocityRevolutionsPerSecond);
     motor.setControl(new VelocityVoltage(velocityRevolutionsPerSecond));
   }
 
@@ -106,7 +106,7 @@ public abstract class MechanismsIOHardwareBase {
   }
 
   public void logOutputs() {
-    SmartDashboard.putNumber(logPrefix + "velocity: ", getMotorVelocityRevolutionsPerSecond());
+    SmartDashboard.putNumber(logPrefix + "actualVelocityRotationsPerSecond", getMotorVelocityRevolutionsPerSecond());
   }
 
   public void followMotor(MechanismsIOHardwareBase influencerIO, boolean aligned){
