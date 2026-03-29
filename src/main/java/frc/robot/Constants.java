@@ -105,7 +105,7 @@ public final class Constants {
           break;
 
         case CERIDWEN:
-          // TODO: Tune these values for Ceridwen
+
           STEER_KP = 100;
           STEER_KI = 0;
           STEER_KD = 0.5;
@@ -199,7 +199,7 @@ public final class Constants {
     public static double AUTO_RESET_DEPLOY_POSITION_DEGREES = DEPLOY_POSITION_DEGREES;
 
     // Timing values for displace fuel command 
-    public static final double DISPLACE_FUEL_UP_TIMEOUT = 0.75; // TODO: tune
+    public static final double DISPLACE_FUEL_UP_TIMEOUT = 0.75; 
     public static final double DISPLACE_FUEL_DOWN_TIMEOUT = 0.75; 
     public static final double DISPLACE_FUEL_DELAY = 0; // time between repeats of displace fuel command
 
@@ -450,7 +450,7 @@ public final class Constants {
     public static double RECYCLE_VELOCITY = 10.0;
     public static double SHUTTLE_VELOCITY = 50.0;
     public static double OUTTAKE_VOLTAGE = -3.0;
-    public static double INTIAL_ADDITIONAL_VELOCITY = 15.0; // TODO: tune
+    public static double INTIAL_ADDITIONAL_VELOCITY = 15.0; 
 
     public static double SHOOTER_VOLTAGE = 1.0;
     public static double SHOOTER_BACK_VOLTAGE = -1.0;
@@ -576,7 +576,6 @@ public final class Constants {
     static {
       switch (RobotConfig.getRobot()) {
         case CLEO:
-          // TODO: Measure and update these values for Cleo
 
           CAMERA1_NAME = "right_camera";
           CAMERA2_NAME = "left_camera";
