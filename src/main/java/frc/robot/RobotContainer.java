@@ -97,7 +97,7 @@ public class RobotContainer {
   public final CommandSwerveDrivetrain m_drivetrain = TunerConstants.createDrivetrain();
   public final RollerSubsystem m_roller = new RollerSubsystem();
   public final ShooterSubsystem m_shooter = new ShooterSubsystem();
-  public final VisionSubsystem m_vision = new VisionSubsystem(() -> m_drivetrain.getState().Pose.getRotation());
+  public final VisionSubsystem m_vision = new VisionSubsystem(() -> m_drivetrain.getState());
   public final IndexerSubsystem m_indexer = new IndexerSubsystem();
   public final PivotSubsystem m_pivot = new PivotSubsystem();
   public final ColumnSubsystem m_column = new ColumnSubsystem();

@@ -12,6 +12,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -25,6 +26,8 @@ import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
+
 import frc.robot.Constants.VisionConstants;
 
 public class LocalizationCamera {
@@ -32,11 +35,12 @@ public class LocalizationCamera {
   private final PhotonCamera m_camera;
   private final String m_cameraName;
   private final String m_logString;
+  private final boolean m_isFront; // boolean that stores camera location (front or back)
 
   private AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
   private final Field2d m_estPoseField = new Field2d(); // field pose estimator
   private PhotonPoseEstimator poseEstimator;
-  private final Supplier<Rotation2d> m_robotRotationSupplier;
+  private final Supplier<SwerveDriveState> m_robotSwerveStateSupplier;
 
   private LocalVisionFilterPipeline m_filterPipeline = new LocalVisionFilterPipeline(); // filtering pipeline for each camera, initalizes as empty pipeline
 
@@ -50,11 +54,19 @@ public class LocalizationCamera {
   // every camera periodically creates a new CameraReading containing robot pose, std dev, timestamp, and number of targets seen.
   public static record CameraReading(String cameraName, EstimatedRobotPose robotPose, Matrix<N3, N1> stdDevs, double timestampSeconds, int numTargets) {}
 
-  public LocalizationCamera(String cameraName, Transform3d robotToCam, Supplier<Rotation2d> robotHeadingSupplier) {
+  public LocalizationCamera(String cameraName, Transform3d robotToCam, Supplier<SwerveDriveState> robotSwerveStateSupplier) {
     m_cameraName = cameraName;
     m_camera = new PhotonCamera(m_cameraName);
     m_logString = "vision/" + m_cameraName;
-    m_robotRotationSupplier = robotHeadingSupplier;
+    m_robotSwerveStateSupplier = robotSwerveStateSupplier;
+
+    // boolean that stores camera location
+    if (m_cameraName.indexOf("front") == -1) {
+      m_isFront = false;
+    }
+    else {
+      m_isFront = true;
+    }
 
     poseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, robotToCam);
 
@@ -229,7 +241,7 @@ public class LocalizationCamera {
       return Optional.empty();
     }
 
-    Rotation2d currentHeading = m_robotRotationSupplier.get();
+    Rotation2d currentHeading = m_robotSwerveStateSupplier.get().Pose.getRotation();
     Pose3d chosenPose = bestPose.get();
     // Prefer the candidate whose field-relative heading is closer to the drivetrain heading.
     if (headingDistance(alternatePose.get().toPose2d().getRotation(), currentHeading)
@@ -271,6 +283,8 @@ public class LocalizationCamera {
     // Pose present. Start running Heuristic
     int numTags = 0;
     double avgDist = 0;
+    double matrixScalar = 1.0;
+    
 
     // Precalculation - see how many tags we found, and calculate an
     // average-distance metric
@@ -286,10 +300,17 @@ public class LocalizationCamera {
           .getDistance(estimatedPose.estimatedPose.toPose2d().getTranslation());
     }
 
+    // if camera is in front and robot is above max velocity, update matrixScalar
+    double linearRobotSpeed = Math.hypot(m_robotSwerveStateSupplier.get().Speeds.vxMetersPerSecond, 
+                                          m_robotSwerveStateSupplier.get().Speeds.vyMetersPerSecond);
+    if (m_isFront && linearRobotSpeed > VisionConstants.MAX_ROBOT_VISION_VELOCITY) {
+      matrixScalar = VisionConstants.AMBIGUITY_MATRIX_SCALAR;
+    }
+
     if (numTags == 0) {
       // No tags visible. Default to single-tag std devs
       SmartDashboard.putString("vision/" + m_cameraName + "/standardDeviation-state", "no tags visible");
-      return VisionConstants.kSingleTagStdDevs;
+      return VisionConstants.kSingleTagStdDevs.times(matrixScalar);
     } else if (numTags == 1 && avgDist > VisionConstants.VISION_DISTANCE_DISCARD) {
       SmartDashboard.putString("vision/" + m_cameraName + "/standardDeviation-state", "target too far");
       return VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
@@ -298,7 +319,7 @@ public class LocalizationCamera {
       avgDist /= numTags;
       // increase std devs based on (average) distance
       SmartDashboard.putString("vision/" + m_cameraName + "/standardDeviation-state", "good :)");
-      return unscaledStdDevs.times(1 + (avgDist * avgDist / VisionConstants.STD_DEV_SCALAR));
+      return unscaledStdDevs.times(1 + (avgDist * avgDist / VisionConstants.STD_DEV_SCALAR)).times(matrixScalar);
     }
   }
 }
