@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -25,6 +26,8 @@ import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
+
 import frc.robot.Constants.VisionConstants;
 
 public class LocalizationCamera {
@@ -36,7 +39,12 @@ public class LocalizationCamera {
   private AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
   private final Field2d m_estPoseField = new Field2d(); // field pose estimator
   private PhotonPoseEstimator poseEstimator;
-  private final Supplier<Rotation2d> m_robotRotationSupplier;
+
+  private final Supplier<SwerveDriveState> m_robotSwerveStateSupplier;
+
+  // used for acceleration-based scaling (for front cameras)
+  private ChassisSpeeds m_previousSpeed = new ChassisSpeeds(); // intializes to empty
+  private double m_previousTimestamp = 0.0;
 
   private LocalVisionFilterPipeline m_filterPipeline = new LocalVisionFilterPipeline(); // filtering pipeline for each camera, initalizes as empty pipeline
 
@@ -47,14 +55,16 @@ public class LocalizationCamera {
   private final StructPublisher<Pose2d> pose2dPublisher;
   private final StructPublisher<Pose3d> pose3dPublisher;
 
+  private final boolean m_isFrontCamera; // boolean: if camera is in front or back 
+
   // every camera periodically creates a new CameraReading containing robot pose, std dev, timestamp, and number of targets seen.
   public static record CameraReading(String cameraName, EstimatedRobotPose robotPose, Matrix<N3, N1> stdDevs, double timestampSeconds, int numTargets) {}
 
-  public LocalizationCamera(String cameraName, Transform3d robotToCam, Supplier<Rotation2d> robotHeadingSupplier) {
+  public LocalizationCamera(String cameraName, Transform3d robotToCam, Supplier<SwerveDriveState> robotSwerveStateSupplier) {
     m_cameraName = cameraName;
     m_camera = new PhotonCamera(m_cameraName);
     m_logString = "vision/" + m_cameraName;
-    m_robotRotationSupplier = robotHeadingSupplier;
+    m_robotSwerveStateSupplier = robotSwerveStateSupplier;
 
     poseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, robotToCam);
 
@@ -64,6 +74,13 @@ public class LocalizationCamera {
     pose3dPublisher = NetworkTableInstance.getDefault()
             .getStructTopic("SmartDashboard/" + m_logString + "/estimatedRobotPose3d", Pose3d.struct).publish();
 
+
+    if (m_cameraName.indexOf("front") >= 0) {
+      m_isFrontCamera = true;
+    }
+    else {
+      m_isFrontCamera = false;
+    }
 
     // Initialize Field2d widget for this camera (NOT THE SAME AS FUSEDPOSE)
     SmartDashboard.putData(m_logString + "/estimatedPoseField", m_estPoseField);
@@ -233,7 +250,13 @@ public class LocalizationCamera {
       return Optional.empty();
     }
 
-    Rotation2d currentHeading = m_robotRotationSupplier.get();
+    // Get current robot heading from drivetrain
+    SwerveDriveState robotState = m_robotSwerveStateSupplier.get();
+    if (robotState == null) { // NOTE: can't resolve heading if heading is null
+      return Optional.empty();
+    }
+
+    Rotation2d currentHeading = robotState.Pose.getRotation();
     Pose3d chosenPose = bestPose.get();
     // Prefer the candidate whose field-relative heading is closer to the drivetrain heading.
     if (headingDistance(alternatePose.get().toPose2d().getRotation(), currentHeading)
