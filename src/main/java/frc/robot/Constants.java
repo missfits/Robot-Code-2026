@@ -148,6 +148,9 @@ public final class Constants {
     // angle tolerance (in radians) for atTargetAngle()
     public static final double ANGLE_TOLERANCE = Math.toRadians(3);
 
+    // velocity tolerance (in m/s) for velocityNonZero()
+    public static final double VELOCITY_TOLERANCE = 0.2;
+
   }
 
   public static class PivotConstants {

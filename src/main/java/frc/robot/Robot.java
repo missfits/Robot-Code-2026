@@ -98,7 +98,7 @@ public class Robot extends TimedRobot {
 
     // logging 
     // m_robotContainer.logToSmartDashboard();
-    m_robotContainer.logRobotCommandFactoryValues();
+    m_robotContainer.logValues();
 
     SmartDashboard.putNumber("batteryVoltage", RobotController.getBatteryVoltage());
 

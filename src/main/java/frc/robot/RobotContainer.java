@@ -430,7 +430,9 @@ public class RobotContainer {
   }
 
 
-  public void logRobotCommandFactoryValues() {
+  public void logValues() {
+    SmartDashboard.putBoolean("robotContainer/isBeached", isBeached());
+
     // Robot Command Factory Logging 
     SmartDashboard.putNumber("robotCommandFactory/distanceToHubMeters", m_robotCommandFactory.getDistanceToHub());
     SmartDashboard.putNumber("robotCommandFactory/angleToHubDegrees", m_robotCommandFactory.getAngleToHub());
@@ -527,6 +529,13 @@ public class RobotContainer {
 
   private Trigger driverInputTrigger() {
     return driverTranslationInputTrigger().or(driverRotationInputTrigger());
+  }
+
+  private boolean isBeached() {
+    if (driverTranslationInputTrigger().getAsBoolean() & m_drivetrain.velocityNonZero()) {
+      return true;
+    }
+    return false;
   }
 
 
