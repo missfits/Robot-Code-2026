@@ -537,6 +537,9 @@ public final class Constants {
     public static final int NUM_LAST_EST_POSES = 3;
     public static final double STD_DEV_SCALAR = 30;
 
+    public static final double MAX_ROBOT_VISION_VELOCITY = 2.0; // untuned 3/29
+    public static final double AMBIGUITY_MATRIX_SCALAR = 4.0; // untuned 3/29
+
     // --- vision subsystem ---
     // (camera setup)
     // DEFAULT CONSTANTS (robot specific constants are below) 
