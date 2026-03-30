@@ -115,7 +115,7 @@ public class PivotSubsystem extends MechanismsSubsystemBase {
 
   public Command zeroPivotCommand() {
       return this.run(() -> setVoltage(PivotConstants.ZERO_PIVOT_VOLTAGE))
-        .until(() -> m_IO.getCurrent() > PivotConstants.CURRENT_THRESHOLD)
+        .until(() -> m_IO.getStatorCurrent() > PivotConstants.CURRENT_THRESHOLD)
         .andThen(new InstantCommand(() -> this.resetPosition(PivotConstants.RESET_DEPLOY_POSITION_DEGREES)))
         .withName("zeroPivotCommand");
   }
@@ -123,7 +123,7 @@ public class PivotSubsystem extends MechanismsSubsystemBase {
 
   public Command autoZeroPivotCommand() {
       return this.run(() -> setVoltage(PivotConstants.AUTO_ZERO_PIVOT_VOLTAGE))
-        .until(() -> m_IO.getCurrent() > PivotConstants.AUTO_CURRENT_THRESHOLD)
+        .until(() -> m_IO.getStatorCurrent() > PivotConstants.AUTO_CURRENT_THRESHOLD)
         .andThen(new InstantCommand(() -> this.resetPosition(PivotConstants.AUTO_RESET_DEPLOY_POSITION_DEGREES)))
         .withName("autoZeroPivotCommand");
   }

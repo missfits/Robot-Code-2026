@@ -90,7 +90,7 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
   }
 
   public Trigger isCurrentSpiking() {
-    return new Trigger(() -> m_influencerIO.getCurrent() > ShooterConstants.CURRENT_SPIKE_THRESHOLD);
+    return new Trigger(() -> m_influencerIO.getStatorCurrent() > ShooterConstants.CURRENT_SPIKE_THRESHOLD);
   }
 
   // Triggers
