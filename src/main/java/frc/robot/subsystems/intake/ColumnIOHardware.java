@@ -12,7 +12,7 @@ public class ColumnIOHardware extends MechanismsIOHardwareBase {
   private final ColumnMotorType type;
 
   public ColumnIOHardware(ColumnMotorType type) {
-    super(type.id, type.statorLimit,
+    super(type.id, type.statorLimit, type.supplyLimit,
           ColumnConstants.PEAK_FORWARD_DUTY_CYCLE, ColumnConstants.PEAK_REVERSE_DUTY_CYCLE,
           type.logPrefix);
     this.type = type;
@@ -67,8 +67,10 @@ public class ColumnIOHardware extends MechanismsIOHardwareBase {
     slot0Configs.kA = gains.kA();
 
     var currentLimitsConfigs = talonFXConfigs.CurrentLimits;
-    currentLimitsConfigs.StatorCurrentLimit = ColumnConstants.INFLUENCER_STATOR_LIMIT;
-    currentLimitsConfigs.StatorCurrentLimitEnable = true; 
+    currentLimitsConfigs.StatorCurrentLimit = type.statorLimit;
+    currentLimitsConfigs.StatorCurrentLimitEnable = true;
+    currentLimitsConfigs.SupplyCurrentLimit = type.supplyLimit;
+    currentLimitsConfigs.SupplyCurrentLimitEnable = true;
 
     motor.getConfigurator().apply(talonFXConfigs);
     setInverted(ColumnConstants.IS_INFLUENCER_INVERTED);

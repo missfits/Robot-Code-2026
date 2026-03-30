@@ -14,7 +14,7 @@ import frc.robot.utils.MechanismUtil;
 public class PivotIOHardware extends MechanismsIOHardwareBase {
 
   public PivotIOHardware(int motorID) {
-    super(motorID, PivotConstants.MOTOR_STATOR_LIMIT,
+    super(motorID, PivotConstants.MOTOR_STATOR_LIMIT, PivotConstants.MOTOR_SUPPLY_LIMIT,
         PivotConstants.PEAK_FORWARD_DUTY_CYCLE, PivotConstants.PEAK_REVERSE_DUTY_CYCLE, "pivot/");
     resetSlot0Gains();
   }
@@ -104,7 +104,9 @@ public class PivotIOHardware extends MechanismsIOHardwareBase {
 
     var currentLimitsConfigs = talonFXConfigs.CurrentLimits;
     currentLimitsConfigs.StatorCurrentLimit = PivotConstants.MOTOR_STATOR_LIMIT;
-    currentLimitsConfigs.StatorCurrentLimitEnable = true; 
+    currentLimitsConfigs.StatorCurrentLimitEnable = true;
+    currentLimitsConfigs.SupplyCurrentLimit = PivotConstants.MOTOR_SUPPLY_LIMIT;
+    currentLimitsConfigs.SupplyCurrentLimitEnable = true;
 
     motor.getConfigurator().apply(talonFXConfigs);
     setInverted(PivotConstants.IS_INVERTED);

@@ -12,7 +12,7 @@ import frc.robot.subsystems.MechanismsIOHardwareBase;
 public class IndexerIOHardware extends MechanismsIOHardwareBase {
 
   public IndexerIOHardware(int motorID) {
-    super(motorID, IndexerConstants.MOTOR_STATOR_LIMIT,
+    super(motorID, IndexerConstants.MOTOR_STATOR_LIMIT, IndexerConstants.MOTOR_SUPPLY_LIMIT,
         IndexerConstants.PEAK_FORWARD_DUTY_CYCLE, IndexerConstants.PEAK_REVERSE_DUTY_CYCLE, "indexer/");
   }
 
@@ -62,7 +62,9 @@ public class IndexerIOHardware extends MechanismsIOHardwareBase {
 
     var currentLimitsConfigs = talonFXConfigs.CurrentLimits;
     currentLimitsConfigs.StatorCurrentLimit = IndexerConstants.MOTOR_STATOR_LIMIT;
-    currentLimitsConfigs.StatorCurrentLimitEnable = true; 
+    currentLimitsConfigs.StatorCurrentLimitEnable = true;
+    currentLimitsConfigs.SupplyCurrentLimit = IndexerConstants.MOTOR_SUPPLY_LIMIT;
+    currentLimitsConfigs.SupplyCurrentLimitEnable = true;
 
     motor.getConfigurator().apply(talonFXConfigs);
   }
