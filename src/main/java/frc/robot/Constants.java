@@ -491,7 +491,7 @@ public final class Constants {
     public static final double RUN_SHOOTER_TIME = 2.0;
 
     // Velocity tolerance for checking if shooter is at target (rotations per second)
-    public static final double VELOCITY_TOLERANCE = 4;
+    public static final double VELOCITY_TOLERANCE = 6;
 
     // Current spike threshold for checking if fuel is shot (amps)
     public static final double CURRENT_SPIKE_THRESHOLD = 20;
@@ -505,7 +505,7 @@ public final class Constants {
 
     // Ready to shoot trigger thresholds
     public static final double MAX_ROBOT_SPEED_TO_SHOOT = 2.0; // Maximum robot speed (m/s) to allow shooting
-    public static final double READY_TO_SHOOT_DEBOUNCE_TIME = 0.05; // Debounce time in seconds for ready to shoot trigger
+    public static final double READY_TO_SHOOT_DEBOUNCE_TIME = 0.3; // Debounce time in seconds for ready to shoot trigger
 
     // SOTM constants
     public static final double SHOOTER_RPS_TO_MPS = Units.inchesToMeters(2*Math.PI*4);
