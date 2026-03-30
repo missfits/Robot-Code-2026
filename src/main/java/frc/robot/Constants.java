@@ -314,7 +314,7 @@ public final class Constants {
     public static double OUTTAKE_VELOCITY = -80.0;
     public static double RECYCLE_VELOCITY = 50.0;
     public static double SHUTTLE_VELOCITY = 50.0;
-    public static double INTAKE_VELOCITY = 80.0;
+    public static double INTAKE_VELOCITY = 50.0;
 
     // Testing velocities
     public static double TESTING_VELOCITY = 0.0;
