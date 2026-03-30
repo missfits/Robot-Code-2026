@@ -1,10 +1,6 @@
 package frc.robot.subsystems.intake;
 
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import frc.robot.Constants.ColumnConstants;
-import frc.robot.Constants.PivotConstants;
 import frc.robot.subsystems.MechanismsIOHardwareBase;
 
 public class ColumnIOHardware extends MechanismsIOHardwareBase {
@@ -12,11 +8,9 @@ public class ColumnIOHardware extends MechanismsIOHardwareBase {
   private final ColumnMotorType type;
 
   public ColumnIOHardware(ColumnMotorType type) {
-    super(type.id, type.statorLimit,
-          ColumnConstants.PEAK_FORWARD_DUTY_CYCLE, ColumnConstants.PEAK_REVERSE_DUTY_CYCLE,
-          type.logPrefix);
+    super(type.id, type.logPrefix);
     this.type = type;
-    resetSlot0Gains();
+    resetConfigs();
   }
 
   public double getPositionRadians() {
@@ -53,9 +47,23 @@ public class ColumnIOHardware extends MechanismsIOHardwareBase {
     return degrees / ColumnConstants.DEGREES_PER_REVOLUTION;
   }
 
+  public void resetConfigs() {
+    resetSlot0Gains();
+    setInverted(ColumnConstants.IS_INFLUENCER_INVERTED);
+
+    motorConfigs.MotorOutput.PeakForwardDutyCycle = ColumnConstants.PEAK_FORWARD_DUTY_CYCLE;
+    motorConfigs.MotorOutput.PeakReverseDutyCycle = ColumnConstants.PEAK_REVERSE_DUTY_CYCLE;
+
+    motorConfigs.CurrentLimits.StatorCurrentLimit = type.statorLimit;
+    motorConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
+    motorConfigs.CurrentLimits.SupplyCurrentLimit = type.supplyLimit;
+    motorConfigs.CurrentLimits.SupplyCurrentLimitEnable = true;
+
+    motor.getConfigurator().apply(motorConfigs);
+  }
+
   public void resetSlot0Gains() {
-    var talonFXConfigs = new TalonFXConfiguration();
-    var slot0Configs = talonFXConfigs.Slot0;
+    var slot0Configs = motorConfigs.Slot0;
 
     // Get current gains from ColumnConstants to support runtime tuning
     var gains = type.gains();
@@ -66,11 +74,6 @@ public class ColumnIOHardware extends MechanismsIOHardwareBase {
     slot0Configs.kV = gains.kV();
     slot0Configs.kA = gains.kA();
 
-    var currentLimitsConfigs = talonFXConfigs.CurrentLimits;
-    currentLimitsConfigs.StatorCurrentLimit = ColumnConstants.INFLUENCER_STATOR_LIMIT;
-    currentLimitsConfigs.StatorCurrentLimitEnable = true; 
-
-    motor.getConfigurator().apply(talonFXConfigs);
-    setInverted(ColumnConstants.IS_INFLUENCER_INVERTED);
+    motor.getConfigurator().apply(motorConfigs);
   }
 }
