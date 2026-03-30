@@ -123,19 +123,22 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
   public void periodic() {
     super.periodic();
 
-    SmartDashboard.putNumber("shooter/follower/actualCurrent", m_followerIO.getCurrent());
+    SmartDashboard.putNumber("shooter/follower/actualStatorCurrent", m_followerIO.getStatorCurrent());
+    SmartDashboard.putNumber("shooter/follower/actualSupplyCurrent", m_followerIO.getSupplyCurrent());
     SmartDashboard.putNumber("shooter/follower/actualPositionDegrees", m_followerIO.getPositionDegrees());
     SmartDashboard.putNumber("shooter/follower/actualVelocityRotationsPerSecond", m_followerIO.getVelocityRotationsPerSecond());
     SmartDashboard.putNumber("shooter/follower/actualVelocityDegreesPerSecond", m_followerIO.getVelocityDegreesPerSecond());
     SmartDashboard.putNumber("shooter/follower/actualVoltage", m_followerIO.getVoltage());
 
-    SmartDashboard.putNumber("shooter/influencer/actualCurrent", m_influencerIO.getCurrent());
+    SmartDashboard.putNumber("shooter/influencer/actualStatorCurrent", m_influencerIO.getStatorCurrent());
+    SmartDashboard.putNumber("shooter/influencer/actualSupplyCurrent", m_influencerIO.getSupplyCurrent());
     SmartDashboard.putNumber("shooter/influencer/actualPositionDegrees", m_influencerIO.getPositionDegrees());
     SmartDashboard.putNumber("shooter/influencer/actualVelocityRotationsPerSecond", m_influencerIO.getVelocityRotationsPerSecond());
     SmartDashboard.putNumber("shooter/influencer/actualVelocityDegreesPerSecond", m_influencerIO.getVelocityDegreesPerSecond());
     SmartDashboard.putNumber("shooter/influencer/actualVoltage", m_influencerIO.getVoltage());
 
-    SmartDashboard.putNumber("shooter/third/actualCurrent", m_thirdIO.getCurrent());
+    SmartDashboard.putNumber("shooter/third/actualStatorCurrent", m_thirdIO.getStatorCurrent());
+    SmartDashboard.putNumber("shooter/third/actualSupplyCurrent", m_thirdIO.getSupplyCurrent());
     SmartDashboard.putNumber("shooter/third/actualPositionDegrees", m_thirdIO.getPositionDegrees());
     SmartDashboard.putNumber("shooter/third/actualVelocityRotationsPerSecond", m_thirdIO.getVelocityRotationsPerSecond());
     SmartDashboard.putNumber("shooter/third/actualVelocityDegreesPerSecond", m_thirdIO.getVelocityDegreesPerSecond());

@@ -51,7 +51,8 @@ public class PivotSubsystem extends MechanismsSubsystemBase {
   @Override
   public void periodic() {
     super.periodic();
-    SmartDashboard.putNumber("pivot/actualCurrent", m_IO.getCurrent());
+    SmartDashboard.putNumber("pivot/actualStatorCurrent", m_IO.getStatorCurrent());
+    SmartDashboard.putNumber("pivot/actualSupplyCurrent", m_IO.getSupplyCurrent());
     SmartDashboard.putNumber("pivot/actualPositionDegrees", m_IO.getPositionDegrees());
     SmartDashboard.putNumber("pivot/actualVelocityRotationsPerSecond", m_IO.getVelocityRotationsPerSecond());
     SmartDashboard.putNumber("pivot/actualVelocityDegreesPerSecond", m_IO.getVelocityDegreesPerSecond());

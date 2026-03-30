@@ -76,13 +76,15 @@ public class ColumnSubsystem extends MechanismsSubsystemBase {
   @Override
   public void periodic() {
     super.periodic();
-    SmartDashboard.putNumber("column/influencer/actualCurrent", m_influencerIO.getCurrent());
+    SmartDashboard.putNumber("column/influencer/actualStatorCurrent", m_influencerIO.getStatorCurrent());
+    SmartDashboard.putNumber("column/influencer/actualSupplyCurrent", m_influencerIO.getSupplyCurrent());
     SmartDashboard.putNumber("column/influencer/actualPositionDegrees", m_influencerIO.getPositionDegrees());
     SmartDashboard.putNumber("column/influencer/actualVelocityRotationsPerSecond", m_influencerIO.getVelocityRotationsPerSecond());
     SmartDashboard.putNumber("column/influencer/actualVelocityDegreesPerSecond", m_influencerIO.getVelocityDegreesPerSecond());
     SmartDashboard.putNumber("column/influencer/actualVoltage", m_influencerIO.getVoltage());
 
-    SmartDashboard.putNumber("column/follower/actualCurrent", m_followerIO.getCurrent());
+    SmartDashboard.putNumber("column/follower/actualStatorCurrent", m_followerIO.getStatorCurrent());
+    SmartDashboard.putNumber("column/follower/actualSupplyCurrent", m_followerIO.getSupplyCurrent());
     SmartDashboard.putNumber("column/follower/actualPositionDegrees", m_followerIO.getPositionDegrees());
     SmartDashboard.putNumber("column/follower/actualVelocityRotationsPerSecond", m_followerIO.getVelocityRotationsPerSecond());
     SmartDashboard.putNumber("column/follower/actualVelocityDegreesPerSecond", m_followerIO.getVelocityDegreesPerSecond());
