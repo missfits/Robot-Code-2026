@@ -66,11 +66,11 @@ public class VisionSubsystem extends SubsystemBase {
   private boolean m_rawVideoModeEnabled = false; // true = raw video feed, false = normal AprilTag processing
 
   /** Creates a new Vision Subsystem. */
-  public VisionSubsystem(Supplier<SwerveDriveState> robotSwerveDriveStateSupplier) {
-    cameras.add(new LocalizationCamera(VisionConstants.CAMERA1_NAME, VisionConstants.ROBOT_TO_CAM1_3D, robotSwerveDriveStateSupplier));
-    cameras.add(new LocalizationCamera(VisionConstants.CAMERA2_NAME, VisionConstants.ROBOT_TO_CAM2_3D, robotSwerveDriveStateSupplier));
-    cameras.add(new LocalizationCamera(VisionConstants.CAMERA3_NAME, VisionConstants.ROBOT_TO_CAM3_3D, robotSwerveDriveStateSupplier));
-    cameras.add(new LocalizationCamera(VisionConstants.CAMERA4_NAME, VisionConstants.ROBOT_TO_CAM4_3D, robotSwerveDriveStateSupplier));
+  public VisionSubsystem(Pigeon2 pigeon) {
+    cameras.add(new LocalizationCamera(VisionConstants.CAMERA1_NAME, VisionConstants.ROBOT_TO_CAM1_3D, pigeon));
+    cameras.add(new LocalizationCamera(VisionConstants.CAMERA2_NAME, VisionConstants.ROBOT_TO_CAM2_3D, pigeon));
+    cameras.add(new LocalizationCamera(VisionConstants.CAMERA3_NAME, VisionConstants.ROBOT_TO_CAM3_3D, pigeon));
+    cameras.add(new LocalizationCamera(VisionConstants.CAMERA4_NAME, VisionConstants.ROBOT_TO_CAM4_3D, pigeon));
   }
 
   public List<CameraReading> getValidCameraReadings(){

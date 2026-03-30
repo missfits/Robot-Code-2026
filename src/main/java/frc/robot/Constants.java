@@ -537,8 +537,8 @@ public final class Constants {
     public static final int NUM_LAST_EST_POSES = 3;
     public static final double STD_DEV_SCALAR = 30;
 
-    public static final double ACCELERATION_SCALAR = 4.0;
-    public static final double MAX_ROBOT_ACCELERATION = 3.0; // units m/s^2 
+    public static final double VIBRATION_SCALAR = 4.0;
+    public static final double MAX_ROBOT_VIBRATION = 0.3; // units g's (acceleration threshold for vibration scaling)
 
     // --- vision subsystem ---
     // (camera setup)

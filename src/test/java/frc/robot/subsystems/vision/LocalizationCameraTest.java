@@ -3,21 +3,15 @@ package frc.robot.subsystems.vision;
 import static org.junit.jupiter.api.Assertions.*;
 
 import edu.wpi.first.hal.HAL;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveModulePosition;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.photonvision.EstimatedRobotPose;
-
-import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 
 import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.vision.LocalizationCamera.CameraReading;
@@ -27,7 +21,6 @@ import frc.robot.subsystems.vision.filtering.LocalPoseZRollPitchFilter;
 import java.lang.reflect.Field;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.Supplier;
 
 class LocalizationCameraTest {
   static final double DELTA = 1e-5; // acceptable deviation range
@@ -35,32 +28,6 @@ class LocalizationCameraTest {
 
   LocalizationCamera m_camera;
   Transform3d m_robotToCam;
-  SwerveDriveState m_mockSwerveDriveState;
-
-  /**
-   * Creates a mock SwerveDriveState for testing purposes.
-   * Returns a state with zero pose and zero velocity.
-   */
-  private Supplier<SwerveDriveState> createMockSwerveDriveStateSupplier() {
-    m_mockSwerveDriveState = new SwerveDriveState();
-    m_mockSwerveDriveState.Pose = new Pose2d();
-    m_mockSwerveDriveState.Speeds = new ChassisSpeeds();
-    m_mockSwerveDriveState.Timestamp = 0.0;
-    m_mockSwerveDriveState.OdometryPeriod = 0.02;
-    m_mockSwerveDriveState.ModuleStates = new SwerveModuleState[] {
-        new SwerveModuleState(), new SwerveModuleState(),
-        new SwerveModuleState(), new SwerveModuleState()
-    };
-    m_mockSwerveDriveState.ModuleTargets = new SwerveModuleState[] {
-        new SwerveModuleState(), new SwerveModuleState(),
-        new SwerveModuleState(), new SwerveModuleState()
-    };
-    m_mockSwerveDriveState.ModulePositions = new SwerveModulePosition[] {
-        new SwerveModulePosition(), new SwerveModulePosition(),
-        new SwerveModulePosition(), new SwerveModulePosition()
-    };
-    return () -> m_mockSwerveDriveState;
-  }
 
   @BeforeEach
   void setup() {
@@ -73,7 +40,8 @@ class LocalizationCameraTest {
         new Rotation3d(0, Math.toRadians(-15), 0)
     );
 
-    m_camera = new LocalizationCamera("test_camera", m_robotToCam, createMockSwerveDriveStateSupplier());
+    // Pass null for Pigeon2 - vibration scaling will be skipped in tests
+    m_camera = new LocalizationCamera("test_camera", m_robotToCam, null);
   }
 
   @AfterEach

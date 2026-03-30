@@ -8,7 +8,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -26,6 +25,7 @@ import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 
 import frc.robot.Constants.VisionConstants;
@@ -40,11 +40,7 @@ public class LocalizationCamera {
   private final Field2d m_estPoseField = new Field2d(); // field pose estimator
   private PhotonPoseEstimator poseEstimator;
 
-  private final Supplier<SwerveDriveState> m_robotSwerveStateSupplier;
-
-  // used for acceleration-based scaling (for front cameras)
-  private ChassisSpeeds m_previousSpeed = new ChassisSpeeds(); // intializes to empty
-  private double m_previousTimestamp = 0.0;
+  private final Pigeon2 m_pigeon; // used for vibration-based scaling for pose ambiguity
 
   private LocalVisionFilterPipeline m_filterPipeline = new LocalVisionFilterPipeline(); // filtering pipeline for each camera, initalizes as empty pipeline
 
@@ -60,11 +56,11 @@ public class LocalizationCamera {
   // every camera periodically creates a new CameraReading containing robot pose, std dev, timestamp, and number of targets seen.
   public static record CameraReading(String cameraName, EstimatedRobotPose robotPose, Matrix<N3, N1> stdDevs, double timestampSeconds, int numTargets) {}
 
-  public LocalizationCamera(String cameraName, Transform3d robotToCam, Supplier<SwerveDriveState> robotSwerveStateSupplier) {
+  public LocalizationCamera(String cameraName, Transform3d robotToCam, Pigeon2 pigeon) {
     m_cameraName = cameraName;
     m_camera = new PhotonCamera(m_cameraName);
     m_logString = "vision/" + m_cameraName;
-    m_robotSwerveStateSupplier = robotSwerveStateSupplier;
+    m_pigeon = pigeon;
 
     poseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, robotToCam);
 
@@ -250,13 +246,7 @@ public class LocalizationCamera {
       return Optional.empty();
     }
 
-    // Get current robot heading from drivetrain
-    SwerveDriveState robotState = m_robotSwerveStateSupplier.get();
-    if (robotState == null || robotState.Pose == null) { // NOTE: can't resolve heading if heading is null
-      return Optional.empty();
-    }
-
-    Rotation2d currentHeading = robotState.Pose.getRotation();
+    Rotation2d currentHeading = m_pigeon.getRotation2d();
     Pose3d chosenPose = bestPose.get();
     // Prefer the candidate whose field-relative heading is closer to the drivetrain heading.
     if (headingDistance(alternatePose.get().toPose2d().getRotation(), currentHeading)
@@ -314,42 +304,21 @@ public class LocalizationCamera {
           .getDistance(estimatedPose.estimatedPose.toPose2d().getTranslation());
     }
 
-    // calculate robot acceleration for further scaling
-    SwerveDriveState robotState = m_robotSwerveStateSupplier.get();
-    if (m_isFrontCamera && robotState != null && robotState.Speeds != null) {
-      ChassisSpeeds currentSpeeds = robotState.Speeds;
-      double currentTimestamp = robotState.Timestamp;
-      double dt = currentTimestamp - m_previousTimestamp;
+    // calculate vibration from Pigeon2 accelerometer for further scaling
+    if (m_isFrontCamera && m_pigeon != null) {
+      // Get accelerometer readings in g's (horizontal plane only)
+      double accelX = m_pigeon.getAccelerationX().getValueAsDouble();
+      double accelY = m_pigeon.getAccelerationY().getValueAsDouble();
+      double vibrationMagnitude = Math.hypot(accelX, accelY); // in g's
 
-      // calculate acceleration
-      double dx = currentSpeeds.vxMetersPerSecond - m_previousSpeed.vxMetersPerSecond;
-      double dy = currentSpeeds.vyMetersPerSecond - m_previousSpeed.vyMetersPerSecond;
-
-      if (dt > 0.0001) {
-        double linearAcceleration = Math.hypot(dx, dy) / dt;
-
-        if (Math.abs(linearAcceleration) > VisionConstants.MAX_ROBOT_ACCELERATION) {
-          matrixScalar = VisionConstants.ACCELERATION_SCALAR;
-        }
-        // log stuff
-        SmartDashboard.putNumber(m_logString + "/linearAcceleration", linearAcceleration);
+      if (vibrationMagnitude > VisionConstants.MAX_ROBOT_VIBRATION) {
+        matrixScalar = VisionConstants.VIBRATION_SCALAR;
       }
-      else {
-        SmartDashboard.putNumber(m_logString + "/linearAcceleration", 0.0);
-      }
-
-      // update previous speed and timestamp
-      // NOTE: must copy values, not reference, to avoid aliasing the drivetrain's ChassisSpeeds object
-      m_previousSpeed = new ChassisSpeeds(
-          currentSpeeds.vxMetersPerSecond,
-          currentSpeeds.vyMetersPerSecond,
-          currentSpeeds.omegaRadiansPerSecond
-      );
-      m_previousTimestamp = currentTimestamp;
-
+      // log stuff
+      SmartDashboard.putNumber(m_logString + "/vibrationMagnitude", vibrationMagnitude);
     }
     SmartDashboard.putNumber(m_logString + "/matrixScalar", matrixScalar);
-    SmartDashboard.putBoolean(m_logString + "/isAccScalingActive", matrixScalar > 1.0);
+    SmartDashboard.putBoolean(m_logString + "/isVibrationScalingActive", matrixScalar > 1.0);
 
     if (numTags == 0) {
       // No tags visible. Default to single-tag std devs
