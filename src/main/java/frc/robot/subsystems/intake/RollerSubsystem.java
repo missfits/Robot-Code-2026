@@ -64,7 +64,8 @@ public class RollerSubsystem extends MechanismsSubsystemBase {
   @Override
   public void periodic() {
     super.periodic();
-    SmartDashboard.putNumber("roller/actualCurrent", m_IO.getCurrent());
+    SmartDashboard.putNumber("roller/actualStatorCurrent", m_IO.getStatorCurrent());
+    SmartDashboard.putNumber("roller/actualSupplyCurrent", m_IO.getSupplyCurrent());
     SmartDashboard.putNumber("roller/actualPositionDegrees", m_IO.getPositionDegrees());
     SmartDashboard.putNumber("roller/actualVelocityRotationsPerSecond", m_IO.getVelocityRotationsPerSecond());
     SmartDashboard.putNumber("roller/actualVelocityDegreesPerSecond", m_IO.getVelocityDegreesPerSecond());

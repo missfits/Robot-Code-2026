@@ -13,11 +13,11 @@ public class ShooterIOHardware extends MechanismsIOHardwareBase {
   private final ShooterMotorType type;
 
   public ShooterIOHardware(ShooterMotorType type) {
-    super(type.id, type.statorLimit, 
+    super(type.id, type.statorLimit, type.supplyLimit,
           ShooterConstants.PEAK_FORWARD_DUTY_CYCLE, ShooterConstants.PEAK_REVERSE_DUTY_CYCLE, 
           type.logPrefix);
     this.type = type;
-    BaseStatusSignal.setUpdateFrequencyForAll(200, positionSignal, velocitySignal, voltageSignal, currentSignal);
+    BaseStatusSignal.setUpdateFrequencyForAll(200, positionSignal, velocitySignal, voltageSignal, statorCurrentSignal, supplyCurrentSignal);
     resetSlot0Gains();
   }
 
@@ -39,8 +39,10 @@ public class ShooterIOHardware extends MechanismsIOHardwareBase {
     motorOutputConfigs.PeakReverseDutyCycle = ShooterConstants.PEAK_REVERSE_DUTY_CYCLE;
 
     var currentLimitsConfigs = configs.CurrentLimits;
-    currentLimitsConfigs.StatorCurrentLimit = ShooterConstants.INFLUENCER_MOTOR_STATOR_LIMIT;
-    currentLimitsConfigs.StatorCurrentLimitEnable = true; 
+    currentLimitsConfigs.StatorCurrentLimit = type.statorLimit;
+    currentLimitsConfigs.StatorCurrentLimitEnable = true;
+    currentLimitsConfigs.SupplyCurrentLimit = type.supplyLimit;
+    currentLimitsConfigs.SupplyCurrentLimitEnable = true;
 
     motor.getConfigurator().apply(configs);
     setInverted(ShooterConstants.IS_INFLUENCER_INVERTED);
