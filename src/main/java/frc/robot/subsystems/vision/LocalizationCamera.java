@@ -241,11 +241,18 @@ public class LocalizationCamera {
     var bestPose = estimateSingleTagRobotPose(candidatePoseEstimator, target, target.getBestCameraToTarget());
     var alternatePose = estimateSingleTagRobotPose(candidatePoseEstimator, target, target.getAlternateCameraToTarget());
 
+    SwerveDriveState robotState = m_robotSwerveStateSupplier.get();
+
+    // null check for robot swerve state. If it's null, can't resolve heading.
+    if (robotState == null) {
+      return Optional.empty();
+    }
+
     if (bestPose.isEmpty() || alternatePose.isEmpty()) {
       return Optional.empty();
     }
 
-    Rotation2d currentHeading = m_robotSwerveStateSupplier.get().Pose.getRotation();
+    Rotation2d currentHeading = robotState.Pose.getRotation();
     Pose3d chosenPose = bestPose.get();
     // Prefer the candidate whose field-relative heading is closer to the drivetrain heading.
     if (headingDistance(alternatePose.get().toPose2d().getRotation(), currentHeading)
@@ -304,13 +311,19 @@ public class LocalizationCamera {
           .getDistance(estimatedPose.estimatedPose.toPose2d().getTranslation());
     }
 
-    // if camera is in front and robot is above max velocity, update matrixScalar
-    double linearRobotSpeed = Math.hypot(m_robotSwerveStateSupplier.get().Speeds.vxMetersPerSecond, 
-                                          m_robotSwerveStateSupplier.get().Speeds.vyMetersPerSecond);
-    if (m_isFront && linearRobotSpeed > VisionConstants.MAX_ROBOT_VISION_VELOCITY) {
-      matrixScalar = VisionConstants.AMBIGUITY_MATRIX_SCALAR;
-    }
+    // if robot is moving, want to trust front camera data less.
+    // NOTE: if state is null, matrixScalar stays at 1.0
+    SwerveDriveState robotState = m_robotSwerveStateSupplier.get();
 
+    if (robotState != null && robotState.Speeds != null) { // necessary null check
+      // if camera is in front and robot is above max velocity, update matrixScalar
+      double linearRobotSpeed = Math.hypot(robotState.Speeds.vxMetersPerSecond, 
+                                            robotState.Speeds.vyMetersPerSecond);
+      if (m_isFront && linearRobotSpeed > VisionConstants.MAX_ROBOT_VISION_VELOCITY) {
+        matrixScalar = VisionConstants.AMBIGUITY_MATRIX_SCALAR;
+      }
+    }
+  
     if (numTags == 0) {
       // No tags visible. Default to single-tag std devs
       SmartDashboard.putString("vision/" + m_cameraName + "/standardDeviationState", "no tags visible");
