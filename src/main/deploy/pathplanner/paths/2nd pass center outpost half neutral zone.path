@@ -20,12 +20,12 @@
         "y": 2.4691390335648147
       },
       "prevControl": {
-        "x": 3.5252992822354177,
-        "y": 2.605976831942133
+        "x": 3.503813051029488,
+        "y": 2.5261565029503963
       },
       "nextControl": {
-        "x": 4.223976168577327,
-        "y": 2.3323012351874963
+        "x": 4.187843894675926,
+        "y": 2.4209809027777784
       },
       "isLocked": false,
       "linkedName": null
@@ -80,16 +80,32 @@
     },
     {
       "anchor": {
-        "x": 6.0757717352212195,
-        "y": 3.9348902530956824
+        "x": 5.837292679398148,
+        "y": 2.8753994502314812
       },
       "prevControl": {
-        "x": 6.115089999821271,
-        "y": 4.6164297522381705
+        "x": 6.154310278296058,
+        "y": 2.9986495330745115
       },
       "nextControl": {
-        "x": 6.0382425106841815,
-        "y": 3.284361824276238
+        "x": 5.4143671875,
+        "y": 2.710974503180948
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.3054835792824075,
+        "y": 2.764714482060185
+      },
+      "prevControl": {
+        "x": 5.077653935185185,
+        "y": 2.8471869212962964
+      },
+      "nextControl": {
+        "x": 4.003000288032088,
+        "y": 2.7324074468743875
       },
       "isLocked": false,
       "linkedName": null
@@ -111,7 +127,7 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.7524949009324008,
-      "rotationDegrees": -11.541897254503164
+      "rotationDegrees": 0.0
     },
     {
       "waypointRelativePos": 1.9507757867132876,
@@ -126,12 +142,12 @@
       "rotationDegrees": -177.43483161883765
     },
     {
-      "waypointRelativePos": 5.1,
-      "rotationDegrees": -90.0
+      "waypointRelativePos": 5.2,
+      "rotationDegrees": 0.36726275567087074
     },
     {
-      "waypointRelativePos": 5.4,
-      "rotationDegrees": 29.999999999999996
+      "waypointRelativePos": 5.8,
+      "rotationDegrees": 0.21679872172692788
     }
   ],
   "constraintZones": [
@@ -151,7 +167,7 @@
     {
       "name": "come back over the bump",
       "minWaypointRelativePos": 4.999441964285711,
-      "maxWaypointRelativePos": 5.9,
+      "maxWaypointRelativePos": 6.8,
       "constraints": {
         "maxVelocity": 2.0,
         "maxAcceleration": 2.0,
@@ -164,7 +180,7 @@
     {
       "name": "intaking",
       "minWaypointRelativePos": 2.2072656249999993,
-      "maxWaypointRelativePos": 5.9,
+      "maxWaypointRelativePos": 6.8,
       "constraints": {
         "maxVelocity": 2.75,
         "maxAcceleration": 3.0,
@@ -185,7 +201,7 @@
     },
     {
       "name": "column back trigger",
-      "waypointRelativePos": 5.4,
+      "waypointRelativePos": 5.8,
       "endWaypointRelativePos": null,
       "command": null
     }
