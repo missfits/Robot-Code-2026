@@ -37,8 +37,7 @@ public abstract class MechanismsIOHardwareBase {
   protected final StatusSignal<Voltage> voltageSignal;
   protected final StatusSignal<Current> currentSignal;
 
-  protected MechanismsIOHardwareBase(int motorID, double statorCurrentLimit,
-      double peakForwardDutyCycle, double peakReverseDutyCycle, String logPrefix) {
+  protected MechanismsIOHardwareBase(int motorID, String logPrefix) {
     motor = new TalonFX(motorID);
     this.logPrefix = logPrefix;
 
@@ -46,18 +45,6 @@ public abstract class MechanismsIOHardwareBase {
     velocitySignal = motor.getVelocity();
     voltageSignal = motor.getMotorVoltage();
     currentSignal = motor.getStatorCurrent();
-
-    var limits = new CurrentLimitsConfigs();
-    limits.StatorCurrentLimit = statorCurrentLimit;
-    limits.StatorCurrentLimitEnable = true;
-    motor.getConfigurator().apply(limits);
-
-    var motorOutput = new MotorOutputConfigs();
-    motorOutput.PeakForwardDutyCycle = peakForwardDutyCycle;
-    motorOutput.PeakReverseDutyCycle = peakReverseDutyCycle;
-    motor.getConfigurator().apply(motorOutput);
-  }
-
   // blocks robot for 0.1 seconds, dont call during match
   public void setNeutralMode(NeutralModeValue neutralMode) {
     motor.setNeutralMode(neutralMode);
@@ -152,11 +139,12 @@ public abstract class MechanismsIOHardwareBase {
   }
 
   public void setInverted(boolean isInverted) {
-      motorOutputConfigs.Inverted = isInverted
-          ? InvertedValue.Clockwise_Positive
-          : InvertedValue.CounterClockwise_Positive;
+    var motorOutputConfigs = motorConfigs.MotorOutput;
+    motorOutputConfigs.Inverted = isInverted
+        ? InvertedValue.Clockwise_Positive
+        : InvertedValue.CounterClockwise_Positive;
 
-      motor.getConfigurator().apply(motorOutputConfigs);
+    motor.getConfigurator().apply(motorOutputConfigs);
   }
 
 }
