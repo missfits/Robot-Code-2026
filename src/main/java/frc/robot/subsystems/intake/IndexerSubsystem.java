@@ -55,7 +55,8 @@ public class IndexerSubsystem extends MechanismsSubsystemBase {
   @Override
   public void periodic() {
     super.periodic();
-    SmartDashboard.putNumber("indexer/actualCurrent", m_IO.getCurrent());
+    SmartDashboard.putNumber("indexer/actualStatorCurrent", m_IO.getStatorCurrent());
+    SmartDashboard.putNumber("indexer/actualSupplyCurrent", m_IO.getSupplyCurrent());
     SmartDashboard.putNumber("indexer/actualPositionDegrees", m_IO.getPositionDegrees());
     SmartDashboard.putNumber("indexer/actualVelocityRotationsPerSecond", m_IO.getVelocityRotationsPerSecond());
     SmartDashboard.putNumber("indexer/actualVelocityDegreesPerSecond", m_IO.getVelocityDegreesPerSecond());

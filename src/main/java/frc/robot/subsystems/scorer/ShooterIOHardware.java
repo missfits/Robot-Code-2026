@@ -12,7 +12,7 @@ public class ShooterIOHardware extends MechanismsIOHardwareBase {
   public ShooterIOHardware(ShooterMotorType type) {
     super(type.id, type.logPrefix);
     this.type = type;
-    BaseStatusSignal.setUpdateFrequencyForAll(200, positionSignal, velocitySignal, voltageSignal, currentSignal);
+    BaseStatusSignal.setUpdateFrequencyForAll(200, positionSignal, velocitySignal, voltageSignal, statorCurrentSignal, supplyCurrentSignal);
     resetConfigs();
   }
 

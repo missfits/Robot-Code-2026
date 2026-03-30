@@ -36,7 +36,8 @@ public abstract class MechanismsIOHardwareBase {
   protected final StatusSignal<Angle> positionSignal;
   protected final StatusSignal<AngularVelocity> velocitySignal;
   protected final StatusSignal<Voltage> voltageSignal;
-  protected final StatusSignal<Current> currentSignal;
+  protected final StatusSignal<Current> statorCurrentSignal;
+  protected final StatusSignal<Current> supplyCurrentSignal;
 
   protected MechanismsIOHardwareBase(int motorID, String logPrefix) {
     motor = new TalonFX(motorID);
@@ -45,7 +46,8 @@ public abstract class MechanismsIOHardwareBase {
     positionSignal = motor.getPosition();
     velocitySignal = motor.getVelocity();
     voltageSignal = motor.getMotorVoltage();
-    currentSignal = motor.getStatorCurrent();
+    statorCurrentSignal = motor.getStatorCurrent();
+    supplyCurrentSignal = motor.getSupplyCurrent();
   }
 
   public double getPositionRevolutions() {
@@ -60,8 +62,12 @@ public abstract class MechanismsIOHardwareBase {
     return velocitySignal.refresh().getValue().in(RevolutionsPerSecond);
   }
 
-  public double getCurrent() {
-    return currentSignal.refresh().getValue().in(Amps);
+  public double getStatorCurrent() {
+    return statorCurrentSignal.refresh().getValue().in(Amps);
+  }
+
+  public double getSupplyCurrent() {
+    return supplyCurrentSignal.refresh().getValue().in(Amps);
   }
 
   public void motorOff() {

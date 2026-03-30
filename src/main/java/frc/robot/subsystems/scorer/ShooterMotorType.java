@@ -6,26 +6,31 @@ public enum ShooterMotorType {
   INFLUENCER (
       ShooterConstants.INFLUENCER_MOTOR_ID,
       ShooterConstants.INFLUENCER_MOTOR_STATOR_LIMIT,
+      ShooterConstants.INFLUENCER_MOTOR_SUPPLY_LIMIT,
       "shooter/influencer/"
   ),
   FOLLOWER (
       ShooterConstants.FOLLOWER_MOTOR_ID,
       ShooterConstants.FOLLOWER_MOTOR_STATOR_LIMIT,
+      ShooterConstants.FOLLOWER_MOTOR_SUPPLY_LIMIT,
       "shooter/follower/"
   ),
   THIRD (
       ShooterConstants.THIRD_MOTOR_ID,
       ShooterConstants.THIRD_MOTOR_STATOR_LIMIT,
+      ShooterConstants.THIRD_MOTOR_SUPPLY_LIMIT,
       "shooter/third/"
   );
 
   public final int id;
   public final int statorLimit;
+  public final int supplyLimit;
   public final String logPrefix;
 
-  ShooterMotorType(int id, int statorLimit, String logPrefix) {
+  ShooterMotorType(int id, int statorLimit, int supplyLimit, String logPrefix) {
     this.id = id;
     this.statorLimit = statorLimit;
+    this.supplyLimit = supplyLimit;
     this.logPrefix = logPrefix;
   }
 

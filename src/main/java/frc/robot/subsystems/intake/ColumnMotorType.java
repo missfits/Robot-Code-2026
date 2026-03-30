@@ -6,21 +6,25 @@ public enum ColumnMotorType {
   INFLUENCER (
       ColumnConstants.INFLUENCER_ID,
       ColumnConstants.INFLUENCER_STATOR_LIMIT,
+      ColumnConstants.INFLUENCER_SUPPLY_LIMIT,
       "column/influencer/"
   ),
   FOLLOWER (
       ColumnConstants.FOLLOWER_ID,
       ColumnConstants.FOLLOWER_STATOR_LIMIT,
+      ColumnConstants.FOLLOWER_SUPPLY_LIMIT,
       "column/follower/"
   );
 
   public final int id;
   public final int statorLimit;
+  public final int supplyLimit;
   public final String logPrefix;
 
-  ColumnMotorType(int id, int statorLimit, String logPrefix) {
+  ColumnMotorType(int id, int statorLimit, int supplyLimit, String logPrefix) {
     this.id = id;
     this.statorLimit = statorLimit;
+    this.supplyLimit = supplyLimit;
     this.logPrefix = logPrefix;
   }
 
