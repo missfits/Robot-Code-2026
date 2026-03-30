@@ -1,23 +1,30 @@
 package frc.robot.subsystems.intake;
 
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.signals.NeutralModeValue;
-
-import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.RollerConstants;
 import frc.robot.subsystems.MechanismsIOHardwareBase;
 
 public class RollerIOHardware extends MechanismsIOHardwareBase {
 
   public RollerIOHardware(int motorID) {
-    super(motorID, RollerConstants.MOTOR_STATOR_LIMIT,
-        RollerConstants.PEAK_FORWARD_DUTY_CYCLE, RollerConstants.PEAK_REVERSE_DUTY_CYCLE, "roller/");
+    super(motorID, "roller/");
+    resetConfigs();
+  }
+
+  public void resetConfigs() {
     resetSlot0Gains();
+
+    motorConfigs.MotorOutput.PeakForwardDutyCycle = RollerConstants.PEAK_FORWARD_DUTY_CYCLE;
+    motorConfigs.MotorOutput.PeakReverseDutyCycle = RollerConstants.PEAK_REVERSE_DUTY_CYCLE;
+
+    motorConfigs.CurrentLimits.StatorCurrentLimit = RollerConstants.MOTOR_STATOR_LIMIT;
+    motorConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
+
+    motor.getConfigurator().apply(motorConfigs);
+    setInverted(RollerConstants.IS_INVERTED);
   }
 
   public void resetSlot0Gains() {
-    var talonFXConfigs = new TalonFXConfiguration();
-    var slot0Configs = talonFXConfigs.Slot0;
+    var slot0Configs = motorConfigs.Slot0;
 
     //PID
     slot0Configs.kP = RollerConstants.kP;
@@ -29,16 +36,7 @@ public class RollerIOHardware extends MechanismsIOHardwareBase {
     slot0Configs.kV = RollerConstants.kV;
     slot0Configs.kA = RollerConstants.kA;
 
-    var motorOutputConfigs = talonFXConfigs.MotorOutput;
-    motorOutputConfigs.PeakForwardDutyCycle = RollerConstants.PEAK_FORWARD_DUTY_CYCLE;
-    motorOutputConfigs.PeakReverseDutyCycle = RollerConstants.PEAK_REVERSE_DUTY_CYCLE;
-
-    var currentLimitsConfigs = talonFXConfigs.CurrentLimits;
-    currentLimitsConfigs.StatorCurrentLimit = RollerConstants.MOTOR_STATOR_LIMIT;
-    currentLimitsConfigs.StatorCurrentLimitEnable = true; 
-   
-    motor.getConfigurator().apply(talonFXConfigs);
-    setInverted(RollerConstants.IS_INVERTED);
+    motor.getConfigurator().apply(motorConfigs);
   }
 
   public double getPositionRadians() {

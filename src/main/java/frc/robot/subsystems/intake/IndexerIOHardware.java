@@ -1,19 +1,25 @@
 package frc.robot.subsystems.intake;
 
-import com.ctre.phoenix6.configs.MotorOutputConfigs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import frc.robot.Constants.IndexerConstants;
-import frc.robot.Constants.PivotConstants;
 import frc.robot.subsystems.MechanismsIOHardwareBase;
 
 public class IndexerIOHardware extends MechanismsIOHardwareBase {
 
   public IndexerIOHardware(int motorID) {
-    super(motorID, IndexerConstants.MOTOR_STATOR_LIMIT,
-        IndexerConstants.PEAK_FORWARD_DUTY_CYCLE, IndexerConstants.PEAK_REVERSE_DUTY_CYCLE, "indexer/");
+    super(motorID, "indexer/");
+    resetConfigs();
+  }
+
+  public void resetConfigs() {
+    resetSlot0Gains();
+
+    motorConfigs.MotorOutput.PeakForwardDutyCycle = IndexerConstants.PEAK_FORWARD_DUTY_CYCLE;
+    motorConfigs.MotorOutput.PeakReverseDutyCycle = IndexerConstants.PEAK_REVERSE_DUTY_CYCLE;
+
+    motorConfigs.CurrentLimits.StatorCurrentLimit = IndexerConstants.MOTOR_STATOR_LIMIT;
+    motorConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
+
+    motor.getConfigurator().apply(motorConfigs);
   }
 
   public double getPositionRadians() {
@@ -47,8 +53,7 @@ public class IndexerIOHardware extends MechanismsIOHardwareBase {
   }
 
   public void resetSlot0Gains() {
-    var talonFXConfigs = new TalonFXConfiguration();
-    var slot0Configs = talonFXConfigs.Slot0;
+    var slot0Configs = motorConfigs.Slot0;
 
     //PID
     slot0Configs.kP = IndexerConstants.kP;
@@ -60,10 +65,6 @@ public class IndexerIOHardware extends MechanismsIOHardwareBase {
     slot0Configs.kV = IndexerConstants.kV;
     slot0Configs.kA = IndexerConstants.kA;
 
-    var currentLimitsConfigs = talonFXConfigs.CurrentLimits;
-    currentLimitsConfigs.StatorCurrentLimit = IndexerConstants.MOTOR_STATOR_LIMIT;
-    currentLimitsConfigs.StatorCurrentLimitEnable = true; 
-
-    motor.getConfigurator().apply(talonFXConfigs);
+    motor.getConfigurator().apply(motorConfigs);
   }
 }

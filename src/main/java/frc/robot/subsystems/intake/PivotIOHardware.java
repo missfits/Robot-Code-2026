@@ -1,6 +1,5 @@
 package frc.robot.subsystems.intake;
 
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -14,9 +13,8 @@ import frc.robot.utils.MechanismUtil;
 public class PivotIOHardware extends MechanismsIOHardwareBase {
 
   public PivotIOHardware(int motorID) {
-    super(motorID, PivotConstants.MOTOR_STATOR_LIMIT,
-        PivotConstants.PEAK_FORWARD_DUTY_CYCLE, PivotConstants.PEAK_REVERSE_DUTY_CYCLE, "pivot/");
-    resetSlot0Gains();
+    super(motorID, "pivot/");
+    resetConfigs();
   }
 
   public double getPositionRadians() {
@@ -78,9 +76,23 @@ public class PivotIOHardware extends MechanismsIOHardwareBase {
     return PivotConstants.kG * Math.cos(Math.toRadians(position + PivotConstants.GRAVITY_FEEDFORWARD_OFFSET));
   }
 
+  public void resetConfigs() {
+    resetSlot0Gains();
+
+    motorConfigs.MotorOutput.PeakForwardDutyCycle = PivotConstants.PEAK_FORWARD_DUTY_CYCLE;
+    motorConfigs.MotorOutput.PeakReverseDutyCycle = PivotConstants.PEAK_REVERSE_DUTY_CYCLE;
+    motorConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
+    motorConfigs.CurrentLimits.StatorCurrentLimit = PivotConstants.MOTOR_STATOR_LIMIT;
+    motorConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
+
+    motor.getConfigurator().apply(motorConfigs);
+    setInverted(PivotConstants.IS_INVERTED);
+    setNeutralMode(NeutralModeValue.Brake);
+  }
+
   public void resetSlot0Gains() {
-    var talonFXConfigs = new TalonFXConfiguration();
-    var slot0Configs = talonFXConfigs.Slot0;
+    var slot0Configs = motorConfigs.Slot0;
 
     //PID
     slot0Configs.kP = PivotConstants.kP;
@@ -92,22 +104,11 @@ public class PivotIOHardware extends MechanismsIOHardwareBase {
     slot0Configs.kV = PivotConstants.kV;
     slot0Configs.kA = PivotConstants.kA;
 
-    var motionMagicConfigs = talonFXConfigs.MotionMagic;
+    var motionMagicConfigs = motorConfigs.MotionMagic;
     motionMagicConfigs.MotionMagicCruiseVelocity = PivotConstants.CRUISE_VELOCITY / PivotConstants.DEGREES_PER_REVOLUTION * 360;
     motionMagicConfigs.MotionMagicAcceleration = PivotConstants.ACCELERATION / PivotConstants.DEGREES_PER_REVOLUTION * 360;
     motionMagicConfigs.MotionMagicJerk = PivotConstants.JERK / PivotConstants.DEGREES_PER_REVOLUTION * 360;
 
-    var motorOutputConfigs = talonFXConfigs.MotorOutput;
-    motorOutputConfigs.PeakForwardDutyCycle = PivotConstants.PEAK_FORWARD_DUTY_CYCLE;
-    motorOutputConfigs.PeakReverseDutyCycle = PivotConstants.PEAK_REVERSE_DUTY_CYCLE;
-    motorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
-
-    var currentLimitsConfigs = talonFXConfigs.CurrentLimits;
-    currentLimitsConfigs.StatorCurrentLimit = PivotConstants.MOTOR_STATOR_LIMIT;
-    currentLimitsConfigs.StatorCurrentLimitEnable = true; 
-
-    motor.getConfigurator().apply(talonFXConfigs);
-    setInverted(PivotConstants.IS_INVERTED);
-    setNeutralMode(NeutralModeValue.Brake);
+    motor.getConfigurator().apply(motorConfigs);
   }
 }

@@ -1,10 +1,7 @@
 package frc.robot.subsystems.scorer;
 
 import com.ctre.phoenix6.BaseStatusSignal;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.MechanismsIOHardwareBase;
 
@@ -13,17 +10,27 @@ public class ShooterIOHardware extends MechanismsIOHardwareBase {
   private final ShooterMotorType type;
 
   public ShooterIOHardware(ShooterMotorType type) {
-    super(type.id, type.statorLimit, 
-          ShooterConstants.PEAK_FORWARD_DUTY_CYCLE, ShooterConstants.PEAK_REVERSE_DUTY_CYCLE, 
-          type.logPrefix);
+    super(type.id, type.logPrefix);
     this.type = type;
     BaseStatusSignal.setUpdateFrequencyForAll(200, positionSignal, velocitySignal, voltageSignal, currentSignal);
+    resetConfigs();
+  }
+
+  public void resetConfigs() {
     resetSlot0Gains();
+
+    motorConfigs.MotorOutput.PeakForwardDutyCycle = ShooterConstants.PEAK_FORWARD_DUTY_CYCLE;
+    motorConfigs.MotorOutput.PeakReverseDutyCycle = ShooterConstants.PEAK_REVERSE_DUTY_CYCLE;
+
+    motorConfigs.CurrentLimits.StatorCurrentLimit = type.statorLimit;
+    motorConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
+
+    motor.getConfigurator().apply(motorConfigs);
+    setInverted(ShooterConstants.IS_INFLUENCER_INVERTED);
   }
 
   public void resetSlot0Gains() {
-    var configs = new TalonFXConfiguration();
-    var slot0 = configs.Slot0;
+    var slot0 = motorConfigs.Slot0;
 
     // Get current gains from ShooterConstants to support runtime tuning
     var gains = type.gains();
@@ -34,16 +41,7 @@ public class ShooterIOHardware extends MechanismsIOHardwareBase {
     slot0.kV = gains.kV();
     slot0.kA = gains.kA();
 
-    var motorOutputConfigs = configs.MotorOutput;
-    motorOutputConfigs.PeakForwardDutyCycle = ShooterConstants.PEAK_FORWARD_DUTY_CYCLE;
-    motorOutputConfigs.PeakReverseDutyCycle = ShooterConstants.PEAK_REVERSE_DUTY_CYCLE;
-
-    var currentLimitsConfigs = configs.CurrentLimits;
-    currentLimitsConfigs.StatorCurrentLimit = ShooterConstants.INFLUENCER_MOTOR_STATOR_LIMIT;
-    currentLimitsConfigs.StatorCurrentLimitEnable = true; 
-
-    motor.getConfigurator().apply(configs);
-    setInverted(ShooterConstants.IS_INFLUENCER_INVERTED);
+    motor.getConfigurator().apply(motorConfigs);
   }
 
   private double getDegreesPerRevolution() {
