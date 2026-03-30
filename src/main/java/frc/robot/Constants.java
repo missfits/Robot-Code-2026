@@ -152,7 +152,7 @@ public final class Constants {
 
   public static class PivotConstants {
     // Velocity voltage constants
-    public static final boolean ENABLE_FOC = false;
+    public static final boolean ENABLE_FOC = true;
     public static final double FEED_FORWARD = 0.0;
     public static final int SLOT = 0;
     public static final boolean OVERRIDE_BRAKE_DUR_NEUTRAL = false;
@@ -228,7 +228,7 @@ public final class Constants {
 
   public static class RollerConstants {
     // Velocity voltage constants
-    public static final boolean ENABLE_FOC = false;
+    public static final boolean ENABLE_FOC = true;
     public static final double FEED_FORWARD = 0.0;
     public static final int SLOT = 0;
     public static final boolean OVERRIDE_BRAKE_DUR_NEUTRAL = false;
@@ -284,7 +284,7 @@ public final class Constants {
 
   public static class IndexerConstants {
     // Velocity voltage constants
-    public static final boolean ENABLE_FOC = false;
+    public static final boolean ENABLE_FOC = true;
     public static final double FEED_FORWARD = 0.0;
     public static final int SLOT = 0;
     public static final boolean OVERRIDE_BRAKE_DUR_NEUTRAL = false;
@@ -317,7 +317,7 @@ public final class Constants {
     public static double OUTTAKE_VELOCITY = -80.0;
     public static double RECYCLE_VELOCITY = 50.0;
     public static double SHUTTLE_VELOCITY = 50.0;
-    public static double INTAKE_VELOCITY = 80.0;
+    public static double INTAKE_VELOCITY = 50.0;
 
     // Testing velocities
     public static double TESTING_VELOCITY = 0.0;
@@ -334,7 +334,7 @@ public final class Constants {
 
   public static class ColumnConstants {
     // Velocity voltage constants
-    public static final boolean ENABLE_FOC = false;
+    public static final boolean ENABLE_FOC = true;
     public static final double FEED_FORWARD = 0.0;
     public static final int SLOT = 0;
     public static final boolean OVERRIDE_BRAKE_DUR_NEUTRAL = false;
@@ -404,19 +404,19 @@ public final class Constants {
 
   public static class ShooterConstants {
     // Velocity voltage constants - Influencer
-    public static final boolean INFLUENCER_ENABLE_FOC = false;
+    public static final boolean INFLUENCER_ENABLE_FOC = true;
     public static final double INFLUENCER_FEED_FORWARD = 0.0;
     public static final int INFLUENCER_SLOT = 0;
     public static final boolean INFLUENCER_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
 
     // Velocity voltage constants - Follower
-    public static final boolean FOLLOWER_ENABLE_FOC = false;
+    public static final boolean FOLLOWER_ENABLE_FOC = true;
     public static final double FOLLOWER_FEED_FORWARD = 0.0;
     public static final int FOLLOWER_SLOT = 0;
     public static final boolean FOLLOWER_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
 
     // Velocity voltage constants - Third
-    public static final boolean THIRD_ENABLE_FOC = false;
+    public static final boolean THIRD_ENABLE_FOC = true;
     public static final double THIRD_FEED_FORWARD = 0.0;
     public static final int THIRD_SLOT = 0;
     public static final boolean THIRD_OVERRIDE_BRAKE_DUR_NEUTRAL = false;
