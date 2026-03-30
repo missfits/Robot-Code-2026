@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -31,6 +32,7 @@ import frc.robot.subsystems.intake.RollerSubsystem;
 import frc.robot.subsystems.scorer.ShooterSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.robot.utils.ShooterLookupTable;
+import lombok.experimental.PackagePrivate;
 import frc.robot.utils.HubCalculations;
 
 public class RobotCommandFactory {
@@ -69,7 +71,15 @@ public class RobotCommandFactory {
 
   private final Supplier<Rotation2d> m_drivetrainAngleSupplier = () -> calculateShootOnTheFlyAngle();
 
-  public RobotCommandFactory(CommandSwerveDrivetrain drivetrain, 
+  private final Supplier<Double> m_dynamicShooterVelocitySupplier;
+  private final Trigger m_readyToShootTrigger;
+
+  // Getters for suppliers (used in RobotContainer for trigger bindings)
+  public Supplier<Double> getShooterVelocityCalculatedSupplier() {
+    return m_shooterVelocityCalculatedSupplier;
+  }
+
+  public RobotCommandFactory(CommandSwerveDrivetrain drivetrain,
       PivotSubsystem pivot, RollerSubsystem roller, IndexerSubsystem indexer, ColumnSubsystem column, 
       ShooterSubsystem shooter, LaserCANSensorBase intakeSensor, LaserCANSensorBase shooterSensor, 
       VisionSubsystem vision, DrivetrainCommandFactory drivetrainCommandFactory) {
@@ -83,6 +93,16 @@ public class RobotCommandFactory {
     m_shooterSensor = shooterSensor;
     m_vision = vision;
     m_drivetrainCommandFactory = drivetrainCommandFactory;
+
+    m_dynamicShooterVelocitySupplier = () -> {
+      boolean columnAtVelocity = m_column.isMotorVelocityOverPercentToleranceTrigger(
+          () -> ColumnConstants.SHOOT_VELOCITY).getAsBoolean();
+      return columnAtVelocity
+          ? m_shooterVelocityCalculatedSupplier.get()
+          : m_shooterVelocityInitialCalculatedSupplier.get();
+    };
+
+    m_readyToShootTrigger = readyToShootTrigger();
   }
 
   public void setDefaultCommand() {
@@ -380,6 +400,45 @@ public class RobotCommandFactory {
         () -> IndexerConstants.SHOOT_VELOCITY,
         () -> RollerConstants.ROLLER_VELOCITY))
     .withName("scoreModeDynamic");
+  }
+
+  /**
+   * Aims the drivetrain at the hub and spins up the shooter.
+   * Shooter velocity automatically adjusts based on column motor state:
+   * - Uses initial (higher) velocity when column is not at speed
+   * - Switches to target velocity when column reaches speed
+   *
+   * This command should be bound to a button press in RobotContainer.
+   * Then use readyToShootTrigger().whileTrue() to feed gamepieces.
+   *
+   * @param joystickValsSupplier Supplier for driver translation joystick input
+   * @param driverInputTrigger Trigger that detects driver input for wheel unlocking
+   * @return Command that aims and spins up shooter
+   */
+  public Command aimAndSpinUpShooterCommand(Supplier<JoystickVals> joystickValsSupplier, Trigger driverInputTrigger) {
+
+    return Commands.parallel(
+      // Aim at hub, then lock wheels in X when aligned
+      snapToHubThenPointWheelsInXCommand(joystickValsSupplier, driverInputTrigger),
+
+      // Spin up shooter with dynamic velocity
+      m_shooter.shooterVelocityCommand(m_dynamicShooterVelocitySupplier)
+    ).withName("aimAndSpinUpShooter");
+  }
+
+  /**
+   * Feeds gamepieces through all mechanisms (column, indexer, roller, pivot).
+   * This command should be bound to readyToShootTrigger().whileTrue() in RobotContainer.
+   *
+   * @return Command that runs all feeding mechanisms
+   */
+  public Command feedGamepieceCommand() {
+    return Commands.parallel(
+      m_column.velocityCommand(() -> ColumnConstants.SHOOT_VELOCITY),
+      m_indexer.velocityCommand(() -> IndexerConstants.SHOOT_VELOCITY),
+      m_roller.velocityCommand(() -> RollerConstants.ROLLER_VELOCITY),
+      m_pivot.repeatingDisplaceFuelCommand()
+    ).withName("feedGamepiece");
   }
 
   // shoot helper commands
@@ -732,7 +791,54 @@ public class RobotCommandFactory {
   public Rotation2d getSOTFAngle() {
     return calculateShootOnTheFlyAngle();
   }
-  
+
+  /**
+   * Checks if the robot's speed is low enough to shoot accurately
+   * @return true if robot speed is below threshold
+   */
+  private boolean isRobotSpeedLowEnough() {
+    ChassisSpeeds robotSpeeds = m_drivetrain.getState().Speeds;
+    double robotSpeed = Math.hypot(robotSpeeds.vxMetersPerSecond, robotSpeeds.vyMetersPerSecond);
+
+    SmartDashboard.putNumber("robotCommandFactory/robotSpeed", robotSpeed);
+    SmartDashboard.putBoolean("robotCommandFactory/isRobotSpeedLowEnough",
+      robotSpeed < ShooterConstants.MAX_ROBOT_SPEED_TO_SHOOT);
+
+    return robotSpeed < ShooterConstants.MAX_ROBOT_SPEED_TO_SHOOT;
+  }
+
+  public Trigger getReadyToShootTrigger() {
+    return m_readyToShootTrigger;
+  }
+
+  public boolean atAngle() {
+    return m_drivetrainCommandFactory.atAngleTrigger(m_drivetrainAngleSupplier).getAsBoolean();
+  }
+
+  public boolean atVelocity() {
+    return m_shooter.isMotorVelocityWithinPercentTolerance(m_dynamicShooterVelocitySupplier).getAsBoolean();
+  }
+
+  /**
+   * Creates a trigger that indicates the robot is ready to shoot.
+   * Combines shooter velocity, heading, and robot speed checks with debouncing.
+   *
+   * @return Trigger that is true when all shooting conditions are met
+   */
+  private Trigger readyToShootTrigger() {
+    Trigger shooterAtVelocity = m_shooter.isMotorVelocityWithinPercentTolerance(m_dynamicShooterVelocitySupplier);
+    Trigger robotHeadingCorrect = m_drivetrainCommandFactory.atAngleTrigger(m_drivetrainAngleSupplier);
+    Trigger robotSpeedLow = new Trigger(this::isRobotSpeedLowEnough);
+
+    // Combine all conditions
+    Trigger readyTrigger = shooterAtVelocity
+      .and(robotHeadingCorrect)
+      .and(robotSpeedLow);
+
+    // Add debouncing - especially important on the falling edge to prevent rapid on/off
+    return readyTrigger.debounce(ShooterConstants.READY_TO_SHOOT_DEBOUNCE_TIME, DebounceType.kBoth);
+  }
+
   // syntactic sugar
   private Trigger not(Trigger trigger) {
     return trigger.negate();
