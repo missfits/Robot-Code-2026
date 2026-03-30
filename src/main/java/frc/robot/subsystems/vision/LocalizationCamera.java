@@ -298,6 +298,7 @@ public class LocalizationCamera {
     // Pose present. Start running Heuristic
     int numTags = 0;
     double avgDist = 0;
+    double matrixScalar = 1.0; // defaults to 1.0!
 
     // Precalculation - see how many tags we found, and calculate an
     // average-distance metric
@@ -313,10 +314,42 @@ public class LocalizationCamera {
           .getDistance(estimatedPose.estimatedPose.toPose2d().getTranslation());
     }
 
+    // calculate robot acceleration for further scaling
+    SwerveDriveState robotState = m_robotSwerveStateSupplier.get();
+    if (m_isFrontCamera && robotState != null && robotState.Speeds != null) {
+      ChassisSpeeds currentSpeeds = robotState.Speeds;
+      double currentTimestamp = robotState.Timestamp;
+      double dt = currentTimestamp - m_previousTimestamp;
+
+      // calculate acceleration
+      double dx = currentSpeeds.vxMetersPerSecond - m_previousSpeed.vxMetersPerSecond;
+      double dy = currentSpeeds.vyMetersPerSecond - m_previousSpeed.vyMetersPerSecond;
+
+      if (dt > 0.0001) {
+        double linearAcceleration = Math.hypot(dx, dy) / dt;
+
+        if (Math.abs(linearAcceleration) > VisionConstants.MAX_ROBOT_ACCELERATION) {
+          matrixScalar = VisionConstants.ACCELERATION_SCALAR;
+        }
+        // log stuff
+        SmartDashboard.putNumber(m_logString + "/linearAcceleration", linearAcceleration);
+      }
+      else {
+        SmartDashboard.putNumber(m_logString + "/linearAcceleration", 0.0);
+      }
+
+      // update previous speed and timestamp
+      m_previousSpeed = currentSpeeds;
+      m_previousTimestamp = currentTimestamp;
+
+    }
+    SmartDashboard.putNumber(m_logString + "/matrixScalar", matrixScalar);
+    SmartDashboard.putBoolean(m_logString + "/isAccScalingActive", matrixScalar > 1.0);
+
     if (numTags == 0) {
       // No tags visible. Default to single-tag std devs
       SmartDashboard.putString(m_logString + "/standardDeviationState", "no tags visible");
-      return VisionConstants.kSingleTagStdDevs;
+      return VisionConstants.kSingleTagStdDevs.times(matrixScalar);
     } else if (numTags == 1 && avgDist > VisionConstants.VISION_DISTANCE_DISCARD) {
       SmartDashboard.putString(m_logString + "/standardDeviationState", "target too far");
       return VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
@@ -325,7 +358,7 @@ public class LocalizationCamera {
       avgDist /= numTags;
       // increase std devs based on (average) distance
       SmartDashboard.putString(m_logString + "/standardDeviationState", "good :)");
-      return unscaledStdDevs.times(1 + (avgDist * avgDist / VisionConstants.STD_DEV_SCALAR));
+      return unscaledStdDevs.times(1 + (avgDist * avgDist / VisionConstants.STD_DEV_SCALAR)).times(matrixScalar);
     }
   }
 }
