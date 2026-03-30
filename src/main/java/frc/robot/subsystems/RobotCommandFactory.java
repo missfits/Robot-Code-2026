@@ -811,6 +811,14 @@ public class RobotCommandFactory {
     return m_readyToShootTrigger;
   }
 
+  public boolean atAngle() {
+    return m_drivetrainCommandFactory.atAngleTrigger(m_drivetrainAngleSupplier).getAsBoolean();
+  }
+
+  public boolean atVelocity() {
+    return m_shooter.isMotorVelocityWithinPercentTolerance(m_dynamicShooterVelocitySupplier).getAsBoolean();
+  }
+
   /**
    * Creates a trigger that indicates the robot is ready to shoot.
    * Combines shooter velocity, heading, and robot speed checks with debouncing.

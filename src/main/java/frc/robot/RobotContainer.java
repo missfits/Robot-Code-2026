@@ -441,6 +441,9 @@ public class RobotContainer {
         m_robotCommandFactory.getCalculatedShooterVelocity()); 
 
     SmartDashboard.putBoolean("robotCommandFactory/readyToShootTrigger", m_robotCommandFactory.getReadyToShootTrigger().getAsBoolean());
+    SmartDashboard.putBoolean("robotCommandFactory/atAngle", m_robotCommandFactory.atAngle());
+    SmartDashboard.putBoolean("robotCommandFactory/atVelocity", m_robotCommandFactory.atVelocity());
+
     SmartDashboard.putBoolean("robotCommandFactory/scoreMode", scoreMode);
   }
 
