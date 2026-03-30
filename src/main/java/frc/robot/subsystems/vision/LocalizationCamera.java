@@ -339,7 +339,12 @@ public class LocalizationCamera {
       }
 
       // update previous speed and timestamp
-      m_previousSpeed = currentSpeeds;
+      // NOTE: must copy values, not reference, to avoid aliasing the drivetrain's ChassisSpeeds object
+      m_previousSpeed = new ChassisSpeeds(
+          currentSpeeds.vxMetersPerSecond,
+          currentSpeeds.vyMetersPerSecond,
+          currentSpeeds.omegaRadiansPerSecond
+      );
       m_previousTimestamp = currentTimestamp;
 
     }
