@@ -10,6 +10,7 @@ import java.util.function.Supplier;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -30,37 +31,23 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public abstract class MechanismsIOHardwareBase {
   protected final TalonFX motor;
   protected final String logPrefix;
-  private final MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
+  protected final TalonFXConfiguration motorConfigs = new TalonFXConfiguration();
 
   protected final StatusSignal<Angle> positionSignal;
   protected final StatusSignal<AngularVelocity> velocitySignal;
   protected final StatusSignal<Voltage> voltageSignal;
-  protected final StatusSignal<Current> currentSignal;
+  protected final StatusSignal<Current> statorCurrentSignal;
+  protected final StatusSignal<Current> supplyCurrentSignal;
 
-  protected MechanismsIOHardwareBase(int motorID, double statorCurrentLimit,
-      double peakForwardDutyCycle, double peakReverseDutyCycle, String logPrefix) {
+  protected MechanismsIOHardwareBase(int motorID, String logPrefix) {
     motor = new TalonFX(motorID);
     this.logPrefix = logPrefix;
 
     positionSignal = motor.getPosition();
     velocitySignal = motor.getVelocity();
     voltageSignal = motor.getMotorVoltage();
-    currentSignal = motor.getStatorCurrent();
-
-    var limits = new CurrentLimitsConfigs();
-    limits.StatorCurrentLimit = statorCurrentLimit;
-    limits.StatorCurrentLimitEnable = true;
-    motor.getConfigurator().apply(limits);
-
-    var motorOutput = new MotorOutputConfigs();
-    motorOutput.PeakForwardDutyCycle = peakForwardDutyCycle;
-    motorOutput.PeakReverseDutyCycle = peakReverseDutyCycle;
-    motor.getConfigurator().apply(motorOutput);
-  }
-
-  // blocks robot for 0.1 seconds, dont call during match
-  public void setNeutralMode(NeutralModeValue neutralMode) {
-    motor.setNeutralMode(neutralMode);
+    statorCurrentSignal = motor.getStatorCurrent();
+    supplyCurrentSignal = motor.getSupplyCurrent();
   }
 
   public double getPositionRevolutions() {
@@ -75,8 +62,12 @@ public abstract class MechanismsIOHardwareBase {
     return velocitySignal.refresh().getValue().in(RevolutionsPerSecond);
   }
 
-  public double getCurrent() {
-    return currentSignal.refresh().getValue().in(Amps);
+  public double getStatorCurrent() {
+    return statorCurrentSignal.refresh().getValue().in(Amps);
+  }
+
+  public double getSupplyCurrent() {
+    return supplyCurrentSignal.refresh().getValue().in(Amps);
   }
 
   public void motorOff() {
@@ -152,11 +143,16 @@ public abstract class MechanismsIOHardwareBase {
   }
 
   public void setInverted(boolean isInverted) {
-      motorOutputConfigs.Inverted = isInverted
-          ? InvertedValue.Clockwise_Positive
-          : InvertedValue.CounterClockwise_Positive;
+    var motorOutputConfigs = motorConfigs.MotorOutput;
+    motorOutputConfigs.Inverted = isInverted
+        ? InvertedValue.Clockwise_Positive
+        : InvertedValue.CounterClockwise_Positive;
 
-      motor.getConfigurator().apply(motorOutputConfigs);
+    motor.getConfigurator().apply(motorOutputConfigs);
   }
 
+  // blocks robot for 0.1 seconds, dont call during match
+  public void setNeutralMode(NeutralModeValue neutralMode) {
+    motor.setNeutralMode(neutralMode);
+  }
 }
