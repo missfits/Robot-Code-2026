@@ -25,6 +25,9 @@ import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+import com.ctre.phoenix6.hardware.Pigeon2;
+import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
+
 import frc.robot.Constants.VisionConstants;
 
 public class LocalizationCamera {
@@ -36,7 +39,8 @@ public class LocalizationCamera {
   private AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
   private final Field2d m_estPoseField = new Field2d(); // field pose estimator
   private PhotonPoseEstimator poseEstimator;
-  private final Supplier<Rotation2d> m_robotRotationSupplier;
+
+  private final Pigeon2 m_pigeon; // used for vibration-based scaling for pose ambiguity
 
   private LocalVisionFilterPipeline m_filterPipeline = new LocalVisionFilterPipeline(); // filtering pipeline for each camera, initalizes as empty pipeline
 
@@ -47,14 +51,16 @@ public class LocalizationCamera {
   private final StructPublisher<Pose2d> pose2dPublisher;
   private final StructPublisher<Pose3d> pose3dPublisher;
 
+  private final boolean m_isFrontCamera; // boolean: if camera is in front or back 
+
   // every camera periodically creates a new CameraReading containing robot pose, std dev, timestamp, and number of targets seen.
   public static record CameraReading(String cameraName, EstimatedRobotPose robotPose, Matrix<N3, N1> stdDevs, double timestampSeconds, int numTargets) {}
 
-  public LocalizationCamera(String cameraName, Transform3d robotToCam, Supplier<Rotation2d> robotHeadingSupplier) {
+  public LocalizationCamera(String cameraName, Transform3d robotToCam, Pigeon2 pigeon) {
     m_cameraName = cameraName;
     m_camera = new PhotonCamera(m_cameraName);
     m_logString = "vision/" + m_cameraName;
-    m_robotRotationSupplier = robotHeadingSupplier;
+    m_pigeon = pigeon;
 
     poseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, robotToCam);
 
@@ -64,6 +70,13 @@ public class LocalizationCamera {
     pose3dPublisher = NetworkTableInstance.getDefault()
             .getStructTopic("SmartDashboard/" + m_logString + "/estimatedRobotPose3d", Pose3d.struct).publish();
 
+
+    if (m_cameraName.indexOf("front") >= 0) {
+      m_isFrontCamera = true;
+    }
+    else {
+      m_isFrontCamera = false;
+    }
 
     // Initialize Field2d widget for this camera (NOT THE SAME AS FUSEDPOSE)
     SmartDashboard.putData(m_logString + "/estimatedPoseField", m_estPoseField);
@@ -233,7 +246,12 @@ public class LocalizationCamera {
       return Optional.empty();
     }
 
-    Rotation2d currentHeading = m_robotRotationSupplier.get();
+    if (m_pigeon == null) {
+      return Optional.empty();
+    }
+    
+    Rotation2d currentHeading = m_pigeon.getRotation2d();
+
     Pose3d chosenPose = bestPose.get();
     // Prefer the candidate whose field-relative heading is closer to the drivetrain heading.
     if (headingDistance(alternatePose.get().toPose2d().getRotation(), currentHeading)
@@ -275,6 +293,7 @@ public class LocalizationCamera {
     // Pose present. Start running Heuristic
     int numTags = 0;
     double avgDist = 0;
+    double matrixScalar = 1.0; // defaults to 1.0!
 
     // Precalculation - see how many tags we found, and calculate an
     // average-distance metric
@@ -290,10 +309,26 @@ public class LocalizationCamera {
           .getDistance(estimatedPose.estimatedPose.toPose2d().getTranslation());
     }
 
+    // calculate vibration from Pigeon2 accelerometer for further scaling
+    if (m_isFrontCamera && m_pigeon != null) {
+      // Get accelerometer readings in g's (horizontal plane only)
+      double accelX = m_pigeon.getAccelerationX().getValueAsDouble();
+      double accelY = m_pigeon.getAccelerationY().getValueAsDouble();
+      double vibrationMagnitude = Math.hypot(accelX, accelY); // in g's
+
+      if (vibrationMagnitude > VisionConstants.MAX_ROBOT_VIBRATION) {
+        matrixScalar = VisionConstants.VIBRATION_SCALAR;
+      }
+      // log stuff
+      SmartDashboard.putNumber(m_logString + "/vibrationMagnitude", vibrationMagnitude);
+    }
+    SmartDashboard.putNumber(m_logString + "/matrixScalar", matrixScalar);
+    SmartDashboard.putBoolean(m_logString + "/isVibrationScalingActive", matrixScalar > 1.0);
+
     if (numTags == 0) {
       // No tags visible. Default to single-tag std devs
       SmartDashboard.putString(m_logString + "/standardDeviationState", "no tags visible");
-      return VisionConstants.kSingleTagStdDevs;
+      return VisionConstants.kSingleTagStdDevs.times(matrixScalar);
     } else if (numTags == 1 && avgDist > VisionConstants.VISION_DISTANCE_DISCARD) {
       SmartDashboard.putString(m_logString + "/standardDeviationState", "target too far");
       return VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
@@ -302,7 +337,7 @@ public class LocalizationCamera {
       avgDist /= numTags;
       // increase std devs based on (average) distance
       SmartDashboard.putString(m_logString + "/standardDeviationState", "good :)");
-      return unscaledStdDevs.times(1 + (avgDist * avgDist / VisionConstants.STD_DEV_SCALAR));
+      return unscaledStdDevs.times(1 + (avgDist * avgDist / VisionConstants.STD_DEV_SCALAR)).times(matrixScalar);
     }
   }
 }
