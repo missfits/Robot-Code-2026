@@ -37,7 +37,7 @@ public abstract class MechanismsIOHardwareBase {
   protected final StatusSignal<Voltage> voltageSignal;
   protected final StatusSignal<Current> currentSignal;
 
-  protected MechanismsIOHardwareBase(int motorID, double statorCurrentLimit,
+  protected MechanismsIOHardwareBase(int motorID, double statorCurrentLimit, double supplyCurrentLimit,
       double peakForwardDutyCycle, double peakReverseDutyCycle, String logPrefix) {
     motor = new TalonFX(motorID);
     this.logPrefix = logPrefix;
@@ -50,6 +50,8 @@ public abstract class MechanismsIOHardwareBase {
     var limits = new CurrentLimitsConfigs();
     limits.StatorCurrentLimit = statorCurrentLimit;
     limits.StatorCurrentLimitEnable = true;
+    limits.SupplyCurrentLimit = supplyCurrentLimit;
+    limits.SupplyCurrentLimitEnable = true;
     motor.getConfigurator().apply(limits);
 
     var motorOutput = new MotorOutputConfigs();
