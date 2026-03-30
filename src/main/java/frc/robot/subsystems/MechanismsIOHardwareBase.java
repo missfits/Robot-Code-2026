@@ -10,6 +10,7 @@ import java.util.function.Supplier;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -30,7 +31,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public abstract class MechanismsIOHardwareBase {
   protected final TalonFX motor;
   protected final String logPrefix;
-  private final MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
+  protected final TalonFXConfiguration motorConfigs = new TalonFXConfiguration();
 
   protected final StatusSignal<Angle> positionSignal;
   protected final StatusSignal<AngularVelocity> velocitySignal;
