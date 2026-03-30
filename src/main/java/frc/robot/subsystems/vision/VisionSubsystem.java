@@ -43,6 +43,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 
 import frc.robot.Constants;
 import frc.robot.Constants.VisionConstants;
@@ -65,11 +66,11 @@ public class VisionSubsystem extends SubsystemBase {
   private boolean m_rawVideoModeEnabled = false; // true = raw video feed, false = normal AprilTag processing
 
   /** Creates a new Vision Subsystem. */
-  public VisionSubsystem(Supplier<Rotation2d> robotHeadingSupplier) {
-    cameras.add(new LocalizationCamera(VisionConstants.CAMERA1_NAME, VisionConstants.ROBOT_TO_CAM1_3D, robotHeadingSupplier));
-    cameras.add(new LocalizationCamera(VisionConstants.CAMERA2_NAME, VisionConstants.ROBOT_TO_CAM2_3D, robotHeadingSupplier));
-    cameras.add(new LocalizationCamera(VisionConstants.CAMERA3_NAME, VisionConstants.ROBOT_TO_CAM3_3D, robotHeadingSupplier));
-    cameras.add(new LocalizationCamera(VisionConstants.CAMERA4_NAME, VisionConstants.ROBOT_TO_CAM4_3D, robotHeadingSupplier));
+  public VisionSubsystem(Pigeon2 pigeon) {
+    cameras.add(new LocalizationCamera(VisionConstants.CAMERA1_NAME, VisionConstants.ROBOT_TO_CAM1_3D, pigeon));
+    cameras.add(new LocalizationCamera(VisionConstants.CAMERA2_NAME, VisionConstants.ROBOT_TO_CAM2_3D, pigeon));
+    cameras.add(new LocalizationCamera(VisionConstants.CAMERA3_NAME, VisionConstants.ROBOT_TO_CAM3_3D, pigeon));
+    cameras.add(new LocalizationCamera(VisionConstants.CAMERA4_NAME, VisionConstants.ROBOT_TO_CAM4_3D, pigeon));
   }
 
   public List<CameraReading> getValidCameraReadings(){

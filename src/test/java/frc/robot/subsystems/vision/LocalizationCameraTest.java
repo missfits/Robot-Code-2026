@@ -3,14 +3,10 @@ package frc.robot.subsystems.vision;
 import static org.junit.jupiter.api.Assertions.*;
 
 import edu.wpi.first.hal.HAL;
-import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,7 +14,6 @@ import org.junit.jupiter.api.Test;
 import org.photonvision.EstimatedRobotPose;
 
 import frc.robot.Constants.VisionConstants;
-import frc.robot.subsystems.vision.LocalizationCamera;
 import frc.robot.subsystems.vision.LocalizationCamera.CameraReading;
 import frc.robot.subsystems.vision.filtering.LocalCameraPoseConsistencyFilter;
 import frc.robot.subsystems.vision.filtering.LocalPoseZRollPitchFilter;
@@ -38,14 +33,15 @@ class LocalizationCameraTest {
   void setup() {
     // Initialize the HAL for simulation
     assert HAL.initialize(500, 0);
-    
+
     // Create a test camera transform
     m_robotToCam = new Transform3d(
         new Translation3d(0.2, 0.0, 0.5),
         new Rotation3d(0, Math.toRadians(-15), 0)
     );
-    
-    m_camera = new LocalizationCamera("test_camera", m_robotToCam, Rotation2d::new);
+
+    // Pass null for Pigeon2 - vibration scaling will be skipped in tests
+    m_camera = new LocalizationCamera("test_camera", m_robotToCam, null);
   }
 
   @AfterEach
