@@ -246,7 +246,12 @@ public class LocalizationCamera {
       return Optional.empty();
     }
 
+    if (m_pigeon == null) {
+      return Optional.empty();
+    }
+    
     Rotation2d currentHeading = m_pigeon.getRotation2d();
+
     Pose3d chosenPose = bestPose.get();
     // Prefer the candidate whose field-relative heading is closer to the drivetrain heading.
     if (headingDistance(alternatePose.get().toPose2d().getRotation(), currentHeading)
