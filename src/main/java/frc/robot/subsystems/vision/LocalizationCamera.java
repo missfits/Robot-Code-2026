@@ -252,7 +252,7 @@ public class LocalizationCamera {
 
     // Get current robot heading from drivetrain
     SwerveDriveState robotState = m_robotSwerveStateSupplier.get();
-    if (robotState == null) { // NOTE: can't resolve heading if heading is null
+    if (robotState == null || robotState.Pose == null) { // NOTE: can't resolve heading if heading is null
       return Optional.empty();
     }
 
