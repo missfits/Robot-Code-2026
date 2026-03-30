@@ -54,8 +54,10 @@ public class ColumnIOHardware extends MechanismsIOHardwareBase {
     motorConfigs.MotorOutput.PeakForwardDutyCycle = ColumnConstants.PEAK_FORWARD_DUTY_CYCLE;
     motorConfigs.MotorOutput.PeakReverseDutyCycle = ColumnConstants.PEAK_REVERSE_DUTY_CYCLE;
 
-    motorConfigs.CurrentLimits.StatorCurrentLimit = ColumnConstants.INFLUENCER_STATOR_LIMIT;
+    motorConfigs.CurrentLimits.StatorCurrentLimit = type.statorLimit;
     motorConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
+    motorConfigs.CurrentLimits.SupplyCurrentLimit = type.supplyLimit;
+    motorConfigs.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     motor.getConfigurator().apply(motorConfigs);
   }

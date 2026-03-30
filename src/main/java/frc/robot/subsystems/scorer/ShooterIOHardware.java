@@ -58,6 +58,8 @@ public class ShooterIOHardware extends MechanismsIOHardwareBase {
 
     motorConfigs.CurrentLimits.StatorCurrentLimit = type.statorLimit;
     motorConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
+    motorConfigs.CurrentLimits.SupplyCurrentLimit = type.supplyLimit;
+    motorConfigs.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     motor.getConfigurator().apply(motorConfigs);
     setInverted(ShooterConstants.IS_INFLUENCER_INVERTED);

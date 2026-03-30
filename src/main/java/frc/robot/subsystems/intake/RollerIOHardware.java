@@ -48,6 +48,8 @@ public class RollerIOHardware extends MechanismsIOHardwareBase {
 
     motorConfigs.CurrentLimits.StatorCurrentLimit = RollerConstants.MOTOR_STATOR_LIMIT;
     motorConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
+    motorConfigs.CurrentLimits.SupplyCurrentLimit = RollerConstants.MOTOR_SUPPLY_LIMIT;
+    motorConfigs.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     motor.getConfigurator().apply(motorConfigs);
     setInverted(RollerConstants.IS_INVERTED);

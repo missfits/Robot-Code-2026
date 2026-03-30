@@ -85,6 +85,8 @@ public class PivotIOHardware extends MechanismsIOHardwareBase {
 
     motorConfigs.CurrentLimits.StatorCurrentLimit = PivotConstants.MOTOR_STATOR_LIMIT;
     motorConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
+    motorConfigs.CurrentLimits.SupplyCurrentLimit = PivotConstants.MOTOR_SUPPLY_LIMIT;
+    motorConfigs.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     motor.getConfigurator().apply(motorConfigs);
     setInverted(PivotConstants.IS_INVERTED);

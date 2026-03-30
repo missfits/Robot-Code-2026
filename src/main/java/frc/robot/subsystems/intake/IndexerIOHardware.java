@@ -48,6 +48,8 @@ public class IndexerIOHardware extends MechanismsIOHardwareBase {
 
     motorConfigs.CurrentLimits.StatorCurrentLimit = IndexerConstants.MOTOR_STATOR_LIMIT;
     motorConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
+    motorConfigs.CurrentLimits.SupplyCurrentLimit = IndexerConstants.MOTOR_SUPPLY_LIMIT;
+    motorConfigs.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     motor.getConfigurator().apply(motorConfigs);
   }
