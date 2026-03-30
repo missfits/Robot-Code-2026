@@ -10,18 +10,6 @@ public class IndexerIOHardware extends MechanismsIOHardwareBase {
     resetConfigs();
   }
 
-  public void resetConfigs() {
-    resetSlot0Gains();
-
-    motorConfigs.MotorOutput.PeakForwardDutyCycle = IndexerConstants.PEAK_FORWARD_DUTY_CYCLE;
-    motorConfigs.MotorOutput.PeakReverseDutyCycle = IndexerConstants.PEAK_REVERSE_DUTY_CYCLE;
-
-    motorConfigs.CurrentLimits.StatorCurrentLimit = IndexerConstants.MOTOR_STATOR_LIMIT;
-    motorConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
-
-    motor.getConfigurator().apply(motorConfigs);
-  }
-
   public double getPositionRadians() {
     return Math.toRadians(getPositionRevolutions() * IndexerConstants.DEGREES_PER_REVOLUTION);
   }
@@ -50,6 +38,18 @@ public class IndexerIOHardware extends MechanismsIOHardwareBase {
   public void setPositionDegrees(double degrees) {
     double revolutions = degrees / IndexerConstants.DEGREES_PER_REVOLUTION;
     setPositionRevolutions(revolutions);
+  }
+
+  public void resetConfigs() {
+    resetSlot0Gains();
+
+    motorConfigs.MotorOutput.PeakForwardDutyCycle = IndexerConstants.PEAK_FORWARD_DUTY_CYCLE;
+    motorConfigs.MotorOutput.PeakReverseDutyCycle = IndexerConstants.PEAK_REVERSE_DUTY_CYCLE;
+
+    motorConfigs.CurrentLimits.StatorCurrentLimit = IndexerConstants.MOTOR_STATOR_LIMIT;
+    motorConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
+
+    motor.getConfigurator().apply(motorConfigs);
   }
 
   public void resetSlot0Gains() {

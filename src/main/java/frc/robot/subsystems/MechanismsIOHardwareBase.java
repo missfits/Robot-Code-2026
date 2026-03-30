@@ -46,9 +46,6 @@ public abstract class MechanismsIOHardwareBase {
     velocitySignal = motor.getVelocity();
     voltageSignal = motor.getMotorVoltage();
     currentSignal = motor.getStatorCurrent();
-  // blocks robot for 0.1 seconds, dont call during match
-  public void setNeutralMode(NeutralModeValue neutralMode) {
-    motor.setNeutralMode(neutralMode);
   }
 
   public double getPositionRevolutions() {
@@ -148,4 +145,8 @@ public abstract class MechanismsIOHardwareBase {
     motor.getConfigurator().apply(motorOutputConfigs);
   }
 
+  // blocks robot for 0.1 seconds, dont call during match
+  public void setNeutralMode(NeutralModeValue neutralMode) {
+    motor.setNeutralMode(neutralMode);
+  }
 }

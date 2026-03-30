@@ -16,6 +16,40 @@ public class ShooterIOHardware extends MechanismsIOHardwareBase {
     resetConfigs();
   }
 
+  private double getDegreesPerRevolution() {
+    return ShooterConstants.SHOOTER_DEGREES_PER_REVOLUTION;
+  }
+
+  public double getPositionRadians() {
+    return Math.toRadians(getPositionRevolutions() * getDegreesPerRevolution());
+  }
+
+  public double getPositionDegrees() {
+    return getPositionRevolutions() * getDegreesPerRevolution();
+  }
+
+  public double getVelocityRadiansPerSecond() {
+    return Math.toRadians(getMotorVelocityRevolutionsPerSecond() * getDegreesPerRevolution());
+  }
+
+  public double getVelocityDegreesPerSecond() {
+    return getMotorVelocityRevolutionsPerSecond() * getDegreesPerRevolution();
+  }
+
+  public double getVelocityRotationsPerSecond() {
+    return getMotorVelocityRevolutionsPerSecond() * getDegreesPerRevolution() / 360;
+  }
+
+  public void setPositionRadians(double radians) {
+    double revolutions = Math.toDegrees(radians) / getDegreesPerRevolution();
+    setPositionRevolutions(revolutions);
+  }
+
+  public void setPositionDegrees(double degrees) {
+    double revolutions = degrees / getDegreesPerRevolution();
+    setPositionRevolutions(revolutions);
+  }
+
   public void resetConfigs() {
     resetSlot0Gains();
 
@@ -42,40 +76,5 @@ public class ShooterIOHardware extends MechanismsIOHardwareBase {
     slot0.kA = gains.kA();
 
     motor.getConfigurator().apply(motorConfigs);
-  }
-
-  private double getDegreesPerRevolution() {
-    return ShooterConstants.SHOOTER_DEGREES_PER_REVOLUTION;
-  }
-
-  public double getPositionRadians() {
-    return Math.toRadians(getPositionRevolutions() * getDegreesPerRevolution());
-  }
-
-  public double getPositionDegrees() {
-    return getPositionRevolutions() * getDegreesPerRevolution();
-  }
-  
-  public double getVelocityRadiansPerSecond() {
-    return Math.toRadians(getMotorVelocityRevolutionsPerSecond() * getDegreesPerRevolution());
-  }
-
-  public double getVelocityDegreesPerSecond() {
-    return getMotorVelocityRevolutionsPerSecond() * getDegreesPerRevolution();
-  }
-
-
-  public double getVelocityRotationsPerSecond() {
-    return getMotorVelocityRevolutionsPerSecond() * getDegreesPerRevolution() / 360;
-  }
-
-  public void setPositionRadians(double radians) {
-    double revolutions = Math.toDegrees(radians) / getDegreesPerRevolution();
-    setPositionRevolutions(revolutions);
-  }
-
-  public void setPositionDegrees(double degrees) {
-    double revolutions = degrees / getDegreesPerRevolution();
-    setPositionRevolutions(revolutions);
   }
 }
