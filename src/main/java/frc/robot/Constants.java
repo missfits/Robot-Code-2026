@@ -229,6 +229,7 @@ public final class Constants {
     public static final double GRAVITY_FEEDFORWARD_OFFSET = -55; // offset in degrees. 0 should be horizontal
 
     public static final double DEPLOY_PIVOT_DELAY = 0.5; // for intake mode 
+    public static final double DEPLOY_PIVOT_DELAY_LONG = 1;
     public static final double DEPLOY_PIVOT_TIME = 0.2;
   }
 
