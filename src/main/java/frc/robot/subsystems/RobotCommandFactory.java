@@ -434,6 +434,10 @@ public class RobotCommandFactory {
     ).withName("aimAndSpinUpShooter");
   }
 
+  public Command spinUpShooterCommand() {
+    return m_shooter.shooterVelocityCommand(m_dynamicShooterVelocitySupplier).withName("spinUpShooterCommand");
+  }
+
   /**
    * Feeds gamepieces through all mechanisms (column, indexer, roller, pivot).
    * This command should be bound to readyToShootTrigger().whileTrue() in RobotContainer.
@@ -821,6 +825,10 @@ public class RobotCommandFactory {
 
   public boolean atAngle() {
     return m_drivetrainCommandFactory.atAngleTrigger(m_drivetrainAngleSupplier).getAsBoolean();
+  }
+
+  public Trigger atAngleTrigger() {
+    return m_drivetrainCommandFactory.atAngleTrigger(m_drivetrainAngleSupplier);
   }
 
   public boolean atVelocity() {

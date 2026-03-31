@@ -53,6 +53,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -192,13 +193,22 @@ public class RobotContainer {
     
     // b (on true): aim and spin up shooter; set scoreMode to true
     m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).onTrue(
-      m_robotCommandFactory.aimAndSpinUpShooterCommand(m_driverTranslationJoystickValsSupplier, driverInputTrigger()));
+      m_robotCommandFactory.spinUpShooterCommand());
     m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).onTrue(
       Commands.runOnce(() -> scoreMode = true));
 
     m_robotCommandFactory.getReadyToShootTrigger() // feed gamepiece when ready to shoot and shootMode is true
       .and(new Trigger(() -> scoreMode))
       .whileTrue(m_robotCommandFactory.feedGamepieceCommand());
+    
+    m_robotCommandFactory.atAngleTrigger()
+      .and(driverInputTrigger().negate())
+        .and(scoreModeTrigger()).debounce(0.1, DebounceType.kBoth)
+      .whileTrue(m_drivetrainCommandFactory.pointWheelsinX());
+    m_robotCommandFactory.atAngleTrigger().negate()
+      .or(driverInputTrigger())
+        .and(scoreModeTrigger())
+      .whileTrue(m_robotCommandFactory.snapToHubCommand(m_driverTranslationJoystickValsSupplier));
       
     // a: snap to bump
     m_driverJoystick.a().and(m_driverJoystick.leftBumper().negate()).whileTrue(
@@ -530,6 +540,10 @@ public class RobotContainer {
 
   private Trigger driverInputTrigger() {
     return driverTranslationInputTrigger().or(driverRotationInputTrigger());
+  }
+
+  private Trigger scoreModeTrigger() {
+    return new Trigger(() -> scoreMode);
   }
 
   private boolean isBeached() {

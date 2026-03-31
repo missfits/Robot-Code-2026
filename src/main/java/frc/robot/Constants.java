@@ -510,12 +510,12 @@ public final class Constants {
     public static final double WAIT_FOR_SHOOTER_TIMEOUT = 1.5;
 
     // Ready to shoot trigger thresholds
-    public static final double MAX_ROBOT_SPEED_TO_SHOOT = 2.0; // Maximum robot speed (m/s) to allow shooting
+    public static final double MAX_ROBOT_SPEED_TO_SHOOT = 3.0; // Maximum robot speed (m/s) to allow shooting
     public static final double READY_TO_SHOOT_DEBOUNCE_TIME = 0.3; // Debounce time in seconds for ready to shoot trigger
 
     // SOTM constants
     public static final double SHOOTER_RPS_TO_MPS = Units.inchesToMeters(2*Math.PI*4);
-    public static final double SHOOTER_SLIP_FACTOR = 1; // fudge factor for slippage between shooter and fuel; TODO: tune
+    public static final double SHOOTER_SLIP_FACTOR = 1.3; // fudge factor for slippage between shooter and fuel; TODO: tune
     public static final double SHOOTER_ANGLE_DEGREES = 71.2393048349; // measured in CAD
   }
   
