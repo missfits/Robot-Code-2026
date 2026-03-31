@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Time;
 import frc.robot.generated.TunerConstants;
 
 /**
@@ -227,6 +228,8 @@ public final class Constants {
 
     public static final double GRAVITY_FEEDFORWARD_OFFSET = -55; // offset in degrees. 0 should be horizontal
 
+    public static final double DEPLOY_PIVOT_DELAY = 0.5; // for intake mode 
+    public static final double DEPLOY_PIVOT_TIME = 0.2;
   }
 
   public static class RollerConstants {

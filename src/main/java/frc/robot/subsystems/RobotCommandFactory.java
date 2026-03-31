@@ -20,6 +20,8 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ColumnConstants;
 import frc.robot.Constants.IndexerConstants;
+import frc.robot.Constants.PivotConstants;
+import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.RollerConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.RobotContainer.JoystickVals;
@@ -363,7 +365,6 @@ public class RobotCommandFactory {
   // intake mode
   public Command intakeModeCommand() {
     return Commands.parallel(
-      m_pivot.deployPivotCommand(),
       m_roller.velocityCommand(RollerConstants.INTAKE_VELOCITY),
       m_indexer.velocityCommand(IndexerConstants.INTAKE_VELOCITY),
       m_column.velocityCommand(ColumnConstants.INTAKE_VELOCITY) // will run backwards
