@@ -62,9 +62,9 @@ public final class Constants {
     public static final double MAX_ROTATION_SPEED = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a revolution per second max angular velocity
 
     // Rotation heading controller PID gains
-    public static double ROTATION_KP = 5.0;
+    public static double ROTATION_KP = 15.0;
     public static double ROTATION_KI = 0.0;
-    public static double ROTATION_KD = 0.0;
+    public static double ROTATION_KD = 2.0;
 
     // PID constants for PathPlanner AutoBuilder
     public static double ROBOT_POSITION_P = 5.0;
@@ -147,7 +147,7 @@ public final class Constants {
     public static final double SNAP_TO_TARGET_DISTANCE_THRESHOLD = 0.05; // 5cm
 
     // angle tolerance (in radians) for atTargetAngle()
-    public static final double ANGLE_TOLERANCE = Math.toRadians(3);
+    public static final double ANGLE_TOLERANCE = Math.toRadians(5);
 
     // velocity tolerance (in m/s) for velocityNonZero()
     public static final double VELOCITY_TOLERANCE = 0.2;
@@ -511,11 +511,11 @@ public final class Constants {
 
     // Ready to shoot trigger thresholds
     public static final double MAX_ROBOT_SPEED_TO_SHOOT = 3.0; // Maximum robot speed (m/s) to allow shooting
-    public static final double READY_TO_SHOOT_DEBOUNCE_TIME = 0.3; // Debounce time in seconds for ready to shoot trigger
+    public static final double READY_TO_SHOOT_DEBOUNCE_TIME = 0.15; // Debounce time in seconds for ready to shoot trigger
 
     // SOTM constants
     public static final double SHOOTER_RPS_TO_MPS = Units.inchesToMeters(2*Math.PI*4);
-    public static final double SHOOTER_SLIP_FACTOR = 1.3; // fudge factor for slippage between shooter and fuel; TODO: tune
+    public static final double SHOOTER_SLIP_FACTOR = 1; // fudge factor for slippage between shooter and fuel; TODO: tune
     public static final double SHOOTER_ANGLE_DEGREES = 71.2393048349; // measured in CAD
   }
   
@@ -721,7 +721,7 @@ public final class Constants {
   }
 
   public static class TeleopConstants {
-    public static final double LATENCY_COMPENSATION = 0.05; // compensate for shooter spin up + code processing time, etc. TODO: tune
+    public static final double LATENCY_COMPENSATION = 0.25; // compensate for shooter spin up + code processing time, etc. TODO: tune
   }
 
   public static class RobotConstants {
