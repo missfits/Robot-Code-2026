@@ -226,8 +226,12 @@ public class RobotContainer {
     m_drivetrainCommandFactory.setSlowmodeButton(m_driverJoystick.rightBumper());
     // left trigger: shuttle
     m_driverJoystick.leftTrigger().whileTrue(m_robotCommandFactory.shuttleCommand());
+    m_driverJoystick.leftTrigger().onTrue(
+      Commands.runOnce(() -> scoreMode = false));
     // right trigger: outtake / everything backwards (voltage -5)
     m_driverJoystick.rightTrigger().whileTrue(m_robotCommandFactory.outtakeCommand());
+    m_driverJoystick.rightTrigger().onTrue(
+      Commands.runOnce(() -> scoreMode = false));
 
     // center d-pad: zero pivot
     m_driverJoystick.povCenter().negate().whileTrue(m_pivot.zeroPivotCommand());
