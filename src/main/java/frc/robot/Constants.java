@@ -717,7 +717,7 @@ public final class Constants {
   }
 
   public static class AutoConstants {
-    public static final double AUTO_SHOOT_TIMEOUT = 5; // in seconds; TODO: tune
+    public static final double AUTO_SHOOT_TIMEOUT = 3; // in seconds; TODO: tune
   }
 
   public static class TeleopConstants {
