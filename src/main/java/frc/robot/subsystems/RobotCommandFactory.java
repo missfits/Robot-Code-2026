@@ -371,6 +371,13 @@ public class RobotCommandFactory {
     ).withName("intakeModeCommand");
   }
 
+  public Command autoIntakeModeCommand() {
+    return Commands.parallel(
+      intakeModeCommand(),
+      m_pivot.repeatingZeroPivotCommand()
+    ).withName("autoIntakeModeCommand");
+  }
+
   // score mode
 
   /**
