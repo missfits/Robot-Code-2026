@@ -174,24 +174,11 @@
     },
     {
       "name": "come back over the bump",
-      "minWaypointRelativePos": 6.0,
-      "maxWaypointRelativePos": 6.9,
+      "minWaypointRelativePos": 6.2699218750000005,
+      "maxWaypointRelativePos": 6.529687500000002,
       "constraints": {
         "maxVelocity": 2.0,
         "maxAcceleration": 2.0,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0,
-        "nominalVoltage": 12.0,
-        "unlimited": false
-      }
-    },
-    {
-      "name": "intaking",
-      "minWaypointRelativePos": 2.2072656249999993,
-      "maxWaypointRelativePos": 6.9,
-      "constraints": {
-        "maxVelocity": 2.75,
-        "maxAcceleration": 3.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.0,
