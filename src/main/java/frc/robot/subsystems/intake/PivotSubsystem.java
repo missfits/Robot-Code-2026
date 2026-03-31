@@ -133,10 +133,4 @@ public class PivotSubsystem extends MechanismsSubsystemBase {
         zeroPivotCommand().withTimeout(PivotConstants.DEPLOY_PIVOT_TIME),
         Commands.waitSeconds(PivotConstants.DEPLOY_PIVOT_DELAY)).withName("repeatingZeroPivotCommand"); 
   }
-
-  public Command slowRepeatingZeroPivotCommand() {
-    return Commands.repeatingSequence(
-        zeroPivotCommand().withTimeout(PivotConstants.DEPLOY_PIVOT_TIME),
-        Commands.waitSeconds(PivotConstants.DEPLOY_PIVOT_DELAY_LONG)).withName("repeatingZeroPivotCommand"); 
-  }
 }

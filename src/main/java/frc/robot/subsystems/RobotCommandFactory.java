@@ -365,7 +365,6 @@ public class RobotCommandFactory {
   // intake mode
   public Command intakeModeCommand() {
     return Commands.parallel(
-      m_pivot.slowRepeatingZeroPivotCommand(),
       m_roller.velocityCommand(RollerConstants.INTAKE_VELOCITY),
       m_indexer.velocityCommand(IndexerConstants.INTAKE_VELOCITY),
       m_column.velocityCommand(ColumnConstants.INTAKE_VELOCITY) // will run backwards
