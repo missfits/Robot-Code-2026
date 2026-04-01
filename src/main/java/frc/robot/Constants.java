@@ -570,6 +570,12 @@ public final class Constants {
     public static final double ROBOT_TO_CAM2_YAW;
     public static final Transform3d ROBOT_TO_CAM2_3D;
 
+    //is camera connected check:
+    public static final int MIN_NUM_CAMERAS_DISCONNECTED = 2;
+
+    //is vision updating check:
+    public static final double MAX_TIME_BETWEEN_UPDATES = 0.5;
+    
     // Camera 3 position - robot-specific
     public static final double ROBOT_TO_CAM3_X;
     public static final double ROBOT_TO_CAM3_Y;
@@ -694,8 +700,8 @@ public final class Constants {
   }
   
   public static class LEDConstants { // placeholder constants
-    public static final int KPORT = 0;
-    public static final int KLENGTH = 60;
+    public static final int KPORT = 9;
+    public static final int KLENGTH = 3*30;
 
     public static final double BLINK_TIME = 1; // in seconds for after intake/outtake
   }

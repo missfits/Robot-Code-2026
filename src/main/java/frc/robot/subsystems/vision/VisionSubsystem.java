@@ -65,6 +65,8 @@ public class VisionSubsystem extends SubsystemBase {
 
   private boolean m_rawVideoModeEnabled = false; // true = raw video feed, false = normal AprilTag processing
 
+  private ArrayList<Pose2d> m_lastEstPoses = new ArrayList<>();
+
   /** Creates a new Vision Subsystem. */
   public VisionSubsystem(Pigeon2 pigeon) {
     cameras.add(new LocalizationCamera(VisionConstants.CAMERA1_NAME, VisionConstants.ROBOT_TO_CAM1_3D, pigeon));
@@ -109,6 +111,44 @@ public class VisionSubsystem extends SubsystemBase {
       m_rawVideoModeEnabled = !m_rawVideoModeEnabled;
       setCamerasToRawVideoMode(m_rawVideoModeEnabled);
     });
+  }
+
+  public boolean areCamerasConnected() {
+    int notConnectedCounter = 0;
+    for (LocalizationCamera cam : cameras){
+      if (!cam.isConnected())
+        notConnectedCounter += 1;
+      if (notConnectedCounter > VisionConstants.MIN_NUM_CAMERAS_DISCONNECTED)
+        return false;
+    }
+    return true;
+  }
+
+  public boolean isVisionUpdating() {
+    double currentTime = Timer.getFPGATimestamp();
+    return (currentTime - m_lastTimestamp) < VisionConstants.MAX_TIME_BETWEEN_UPDATES;
+  }
+
+  public boolean isEstPoseJumpy() {
+    if (m_lastEstPoses.size() < VisionConstants.NUM_LAST_EST_POSES) {
+      return true;
+    }
+
+    double totalDistance = 0;
+
+    for (int i = 0; i < m_lastEstPoses.size() - 1; i++) {
+      // add distance between ith pose and i+1th pose
+      totalDistance += Math.abs(m_lastEstPoses.get(i).minus(m_lastEstPoses.get(i + 1)).getTranslation().getNorm());
+    }
+
+    double avgDist = totalDistance / m_lastEstPoses.size();
+    SmartDashboard.putNumber("vision/" + getName() + "/avgDistBetweenLastEstPoses", avgDist);
+
+    return avgDist > VisionConstants.MAX_AVG_DIST_BETWEEN_LAST_EST_POSES;
+  }
+
+  public boolean isVisionHealthy() {
+    return areCamerasConnected() && isVisionUpdating() && isEstPoseJumpy();
   }
 
   @Override

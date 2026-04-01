@@ -111,4 +111,5 @@ public class LEDSubsystem extends SubsystemBase {
     LEDPattern pattern = base.scrollAtRelativeSpeed(Percent.per(Second).of(100));
     return runPattern(pattern).withName("runScrollingYellowBlueCommand");
   }
+
 }
