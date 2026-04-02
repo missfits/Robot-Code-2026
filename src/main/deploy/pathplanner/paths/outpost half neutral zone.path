@@ -194,7 +194,7 @@
     },
     {
       "name": "shoot trigger",
-      "waypointRelativePos": 6.834531249999995,
+      "waypointRelativePos": 6.84,
       "endWaypointRelativePos": null,
       "command": null
     }
