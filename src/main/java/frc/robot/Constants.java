@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Time;
 import frc.robot.generated.TunerConstants;
 
 /**
@@ -61,9 +62,9 @@ public final class Constants {
     public static final double MAX_ROTATION_SPEED = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a revolution per second max angular velocity
 
     // Rotation heading controller PID gains
-    public static double ROTATION_KP = 5.0;
+    public static double ROTATION_KP = 15.0;
     public static double ROTATION_KI = 0.0;
-    public static double ROTATION_KD = 0.0;
+    public static double ROTATION_KD = 2.0;
 
     // PID constants for PathPlanner AutoBuilder
     public static double ROBOT_POSITION_P = 5.0;
@@ -146,7 +147,10 @@ public final class Constants {
     public static final double SNAP_TO_TARGET_DISTANCE_THRESHOLD = 0.05; // 5cm
 
     // angle tolerance (in radians) for atTargetAngle()
-    public static final double ANGLE_TOLERANCE = Math.toRadians(3);
+    public static final double ANGLE_TOLERANCE = Math.toRadians(5);
+
+    // velocity tolerance (in m/s) for velocityNonZero()
+    public static final double VELOCITY_TOLERANCE = 0.2;
 
   }
 
@@ -196,7 +200,7 @@ public final class Constants {
     public static double STORE_POSITION_DEGREES = 10;
     public static double DISPLACE_FUEL_POSITION_DEGREES = 10;
     public static double DEPLOY_POSITION_DEGREES = 55;
-    public static double RESET_DEPLOY_POSITION_DEGREES = DEPLOY_POSITION_DEGREES + 10;
+    public static double RESET_DEPLOY_POSITION_DEGREES = DEPLOY_POSITION_DEGREES + 5;
     public static double AUTO_RESET_DEPLOY_POSITION_DEGREES = DEPLOY_POSITION_DEGREES;
 
     // Timing values for displace fuel command 
@@ -224,6 +228,8 @@ public final class Constants {
 
     public static final double GRAVITY_FEEDFORWARD_OFFSET = -55; // offset in degrees. 0 should be horizontal
 
+    public static final double DEPLOY_PIVOT_DELAY = 0.5; // for intake mode 
+    public static final double DEPLOY_PIVOT_TIME = 0.2;
   }
 
   public static class RollerConstants {
@@ -504,8 +510,8 @@ public final class Constants {
     public static final double WAIT_FOR_SHOOTER_TIMEOUT = 1.5;
 
     // Ready to shoot trigger thresholds
-    public static final double MAX_ROBOT_SPEED_TO_SHOOT = 2.0; // Maximum robot speed (m/s) to allow shooting
-    public static final double READY_TO_SHOOT_DEBOUNCE_TIME = 0.3; // Debounce time in seconds for ready to shoot trigger
+    public static final double MAX_ROBOT_SPEED_TO_SHOOT = 3.0; // Maximum robot speed (m/s) to allow shooting
+    public static final double READY_TO_SHOOT_DEBOUNCE_TIME = 0.15; // Debounce time in seconds for ready to shoot trigger
 
     // SOTM constants
     public static final double SHOOTER_RPS_TO_MPS = Units.inchesToMeters(2*Math.PI*4);
@@ -711,11 +717,11 @@ public final class Constants {
   }
 
   public static class AutoConstants {
-    public static final double AUTO_SHOOT_TIMEOUT = 5; // in seconds; TODO: tune
+    public static final double AUTO_SHOOT_TIMEOUT = 2.5; // in seconds; TODO: tune
   }
 
   public static class TeleopConstants {
-    public static final double LATENCY_COMPENSATION = 0.05; // compensate for shooter spin up + code processing time, etc. TODO: tune
+    public static final double LATENCY_COMPENSATION = 0.25; // compensate for shooter spin up + code processing time, etc. TODO: tune
   }
 
   public static class RobotConstants {

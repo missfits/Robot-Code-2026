@@ -20,6 +20,8 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ColumnConstants;
 import frc.robot.Constants.IndexerConstants;
+import frc.robot.Constants.PivotConstants;
+import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.RollerConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.RobotContainer.JoystickVals;
@@ -363,11 +365,17 @@ public class RobotCommandFactory {
   // intake mode
   public Command intakeModeCommand() {
     return Commands.parallel(
-      m_pivot.deployPivotCommand(),
       m_roller.velocityCommand(RollerConstants.INTAKE_VELOCITY),
       m_indexer.velocityCommand(IndexerConstants.INTAKE_VELOCITY),
       m_column.velocityCommand(ColumnConstants.INTAKE_VELOCITY) // will run backwards
     ).withName("intakeModeCommand");
+  }
+
+  public Command autoIntakeModeCommand() {
+    return Commands.parallel(
+      intakeModeCommand(),
+      m_pivot.repeatingZeroPivotCommand()
+    ).withName("autoIntakeModeCommand");
   }
 
   // score mode
@@ -424,6 +432,10 @@ public class RobotCommandFactory {
       // Spin up shooter with dynamic velocity
       m_shooter.shooterVelocityCommand(m_dynamicShooterVelocitySupplier)
     ).withName("aimAndSpinUpShooter");
+  }
+
+  public Command spinUpShooterCommand() {
+    return m_shooter.shooterVelocityCommand(m_dynamicShooterVelocitySupplier).withName("spinUpShooterCommand");
   }
 
   /**
@@ -813,6 +825,10 @@ public class RobotCommandFactory {
 
   public boolean atAngle() {
     return m_drivetrainCommandFactory.atAngleTrigger(m_drivetrainAngleSupplier).getAsBoolean();
+  }
+
+  public Trigger atAngleTrigger() {
+    return m_drivetrainCommandFactory.atAngleTrigger(m_drivetrainAngleSupplier);
   }
 
   public boolean atVelocity() {

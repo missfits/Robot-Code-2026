@@ -53,6 +53,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -181,6 +182,7 @@ public class RobotContainer {
 
     // x (on true): intake + set scoreMode to false
     m_driverJoystick.x().and(m_driverJoystick.leftBumper().negate()).onTrue(m_robotCommandFactory.intakeModeCommand());
+    m_driverJoystick.x().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_pivot.repeatingZeroPivotCommand());
     m_driverJoystick.x().and(m_driverJoystick.leftBumper().negate()).onTrue(
       Commands.runOnce(() -> scoreMode = false));
 
@@ -191,13 +193,22 @@ public class RobotContainer {
     
     // b (on true): aim and spin up shooter; set scoreMode to true
     m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).onTrue(
-      m_robotCommandFactory.aimAndSpinUpShooterCommand(m_driverTranslationJoystickValsSupplier, driverInputTrigger()));
+      m_robotCommandFactory.spinUpShooterCommand());
     m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).onTrue(
       Commands.runOnce(() -> scoreMode = true));
 
     m_robotCommandFactory.getReadyToShootTrigger() // feed gamepiece when ready to shoot and shootMode is true
       .and(new Trigger(() -> scoreMode))
       .whileTrue(m_robotCommandFactory.feedGamepieceCommand());
+    
+    m_robotCommandFactory.atAngleTrigger()
+      .and(driverInputTrigger().negate())
+        .and(scoreModeTrigger()).debounce(0.1, DebounceType.kBoth)
+      .whileTrue(m_drivetrainCommandFactory.pointWheelsinX());
+    m_robotCommandFactory.atAngleTrigger().negate()
+      .or(driverInputTrigger())
+        .and(scoreModeTrigger())
+      .whileTrue(m_robotCommandFactory.snapToHubCommand(m_driverTranslationJoystickValsSupplier));
       
     // a: snap to bump
     m_driverJoystick.a().and(m_driverJoystick.leftBumper().negate()).whileTrue(
@@ -215,8 +226,12 @@ public class RobotContainer {
     m_drivetrainCommandFactory.setSlowmodeButton(m_driverJoystick.rightBumper());
     // left trigger: shuttle
     m_driverJoystick.leftTrigger().whileTrue(m_robotCommandFactory.shuttleCommand());
+    m_driverJoystick.leftTrigger().onTrue(
+      Commands.runOnce(() -> scoreMode = false));
     // right trigger: outtake / everything backwards (voltage -5)
     m_driverJoystick.rightTrigger().whileTrue(m_robotCommandFactory.outtakeCommand());
+    m_driverJoystick.rightTrigger().onTrue(
+      Commands.runOnce(() -> scoreMode = false));
 
     // center d-pad: zero pivot
     m_driverJoystick.povCenter().negate().whileTrue(m_pivot.zeroPivotCommand());
@@ -430,7 +445,9 @@ public class RobotContainer {
   }
 
 
-  public void logRobotCommandFactoryValues() {
+  public void logValues() {
+    SmartDashboard.putBoolean("robotContainer/isBeached", isBeached());
+
     // Robot Command Factory Logging 
     SmartDashboard.putNumber("robotCommandFactory/distanceToHubMeters", m_robotCommandFactory.getDistanceToHub());
     SmartDashboard.putNumber("robotCommandFactory/angleToHubDegrees", m_robotCommandFactory.getAngleToHub());
@@ -529,6 +546,17 @@ public class RobotContainer {
     return driverTranslationInputTrigger().or(driverRotationInputTrigger());
   }
 
+  private Trigger scoreModeTrigger() {
+    return new Trigger(() -> scoreMode);
+  }
+
+  private boolean isBeached() {
+    if (driverTranslationInputTrigger().getAsBoolean() & m_drivetrain.velocityNonZero()) {
+      return true;
+    }
+    return false;
+  }
+
 
   // ----- AUTONOMOUS -----
   /**
@@ -536,8 +564,8 @@ public class RobotContainer {
    */
   private void createNamedCommands() {
 
-    new EventTrigger("deploy intake trigger").onTrue(m_pivot.autoZeroPivotCommand()); 
-    new EventTrigger("intake trigger").onTrue(m_robotCommandFactory.intakeModeCommand());
+    new EventTrigger("deploy intake trigger").onTrue(m_pivot.zeroPivotCommand()); 
+    new EventTrigger("intake trigger").onTrue(m_robotCommandFactory.autoIntakeModeCommand());
     new EventTrigger("shoot trigger").onTrue(m_robotCommandFactory.autoShootWithVisionCommand().withTimeout(AutoConstants.AUTO_SHOOT_TIMEOUT)); // TODO: tune timeout
 
     NamedCommands.registerCommand("intake command", 

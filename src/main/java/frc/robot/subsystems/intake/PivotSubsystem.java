@@ -127,4 +127,10 @@ public class PivotSubsystem extends MechanismsSubsystemBase {
         .andThen(new InstantCommand(() -> this.resetPosition(PivotConstants.AUTO_RESET_DEPLOY_POSITION_DEGREES)))
         .withName("autoZeroPivotCommand");
   }
+
+  public Command repeatingZeroPivotCommand() {
+    return Commands.repeatingSequence(
+        zeroPivotCommand().withTimeout(PivotConstants.DEPLOY_PIVOT_TIME),
+        Commands.waitSeconds(PivotConstants.DEPLOY_PIVOT_DELAY)).withName("repeatingZeroPivotCommand"); 
+  }
 }

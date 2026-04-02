@@ -112,6 +112,11 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         }
     }
 
+    public boolean velocityNonZero() {
+        var speeds = getState().Speeds;
+        double velocityNorm = Math.hypot(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond);
+        return velocityNorm > DrivetrainConstants.VELOCITY_TOLERANCE;
+    }
     
     private void configureAutoBuilder() {
         // 4.5, // default - Max module speed, in m/s
