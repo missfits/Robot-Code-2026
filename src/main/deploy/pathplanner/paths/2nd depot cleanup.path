@@ -179,8 +179,8 @@
     },
     {
       "name": "intaking",
-      "minWaypointRelativePos": 2.2072656249999993,
-      "maxWaypointRelativePos": 6.8,
+      "minWaypointRelativePos": 2.07,
+      "maxWaypointRelativePos": 5.02,
       "constraints": {
         "maxVelocity": 2.75,
         "maxAcceleration": 3.0,
