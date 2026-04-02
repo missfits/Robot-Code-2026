@@ -21,6 +21,12 @@
           "data": {
             "pathName": "2nd outpost shoot"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "snap to hub command"
+          }
         }
       ]
     }

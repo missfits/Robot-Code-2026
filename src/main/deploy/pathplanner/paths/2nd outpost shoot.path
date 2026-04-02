@@ -199,6 +199,12 @@
       "waypointRelativePos": 6.4,
       "endWaypointRelativePos": null,
       "command": null
+    },
+    {
+      "name": "shoot trigger",
+      "waypointRelativePos": 7.0,
+      "endWaypointRelativePos": null,
+      "command": null
     }
   ],
   "globalConstraints": {
