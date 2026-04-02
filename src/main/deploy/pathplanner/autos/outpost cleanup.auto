@@ -21,6 +21,12 @@
           "data": {
             "pathName": "2nd outpost cleanup"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "snap to hub command"
+          }
         }
       ]
     }
