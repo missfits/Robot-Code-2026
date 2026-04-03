@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "depot half neutral zone"
+            "pathName": "depot half neutral zone cleanup"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "snap to hub command"
+            "name": "snap to hub cleanup command"
           }
         },
         {

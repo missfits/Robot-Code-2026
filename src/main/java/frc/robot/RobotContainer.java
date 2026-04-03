@@ -567,6 +567,7 @@ public class RobotContainer {
     new EventTrigger("deploy intake trigger").onTrue(m_pivot.zeroPivotCommand()); 
     new EventTrigger("intake trigger").onTrue(m_robotCommandFactory.autoIntakeModeCommand());
     new EventTrigger("shoot trigger").onTrue(m_robotCommandFactory.autoShootWithVisionCommand().withTimeout(AutoConstants.AUTO_SHOOT_TIMEOUT)); // TODO: tune timeout
+    new EventTrigger("shoot cleanup trigger").onTrue(m_robotCommandFactory.autoShootWithVisionCommand().withTimeout(AutoConstants.AUTO_SHOOT_CLEANUP_TIMEOUT));
 
     NamedCommands.registerCommand("intake command", 
       m_robotCommandFactory.intakeModeCommand()); // DOES NOT END 
@@ -576,6 +577,10 @@ public class RobotContainer {
       m_robotCommandFactory.snapToHubCommand(() -> new JoystickVals(0, 0)).withTimeout(AutoConstants.AUTO_SHOOT_TIMEOUT));
     NamedCommands.registerCommand("shoot command",
        m_robotCommandFactory.autoShootWithVisionCommand().withTimeout(AutoConstants.AUTO_SHOOT_TIMEOUT));
+    NamedCommands.registerCommand("snap to hub cleanup command", 
+      m_robotCommandFactory.snapToHubCommand(() -> new JoystickVals(0,0)).withTimeout(AutoConstants.AUTO_SHOOT_CLEANUP_TIMEOUT));
+    NamedCommands.registerCommand("shoot cleanup command",
+      m_robotCommandFactory.autoShootWithVisionCommand().withTimeout(AutoConstants.AUTO_SHOOT_CLEANUP_TIMEOUT));
   }
 
   /**
