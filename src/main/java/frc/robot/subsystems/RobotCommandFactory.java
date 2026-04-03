@@ -708,6 +708,13 @@ public class RobotCommandFactory {
     ).withName("autoShootWithVisionDynamic");
   }
 
+  public Command autoZeroPivotCommand() {
+    return Commands.parallel(
+      m_pivot.zeroPivotCommand(), 
+      m_roller.velocityCommand(-10).withTimeout(0.5)
+    ).withName("autoZeroPivot"); 
+  }
+
   // HELPER FUNCTIONS
   private Double getPivotVelocityFromDashboard() {
     return SmartDashboard.getNumber("pivot/dashboardTestVelocityRotationsPerSecond", 1);
