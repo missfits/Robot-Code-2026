@@ -710,8 +710,10 @@ public class RobotCommandFactory {
 
   public Command autoZeroPivotCommand() {
     return Commands.parallel(
-      m_pivot.zeroPivotCommand(), 
-      m_roller.velocityCommand(-10).withTimeout(0.5)
+      Commands.sequence(
+        new WaitCommand(0.5),
+        m_pivot.zeroPivotCommand()),
+      m_roller.velocityCommand(-10).withTimeout(1)
     ).withName("autoZeroPivot"); 
   }
 

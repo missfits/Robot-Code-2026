@@ -175,7 +175,7 @@
   "eventMarkers": [
     {
       "name": "deploy intake trigger",
-      "waypointRelativePos": 0,
+      "waypointRelativePos": 0.0,
       "endWaypointRelativePos": null,
       "command": null
     },
