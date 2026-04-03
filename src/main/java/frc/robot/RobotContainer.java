@@ -139,6 +139,9 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems and commands. */
   public RobotContainer() {
 
+    // Set modules for telemetry logging
+    logger.setModules(m_drivetrain.getModules());
+
     // Configure trigger bindings
     if (Utils.isSimulation()) {
       configureBindingsSimulation();
