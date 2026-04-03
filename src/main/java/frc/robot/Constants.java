@@ -381,7 +381,7 @@ public final class Constants {
     // Testing velocities
     public static double TESTING_VELOCITY = 0.0;
 
-    public static final double AT_VELOCITY_DETECTION_PERCENTAGE = 0.50;
+    public static final double AT_VELOCITY_DETECTION_PERCENTAGE = 0.8;
 
     // PID gains
     // Tuned in shop 2/12

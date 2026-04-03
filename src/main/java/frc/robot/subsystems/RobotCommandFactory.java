@@ -447,9 +447,15 @@ public class RobotCommandFactory {
   public Command feedGamepieceCommand() {
     return Commands.parallel(
       m_column.velocityCommand(() -> ColumnConstants.SHOOT_VELOCITY),
-      m_indexer.velocityCommand(() -> IndexerConstants.SHOOT_VELOCITY),
-      m_roller.velocityCommand(() -> RollerConstants.ROLLER_VELOCITY),
-      m_pivot.repeatingDisplaceFuelCommand()
+      Commands.sequence(
+        new WaitCommand(0.5).until(m_column.isMotorVelocityOverPercentToleranceTrigger(() -> ColumnConstants.SHOOT_VELOCITY)), 
+        m_indexer.velocityCommand(() -> IndexerConstants.SHOOT_VELOCITY)),
+      Commands.sequence(
+        new WaitCommand(0.5).until(m_column.isMotorVelocityOverPercentToleranceTrigger(() -> ColumnConstants.SHOOT_VELOCITY)), 
+        m_roller.velocityCommand(() -> RollerConstants.SHOOT_VELOCITY)),
+      Commands.sequence(
+        new WaitCommand(0.5).until(m_column.isMotorVelocityOverPercentToleranceTrigger(() -> ColumnConstants.SHOOT_VELOCITY)), 
+        m_pivot.repeatingDisplaceFuelCommand())
     ).withName("feedGamepiece");
   }
 
