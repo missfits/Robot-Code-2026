@@ -4,28 +4,28 @@
     {
       "anchor": {
         "x": 2.2582072610294124,
-        "y": 2.618468605324074
+        "y": 5.450531394675927
       },
       "prevControl": null,
       "nextControl": {
         "x": 2.7995968007915564,
-        "y": 2.591833154683377
+        "y": 5.477166845316624
       },
       "isLocked": false,
-      "linkedName": "outpost shooting point"
+      "linkedName": "depot shooting point"
     },
     {
       "anchor": {
         "x": 3.874637725406372,
-        "y": 2.4691390335648147
+        "y": 5.599860966435186
       },
       "prevControl": {
         "x": 3.503813051029488,
-        "y": 2.5261565029503963
+        "y": 5.5428434970496046
       },
       "nextControl": {
         "x": 4.187843894675926,
-        "y": 2.4209809027777784
+        "y": 5.648019097222223
       },
       "isLocked": false,
       "linkedName": null
@@ -33,15 +33,15 @@
     {
       "anchor": {
         "x": 5.605293836805556,
-        "y": 2.4691390335648147
+        "y": 5.599860966435186
       },
       "prevControl": {
         "x": 5.358250360965761,
-        "y": 2.507473366022713
+        "y": 5.561526633977287
       },
       "nextControl": {
         "x": 5.852337312645351,
-        "y": 2.4308047011069163
+        "y": 5.638195298893084
       },
       "isLocked": false,
       "linkedName": null
@@ -49,15 +49,15 @@
     {
       "anchor": {
         "x": 7.807839409722222,
-        "y": 2.618468605324074
+        "y": 5.450531394675927
       },
       "prevControl": {
         "x": 7.372023986818591,
-        "y": 2.441217167681243
+        "y": 5.627782832318758
       },
       "nextControl": {
         "x": 8.269212673611111,
-        "y": 2.80611472800926
+        "y": 5.262885271990741
       },
       "isLocked": false,
       "linkedName": null
@@ -65,15 +65,15 @@
     {
       "anchor": {
         "x": 8.678097511574073,
-        "y": 4.1847232349537045
+        "y": 3.8842767650462964
       },
       "prevControl": {
         "x": 9.502247801383424,
-        "y": 3.877229533888318
+        "y": 4.191770466111683
       },
       "nextControl": {
         "x": 7.808692346643518,
-        "y": 4.509101707175927
+        "y": 3.559898292824074
       },
       "isLocked": false,
       "linkedName": null
@@ -81,15 +81,15 @@
     {
       "anchor": {
         "x": 5.837292679398148,
-        "y": 2.8753994502314812
+        "y": 5.19360054976852
       },
       "prevControl": {
         "x": 6.154310278296058,
-        "y": 2.9986495330745115
+        "y": 5.07035046692549
       },
       "nextControl": {
         "x": 5.4143671875,
-        "y": 2.710974503180948
+        "y": 5.358025496819053
       },
       "isLocked": false,
       "linkedName": null
@@ -97,15 +97,15 @@
     {
       "anchor": {
         "x": 4.3054835792824075,
-        "y": 2.764714482060185
+        "y": 5.304285517939816
       },
       "prevControl": {
         "x": 5.077653935185185,
-        "y": 2.8471869212962964
+        "y": 5.221813078703704
       },
       "nextControl": {
         "x": 4.003000288032088,
-        "y": 2.7324074468743875
+        "y": 5.336592553125613
       },
       "isLocked": false,
       "linkedName": null
@@ -113,41 +113,41 @@
     {
       "anchor": {
         "x": 2.2582072610294124,
-        "y": 2.618468605324074
+        "y": 5.450531394675927
       },
       "prevControl": {
         "x": 2.499528231040933,
-        "y": 2.683769366672619
+        "y": 5.385230633327382
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "outpost shooting point"
+      "linkedName": "depot shooting point"
     }
   ],
   "rotationTargets": [
     {
       "waypointRelativePos": 0.7524949009324008,
-      "rotationDegrees": 0.0
+      "rotationDegrees": -0.0
     },
     {
       "waypointRelativePos": 1.9507757867132876,
-      "rotationDegrees": 0.0
+      "rotationDegrees": -0.0
     },
     {
       "waypointRelativePos": 3.342757502913754,
-      "rotationDegrees": 100.0
+      "rotationDegrees": -100.0
     },
     {
       "waypointRelativePos": 3.8467548076923106,
-      "rotationDegrees": -177.43483161883765
+      "rotationDegrees": 177.43483161883765
     },
     {
       "waypointRelativePos": 5.2,
-      "rotationDegrees": 0.36726275567087074
+      "rotationDegrees": -0.36726275567087074
     },
     {
       "waypointRelativePos": 5.8,
-      "rotationDegrees": 0.21679872172692788
+      "rotationDegrees": -0.21679872172692788
     }
   ],
   "constraintZones": [
@@ -179,8 +179,8 @@
     },
     {
       "name": "intaking",
-      "minWaypointRelativePos": 2.070397418478261,
-      "maxWaypointRelativePos": 5.023437499999998,
+      "minWaypointRelativePos": 2.07,
+      "maxWaypointRelativePos": 5.02,
       "constraints": {
         "maxVelocity": 2.75,
         "maxAcceleration": 3.0,
@@ -216,13 +216,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 29.500000000000004
+    "rotation": -29.500000000000004
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0.0,
-    "rotation": 29.500000000000004
+    "rotation": -29.500000000000004
   },
   "useDefaultConstraints": true
 }

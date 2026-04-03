@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "outpost half neutral zone cleanup"
+            "pathName": "depot half neutral zone cleanup"
           }
         },
         {
@@ -19,7 +19,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "2nd outpost cleanup"
+            "pathName": "2nd depot cleanup"
           }
         },
         {

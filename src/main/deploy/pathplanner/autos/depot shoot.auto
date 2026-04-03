@@ -7,19 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "outpost half neutral zone cleanup"
+            "pathName": "depot half neutral zone"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "snap to hub cleanup command"
+            "name": "snap to hub command"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "2nd outpost cleanup"
+            "pathName": "2nd depot shoot"
           }
         },
         {
