@@ -114,9 +114,12 @@ public class RobotContainer {
     SensorConstants.FEEDER_SENSOR_MIN_DISTANCE
   );
 
+  // Score mode state
+  private boolean scoreMode = false;
+
   // Command factories
   private final DrivetrainCommandFactory m_drivetrainCommandFactory = new DrivetrainCommandFactory(m_drivetrain);
-  private final RobotCommandFactory m_robotCommandFactory = new RobotCommandFactory(m_drivetrain, m_pivot, m_roller, m_indexer, m_column, m_shooter, m_intakeSensor, m_shooterSensor, m_vision, m_drivetrainCommandFactory);
+  private final RobotCommandFactory m_robotCommandFactory = new RobotCommandFactory(m_drivetrain, m_pivot, m_roller, m_indexer, m_column, m_shooter, m_intakeSensor, m_shooterSensor, m_vision, m_drivetrainCommandFactory, () -> scoreMode);
 
   private final CommandXboxController m_driverJoystick =
     new CommandXboxController(OperatorConstants.kDriverControllerPort);
@@ -132,8 +135,6 @@ public class RobotContainer {
     () -> new JoystickVals(m_driverJoystick.getRightX(), m_driverJoystick.getRightY());
 
   private final Field2d m_actualField = new Field2d(); // field simulation
-
-  private boolean scoreMode = false;
 
   /** The container for the robot. Contains subsystems and commands. */
   public RobotContainer() {
@@ -197,8 +198,7 @@ public class RobotContainer {
     m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).onTrue(
       Commands.runOnce(() -> scoreMode = true));
 
-    m_robotCommandFactory.getReadyToShootTrigger() // feed gamepiece when ready to shoot and shootMode is true
-      .and(new Trigger(() -> scoreMode))
+    m_robotCommandFactory.getReadyToShootTrigger() // feed gamepiece when ready to shoot is true
       .whileTrue(m_robotCommandFactory.feedGamepieceCommand());
     
     m_robotCommandFactory.atAngleTrigger()

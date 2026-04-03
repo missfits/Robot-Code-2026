@@ -74,7 +74,11 @@ public class RobotCommandFactory {
   private final Supplier<Rotation2d> m_drivetrainAngleSupplier = () -> calculateShootOnTheFlyAngle();
 
   private final Supplier<Double> m_dynamicShooterVelocitySupplier;
+  private final Supplier<Boolean> m_scoreModeSupplier;
   private final Trigger m_readyToShootTrigger;
+
+  // Latch for shooter velocity - stays true once shooter reaches velocity until conditions reset it
+  private boolean m_shooterVelocityLatch = false;
 
   // Getters for suppliers (used in RobotContainer for trigger bindings)
   public Supplier<Double> getShooterVelocityCalculatedSupplier() {
@@ -82,9 +86,10 @@ public class RobotCommandFactory {
   }
 
   public RobotCommandFactory(CommandSwerveDrivetrain drivetrain,
-      PivotSubsystem pivot, RollerSubsystem roller, IndexerSubsystem indexer, ColumnSubsystem column, 
-      ShooterSubsystem shooter, LaserCANSensorBase intakeSensor, LaserCANSensorBase shooterSensor, 
-      VisionSubsystem vision, DrivetrainCommandFactory drivetrainCommandFactory) {
+      PivotSubsystem pivot, RollerSubsystem roller, IndexerSubsystem indexer, ColumnSubsystem column,
+      ShooterSubsystem shooter, LaserCANSensorBase intakeSensor, LaserCANSensorBase shooterSensor,
+      VisionSubsystem vision, DrivetrainCommandFactory drivetrainCommandFactory,
+      Supplier<Boolean> scoreModeSupplier) {
     m_drivetrain = drivetrain;
     m_pivot = pivot;
     m_roller = roller;
@@ -95,6 +100,7 @@ public class RobotCommandFactory {
     m_shooterSensor = shooterSensor;
     m_vision = vision;
     m_drivetrainCommandFactory = drivetrainCommandFactory;
+    m_scoreModeSupplier = scoreModeSupplier;
 
     m_dynamicShooterVelocitySupplier = () -> {
       boolean columnAtVelocity = m_column.isMotorVelocityOverPercentToleranceTrigger(
@@ -851,18 +857,51 @@ public class RobotCommandFactory {
   }
 
   /**
+   * Updates the shooter velocity latch based on current conditions.
+   * This method should be called periodically to update the latch state.
+   *
+   * Latch logic:
+   * - Latch sets to true when shooter reaches target velocity
+   * - Latch stays true even if shooter dips below velocity
+   * - Latch resets to false when: heading is wrong, speed is too high, or scoreMode is false
+   */
+  private void updateShooterVelocityLatch() {
+    boolean shooterAtVel = m_shooter.isMotorVelocityWithinPercentTolerance(m_dynamicShooterVelocitySupplier).getAsBoolean();
+    boolean headingCorrect = m_drivetrainCommandFactory.atAngleTrigger(m_drivetrainAngleSupplier).getAsBoolean();
+    boolean speedLow = isRobotSpeedLowEnough();
+    boolean scoreMode = m_scoreModeSupplier.get();
+
+    // Reset latch if any critical condition fails
+    if (!headingCorrect || !speedLow || !scoreMode) {
+      m_shooterVelocityLatch = false;
+    }
+
+    // Set latch if shooter reaches velocity
+    if (shooterAtVel) {
+      m_shooterVelocityLatch = true;
+    }
+  }
+
+  /**
    * Creates a trigger that indicates the robot is ready to shoot.
-   * Combines shooter velocity, heading, and robot speed checks with debouncing.
+   * Combines shooter velocity (with latching), heading, and robot speed checks with debouncing.
+   *
+   * The latch allows continuous feeding even if shooter velocity fluctuates,
+   * while still stopping when aim or movement conditions fail.
    *
    * @return Trigger that is true when all shooting conditions are met
    */
   private Trigger readyToShootTrigger() {
-    Trigger shooterAtVelocity = m_shooter.isMotorVelocityWithinPercentTolerance(m_dynamicShooterVelocitySupplier);
     Trigger robotHeadingCorrect = m_drivetrainCommandFactory.atAngleTrigger(m_drivetrainAngleSupplier);
     Trigger robotSpeedLow = new Trigger(this::isRobotSpeedLowEnough);
 
-    // Combine all conditions
-    Trigger readyTrigger = shooterAtVelocity
+    // Create trigger using latched shooter velocity (updated in updateShooterVelocityLatch)
+    Trigger shooterReady = new Trigger(() -> {
+      updateShooterVelocityLatch();
+      return m_shooterVelocityLatch;
+    });
+
+    Trigger readyTrigger = shooterReady
       .and(robotHeadingCorrect)
       .and(robotSpeedLow);
 
