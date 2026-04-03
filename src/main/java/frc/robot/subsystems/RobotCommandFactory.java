@@ -454,13 +454,13 @@ public class RobotCommandFactory {
     return Commands.parallel(
       m_column.velocityCommand(() -> ColumnConstants.SHOOT_VELOCITY),
       Commands.sequence(
-        new WaitCommand(0.5).until(m_column.isMotorVelocityOverPercentToleranceTrigger(() -> ColumnConstants.SHOOT_VELOCITY)), 
+        new WaitCommand(2).until(m_column.isMotorVelocityOverPercentToleranceTrigger(() -> ColumnConstants.SHOOT_VELOCITY)), 
         m_indexer.velocityCommand(() -> IndexerConstants.SHOOT_VELOCITY)),
       Commands.sequence(
-        new WaitCommand(0.5).until(m_column.isMotorVelocityOverPercentToleranceTrigger(() -> ColumnConstants.SHOOT_VELOCITY)), 
+        new WaitCommand(2).until(m_column.isMotorVelocityOverPercentToleranceTrigger(() -> ColumnConstants.SHOOT_VELOCITY)), 
         m_roller.velocityCommand(() -> RollerConstants.SHOOT_VELOCITY)),
       Commands.sequence(
-        new WaitCommand(0.5).until(m_column.isMotorVelocityOverPercentToleranceTrigger(() -> ColumnConstants.SHOOT_VELOCITY)), 
+        new WaitCommand(2).until(m_column.isMotorVelocityOverPercentToleranceTrigger(() -> ColumnConstants.SHOOT_VELOCITY)), 
         m_pivot.repeatingDisplaceFuelCommand())
     ).withName("feedGamepiece");
   }
@@ -806,7 +806,7 @@ public class RobotCommandFactory {
   }
 
   public double getCalculatedShooterVelocity() {
-    return m_shooterVelocityCalculatedSupplier.get();
+    return m_dynamicShooterVelocitySupplier.get();
   }
 
   /**
@@ -880,6 +880,8 @@ public class RobotCommandFactory {
     if (shooterAtVel) {
       m_shooterVelocityLatch = true;
     }
+
+    SmartDashboard.putBoolean("robotCommandFactory/shooterVelocityLatch", m_shooterVelocityLatch);
   }
 
   /**
