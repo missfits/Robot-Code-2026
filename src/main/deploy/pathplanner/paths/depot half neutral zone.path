@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.2582072610294124,
+        "x": 3.6785093315972226,
         "y": 5.450531394675927
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.2582072610294075,
+        "x": 4.678509331597217,
         "y": 5.450531394675927
       },
       "isLocked": false,
-      "linkedName": "depot shooting point"
+      "linkedName": "depot neutral zone start"
     },
     {
       "anchor": {
@@ -215,7 +215,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0.0,
-    "rotation": -29.500000000000004
+    "rotation": -0.0
   },
   "useDefaultConstraints": true
 }
