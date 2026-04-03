@@ -168,7 +168,7 @@ public final class Constants {
     public static final int MOTOR_ID = 20;
 
     // Motor limits
-    public static final int MOTOR_STATOR_LIMIT = 60;
+    public static final int MOTOR_STATOR_LIMIT = 80;
     public static final int MOTOR_SUPPLY_LIMIT = 40;
 
     public static final boolean IS_INVERTED = true;
@@ -299,7 +299,7 @@ public final class Constants {
     public static final int MOTOR_ID = 22;
 
     // Motor limits
-    public static final int MOTOR_STATOR_LIMIT = 40;
+    public static final int MOTOR_STATOR_LIMIT = 80;
     public static final int MOTOR_SUPPLY_LIMIT = 30;
 
     public static final boolean IS_INVERTED = true;
@@ -350,8 +350,8 @@ public final class Constants {
     public static final int FOLLOWER_ID = 24;
 
     // Motor limits
-    public static final int INFLUENCER_STATOR_LIMIT = 60;
-    public static final int FOLLOWER_STATOR_LIMIT = 60;
+    public static final int INFLUENCER_STATOR_LIMIT = 80;
+    public static final int FOLLOWER_STATOR_LIMIT = 80;
     public static final int INFLUENCER_SUPPLY_LIMIT = 40;
     public static final int FOLLOWER_SUPPLY_LIMIT = 40;
 
