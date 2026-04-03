@@ -46,16 +46,20 @@ public class MatchTimeTracker {
       }
 
       String currentPeriod = getCurrentPeriod(matchTime);
+      double timeInCurrentPeriod = getTimeRemainingInCurrentPeriod(matchTime);
 
       // Log raw time remaining in seconds
       SmartDashboard.putNumber("matchTime/timeRemaining", matchTime);
 
-      // Format time as MM:SS for easier reading
-      String timeString = formatTime(matchTime);
+      // Format time remaining in current period as MM:SS for easier reading
+      String timeString = formatTime(timeInCurrentPeriod);
       SmartDashboard.putString("matchTime/countdown", timeString);
 
       // Log current game period/shift
       SmartDashboard.putString("matchTime/currentPeriod", currentPeriod);
+
+      // Also log the time remaining in current period (in seconds)
+      SmartDashboard.putNumber("matchTime/periodTimeRemaining", timeInCurrentPeriod);
     } catch (Exception e) {
       // Catch any unexpected exceptions to prevent robot loop crashes
       // Log error to SmartDashboard for debugging
@@ -99,6 +103,51 @@ public class MatchTimeTracker {
       return "Test";
     } else {
       return "Unknown";
+    }
+  }
+
+  /**
+   * Calculates the time remaining in the current shift/period.
+   * For example, if in Shift 2 with 90s left in match, returns 10s (time left in Shift 2).
+   *
+   * @param matchTime The total match time remaining
+   * @return Time remaining in the current period (in seconds)
+   */
+  private static double getTimeRemainingInCurrentPeriod(double matchTime) {
+    if (matchTime < 0) {
+      return 0.0;
+    }
+
+    if (DriverStation.isAutonomous()) {
+      // During autonomous, just return the match time (it counts down the auto period)
+      return matchTime;
+    } else if (DriverStation.isTeleop()) {
+      // Calculate time remaining in current shift
+      if (matchTime <= ENDGAME_START) {
+        // Endgame: 0-30s, so time in period = matchTime
+        return matchTime;
+      } else if (matchTime <= SHIFT_4_START) {
+        // Shift 4: 30-55s, so time left in shift = matchTime - 30
+        return matchTime - ENDGAME_START;
+      } else if (matchTime <= SHIFT_3_START) {
+        // Shift 3: 55-80s, so time left in shift = matchTime - 55
+        return matchTime - SHIFT_4_START;
+      } else if (matchTime <= SHIFT_2_START) {
+        // Shift 2: 80-105s, so time left in shift = matchTime - 80
+        return matchTime - SHIFT_3_START;
+      } else if (matchTime <= SHIFT_1_START) {
+        // Shift 1: 105-130s, so time left in shift = matchTime - 105
+        return matchTime - SHIFT_2_START;
+      } else if (matchTime <= TRANSITION_START) {
+        // Transition: 130-140s, so time left in shift = matchTime - 130
+        return matchTime - SHIFT_1_START;
+      } else {
+        // Pre-teleop or unknown state
+        return matchTime;
+      }
+    } else {
+      // Disabled, Test, or other modes
+      return matchTime;
     }
   }
 
