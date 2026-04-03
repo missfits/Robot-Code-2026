@@ -871,14 +871,15 @@ public class RobotCommandFactory {
     boolean speedLow = isRobotSpeedLowEnough();
     boolean scoreMode = m_scoreModeSupplier.get();
 
-    // Reset latch if any critical condition fails
-    if (!headingCorrect || !speedLow || !scoreMode) {
-      m_shooterVelocityLatch = false;
-    }
 
     // Set latch if shooter reaches velocity
     if (shooterAtVel) {
       m_shooterVelocityLatch = true;
+    }
+    
+    // Reset latch if any critical condition fails
+    if (!headingCorrect || !speedLow || !scoreMode) {
+      m_shooterVelocityLatch = false;
     }
 
     SmartDashboard.putBoolean("robotCommandFactory/shooterVelocityLatch", m_shooterVelocityLatch);
