@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.6785093315972226,
-        "y": 5.450531394675927
+        "x": 3.679,
+        "y": 5.4510000000000005
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.678509331597217,
-        "y": 5.450531394675927
+        "x": 4.678999999999995,
+        "y": 5.4510000000000005
       },
       "isLocked": false,
       "linkedName": "depot neutral zone start"
@@ -32,48 +32,48 @@
     },
     {
       "anchor": {
-        "x": 7.406171730324075,
-        "y": 6.106899160879631
+        "x": 8.27328052662037,
+        "y": 5.575519458912037
       },
       "prevControl": {
-        "x": 7.140138138064411,
-        "y": 6.339081372289455
+        "x": 8.08947517369961,
+        "y": 5.877012483281447
       },
       "nextControl": {
-        "x": 7.724842989959905,
-        "y": 5.828777149495508
+        "x": 8.541037109375,
+        "y": 5.136322554976853
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.75600708912037,
-        "y": 4.435602068865742
+        "x": 8.27328052662037,
+        "y": 4.219612196180556
       },
       "prevControl": {
-        "x": 7.921026920968478,
-        "y": 4.659594992015409
+        "x": 8.454744420326083,
+        "y": 4.391573980543134
       },
       "nextControl": {
-        "x": 7.198251953125,
-        "y": 3.6785221354166673
+        "x": 7.590721196755942,
+        "y": 3.572794154861752
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.433036313657408,
-        "y": 4.435602068865742
+        "x": 6.746195384837963,
+        "y": 4.566757523148149
       },
       "prevControl": {
-        "x": 6.478673383023829,
-        "y": 4.128581258222095
+        "x": 7.214624717676481,
+        "y": 4.10733899501487
       },
       "nextControl": {
-        "x": 6.363226707175926,
-        "y": 4.905242259837963
+        "x": 6.0503956886574075,
+        "y": 5.249172670717593
       },
       "isLocked": false,
       "linkedName": null
@@ -130,8 +130,8 @@
       "rotationDegrees": -0.0
     },
     {
-      "waypointRelativePos": 2.017086190773068,
-      "rotationDegrees": -25.0
+      "waypointRelativePos": 1.7234848484848486,
+      "rotationDegrees": -70.0
     },
     {
       "waypointRelativePos": 3.3,
@@ -154,10 +154,10 @@
     {
       "name": "go over the bump",
       "minWaypointRelativePos": 0.0,
-      "maxWaypointRelativePos": 1.0362053571428569,
+      "maxWaypointRelativePos": 0.5871875000000001,
       "constraints": {
         "maxVelocity": 2.0,
-        "maxAcceleration": 2.0,
+        "maxAcceleration": 3.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.0,
@@ -200,7 +200,7 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 4.5,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -217,5 +217,5 @@
     "velocity": 0.0,
     "rotation": -0.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }
