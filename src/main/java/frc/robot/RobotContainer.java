@@ -206,7 +206,7 @@ public class RobotContainer {
     
     m_robotCommandFactory.atAngleTrigger()
       .and(driverInputTrigger().negate())
-        .and(scoreModeTrigger()).debounce(0.1, DebounceType.kBoth)
+        .and(scoreModeTrigger())
       .whileTrue(m_drivetrainCommandFactory.pointWheelsinX());
     m_robotCommandFactory.atAngleTrigger().negate()
       .or(driverInputTrigger())
