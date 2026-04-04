@@ -71,6 +71,12 @@ public class VisionSubsystem extends SubsystemBase {
     cameras.add(new LocalizationCamera(VisionConstants.CAMERA2_NAME, VisionConstants.ROBOT_TO_CAM2_3D, pigeon));
     cameras.add(new LocalizationCamera(VisionConstants.CAMERA3_NAME, VisionConstants.ROBOT_TO_CAM3_3D, pigeon));
     cameras.add(new LocalizationCamera(VisionConstants.CAMERA4_NAME, VisionConstants.ROBOT_TO_CAM4_3D, pigeon));
+
+    // have to initialize all the values beforehand so they appear on SmartDashboard for general logging
+    SmartDashboard.putBoolean("vision/validReading1", false);
+    SmartDashboard.putBoolean("vision/validReading2", false);
+    SmartDashboard.putBoolean("vision/validReading3", false);
+    SmartDashboard.putBoolean("vision/validReading4", false);
   }
 
   public List<CameraReading> getValidCameraReadings(){
@@ -169,6 +175,17 @@ public class VisionSubsystem extends SubsystemBase {
     try {
       if (!allValidReadings.isEmpty()) {
         SmartDashboard.putStringArray("vision/allValidReadingsCameras", allValidReadings.stream().map(CameraReading::cameraName).toArray(String[]::new));
+
+        int allValidReadingsLength = allValidReadings.size();
+        for (int i = 0; i < 4; i ++){
+          SmartDashboard.putBoolean("vision/validReading" + i, i < allValidReadingsLength);
+        }
+      }
+      else {
+        SmartDashboard.putBoolean("vision/validReading1", false);
+        SmartDashboard.putBoolean("vision/validReading2", false);
+        SmartDashboard.putBoolean("vision/validReading3", false);
+        SmartDashboard.putBoolean("vision/validReading4", false);
       }
     } catch (Exception e) {
       System.out.println("Error in printing allValidReadings in VisionSubsystem :(");
