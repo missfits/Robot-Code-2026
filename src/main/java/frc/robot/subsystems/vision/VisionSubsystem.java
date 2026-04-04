@@ -169,6 +169,12 @@ public class VisionSubsystem extends SubsystemBase {
     try {
       if (!allValidReadings.isEmpty()) {
         SmartDashboard.putStringArray("vision/allValidReadingsCameras", allValidReadings.stream().map(CameraReading::cameraName).toArray(String[]::new));
+        // SmartDashboard.putNumber("vision/numberOfValidReadings", allValidReadings.size());
+
+        int allValidReadingsLength = allValidReadings.size();
+        for (int i = 0; i < 4; i ++){
+          SmartDashboard.putBoolean("vision/validReading" + i, i < allValidReadingsLength);
+        }
       }
     } catch (Exception e) {
       System.out.println("Error in printing allValidReadings in VisionSubsystem :(");
