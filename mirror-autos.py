@@ -86,7 +86,7 @@ def main():
     # Define outpost paths to mirror (based on the original outpost files)
     outpost_paths = [
         "1st outpost shoot",
-        "outpost neutral zone",
+        "fast outpost shoot",
         "2nd outpost cleanup",
         "2nd outpost shoot",
         "outpost center half neutral zone"
@@ -95,7 +95,7 @@ def main():
     # Define outpost autos to mirror
     outpost_autos = [
         "outpost cleanup",
-        "outpost neutral zone",
+        "outpost fast",
         "outpost shoot"
     ]
     
