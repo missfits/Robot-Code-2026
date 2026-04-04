@@ -165,6 +165,14 @@ public class VisionSubsystem extends SubsystemBase {
     if (allValidReadings.size() > 0){
       m_lastTimestamp = allValidReadings.get(allValidReadings.size() - 1).timestampSeconds();
     }
+
+    try {
+      if (!allValidReadings.isEmpty()) {
+        SmartDashboard.putStringArray("vision/allValidReadingsCameras", allValidReadings.stream().map(CameraReading::cameraName).toArray(String[]::new));
+      }
+    } catch (Exception e) {
+      System.out.println("Error in printing allValidReadings in VisionSubsystem :(");
+    }
   }
 
   // Returns true if the given camera reading is newer than the last timestamp
