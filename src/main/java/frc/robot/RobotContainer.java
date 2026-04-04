@@ -463,6 +463,7 @@ public class RobotContainer {
     SmartDashboard.putBoolean("robotCommandFactory/readyToShootTrigger", m_robotCommandFactory.getReadyToShootTrigger().getAsBoolean());
     SmartDashboard.putBoolean("robotCommandFactory/atAngle", m_robotCommandFactory.atAngle());
     SmartDashboard.putBoolean("robotCommandFactory/atVelocity", m_robotCommandFactory.atVelocity());
+    SmartDashboard.putBoolean("robotCommandFactory/driverInputTrigger", driverInputTrigger().getAsBoolean());
 
     SmartDashboard.putBoolean("robotCommandFactory/scoreMode", scoreMode);
   }
