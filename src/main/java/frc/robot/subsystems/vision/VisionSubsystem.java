@@ -181,6 +181,12 @@ public class VisionSubsystem extends SubsystemBase {
           SmartDashboard.putBoolean("vision/validReading" + i, i < allValidReadingsLength);
         }
       }
+      else {
+        SmartDashboard.putBoolean("vision/validReading1", false);
+        SmartDashboard.putBoolean("vision/validReading2", false);
+        SmartDashboard.putBoolean("vision/validReading3", false);
+        SmartDashboard.putBoolean("vision/validReading4", false);
+      }
     } catch (Exception e) {
       System.out.println("Error in printing allValidReadings in VisionSubsystem :(");
     }
