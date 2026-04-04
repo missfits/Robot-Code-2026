@@ -244,7 +244,7 @@ public final class Constants {
 
     // Motor limits
     public static final int MOTOR_STATOR_LIMIT = 100;
-    public static final int MOTOR_SUPPLY_LIMIT = 40;
+    public static final int MOTOR_SUPPLY_LIMIT = 35;
 
     public static final boolean IS_INVERTED = true;
 
@@ -300,7 +300,7 @@ public final class Constants {
 
     // Motor limits
     public static final int MOTOR_STATOR_LIMIT = 80;
-    public static final int MOTOR_SUPPLY_LIMIT = 30;
+    public static final int MOTOR_SUPPLY_LIMIT = 25;
 
     public static final boolean IS_INVERTED = true;
 
