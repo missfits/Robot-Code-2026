@@ -110,6 +110,16 @@ public class LocalizationCamera {
     SmartDashboard.putBoolean(m_logString + "/rawVideoModeEnabled", rawVideoMode);
   }
 
+  // method that clears all camera readings from before a certain timestamp by removing them from m_lastReadings
+  public void clearReadingsBeforeTimestamp(double timestamp) {
+    m_lastReadings.removeIf(reading -> reading.timestampSeconds() < timestamp);
+
+    // also clear current reading if it's stale / pre-timestamp
+    if (m_currentReading.isPresent() && m_currentReading.get().timestampSeconds() < timestamp) {
+      m_currentReading = Optional.empty();
+    }
+  }
+
   // --- filtering methods ---
   public void setFilterPipeline(LocalVisionFilterPipeline filterPipeline) {
     m_filterPipeline = filterPipeline;

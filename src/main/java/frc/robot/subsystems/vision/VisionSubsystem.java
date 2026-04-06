@@ -111,6 +111,14 @@ public class VisionSubsystem extends SubsystemBase {
     });
   }
 
+  // loops through all cameras and clears all readings before a certain timestamp
+  // used for bump detection / cleaning
+  public void clearAllCamerasBeforeTimestamp(double timestamp) {
+    for (LocalizationCamera cam : cameras) {
+      cam.clearReadingsBeforeTimestamp(timestamp);
+    }
+  }
+
   @Override
   public void periodic() {
     // clear allValidReadings at the beginning of every loop

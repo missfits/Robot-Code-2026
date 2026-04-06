@@ -152,6 +152,9 @@ public final class Constants {
     // velocity tolerance (in m/s) for velocityNonZero()
     public static final double VELOCITY_TOLERANCE = 0.2;
 
+    // Bump detection threshold (in g's from Pigeon2 accelerometer)
+    public static final double BUMP_ACCELERATION_THRESHOLD = 1.5;
+
   }
 
   public static class PivotConstants {
