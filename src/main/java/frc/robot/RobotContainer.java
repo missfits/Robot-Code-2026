@@ -344,7 +344,7 @@ public class RobotContainer {
 
     // --- CONFIGURE BUMP DETECTION AND CAMERA HISTORY CLEANING ---
     // automatic -- todo: reality check / tune debounce?
-    m_drivetrainCommandFactory.bumpDetectedTrigger().debounce(0.5).onTrue(
+    m_drivetrainCommandFactory.bumpDetectedTrigger().debounce(DrivetrainConstants.BUMP_DETECTION_DEBOUNCE).onTrue(
       Commands.runOnce(() -> {
         m_vision.clearAllCamerasBeforeTimestamp(m_drivetrain.getState().Timestamp);
       })

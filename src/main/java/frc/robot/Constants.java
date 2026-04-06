@@ -154,6 +154,9 @@ public final class Constants {
 
     // Bump detection threshold (in g's from Pigeon2 accelerometer)
     public static final double BUMP_ACCELERATION_THRESHOLD = 1.5;
+    
+    // Bump detection debounce, in seconds
+    public static final double BUMP_DETECTION_DEBOUNCE = 0.5;
 
   }
 
