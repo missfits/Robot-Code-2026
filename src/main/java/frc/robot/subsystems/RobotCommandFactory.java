@@ -635,7 +635,8 @@ public class RobotCommandFactory {
 
   /**
    * Command for shuttle shooting - waits for correct angle before feeding
-   * Simultaneously runs the shooter, then runs column and indexer **once the drivetrain is at the shuttle angle**
+   * Simultaneously runs the shooter, then runs column **once the drivetrain is at the shuttle angle**
+   * Note that the indexer and roller run at all times so intaking at the same time is possible
    *
    * @param initialShooterSupplier Supplier for initial shooter velocity
    * @param shooterSupplier Supplier for shooter velocity
