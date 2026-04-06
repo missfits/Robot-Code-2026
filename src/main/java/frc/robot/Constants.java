@@ -267,6 +267,8 @@ public final class Constants {
     public static double RECYCLE_VELOCITY = 70.0;
     public static double INTAKE_VELOCITY = 80.0;
     public static double SHOOT_VELOCITY = 70.0;
+    public static double SHUTTLE_VELOCITY = INTAKE_VELOCITY;
+
 
     // Testing velocities
     public static double TESTING_VELOCITY = 0.0;
@@ -322,8 +324,8 @@ public final class Constants {
     public static double MANUAL_BACK_VELOCITY = -80.0;
     public static double OUTTAKE_VELOCITY = -80.0;
     public static double RECYCLE_VELOCITY = 50.0;
-    public static double SHUTTLE_VELOCITY = 50.0;
     public static double INTAKE_VELOCITY = 50.0;
+    public static double SHUTTLE_VELOCITY = INTAKE_VELOCITY;
 
     // Testing velocities
     public static double TESTING_VELOCITY = 0.0;
@@ -375,7 +377,7 @@ public final class Constants {
     public static double MANUAL_BACK_VELOCITY = -70.0;
     public static double OUTTAKE_VELOCITY = -70.0;
     public static double RECYCLE_VELOCITY = 70.0;
-    public static double SHUTTLE_VELOCITY = 70.0;
+    public static double SHUTTLE_VELOCITY = SHOOT_VELOCITY;
     public static double INTAKE_VELOCITY = -40.0;
 
     // Testing velocities

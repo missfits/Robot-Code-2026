@@ -355,13 +355,12 @@ public class RobotCommandFactory {
       snapToShuttleTargetCommand(joystickValsSupplier),
       // Run shooter and feeding mechanisms with dynamic velocity based on distance
       // Only feed when at the correct angle
-      shootWithAngleCheck(
+      shootForShuttle(
         m_shuttleShooterVelocityInitialSupplier,
         m_shuttleShooterVelocitySupplier,
         () -> ColumnConstants.SHUTTLE_VELOCITY,
         () -> IndexerConstants.SHUTTLE_VELOCITY,
-        () -> RollerConstants.ROLLER_VELOCITY,
-        m_shuttleAngleSupplier  // Use shuttle angle supplier for angle checking
+        () -> RollerConstants.SHUTTLE_VELOCITY
       )
     ).withName("shuttleCommand");
   }
@@ -580,7 +579,7 @@ public class RobotCommandFactory {
   }
 
    /**
-   * Generalized command that shoots with shooter, column, indexer velocity supplier
+   * Command that shoots with shooter, column, indexer velocity supplier
    * Simultaneously runs the shooter, then runs column and indexer **once the drivetrain is at the correct angle**
    * ORIGINAL VERSION: Uses simple sequences - column/indexer/roller run continuously after conditions met
    *
@@ -589,16 +588,15 @@ public class RobotCommandFactory {
    * @param columnSupplier Supplier for column velocity
    * @param indexerSupplier Supplier for indexer velocity
    * @param rollerSupplier Supplier for roller velocity
-   * @param angleSupplier Supplier for target angle to wait for
    * @return Command that shoots with given velocity suppliers
    */
-  private Command shootWithAngleCheck(Supplier<Double> initialShooterSupplier, Supplier<Double> shooterSupplier, Supplier<Double> columnSupplier, Supplier<Double> indexerSupplier, Supplier<Double> rollerSupplier, Supplier<Rotation2d> angleSupplier) {
+  public Command shootWithVision(Supplier<Double> initialShooterSupplier, Supplier<Double> shooterSupplier, Supplier<Double> columnSupplier, Supplier<Double> indexerSupplier, Supplier<Double> rollerSupplier) {
     return Commands.parallel(
 
       // log isFuelShot
       Commands.run(() -> {
         SmartDashboard.putBoolean("robotCommandFactory/isColumnHappy", m_column.isMotorVelocityOverPercentToleranceTrigger(columnSupplier).getAsBoolean());
-        SmartDashboard.putBoolean("robotCommandFactory/atAngleTrigger", m_drivetrainCommandFactory.atAngleTrigger(angleSupplier).getAsBoolean());
+        SmartDashboard.putBoolean("robotCommandFactory/atAngleTrigger", m_drivetrainCommandFactory.atAngleTrigger(m_drivetrainAngleSupplier).getAsBoolean());
         SmartDashboard.putBoolean("robotCommandFactory/isMotorVelocityWithinPercentTolerance", m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier).getAsBoolean());
       }),
 
@@ -613,7 +611,7 @@ public class RobotCommandFactory {
       Commands.sequence(
         m_column.offCommand() // wait until
           .until(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier) // shooter at target velocity
-            .and(m_drivetrainCommandFactory.atAngleTrigger(angleSupplier))) // and facing target
+            .and(m_drivetrainCommandFactory.atAngleTrigger(m_drivetrainAngleSupplier))) // and facing hub
           .withTimeout(ShooterConstants.WAIT_FOR_SHOOTER_TIMEOUT),
         m_column.velocityCommand(columnSupplier)),
 
@@ -621,7 +619,7 @@ public class RobotCommandFactory {
       Commands.sequence(
         m_indexer.offCommand() // wait until
           .until(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier) // shooter at target velocity
-            .and(m_drivetrainCommandFactory.atAngleTrigger(angleSupplier))) // and facing target
+            .and(m_drivetrainCommandFactory.atAngleTrigger(m_drivetrainAngleSupplier))) // and facing hub
           .withTimeout(ShooterConstants.WAIT_FOR_SHOOTER_TIMEOUT),
         m_indexer.velocityCommand(indexerSupplier)),
 
@@ -629,26 +627,54 @@ public class RobotCommandFactory {
       Commands.sequence(
         m_roller.offCommand()  // wait until
           .until(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier) // shooter at target velocity
-            .and(m_drivetrainCommandFactory.atAngleTrigger(angleSupplier))) // and facing target
+            .and(m_drivetrainCommandFactory.atAngleTrigger(m_drivetrainAngleSupplier))) // and facing hub
           .withTimeout(ShooterConstants.WAIT_FOR_SHOOTER_TIMEOUT),
          m_roller.velocityCommand(rollerSupplier))
-    ).withName("shootWithAngleCheck");
+    ).withName("shootWithVision");
   }
 
   /**
-   * Command that shoots with shooter, column, indexer velocity supplier
-   * Simultaneously runs the shooter, then runs column and indexer **once the drivetrain is at the correct angle**
-   * ORIGINAL VERSION: Uses simple sequences - column/indexer/roller run continuously after conditions met
+   * Command for shuttle shooting - waits for correct angle before feeding
+   * Simultaneously runs the shooter, then runs column and indexer **once the drivetrain is at the shuttle angle**
    *
-   * @param initialShooterSupplier Supplier for shooter velocity
+   * @param initialShooterSupplier Supplier for initial shooter velocity
    * @param shooterSupplier Supplier for shooter velocity
    * @param columnSupplier Supplier for column velocity
    * @param indexerSupplier Supplier for indexer velocity
    * @param rollerSupplier Supplier for roller velocity
-   * @return Command that shoots with given velocity suppliers
+   * @return Command that shoots for shuttle with given velocity suppliers
    */
-  public Command shootWithVision(Supplier<Double> initialShooterSupplier, Supplier<Double> shooterSupplier, Supplier<Double> columnSupplier, Supplier<Double> indexerSupplier, Supplier<Double> rollerSupplier) {
-    return shootWithAngleCheck(initialShooterSupplier, shooterSupplier, columnSupplier, indexerSupplier, rollerSupplier, m_drivetrainAngleSupplier).withName("shootWithVision");
+  public Command shootForShuttle(Supplier<Double> initialShooterSupplier, Supplier<Double> shooterSupplier, Supplier<Double> columnSupplier, Supplier<Double> indexerSupplier, Supplier<Double> rollerSupplier) {
+    return Commands.parallel(
+
+      // log isFuelShot
+      Commands.run(() -> {
+        SmartDashboard.putBoolean("robotCommandFactory/isColumnHappy", m_column.isMotorVelocityOverPercentToleranceTrigger(columnSupplier).getAsBoolean());
+        SmartDashboard.putBoolean("robotCommandFactory/atShuttleAngleTrigger", m_drivetrainCommandFactory.atAngleTrigger(m_shuttleAngleSupplier).getAsBoolean());
+        SmartDashboard.putBoolean("robotCommandFactory/isMotorVelocityWithinPercentTolerance", m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier).getAsBoolean());
+      }),
+
+      // shooter
+      Commands.sequence(
+        m_shooter.shooterVelocityCommand(initialShooterSupplier)
+          .until(m_column.isMotorVelocityOverPercentToleranceTrigger(columnSupplier))
+          .withTimeout(ShooterConstants.FUEL_SHOT_TIMEOUT),
+        m_shooter.shooterVelocityCommand(shooterSupplier)),  // run shooter at given velocity
+
+      // column
+      Commands.sequence(
+        m_column.offCommand() // wait until
+          .until(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier) // shooter at target velocity
+            .and(m_drivetrainCommandFactory.atAngleTrigger(m_shuttleAngleSupplier))) // and facing shuttle corner
+          .withTimeout(ShooterConstants.WAIT_FOR_SHOOTER_TIMEOUT),
+        m_column.velocityCommand(columnSupplier)),
+
+      // indexer -- always run 
+      m_indexer.velocityCommand(indexerSupplier),
+
+      // roller -- always run 
+      m_roller.velocityCommand(rollerSupplier)
+    ).withName("shootForShuttle");
   }
 
   /**
