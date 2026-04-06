@@ -442,6 +442,8 @@ public class RobotContainer {
     SmartDashboard.putNumber("robotCommandFactory/angleToHubRadians", Math.toRadians(m_robotCommandFactory.getAngleToHub()));
     SmartDashboard.putNumber("robotCommandFactory/dashboardTestShooterVelocityRotationsPerSecond",
         m_robotCommandFactory.getTargetShooterVelocity());
+
+    SmartDashboard.putNumber("auton/waitTime", AutoConstants.DEFAULT_WAIT_TIME); 
   }
 
 
@@ -569,6 +571,7 @@ public class RobotContainer {
     new EventTrigger("shoot trigger").onTrue(m_robotCommandFactory.autoShootWithVisionCommand().withTimeout(AutoConstants.AUTO_SHOOT_TIMEOUT)); // TODO: tune timeout
     new EventTrigger("shoot cleanup trigger").onTrue(m_robotCommandFactory.autoShootWithVisionCommand().withTimeout(AutoConstants.AUTO_SHOOT_CLEANUP_TIMEOUT));
 
+    NamedCommands.registerCommand("variable wait command", m_robotCommandFactory.variableWaitCommand(() -> SmartDashboard.getNumber("auton/waitTime", AutoConstants.DEFAULT_WAIT_TIME)));
     NamedCommands.registerCommand("intake command", 
       m_robotCommandFactory.intakeModeCommand()); // DOES NOT END 
      NamedCommands.registerCommand("deploy intake command", 

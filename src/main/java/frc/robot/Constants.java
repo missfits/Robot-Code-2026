@@ -719,6 +719,7 @@ public final class Constants {
   public static class AutoConstants {
     public static final double AUTO_SHOOT_TIMEOUT = 2.5; // in seconds; TODO: tune
     public static final double AUTO_SHOOT_CLEANUP_TIMEOUT = 5;
+    public static final double DEFAULT_WAIT_TIME = 2; // in seconds 
   }
 
   public static class TeleopConstants {

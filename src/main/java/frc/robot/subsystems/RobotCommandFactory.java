@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
@@ -706,6 +707,20 @@ public class RobotCommandFactory {
         () -> IndexerConstants.SHOOT_VELOCITY,
         () -> RollerConstants.SHOOT_VELOCITY)
     ).withName("autoShootWithVisionDynamic");
+  }
+
+  /**
+   * Creates a wait command with a variable duration determined by a DoubleSupplier.
+   * The duration is evaluated when the command is scheduled.
+   *
+   * @param durationSupplier Supplier that provides the wait duration in seconds
+   * @return Command that waits for the supplied duration
+   */
+  public Command variableWaitCommand(DoubleSupplier durationSupplier) {
+    return Commands.defer(
+      () -> new WaitCommand(durationSupplier.getAsDouble()),
+      java.util.Set.of()
+    ).withName("variableWaitCommand");
   }
 
   // HELPER FUNCTIONS
