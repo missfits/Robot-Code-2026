@@ -21,6 +21,12 @@
           "data": {
             "pathName": "outpost flex center"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "pointwheelsinx"
+          }
         }
       ]
     }

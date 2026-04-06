@@ -577,6 +577,8 @@ public class RobotContainer {
       m_robotCommandFactory.variableWaitCommand(() -> SmartDashboard.getNumber("auton/waitTime", AutoConstants.DEFAULT_WAIT_TIME)));
     NamedCommands.registerCommand("snap to hub flex command",
        m_robotCommandFactory.snapToHubCommand(() -> new JoystickVals(0, 0)).withTimeout(AutoConstants.AUTO_SHOOT_FLEX_TIMEOUT));
+    NamedCommands.registerCommand("pointwheelsinx", 
+      m_drivetrainCommandFactory.pointWheelsinX());
     NamedCommands.registerCommand("intake command", 
       m_robotCommandFactory.intakeModeCommand()); // DOES NOT END 
      NamedCommands.registerCommand("deploy intake command", 
