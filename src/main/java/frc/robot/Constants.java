@@ -723,6 +723,7 @@ public final class Constants {
 
   public static class TeleopConstants {
     public static final double LATENCY_COMPENSATION = 0.25; // compensate for shooter spin up + code processing time, etc. TODO: tune
+    public static final double CORNER_OFFSET = 1; // Corner offset for shuttle shots (how far inside the field boundary to aim, in meters)
   }
 
   public static class RobotConstants {

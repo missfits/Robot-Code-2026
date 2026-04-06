@@ -73,6 +73,12 @@ public class RobotCommandFactory {
 
   private final Supplier<Rotation2d> m_drivetrainAngleSupplier = () -> calculateShootOnTheFlyAngle();
 
+  // Shuttle suppliers
+  private final Supplier<Double> m_shuttleShooterVelocitySupplier = () -> calculateShuttleShooterVelocity();
+  private final Supplier<Double> m_shuttleShooterVelocityInitialSupplier =
+    () -> calculateShuttleShooterVelocity() + ShooterConstants.INTIAL_ADDITIONAL_VELOCITY;
+  private final Supplier<Rotation2d> m_shuttleAngleSupplier = () -> calculateShuttleAngle();
+
   private final Supplier<Double> m_dynamicShooterVelocitySupplier;
   private final Trigger m_readyToShootTrigger;
 
@@ -343,14 +349,28 @@ public class RobotCommandFactory {
     ).withName("recycleFuelCommand");
   }
 
-  public Command shuttleCommand() {
-    return shootWithoutVisionWithDisplacement(
-        () -> ShooterConstants.SHUTTLE_VELOCITY + ShooterConstants.INTIAL_ADDITIONAL_VELOCITY,
-        () -> ShooterConstants.SHUTTLE_VELOCITY,
+  public Command shuttleCommand(Supplier<JoystickVals> joystickValsSupplier) {
+    return Commands.parallel(
+      // Snap to shuttle target corner while allowing driver translation
+      snapToShuttleTargetCommand(joystickValsSupplier),
+      // Run shooter and feeding mechanisms with dynamic velocity based on distance
+      // Only feed when at the correct angle
+      shootWithAngleCheck(
+        m_shuttleShooterVelocityInitialSupplier,
+        m_shuttleShooterVelocitySupplier,
         () -> ColumnConstants.SHUTTLE_VELOCITY,
         () -> IndexerConstants.SHUTTLE_VELOCITY,
-        () -> RollerConstants.ROLLER_VELOCITY
-      ).withName("shuttleCommand");
+        () -> RollerConstants.ROLLER_VELOCITY,
+        m_shuttleAngleSupplier  // Use shuttle angle supplier for angle checking
+      )
+    ).withName("shuttleCommand");
+  }
+
+  public Command snapToShuttleTargetCommand(Supplier<JoystickVals> joystickValsSupplier) {
+    return m_drivetrainCommandFactory.snapToAngle(
+      joystickValsSupplier,
+      m_shuttleAngleSupplier
+    ).withName("snapToShuttleTargetCommand");
   }
 
   public Command neutralModeCommand() {
@@ -560,7 +580,7 @@ public class RobotCommandFactory {
   }
 
    /**
-   * Command that shoots with shooter, column, indexer velocity supplier
+   * Generalized command that shoots with shooter, column, indexer velocity supplier
    * Simultaneously runs the shooter, then runs column and indexer **once the drivetrain is at the correct angle**
    * ORIGINAL VERSION: Uses simple sequences - column/indexer/roller run continuously after conditions met
    *
@@ -569,15 +589,16 @@ public class RobotCommandFactory {
    * @param columnSupplier Supplier for column velocity
    * @param indexerSupplier Supplier for indexer velocity
    * @param rollerSupplier Supplier for roller velocity
+   * @param angleSupplier Supplier for target angle to wait for
    * @return Command that shoots with given velocity suppliers
    */
-  public Command shootWithVision(Supplier<Double> initialShooterSupplier, Supplier<Double> shooterSupplier, Supplier<Double> columnSupplier, Supplier<Double> indexerSupplier, Supplier<Double> rollerSupplier) {
+  private Command shootWithAngleCheck(Supplier<Double> initialShooterSupplier, Supplier<Double> shooterSupplier, Supplier<Double> columnSupplier, Supplier<Double> indexerSupplier, Supplier<Double> rollerSupplier, Supplier<Rotation2d> angleSupplier) {
     return Commands.parallel(
 
       // log isFuelShot
       Commands.run(() -> {
         SmartDashboard.putBoolean("robotCommandFactory/isColumnHappy", m_column.isMotorVelocityOverPercentToleranceTrigger(columnSupplier).getAsBoolean());
-        SmartDashboard.putBoolean("robotCommandFactory/atAngleTrigger", m_drivetrainCommandFactory.atAngleTrigger(m_drivetrainAngleSupplier).getAsBoolean());
+        SmartDashboard.putBoolean("robotCommandFactory/atAngleTrigger", m_drivetrainCommandFactory.atAngleTrigger(angleSupplier).getAsBoolean());
         SmartDashboard.putBoolean("robotCommandFactory/isMotorVelocityWithinPercentTolerance", m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier).getAsBoolean());
       }),
 
@@ -592,7 +613,7 @@ public class RobotCommandFactory {
       Commands.sequence(
         m_column.offCommand() // wait until
           .until(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier) // shooter at target velocity
-            .and(m_drivetrainCommandFactory.atAngleTrigger(m_drivetrainAngleSupplier))) // and facing hub
+            .and(m_drivetrainCommandFactory.atAngleTrigger(angleSupplier))) // and facing target
           .withTimeout(ShooterConstants.WAIT_FOR_SHOOTER_TIMEOUT),
         m_column.velocityCommand(columnSupplier)),
 
@@ -600,7 +621,7 @@ public class RobotCommandFactory {
       Commands.sequence(
         m_indexer.offCommand() // wait until
           .until(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier) // shooter at target velocity
-            .and(m_drivetrainCommandFactory.atAngleTrigger(m_drivetrainAngleSupplier))) // and facing hub
+            .and(m_drivetrainCommandFactory.atAngleTrigger(angleSupplier))) // and facing target
           .withTimeout(ShooterConstants.WAIT_FOR_SHOOTER_TIMEOUT),
         m_indexer.velocityCommand(indexerSupplier)),
 
@@ -608,10 +629,26 @@ public class RobotCommandFactory {
       Commands.sequence(
         m_roller.offCommand()  // wait until
           .until(m_shooter.isMotorVelocityWithinPercentTolerance(shooterSupplier) // shooter at target velocity
-            .and(m_drivetrainCommandFactory.atAngleTrigger(m_drivetrainAngleSupplier))) // and facing hub
+            .and(m_drivetrainCommandFactory.atAngleTrigger(angleSupplier))) // and facing target
           .withTimeout(ShooterConstants.WAIT_FOR_SHOOTER_TIMEOUT),
          m_roller.velocityCommand(rollerSupplier))
-    ).withName("shootWithVision");
+    ).withName("shootWithAngleCheck");
+  }
+
+  /**
+   * Command that shoots with shooter, column, indexer velocity supplier
+   * Simultaneously runs the shooter, then runs column and indexer **once the drivetrain is at the correct angle**
+   * ORIGINAL VERSION: Uses simple sequences - column/indexer/roller run continuously after conditions met
+   *
+   * @param initialShooterSupplier Supplier for shooter velocity
+   * @param shooterSupplier Supplier for shooter velocity
+   * @param columnSupplier Supplier for column velocity
+   * @param indexerSupplier Supplier for indexer velocity
+   * @param rollerSupplier Supplier for roller velocity
+   * @return Command that shoots with given velocity suppliers
+   */
+  public Command shootWithVision(Supplier<Double> initialShooterSupplier, Supplier<Double> shooterSupplier, Supplier<Double> columnSupplier, Supplier<Double> indexerSupplier, Supplier<Double> rollerSupplier) {
+    return shootWithAngleCheck(initialShooterSupplier, shooterSupplier, columnSupplier, indexerSupplier, rollerSupplier, m_drivetrainAngleSupplier).withName("shootWithVision");
   }
 
   /**
@@ -770,6 +807,51 @@ public class RobotCommandFactory {
     SmartDashboard.putNumber("robotCommandFactory/SOTFdrivetrainAngleRadians", drivetrainAngle.getRadians());
 
     return drivetrainAngle;
+  }
+
+  /**
+   * Calculates the shooter velocity based on distance to shuttle corner.
+   */
+  private Double calculateShuttleShooterVelocity() {
+    // Calculate distance to closest shuttle corner
+    Pose2d robotPose = m_drivetrain.getState().Pose;
+    double distanceToCorner = HubCalculations.distanceToShuttleCorner(robotPose);
+
+    // Look up target velocity from distance
+    Optional<Double> velocityOptional = ShooterLookupTable.getVelocityForDistance(distanceToCorner);
+
+    if (velocityOptional.isPresent()) {
+      return velocityOptional.get();
+    } else {
+      return 0.0; // Distance out of range
+    }
+  }
+
+  /**
+   * Calculates the required field-relative drivetrain angle for shuttling.
+   * Uses SOTM math to compensate for robot velocity.
+   */
+  private Rotation2d calculateShuttleAngle() {
+    // Get robot state
+    Pose2d robotPose = m_drivetrain.getState().Pose;
+    ChassisSpeeds robotSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(
+      m_drivetrain.getState().Speeds,
+      robotPose.getRotation());
+
+    // Calculate shuttle angle using HubCalculations
+    Rotation2d shuttleAngle = HubCalculations.calculateShuttleAngle(robotPose, robotSpeeds);
+
+    if (shuttleAngle == null) {
+      // Distance out of range, fall back to simple angle to closest corner
+      Translation2d closestCorner = HubCalculations.getClosestShuttleCorner(robotPose);
+      Translation2d toCorner = closestCorner.minus(robotPose.getTranslation());
+      return toCorner.getAngle();
+    }
+
+    SmartDashboard.putNumber("robotCommandFactory/shuttleAngleDegrees", shuttleAngle.getDegrees());
+    SmartDashboard.putNumber("robotCommandFactory/shuttleAngleRadians", shuttleAngle.getRadians());
+
+    return shuttleAngle;
   }
 
   public double getDistanceToHub() {
