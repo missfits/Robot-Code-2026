@@ -1,0 +1,158 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.559956958912037,
+        "y": 2.618
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.909295402082991,
+        "y": 2.4811622016226815
+      },
+      "isLocked": false,
+      "linkedName": "outpost flex wait"
+    },
+    {
+      "anchor": {
+        "x": 7.407549551504631,
+        "y": 2.4922339409722225
+      },
+      "prevControl": {
+        "x": 6.930470304294506,
+        "y": 2.1509418748167835
+      },
+      "nextControl": {
+        "x": 7.759287615740742,
+        "y": 2.7438596643518527
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.952868561921297,
+        "y": 3.6831963252314814
+      },
+      "prevControl": {
+        "x": 7.831937412616808,
+        "y": 3.6513524541634252
+      },
+      "nextControl": {
+        "x": 5.7864445167824075,
+        "y": 3.7254495081018515
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.88000513599537,
+        "y": 2.725676215277778
+      },
+      "prevControl": {
+        "x": 6.154978877314814,
+        "y": 2.8671325231481477
+      },
+      "nextControl": {
+        "x": 5.61712274927909,
+        "y": 2.590440131822684
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.262,
+        "y": 2.618
+      },
+      "prevControl": {
+        "x": 3.5033209700115195,
+        "y": 2.6833007613485447
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "outpost close shooting point"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.0,
+      "rotationDegrees": 0.0
+    },
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 0.0
+    },
+    {
+      "waypointRelativePos": 1.342757502913754,
+      "rotationDegrees": 100.0
+    },
+    {
+      "waypointRelativePos": 1.8467548076923106,
+      "rotationDegrees": -167.6160466084564
+    },
+    {
+      "waypointRelativePos": 2.35,
+      "rotationDegrees": 180.0
+    },
+    {
+      "waypointRelativePos": 3.185897435897435,
+      "rotationDegrees": -179.5935408627037
+    },
+    {
+      "waypointRelativePos": 4.0,
+      "rotationDegrees": 180.0
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "come back over the bump",
+      "minWaypointRelativePos": 3.3041964285714287,
+      "maxWaypointRelativePos": 3.6382142857142843,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "intake trigger",
+      "waypointRelativePos": 0.2,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "shoot flex trigger",
+      "waypointRelativePos": 3.84,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 46.24
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0.0,
+    "rotation": 0.0
+  },
+  "useDefaultConstraints": true
+}

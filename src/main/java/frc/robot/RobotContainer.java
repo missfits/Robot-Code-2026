@@ -570,8 +570,13 @@ public class RobotContainer {
     new EventTrigger("intake trigger").onTrue(m_robotCommandFactory.autoIntakeModeCommand());
     new EventTrigger("shoot trigger").onTrue(m_robotCommandFactory.autoShootWithVisionCommand().withTimeout(AutoConstants.AUTO_SHOOT_TIMEOUT)); // TODO: tune timeout
     new EventTrigger("shoot cleanup trigger").onTrue(m_robotCommandFactory.autoShootWithVisionCommand().withTimeout(AutoConstants.AUTO_SHOOT_CLEANUP_TIMEOUT));
+    new EventTrigger("shoot flex trigger").onTrue(m_robotCommandFactory.autoShootWithVisionCommand().withTimeout(AutoConstants.AUTO_SHOOT_FLEX_TIMEOUT));
 
-    NamedCommands.registerCommand("variable wait command", m_robotCommandFactory.variableWaitCommand(() -> SmartDashboard.getNumber("auton/waitTime", AutoConstants.DEFAULT_WAIT_TIME)));
+
+    NamedCommands.registerCommand("variable wait command", 
+      m_robotCommandFactory.variableWaitCommand(() -> SmartDashboard.getNumber("auton/waitTime", AutoConstants.DEFAULT_WAIT_TIME)));
+    NamedCommands.registerCommand("snap to hub flex command",
+       m_robotCommandFactory.snapToHubCommand(() -> new JoystickVals(0, 0)).withTimeout(AutoConstants.AUTO_SHOOT_FLEX_TIMEOUT));
     NamedCommands.registerCommand("intake command", 
       m_robotCommandFactory.intakeModeCommand()); // DOES NOT END 
      NamedCommands.registerCommand("deploy intake command", 
