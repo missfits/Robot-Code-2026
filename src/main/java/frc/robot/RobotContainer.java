@@ -43,6 +43,7 @@ import frc.robot.Constants.SensorConstants;
 
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -340,6 +341,20 @@ public class RobotContainer {
 
     // --- CONFIGURE RAW VIDEO MODE TOGGLE ---
     m_testJoystick.start().onTrue(m_vision.toggleRawVideoModeCommand());
+
+    // --- CONFIGURE BUMP DETECTION AND CAMERA HISTORY CLEANING ---
+    // automatic -- todo: reality check / tune debounce?
+    m_drivetrainCommandFactory.bumpDetectedTrigger().debounce(DrivetrainConstants.BUMP_DETECTION_DEBOUNCE).onTrue(
+      Commands.runOnce(() -> {
+        m_vision.clearAllCamerasBeforeTimestamp(m_drivetrain.getState().Timestamp);
+      })
+    );
+    // manual clear history - todo: pick something for manual clearing?
+    m_operatorJoystick.back().onTrue(
+      Commands.runOnce(() -> {
+        m_vision.clearAllCamerasBeforeTimestamp(m_drivetrain.getState().Timestamp);
+      })
+    );
   }
 
   private void configureBindingsSimulation() {

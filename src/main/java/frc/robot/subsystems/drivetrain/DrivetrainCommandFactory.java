@@ -198,6 +198,14 @@ public class DrivetrainCommandFactory {
         return new Trigger(() -> atAngle(angleSupplier));
     }
 
+    // ----- BUMP DETECTION -----
+    public Trigger bumpDetectedTrigger() {
+        return new Trigger(() -> {
+            double accelZ = Math.abs(m_drivetrain.getPigeon2().getAccelerationZ().getValueAsDouble());
+            return accelZ > DrivetrainConstants.BUMP_ACCELERATION_THRESHOLD;
+        });
+    }
+
     // ----- SYSID -----
     public Command sysIdQuasistaticTranslationForward() {
         return m_drivetrain.sysIdQuasistaticTranslation(Direction.kForward);
