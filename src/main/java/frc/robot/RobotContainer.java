@@ -58,8 +58,10 @@ import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -135,6 +137,10 @@ public class RobotContainer {
   private final Field2d m_actualField = new Field2d(); // field simulation
 
   private boolean scoreMode = false;
+
+  // boolean to keep track of when we want to reset drivetrain to vision reading
+  // used for drivetrain "fixing" after bump detection
+  private boolean m_resetPoseOnNextVisionReading;
 
   /** The container for the robot. Contains subsystems and commands. */
   public RobotContainer() {
@@ -347,8 +353,12 @@ public class RobotContainer {
     m_drivetrainCommandFactory.bumpDetectedTrigger().debounce(DrivetrainConstants.BUMP_DETECTION_DEBOUNCE).onTrue(
       Commands.runOnce(() -> {
         m_vision.clearAllCamerasBeforeTimestamp(m_drivetrain.getState().Timestamp);
+        
+        // after crossing the bump, we want to reset drivetrain pose to first vision pose
+        m_resetPoseOnNextVisionReading = true;
       })
     );
+    
     // manual clear history - todo: pick something for manual clearing?
     m_operatorJoystick.back().onTrue(
       Commands.runOnce(() -> {
@@ -612,6 +622,20 @@ public class RobotContainer {
 
   public void updatePoseEst() {
     List<CameraReading> allReadings = m_vision.getValidCameraReadings();
+
+    // If we just crossed the bump and have readings, hard reset drivetrain odometry
+    // NOTE: want to SKIP normal fusion.
+    if (m_resetPoseOnNextVisionReading && !allReadings.isEmpty()) {
+      Translation2d avgTranslation = m_vision.getAverageTranslation(allReadings);
+
+      if (avgTranslation != null) {
+        // Create Pose2d from averaged translation, keeping gyro heading (still pretty accurate after bump)
+        Pose2d visionPose = new Pose2d(avgTranslation, m_drivetrain.getState().Pose.getRotation());
+        m_drivetrain.resetPose(visionPose);
+        m_resetPoseOnNextVisionReading = false;
+        return; // Skip normal fusion this cycle
+      }
+    }
 
     for (CameraReading reading : allReadings){
       EstimatedRobotPose robotPose = reading.robotPose();
