@@ -21,6 +21,12 @@
           "data": {
             "pathName": "depot flex center"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "pointwheelsinx"
+          }
         }
       ]
     }
