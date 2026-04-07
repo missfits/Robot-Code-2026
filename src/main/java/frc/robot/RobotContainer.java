@@ -141,6 +141,7 @@ public class RobotContainer {
   // boolean to keep track of when we want to reset drivetrain to vision reading
   // used for drivetrain "fixing" after bump detection
   private boolean m_resetPoseOnNextVisionReading = false;
+  private double m_resetPoseMinTimestamp = Double.NEGATIVE_INFINITY;
 
   /** The container for the robot. Contains subsystems and commands. */
   public RobotContainer() {
@@ -354,7 +355,9 @@ public class RobotContainer {
     // automatic -- todo: reality check / tune debounce?
     m_drivetrainCommandFactory.bumpDetectedTrigger().debounce(DrivetrainConstants.BUMP_DETECTION_DEBOUNCE).onTrue(
       Commands.runOnce(() -> {
-        m_vision.clearAllCamerasBeforeTimestamp(m_drivetrain.getState().Timestamp);
+        double clearTimestamp = m_drivetrain.getState().Timestamp;
+        m_vision.clearAllCamerasBeforeTimestamp(clearTimestamp);
+        m_resetPoseMinTimestamp = clearTimestamp;
         
         // after crossing the bump, we want to reset drivetrain pose to first vision pose
         m_resetPoseOnNextVisionReading = true;
@@ -638,14 +641,23 @@ public class RobotContainer {
 
     // If we just crossed the bump and have readings, hard reset drivetrain odometry
     // NOTE: want to SKIP normal fusion.
-    if (m_resetPoseOnNextVisionReading && !allReadings.isEmpty()) {
-      Translation2d avgTranslation = m_vision.getAverageTranslation(allReadings);
+    if (m_resetPoseOnNextVisionReading) {
+      List<CameraReading> postBumpReadings = allReadings.stream()
+        .filter(reading -> reading.timestampSeconds() > m_resetPoseMinTimestamp)
+        .toList();
+
+      if (postBumpReadings.isEmpty()) {
+        return;
+      }
+
+      Translation2d avgTranslation = m_vision.getAverageTranslation(postBumpReadings);
 
       if (avgTranslation != null) {
         // Create Pose2d from averaged translation, keeping gyro heading (still pretty accurate after bump)
         Pose2d visionPose = new Pose2d(avgTranslation, m_drivetrain.getState().Pose.getRotation());
         m_drivetrain.resetPose(visionPose);
         m_resetPoseOnNextVisionReading = false;
+        m_resetPoseMinTimestamp = Double.NEGATIVE_INFINITY;
         return; // Skip normal fusion this cycle
       }
     }
