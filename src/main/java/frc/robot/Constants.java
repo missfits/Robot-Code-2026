@@ -725,7 +725,7 @@ public final class Constants {
   }
 
   public static class AutoConstants {
-    public static final double AUTO_SHOOT_TIMEOUT = 2.53; // in seconds
+    public static final double AUTO_SHOOT_TIMEOUT = 2.7; // in seconds
     public static final double AUTO_SHOOT_CLEANUP_TIMEOUT = 5;
     public static final double AUTO_SHOOT_FLEX_TIMEOUT = 5;
 
