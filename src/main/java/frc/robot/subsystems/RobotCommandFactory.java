@@ -865,6 +865,8 @@ public class RobotCommandFactory {
     Pose2d robotPose = m_drivetrain.getState().Pose;
     double distanceToCorner = HubCalculations.distanceToShuttleCorner(robotPose);
 
+    SmartDashboard.putNumber("robotCommandFactory/shuttleDistance", distanceToCorner); 
+
     // Look up target velocity from distance
     Optional<Double> velocityOptional = ShooterLookupTable.getVelocityForDistance(distanceToCorner);
 
