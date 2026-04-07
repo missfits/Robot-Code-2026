@@ -31,6 +31,7 @@ public class ShooterLookupTable {
     DISTANCE_TO_VELOCITY_MAP.put(4.5, 57.);   
     DISTANCE_TO_VELOCITY_MAP.put(5.1, 63.);   // corner
     DISTANCE_TO_VELOCITY_MAP.put(5.6, 65.);   // bogus
+    DISTANCE_TO_VELOCITY_MAP.put(10.0, 65.);   // bogus for shuttling
   }
   
   /**
