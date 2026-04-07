@@ -174,7 +174,7 @@ public final class Constants {
     public static final int MOTOR_ID = 20;
 
     // Motor limits
-    public static final int MOTOR_STATOR_LIMIT = 60;
+    public static final int MOTOR_STATOR_LIMIT = 80;
     public static final int MOTOR_SUPPLY_LIMIT = 40;
 
     public static final boolean IS_INVERTED = true;
@@ -249,8 +249,8 @@ public final class Constants {
     public static final int MOTOR_ID = 21;
 
     // Motor limits
-    public static final int MOTOR_STATOR_LIMIT = 80;
-    public static final int MOTOR_SUPPLY_LIMIT = 40;
+    public static final int MOTOR_STATOR_LIMIT = 100;
+    public static final int MOTOR_SUPPLY_LIMIT = 30;
 
     public static final boolean IS_INVERTED = true;
 
@@ -305,8 +305,8 @@ public final class Constants {
     public static final int MOTOR_ID = 22;
 
     // Motor limits
-    public static final int MOTOR_STATOR_LIMIT = 40;
-    public static final int MOTOR_SUPPLY_LIMIT = 30;
+    public static final int MOTOR_STATOR_LIMIT = 80;
+    public static final int MOTOR_SUPPLY_LIMIT = 25;
 
     public static final boolean IS_INVERTED = true;
 
@@ -356,8 +356,8 @@ public final class Constants {
     public static final int FOLLOWER_ID = 24;
 
     // Motor limits
-    public static final int INFLUENCER_STATOR_LIMIT = 60;
-    public static final int FOLLOWER_STATOR_LIMIT = 60;
+    public static final int INFLUENCER_STATOR_LIMIT = 80;
+    public static final int FOLLOWER_STATOR_LIMIT = 80;
     public static final int INFLUENCER_SUPPLY_LIMIT = 40;
     public static final int FOLLOWER_SUPPLY_LIMIT = 40;
 
@@ -387,7 +387,7 @@ public final class Constants {
     // Testing velocities
     public static double TESTING_VELOCITY = 0.0;
 
-    public static final double AT_VELOCITY_DETECTION_PERCENTAGE = 0.50;
+    public static final double AT_VELOCITY_DETECTION_PERCENTAGE = 0.8;
 
     // PID gains
     // Tuned in shop 2/12
@@ -723,7 +723,7 @@ public final class Constants {
   }
 
   public static class AutoConstants {
-    public static final double AUTO_SHOOT_TIMEOUT = 2.5; // in seconds; TODO: tune
+    public static final double AUTO_SHOOT_TIMEOUT = 2.53; // in seconds
     public static final double AUTO_SHOOT_CLEANUP_TIMEOUT = 5;
   }
 
