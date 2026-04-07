@@ -1,0 +1,37 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "outpost flex bump"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "variable wait command"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "outpost flex center"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "pointwheelsinx"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

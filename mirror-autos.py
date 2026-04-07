@@ -87,6 +87,9 @@ def main():
     outpost_paths = [
         "1st outpost shoot",
         "fast outpost shoot",
+        "outpost flex pickup",
+        "outpost flex bump",
+        "outpost flex center",
         "2nd outpost cleanup",
         "2nd outpost shoot",
         "outpost center half neutral zone"
@@ -96,7 +99,9 @@ def main():
     outpost_autos = [
         "outpost cleanup",
         "outpost fast",
-        "outpost shoot"
+        "outpost shoot",
+        "outpost flex",
+        "outpost center flex"
     ]
     
     # Mirror paths
