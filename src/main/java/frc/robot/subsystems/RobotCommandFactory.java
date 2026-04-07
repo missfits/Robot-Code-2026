@@ -400,8 +400,10 @@ public class RobotCommandFactory {
 
   public Command autoIntakeModeCommand() {
     return Commands.parallel(
-      intakeModeCommand(),
-      m_pivot.repeatingZeroPivotCommand()
+      m_pivot.repeatingZeroPivotCommand(),
+      m_roller.velocityCommand(RollerConstants.INTAKE_VELOCITY),
+      m_indexer.velocityCommand(IndexerConstants.INTAKE_VELOCITY),
+      m_column.velocityCommand(ColumnConstants.INTAKE_VELOCITY) // will run backwards
     ).withName("autoIntakeModeCommand");
   }
 
