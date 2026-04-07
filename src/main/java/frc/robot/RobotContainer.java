@@ -140,7 +140,7 @@ public class RobotContainer {
 
   // boolean to keep track of when we want to reset drivetrain to vision reading
   // used for drivetrain "fixing" after bump detection
-  private boolean m_resetPoseOnNextVisionReading;
+  private boolean m_resetPoseOnNextVisionReading = false;
 
   /** The container for the robot. Contains subsystems and commands. */
   public RobotContainer() {
