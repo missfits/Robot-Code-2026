@@ -100,14 +100,14 @@ public class HubCalculations {
         // Alliance corners are on our side (low X value)
         // Left corner: low X, high Y
         Translation2d leftCorner = new Translation2d(
-            TeleopConstants.CORNER_OFFSET,
-            FieldConstants.fieldWidth - TeleopConstants.CORNER_OFFSET
+            TeleopConstants.X_CORNER_OFFSET,
+            FieldConstants.fieldWidth - TeleopConstants.Y_CORNER_OFFSET
         );
 
         // Right corner: low X, low Y
         Translation2d rightCorner = new Translation2d(
-            TeleopConstants.CORNER_OFFSET,
-            TeleopConstants.CORNER_OFFSET
+            TeleopConstants.X_CORNER_OFFSET,
+            TeleopConstants.Y_CORNER_OFFSET
         );
 
         return new Translation2d[] { leftCorner, rightCorner };
