@@ -96,11 +96,11 @@
     },
     {
       "anchor": {
-        "x": 2.2582072610294124,
+        "x": 2.694548177083334,
         "y": 5.450531394675927
       },
       "prevControl": {
-        "x": 2.5500429091775603,
+        "x": 2.986383825231482,
         "y": 5.672098162615741
       },
       "nextControl": null,
@@ -175,7 +175,7 @@
   "eventMarkers": [
     {
       "name": "deploy intake trigger",
-      "waypointRelativePos": 0.0,
+      "waypointRelativePos": 0,
       "endWaypointRelativePos": null,
       "command": null
     },
@@ -202,7 +202,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -29.500000000000004
+    "rotation": -36.37
   },
   "reversed": false,
   "folder": null,
