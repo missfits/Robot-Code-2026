@@ -461,7 +461,7 @@ public class RobotContainer {
     SmartDashboard.putNumber("robotCommandFactory/dashboardTestShooterVelocityRotationsPerSecond",
         m_robotCommandFactory.getTargetShooterVelocity());
 
-    SmartDashboard.putNumber("auton/waitTime", AutoConstants.DEFAULT_WAIT_TIME); 
+    SmartDashboard.putNumber("auton/waitTime", SmartDashboard.getNumber("auton/waitTime", AutoConstants.DEFAULT_WAIT_TIME)); 
   }
 
 
