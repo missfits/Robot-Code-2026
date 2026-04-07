@@ -1,7 +1,11 @@
 package frc.robot.subsystems.drivetrain;
 
+import static edu.wpi.first.units.Units.*;
+
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
+import com.ctre.phoenix6.swerve.SwerveModule;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -12,7 +16,6 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.networktables.StructArrayPublisher;
-import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -22,6 +25,9 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 public class Telemetry {
     private final double MaxSpeed;
 
+    /* Swerve modules for accessing motor telemetry */
+    private SwerveModule<?, ?, ?>[] modules;
+
     /**
      * Construct a telemetry object, with the specified max speed of the robot
      * 
@@ -29,6 +35,25 @@ public class Telemetry {
      */
     public Telemetry(double maxSpeed) {
         MaxSpeed = maxSpeed;
+
+        // Initialize publishers for each module's motor telemetry
+        for (int i = 0; i < 4; i++) {
+            driveMotorVoltage[i] = inst.getTable("drivetrain").getDoubleTopic("Module" + i + "/DriveMotorVoltage").publish();
+            driveMotorSupplyCurrent[i] = inst.getTable("drivetrain").getDoubleTopic("Module" + i + "/DriveMotorSupplyCurrent").publish();
+            driveMotorStatorCurrent[i] = inst.getTable("drivetrain").getDoubleTopic("Module" + i + "/DriveMotorStatorCurrent").publish();
+            steerMotorVoltage[i] = inst.getTable("drivetrain").getDoubleTopic("Module" + i + "/SteerMotorVoltage").publish();
+            steerMotorSupplyCurrent[i] = inst.getTable("drivetrain").getDoubleTopic("Module" + i + "/SteerMotorSupplyCurrent").publish();
+            steerMotorStatorCurrent[i] = inst.getTable("drivetrain").getDoubleTopic("Module" + i + "/SteerMotorStatorCurrent").publish();
+        }
+    }
+
+    /**
+     * Set the swerve modules for telemetry logging
+     *
+     * @param modules Array of swerve modules
+     */
+    public void setModules(SwerveModule<?, ?, ?>[] modules) {
+        this.modules = modules;
     }
 
     /* What to publish over networktables for telemetry */
@@ -46,9 +71,17 @@ public class Telemetry {
     private final DoublePublisher speed = driveStats.getDoubleTopic("Speed").publish();
     private final DoublePublisher odomPeriod = driveStats.getDoubleTopic("Odometry Period").publish();
 
-    // publishers for swerve module states 
+    // publishers for swerve module states
     private StructArrayPublisher<SwerveModuleState> moduleStatePublisher = NetworkTableInstance.getDefault().getStructArrayTopic("drivetrain/actualModuleStates", SwerveModuleState.struct).publish();
     private StructArrayPublisher<SwerveModuleState> targetModuleStatePublisher = NetworkTableInstance.getDefault().getStructArrayTopic("drivetrain/targetModuleStates", SwerveModuleState.struct).publish();
+
+    /* Publishers for motor telemetry - voltage and current */
+    private final DoublePublisher[] driveMotorVoltage = new DoublePublisher[4];
+    private final DoublePublisher[] driveMotorSupplyCurrent = new DoublePublisher[4];
+    private final DoublePublisher[] driveMotorStatorCurrent = new DoublePublisher[4];
+    private final DoublePublisher[] steerMotorVoltage = new DoublePublisher[4];
+    private final DoublePublisher[] steerMotorSupplyCurrent = new DoublePublisher[4];
+    private final DoublePublisher[] steerMotorStatorCurrent = new DoublePublisher[4];
 
     /* Keep a reference of the last pose to calculate the speeds */
     private Pose2d m_lastPose = new Pose2d();
@@ -115,6 +148,20 @@ public class Telemetry {
             m_moduleSpeeds[i].setLength(state.ModuleStates[i].speedMetersPerSecond / (2 * MaxSpeed));
 
             SmartDashboard.putData("Module " + i, m_moduleMechanisms[i]);
+
+            /* Telemeterize motor voltage and current if modules are available */
+            if (modules != null && i < modules.length) {
+                TalonFX driveMotor = (TalonFX) modules[i].getDriveMotor();
+                TalonFX steerMotor = (TalonFX) modules[i].getSteerMotor();
+
+                driveMotorVoltage[i].set(driveMotor.getMotorVoltage().getValue().in(Volts));
+                driveMotorSupplyCurrent[i].set(driveMotor.getSupplyCurrent().getValue().in(Amps));
+                driveMotorStatorCurrent[i].set(driveMotor.getStatorCurrent().getValue().in(Amps));
+
+                steerMotorVoltage[i].set(steerMotor.getMotorVoltage().getValue().in(Volts));
+                steerMotorSupplyCurrent[i].set(steerMotor.getSupplyCurrent().getValue().in(Amps));
+                steerMotorStatorCurrent[i].set(steerMotor.getStatorCurrent().getValue().in(Amps));
+            }
         }
     }
 }
