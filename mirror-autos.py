@@ -90,6 +90,7 @@ def main():
         "outpost flex pickup",
         "outpost flex bump",
         "outpost flex center",
+        "outpost flex end",
         "2nd outpost cleanup",
         "2nd outpost shoot",
         "outpost center half neutral zone"

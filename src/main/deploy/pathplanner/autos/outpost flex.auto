@@ -27,6 +27,18 @@
           "data": {
             "name": "snap to hub flex command"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "outpost flex end"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "pointwheelsinx"
+          }
         }
       ]
     }
