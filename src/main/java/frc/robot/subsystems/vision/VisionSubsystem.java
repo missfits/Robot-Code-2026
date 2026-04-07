@@ -125,6 +125,25 @@ public class VisionSubsystem extends SubsystemBase {
     }
   }
 
+  // averages all camera readings given input list of camera readings
+  // @param allReadings is list of camera readings to average
+  public Translation2d getAverageTranslation(List<CameraReading> allReadings) {
+    if (allReadings.isEmpty()) {
+      return null;
+    }
+
+    double totalX = 0.0;
+    double totalY = 0.0;
+    for (CameraReading reading : allReadings) {
+      totalX += reading.robotPose().estimatedPose.getX();
+      totalY += reading.robotPose().estimatedPose.getY();
+    }
+
+    int totalReadings = allReadings.size();
+
+    return new Translation2d(totalX / totalReadings, totalY / totalReadings);
+  }
+
   @Override
   public void periodic() {
     // clear allValidReadings at the beginning of every loop

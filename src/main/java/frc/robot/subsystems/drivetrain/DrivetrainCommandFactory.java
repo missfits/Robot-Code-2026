@@ -201,7 +201,10 @@ public class DrivetrainCommandFactory {
     // ----- BUMP DETECTION -----
     public Trigger bumpDetectedTrigger() {
         return new Trigger(() -> {
-            double accelZ = Math.abs(m_drivetrain.getPigeon2().getAccelerationZ().getValueAsDouble());
+            double accelZ = Math.abs(m_drivetrain.getPigeon2().getAccelerationZ().getValueAsDouble() - 1); // compensate for gravity 
+            SmartDashboard.putBoolean("drivetrain/bumpDetected", accelZ > DrivetrainConstants.BUMP_ACCELERATION_THRESHOLD);
+            SmartDashboard.putNumber("drivetrain/pigeonAccelZGravityCompensatedGs", m_drivetrain.getPigeon2().getAccelerationZ().getValueAsDouble() - 1);
+
             return accelZ > DrivetrainConstants.BUMP_ACCELERATION_THRESHOLD;
         });
     }

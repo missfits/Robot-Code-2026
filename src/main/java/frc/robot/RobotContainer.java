@@ -58,8 +58,10 @@ import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -115,7 +117,6 @@ public class RobotContainer {
     SensorConstants.FEEDER_SENSOR_MIN_DISTANCE
   );
 
-  // Score mode state
   private boolean scoreMode = false;
 
   // Command factories
@@ -136,6 +137,11 @@ public class RobotContainer {
     () -> new JoystickVals(m_driverJoystick.getRightX(), m_driverJoystick.getRightY());
 
   private final Field2d m_actualField = new Field2d(); // field simulation
+
+  // boolean to keep track of when we want to reset drivetrain to vision reading
+  // used for drivetrain "fixing" after bump detection
+  private boolean m_resetPoseOnNextVisionReading = false;
+  private double m_resetPoseMinTimestamp = Double.NEGATIVE_INFINITY;
 
   /** The container for the robot. Contains subsystems and commands. */
   public RobotContainer() {
@@ -349,9 +355,15 @@ public class RobotContainer {
     // automatic -- todo: reality check / tune debounce?
     m_drivetrainCommandFactory.bumpDetectedTrigger().debounce(DrivetrainConstants.BUMP_DETECTION_DEBOUNCE).onTrue(
       Commands.runOnce(() -> {
-        m_vision.clearAllCamerasBeforeTimestamp(m_drivetrain.getState().Timestamp);
+        double clearTimestamp = m_drivetrain.getState().Timestamp;
+        m_vision.clearAllCamerasBeforeTimestamp(clearTimestamp);
+        m_resetPoseMinTimestamp = clearTimestamp;
+        
+        // after crossing the bump, we want to reset drivetrain pose to first vision pose
+        m_resetPoseOnNextVisionReading = true;
       })
     );
+    
     // manual clear history - todo: pick something for manual clearing?
     m_operatorJoystick.back().onTrue(
       Commands.runOnce(() -> {
@@ -626,6 +638,29 @@ public class RobotContainer {
 
   public void updatePoseEst() {
     List<CameraReading> allReadings = m_vision.getValidCameraReadings();
+
+    // If we just crossed the bump and have readings, hard reset drivetrain odometry
+    // NOTE: want to SKIP normal fusion.
+    if (m_resetPoseOnNextVisionReading) {
+      List<CameraReading> postBumpReadings = allReadings.stream()
+        .filter(reading -> reading.timestampSeconds() > m_resetPoseMinTimestamp)
+        .toList();
+
+      if (postBumpReadings.isEmpty()) {
+        return;
+      }
+
+      Translation2d avgTranslation = m_vision.getAverageTranslation(postBumpReadings);
+
+      if (avgTranslation != null) {
+        // Create Pose2d from averaged translation, keeping gyro heading (still pretty accurate after bump)
+        Pose2d visionPose = new Pose2d(avgTranslation, m_drivetrain.getState().Pose.getRotation());
+        m_drivetrain.resetPose(visionPose);
+        m_resetPoseOnNextVisionReading = false;
+        m_resetPoseMinTimestamp = Double.NEGATIVE_INFINITY;
+        return; // Skip normal fusion this cycle
+      }
+    }
 
     for (CameraReading reading : allReadings){
       EstimatedRobotPose robotPose = reading.robotPose();
