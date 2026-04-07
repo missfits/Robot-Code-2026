@@ -273,6 +273,8 @@ public final class Constants {
     public static double RECYCLE_VELOCITY = 70.0;
     public static double INTAKE_VELOCITY = 80.0;
     public static double SHOOT_VELOCITY = 70.0;
+    public static double SHUTTLE_VELOCITY = INTAKE_VELOCITY;
+
 
     // Testing velocities
     public static double TESTING_VELOCITY = 0.0;
@@ -328,8 +330,8 @@ public final class Constants {
     public static double MANUAL_BACK_VELOCITY = -80.0;
     public static double OUTTAKE_VELOCITY = -80.0;
     public static double RECYCLE_VELOCITY = 50.0;
-    public static double SHUTTLE_VELOCITY = 50.0;
     public static double INTAKE_VELOCITY = 50.0;
+    public static double SHUTTLE_VELOCITY = INTAKE_VELOCITY;
 
     // Testing velocities
     public static double TESTING_VELOCITY = 0.0;
@@ -358,8 +360,8 @@ public final class Constants {
     // Motor limits
     public static final int INFLUENCER_STATOR_LIMIT = 80;
     public static final int FOLLOWER_STATOR_LIMIT = 80;
-    public static final int INFLUENCER_SUPPLY_LIMIT = 40;
-    public static final int FOLLOWER_SUPPLY_LIMIT = 40;
+    public static final int INFLUENCER_SUPPLY_LIMIT = 35;
+    public static final int FOLLOWER_SUPPLY_LIMIT = INFLUENCER_SUPPLY_LIMIT;
 
     public static final boolean IS_INFLUENCER_INVERTED = false;
 
@@ -381,7 +383,7 @@ public final class Constants {
     public static double MANUAL_BACK_VELOCITY = -70.0;
     public static double OUTTAKE_VELOCITY = -70.0;
     public static double RECYCLE_VELOCITY = 70.0;
-    public static double SHUTTLE_VELOCITY = 70.0;
+    public static double SHUTTLE_VELOCITY = SHOOT_VELOCITY;
     public static double INTAKE_VELOCITY = -40.0;
 
     // Testing velocities
@@ -443,9 +445,9 @@ public final class Constants {
     public static final int INFLUENCER_MOTOR_STATOR_LIMIT = 80;
     public static final int FOLLOWER_MOTOR_STATOR_LIMIT = 80;
     public static final int THIRD_MOTOR_STATOR_LIMIT = 80;
-    public static final int INFLUENCER_MOTOR_SUPPLY_LIMIT = 40;
-    public static final int FOLLOWER_MOTOR_SUPPLY_LIMIT = 40;
-    public static final int THIRD_MOTOR_SUPPLY_LIMIT = 40;
+    public static final int INFLUENCER_MOTOR_SUPPLY_LIMIT = 35;
+    public static final int FOLLOWER_MOTOR_SUPPLY_LIMIT = INFLUENCER_MOTOR_SUPPLY_LIMIT;
+    public static final int THIRD_MOTOR_SUPPLY_LIMIT = INFLUENCER_MOTOR_SUPPLY_LIMIT;
 
     public static final boolean IS_INFLUENCER_INVERTED = false;
     
@@ -732,6 +734,9 @@ public final class Constants {
 
   public static class TeleopConstants {
     public static final double LATENCY_COMPENSATION = 0.25; // compensate for shooter spin up + code processing time, etc. TODO: tune
+    public static final double X_CORNER_OFFSET = 0.5; // Corner offset for shuttle shots (how far inside the field boundary to aim, in meters)
+    public static final double Y_CORNER_OFFSET = 2; // Corner offset for shuttle shots (how far inside the field boundary to aim, in meters)
+
   }
 
   public static class RobotConstants {
