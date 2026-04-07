@@ -117,9 +117,11 @@ public class RobotContainer {
     SensorConstants.FEEDER_SENSOR_MIN_DISTANCE
   );
 
+  private boolean scoreMode = false;
+
   // Command factories
   private final DrivetrainCommandFactory m_drivetrainCommandFactory = new DrivetrainCommandFactory(m_drivetrain);
-  private final RobotCommandFactory m_robotCommandFactory = new RobotCommandFactory(m_drivetrain, m_pivot, m_roller, m_indexer, m_column, m_shooter, m_intakeSensor, m_shooterSensor, m_vision, m_drivetrainCommandFactory);
+  private final RobotCommandFactory m_robotCommandFactory = new RobotCommandFactory(m_drivetrain, m_pivot, m_roller, m_indexer, m_column, m_shooter, m_intakeSensor, m_shooterSensor, m_vision, m_drivetrainCommandFactory, () -> scoreMode);
 
   private final CommandXboxController m_driverJoystick =
     new CommandXboxController(OperatorConstants.kDriverControllerPort);
@@ -136,14 +138,15 @@ public class RobotContainer {
 
   private final Field2d m_actualField = new Field2d(); // field simulation
 
-  private boolean scoreMode = false;
-
   // boolean to keep track of when we want to reset drivetrain to vision reading
   // used for drivetrain "fixing" after bump detection
   private boolean m_resetPoseOnNextVisionReading;
 
   /** The container for the robot. Contains subsystems and commands. */
   public RobotContainer() {
+
+    // Set modules for telemetry logging
+    logger.setModules(m_drivetrain.getModules());
 
     // Configure trigger bindings
     if (Utils.isSimulation()) {
@@ -204,13 +207,12 @@ public class RobotContainer {
     m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).onTrue(
       Commands.runOnce(() -> scoreMode = true));
 
-    m_robotCommandFactory.getReadyToShootTrigger() // feed gamepiece when ready to shoot and shootMode is true
-      .and(new Trigger(() -> scoreMode))
+    m_robotCommandFactory.getReadyToShootTrigger() // feed gamepiece when ready to shoot is true
       .whileTrue(m_robotCommandFactory.feedGamepieceCommand());
     
     m_robotCommandFactory.atAngleTrigger()
       .and(driverInputTrigger().negate())
-        .and(scoreModeTrigger()).debounce(0.1, DebounceType.kBoth)
+        .and(scoreModeTrigger())
       .whileTrue(m_drivetrainCommandFactory.pointWheelsinX());
     m_robotCommandFactory.atAngleTrigger().negate()
       .or(driverInputTrigger())
@@ -485,6 +487,7 @@ public class RobotContainer {
     SmartDashboard.putBoolean("robotCommandFactory/readyToShootTrigger", m_robotCommandFactory.getReadyToShootTrigger().getAsBoolean());
     SmartDashboard.putBoolean("robotCommandFactory/atAngle", m_robotCommandFactory.atAngle());
     SmartDashboard.putBoolean("robotCommandFactory/atVelocity", m_robotCommandFactory.atVelocity());
+    SmartDashboard.putBoolean("robotCommandFactory/driverInputTrigger", driverInputTrigger().getAsBoolean());
 
     SmartDashboard.putBoolean("robotCommandFactory/scoreMode", scoreMode);
   }
@@ -589,7 +592,7 @@ public class RobotContainer {
    */
   private void createNamedCommands() {
 
-    new EventTrigger("deploy intake trigger").onTrue(m_pivot.zeroPivotCommand()); 
+    new EventTrigger("deploy intake trigger").onTrue(m_robotCommandFactory.autoZeroPivotCommand()); 
     new EventTrigger("intake trigger").onTrue(m_robotCommandFactory.autoIntakeModeCommand());
     new EventTrigger("shoot trigger").onTrue(m_robotCommandFactory.autoShootWithVisionCommand().withTimeout(AutoConstants.AUTO_SHOOT_TIMEOUT)); // TODO: tune timeout
     new EventTrigger("shoot cleanup trigger").onTrue(m_robotCommandFactory.autoShootWithVisionCommand().withTimeout(AutoConstants.AUTO_SHOOT_CLEANUP_TIMEOUT));

@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.RobotConstants;
+import frc.robot.utils.MatchTimeTracker;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -101,6 +102,9 @@ public class Robot extends TimedRobot {
     m_robotContainer.logValues();
 
     SmartDashboard.putNumber("batteryVoltage", RobotController.getBatteryVoltage());
+
+    // Update match time tracking
+    MatchTimeTracker.updateMatchTime();
 
     // --- LOOP TIMING END ---
     double loopEndTime = Timer.getFPGATimestamp();
