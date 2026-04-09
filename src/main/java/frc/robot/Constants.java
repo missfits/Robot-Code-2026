@@ -360,7 +360,7 @@ public final class Constants {
     // Motor limits
     public static final int INFLUENCER_STATOR_LIMIT = 80;
     public static final int FOLLOWER_STATOR_LIMIT = 80;
-    public static final int INFLUENCER_SUPPLY_LIMIT = 35;
+    public static final int INFLUENCER_SUPPLY_LIMIT = 40;
     public static final int FOLLOWER_SUPPLY_LIMIT = INFLUENCER_SUPPLY_LIMIT;
 
     public static final boolean IS_INFLUENCER_INVERTED = false;
@@ -445,7 +445,7 @@ public final class Constants {
     public static final int INFLUENCER_MOTOR_STATOR_LIMIT = 80;
     public static final int FOLLOWER_MOTOR_STATOR_LIMIT = 80;
     public static final int THIRD_MOTOR_STATOR_LIMIT = 80;
-    public static final int INFLUENCER_MOTOR_SUPPLY_LIMIT = 35;
+    public static final int INFLUENCER_MOTOR_SUPPLY_LIMIT = 40;
     public static final int FOLLOWER_MOTOR_SUPPLY_LIMIT = INFLUENCER_MOTOR_SUPPLY_LIMIT;
     public static final int THIRD_MOTOR_SUPPLY_LIMIT = INFLUENCER_MOTOR_SUPPLY_LIMIT;
 
@@ -725,7 +725,7 @@ public final class Constants {
   }
 
   public static class AutoConstants {
-    public static final double AUTO_SHOOT_TIMEOUT = 2.53; // in seconds
+    public static final double AUTO_SHOOT_TIMEOUT = 2.7; // in seconds
     public static final double AUTO_SHOOT_CLEANUP_TIMEOUT = 5;
     public static final double AUTO_SHOOT_FLEX_TIMEOUT = 5;
 

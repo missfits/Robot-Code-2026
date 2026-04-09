@@ -193,7 +193,6 @@ public class RobotContainer {
 
     // x (on true): intake + set scoreMode to false
     m_driverJoystick.x().and(m_driverJoystick.leftBumper().negate()).onTrue(m_robotCommandFactory.intakeModeCommand());
-    m_driverJoystick.x().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_pivot.repeatingZeroPivotCommand());
     m_driverJoystick.x().and(m_driverJoystick.leftBumper().negate()).onTrue(
       Commands.runOnce(() -> scoreMode = false));
 

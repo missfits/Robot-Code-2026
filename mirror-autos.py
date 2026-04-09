@@ -82,53 +82,56 @@ def mirror_auto(input_file, output_file):
 
 def main():
     base_path = "src/main/deploy/pathplanner"
-    
-    # Define outpost paths to mirror (based on the original outpost files)
-    outpost_paths = [
-        "1st outpost shoot",
-        "fast outpost shoot",
-        "outpost flex pickup",
-        "outpost flex bump",
-        "outpost flex center",
-        "2nd outpost cleanup",
-        "2nd outpost shoot",
-        "outpost center half neutral zone"
-    ]
-    
-    # Define outpost autos to mirror
-    outpost_autos = [
-        "outpost cleanup",
-        "outpost fast",
-        "outpost shoot",
-        "outpost flex",
-        "outpost center flex"
-    ]
-    
+
+    # Automatically find all files with "outpost" in the name
+    paths_dir = os.path.join(base_path, "paths")
+    autos_dir = os.path.join(base_path, "autos")
+
+    outpost_paths = []
+    outpost_autos = []
+
+    # Scan for all .path files containing "outpost"
+    if os.path.exists(paths_dir):
+        for filename in os.listdir(paths_dir):
+            if filename.endswith(".path") and "outpost" in filename:
+                # Remove the .path extension to get the path name
+                path_name = filename[:-5]
+                outpost_paths.append(path_name)
+
+    # Scan for all .auto files containing "outpost"
+    if os.path.exists(autos_dir):
+        for filename in os.listdir(autos_dir):
+            if filename.endswith(".auto") and "outpost" in filename:
+                # Remove the .auto extension to get the auto name
+                auto_name = filename[:-5]
+                outpost_autos.append(auto_name)
+
+    # Sort for consistent output
+    outpost_paths.sort()
+    outpost_autos.sort()
+
     # Mirror paths
     print(f"Mirroring outpost paths to depot paths (field width: {FIELD_WIDTH} m)...")
+    print(f"Found {len(outpost_paths)} outpost path(s) to mirror")
     for path_name in outpost_paths:
         input_file = os.path.join(base_path, "paths", f"{path_name}.path")
         output_name = path_name.replace("outpost", "depot")
         output_file = os.path.join(base_path, "paths", f"{output_name}.path")
-        
-        if os.path.exists(input_file):
-            mirror_path(input_file, output_file)
-        else:
-            print(f"Warning: Input file not found: {input_file}")
-    
+
+        mirror_path(input_file, output_file)
+
     # Mirror autos
-    print("\nMirroring outpost autos to depot autos...")
+    print(f"\nMirroring outpost autos to depot autos...")
+    print(f"Found {len(outpost_autos)} outpost auto(s) to mirror")
     for auto_name in outpost_autos:
         input_file = os.path.join(base_path, "autos", f"{auto_name}.auto")
         output_name = auto_name.replace("outpost", "depot")
         output_file = os.path.join(base_path, "autos", f"{output_name}.auto")
-        
-        if os.path.exists(input_file):
-            mirror_auto(input_file, output_file)
-        else:
-            print(f"Warning: Input file not found: {input_file}")
-    
+
+        mirror_auto(input_file, output_file)
+
     print("\nMirroring complete!")
+    print(f"Total: {len(outpost_paths)} path(s) and {len(outpost_autos)} auto(s) mirrored")
 
 if __name__ == "__main__":
     main()
