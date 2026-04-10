@@ -55,6 +55,14 @@ public final class Constants {
     public static double DRIVE_KV = 0.124;
     public static double DRIVE_KA = 0;
 
+    // Drive motor current limits (in Amps)
+    public static final double DRIVE_STATOR_CURRENT_LIMIT = 80;
+    public static final double DRIVE_SUPPLY_CURRENT_LIMIT = 45;
+
+    // Steer motor current limits (in Amps)
+    public static final double STEER_STATOR_CURRENT_LIMIT = 60;
+    public static final double STEER_SUPPLY_CURRENT_LIMIT = 40;
+
     public static double WHEEL_RADIUS_FUDGE_FACTOR = 1.0/1.05;
 
     // Max speeds for drivetrain
