@@ -57,7 +57,8 @@ public final class Constants {
 
     // Drive motor current limits (in Amps)
     public static final double DRIVE_STATOR_CURRENT_LIMIT = 80;
-    public static final double DRIVE_SUPPLY_CURRENT_LIMIT = 45;
+    public static final double DRIVE_SUPPLY_CURRENT_LIMIT = 35;
+    public static final double DRIVE_SUPPLY_CURRENT_LIMIT_AUTO = 45;
 
     // Steer motor current limits (in Amps)
     public static final double STEER_STATOR_CURRENT_LIMIT = 60;

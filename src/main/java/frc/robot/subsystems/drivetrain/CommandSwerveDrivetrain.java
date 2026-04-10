@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -229,6 +230,32 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     ) {
         super(drivetrainConstants, odometryUpdateFrequency, odometryStandardDeviation, visionStandardDeviation, modules);
         configureAutoBuilder();
+    }
+
+    /**
+     * Sets the supply current limit for all drive motors.
+     *
+     * @param currentLimit The supply current limit in amps
+     */
+    private void setDriveMotorSupplyCurrentLimit(double currentLimit) {
+        var currentLimitsConfig = new CurrentLimitsConfigs()
+            .withStatorCurrentLimit(Amps.of(DrivetrainConstants.DRIVE_STATOR_CURRENT_LIMIT))
+            .withStatorCurrentLimitEnable(true)
+            .withSupplyCurrentLimit(currentLimit)
+            .withSupplyCurrentLimitEnable(true);
+
+        // Apply to all modules' drive motors
+        for (var module : getModules()) {
+            module.getDriveMotor().getConfigurator().apply(currentLimitsConfig);
+        }
+    }
+
+    public void setAutoDriveMotorSupplyCurrentLimit() {
+        setDriveMotorSupplyCurrentLimit(DrivetrainConstants.DRIVE_SUPPLY_CURRENT_LIMIT_AUTO);
+    }
+
+    public void setDefaultDriveMotorSupplyCurrentLimit() {
+        setDriveMotorSupplyCurrentLimit(DrivetrainConstants.DRIVE_SUPPLY_CURRENT_LIMIT);
     }
 
     /**
