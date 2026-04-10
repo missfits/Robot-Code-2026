@@ -4,6 +4,13 @@ Power Draw Analysis Script
 Analyzes voltage and current data from CSV to calculate total power draw per mechanism.
 """
 
+"""
+Use AdvantageScope's Export Data feature
+- Export as a CSV (Table)
+Values to export: 
+NT/SmartDashboard/shooter/influencer/actualVoltage,NT/SmartDashboard/shooter/influencer/actualStatorCurrent,NT/SmartDashboard/shooter/follower/actualVoltage,NT/SmartDashboard/shooter/follower/actualStatorCurrent,NT/SmartDashboard/shooter/third/actualVoltage,NT/SmartDashboard/shooter/third/actualStatorCurrent,NT/SmartDashboard/column/influencer/actualVoltage,NT/SmartDashboard/column/influencer/actualStatorCurrent,NT/SmartDashboard/column/follower/actualVoltage,NT/SmartDashboard/column/follower/actualStatorCurrent,NT/SmartDashboard/indexer/actualVoltage,NT/SmartDashboard/indexer/actualStatorCurrent,NT/SmartDashboard/roller/actualVoltage,NT/SmartDashboard/roller/actualStatorCurrent,NT/SmartDashboard/pivot/actualVoltage,NT/SmartDashboard/pivot/actualStatorCurrent,NT/drivetrain/Module0/DriveMotorVoltage,NT/drivetrain/Module0/DriveMotorStatorCurrent,NT/drivetrain/Module0/SteerMotorVoltage,NT/drivetrain/Module0/SteerMotorStatorCurrent,NT/drivetrain/Module1/DriveMotorVoltage,NT/drivetrain/Module1/DriveMotorStatorCurrent,NT/drivetrain/Module1/SteerMotorVoltage,NT/drivetrain/Module1/SteerMotorStatorCurrent,NT/drivetrain/Module2/DriveMotorVoltage,NT/drivetrain/Module2/DriveMotorStatorCurrent,NT/drivetrain/Module2/SteerMotorVoltage,NT/drivetrain/Module2/SteerMotorStatorCurrent,NT/drivetrain/Module3/DriveMotorVoltage,NT/drivetrain/Module3/DriveMotorStatorCurrent,NT/drivetrain/Module3/SteerMotorVoltage,NT/drivetrain/Module3/SteerMotorStatorCurrent
+"""
+
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
