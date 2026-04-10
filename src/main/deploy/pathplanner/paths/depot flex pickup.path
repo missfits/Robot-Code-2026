@@ -16,48 +16,48 @@
     },
     {
       "anchor": {
-        "x": 8.119423828125,
-        "y": 5.4510000000000005
+        "x": 7.407549551504631,
+        "y": 5.576766059027778
       },
       "prevControl": {
-        "x": 7.642344580914876,
-        "y": 5.79229206615544
+        "x": 6.930470304294506,
+        "y": 5.918058125183217
       },
       "nextControl": {
-        "x": 8.471161892361113,
-        "y": 5.199374276620371
+        "x": 7.759287615740742,
+        "y": 5.325140335648149
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.534702763310186,
-        "y": 3.946934823495371
+        "x": 6.902282841435185,
+        "y": 4.308120804398149
       },
       "prevControl": {
-        "x": 8.414245227617757,
-        "y": 3.9603932731640556
+        "x": 7.781914490133618,
+        "y": 4.313044115864745
       },
       "nextControl": {
-        "x": 6.038257740162037,
-        "y": 3.924036747685186
+        "x": 5.49559302662037,
+        "y": 4.300247540509259
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.559956958912037,
+        "x": 5.806324508101852,
         "y": 5.4510000000000005
       },
       "prevControl": {
-        "x": 5.730938006365741,
-        "y": 4.527653645833334
+        "x": 5.796089265046297,
+        "y": 4.663795500578704
       },
       "nextControl": {
-        "x": 5.506129009841022,
-        "y": 5.741686255974937
+        "x": 5.810167943042569,
+        "y": 5.7466030708936815
       },
       "isLocked": false,
       "linkedName": null
@@ -114,6 +114,19 @@
       "constraints": {
         "maxVelocity": 2.0,
         "maxAcceleration": 2.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    },
+    {
+      "name": "don't get beached",
+      "minWaypointRelativePos": 2.1269217914438507,
+      "maxWaypointRelativePos": 3.005389371657754,
+      "constraints": {
+        "maxVelocity": 1.5,
+        "maxAcceleration": 2.5,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.0,
