@@ -535,7 +535,7 @@ public final class Constants {
     public static final double SHOOTER_ANGLE_DEGREES = 71.2393048349; // measured in CAD
 
     // Grippy tape offset for shooter lookup table
-    public static final double SHOOTER_GRIP_TAPE_OFFSET = 0.5;
+    public static final double SHOOTER_GRIP_TAPE_SCALAR = 0.5;
   }
   
   public static class VisionConstants {
