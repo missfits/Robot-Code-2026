@@ -1039,7 +1039,7 @@ public class RobotCommandFactory {
       .and(robotSpeedLow);
 
     // Add debouncing - especially important on the falling edge to prevent rapid on/off
-    return readyTrigger.debounce(ShooterConstants.READY_TO_SHOOT_DEBOUNCE_TIME, DebounceType.kBoth);
+    return readyTrigger.debounce(ShooterConstants.READY_TO_SHOOT_DEBOUNCE_TIME, DebounceType.kFalling);
   }
 
   // syntactic sugar
