@@ -17,21 +17,21 @@ public class ShooterLookupTable {
   static {
     // Initialize the lookup table with placeholder values
     // Format: distance in meters -> velocity in rotations per second
-    DISTANCE_TO_VELOCITY_MAP.put(1.5, 37.);   // prolly too close but can still make some 
-    DISTANCE_TO_VELOCITY_MAP.put(1.7, 38.);   // closest while being consistent 
-    DISTANCE_TO_VELOCITY_MAP.put(2.0, 40.);   
-    DISTANCE_TO_VELOCITY_MAP.put(2.25, 42.);   
-    DISTANCE_TO_VELOCITY_MAP.put(2.5, 45.);   
-    DISTANCE_TO_VELOCITY_MAP.put(2.8, 47.3);  // between trench and bump
-    DISTANCE_TO_VELOCITY_MAP.put(3.0, 49.);
-    DISTANCE_TO_VELOCITY_MAP.put(3.15, 49.);  // tower 
-    DISTANCE_TO_VELOCITY_MAP.put(3.5, 51.);
-    DISTANCE_TO_VELOCITY_MAP.put(3.7, 51.);   // trench 
-    DISTANCE_TO_VELOCITY_MAP.put(4.0, 54.);   
-    DISTANCE_TO_VELOCITY_MAP.put(4.5, 57.);   
-    DISTANCE_TO_VELOCITY_MAP.put(5.1, 63.);   // corner
-    DISTANCE_TO_VELOCITY_MAP.put(5.6, 65.);   // bogus
-    DISTANCE_TO_VELOCITY_MAP.put(10.0, 70.);   // bogus for shuttling
+    DISTANCE_TO_VELOCITY_MAP.put(1.5, 37. + ShooterConstants.SHOOTER_GRIP_TAPE_OFFSET);   // prolly too close but can still make some 
+    DISTANCE_TO_VELOCITY_MAP.put(1.7, 38. + ShooterConstants.SHOOTER_GRIP_TAPE_OFFSET);   // closest while being consistent 
+    DISTANCE_TO_VELOCITY_MAP.put(2.0, 40. + ShooterConstants.SHOOTER_GRIP_TAPE_OFFSET);   
+    DISTANCE_TO_VELOCITY_MAP.put(2.25, 42. + ShooterConstants.SHOOTER_GRIP_TAPE_OFFSET);   
+    DISTANCE_TO_VELOCITY_MAP.put(2.5, 45. + ShooterConstants.SHOOTER_GRIP_TAPE_OFFSET);   
+    DISTANCE_TO_VELOCITY_MAP.put(2.8, 47.3 + ShooterConstants.SHOOTER_GRIP_TAPE_OFFSET);  // between trench and bump
+    DISTANCE_TO_VELOCITY_MAP.put(3.0, 49. + ShooterConstants.SHOOTER_GRIP_TAPE_OFFSET);
+    DISTANCE_TO_VELOCITY_MAP.put(3.15, 49. + ShooterConstants.SHOOTER_GRIP_TAPE_OFFSET);  // tower 
+    DISTANCE_TO_VELOCITY_MAP.put(3.5, 51. + ShooterConstants.SHOOTER_GRIP_TAPE_OFFSET);
+    DISTANCE_TO_VELOCITY_MAP.put(3.7, 51.+ ShooterConstants.SHOOTER_GRIP_TAPE_OFFSET);   // trench 
+    DISTANCE_TO_VELOCITY_MAP.put(4.0, 54. + ShooterConstants.SHOOTER_GRIP_TAPE_OFFSET);   
+    DISTANCE_TO_VELOCITY_MAP.put(4.5, 57. + ShooterConstants.SHOOTER_GRIP_TAPE_OFFSET);   
+    DISTANCE_TO_VELOCITY_MAP.put(5.1, 63. + ShooterConstants.SHOOTER_GRIP_TAPE_OFFSET);   // corner
+    DISTANCE_TO_VELOCITY_MAP.put(5.6, 65. + ShooterConstants.SHOOTER_GRIP_TAPE_OFFSET);   // bogus
+    DISTANCE_TO_VELOCITY_MAP.put(10.0, 70. + ShooterConstants.SHOOTER_GRIP_TAPE_OFFSET);   // bogus for shuttling
   }
   
   /**

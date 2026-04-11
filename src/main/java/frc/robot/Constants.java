@@ -533,6 +533,9 @@ public final class Constants {
     public static final double SHOOTER_RPS_TO_MPS = Units.inchesToMeters(2*Math.PI*4);
     public static final double SHOOTER_SLIP_FACTOR = 1; // fudge factor for slippage between shooter and fuel; TODO: tune
     public static final double SHOOTER_ANGLE_DEGREES = 71.2393048349; // measured in CAD
+
+    // Grippy tape offset for shooter lookup table
+    public static final double SHOOTER_GRIP_TAPE_OFFSET = 0.5;
   }
   
   public static class VisionConstants {
