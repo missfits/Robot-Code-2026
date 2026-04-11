@@ -222,8 +222,8 @@ public class RobotContainer {
     // a: snap to bump
     m_driverJoystick.a().and(m_driverJoystick.leftBumper().negate()).whileTrue(
       m_drivetrainCommandFactory.snapToBump(m_driverTranslationJoystickValsSupplier));
-    // left bumper + x: shoot close distance (tower)
-    m_driverJoystick.leftBumper().and(m_driverJoystick.x()).onTrue(m_robotCommandFactory.runShooterCloseDistanceCommand());
+    // left bumper + x: shoot far distance for shuttling
+    m_driverJoystick.leftBumper().and(m_driverJoystick.x()).onTrue(m_robotCommandFactory.runShooterFarDistanceCommand());
     // left bumper + y: store pivot
     m_driverJoystick.leftBumper().and(m_driverJoystick.y()).onTrue(m_pivot.storePivotCommand());
     // left bumper + b: snap to hub
