@@ -20,7 +20,7 @@ This is a command-based robot project for the 2026 FRC season with the following
 - **Indexer**: Transports game pieces from roller to column, also serves as an agitator
 - **Column**: Triple rollers that feed game pieces to shooter
 
-**Shooter** :gun: pewpew
+**Shooter** :fuelpump::gun: pewpew
 - Three independent motors (Influencer, Follower, Third) with real-time velocity control
 - **Shoot on the Move**: Dynamic velocity adjustment while translating :chart_with_upwards_trend::chart_with_downwards_trend::chart_with_upwards_trend:
 - Distance/angle lookup table for consistent accuracy across the field
@@ -70,7 +70,7 @@ All mechanism constants are defined in `Constants.java` organized by subsystem:
 - Duty cycle limits
 - Motion magic parameters (for mechanisms with profiled motion)
 
-Each subsystem has its own constants class (e.g., `RollerConstants`, `ShooterConstants`) for organization. :broom:
+Each subsystem has its own constants class (e.g., `RollerConstants`, `ShooterConstants`) for organization. :broom::soap:
 
 ## Motor Hardware Abstraction :hammer_and_wrench:
 
@@ -92,7 +92,7 @@ These classes implement mechanism-specific behavior like gravity feedforward for
 
 The `RobotCommandFactory` centralizes command creation for complex robot behaviors:
 - Intake, scoring, and neutral mode sequences
-- Hub and shuttle target alignment
+- Hub and shuttle target alignment :dart:
 - Dynamic velocity and angle commands via SmartDashboard
 - Coordinated subsystem control
 
