@@ -22,13 +22,13 @@ This is a command-based robot project for the 2026 FRC season with the following
 
 **Shooter** :gun: pewpew
 - Three independent motors (Influencer, Follower, Third) with real-time velocity control
-- **Shoot on the Move**: Dynamic velocity adjustment while translating
+- **Shoot on the Move**: Dynamic velocity adjustment while translating :chart_with_upwards_trend::chart_with_downwards_trend::chart_with_upwards_trend:
 - Distance/angle lookup table for consistent accuracy across the field
 - Independent PID tuning per motor with velocity ramping and timeout protection
 
 **Vision** :eyes:
 - **Pose Estimation**: PhotonVision AprilTag detection with Kalman filter fusion
-- **Multi-Camera System**: Local and global camera pipelines with advanced filtering
+- **Multi-Camera System**: Local and global camera :camera: pipelines with advanced filtering
 - Pose consistency validation, cross-camera consensus, and distance-based filtering
 - Real-time pose updates correct odometry drift during matches
 
@@ -61,7 +61,7 @@ src/main/java/frc/robot/
 └── commands/                  # Command implementations
 ```
 
-## Constants Configuration
+## Constants Configuration :bar_chart:
 
 All mechanism constants are defined in `Constants.java` organized by subsystem:
 - Motor IDs, current limits, velocity targets
@@ -70,7 +70,7 @@ All mechanism constants are defined in `Constants.java` organized by subsystem:
 - Duty cycle limits
 - Motion magic parameters (for mechanisms with profiled motion)
 
-Each subsystem has its own constants class (e.g., `RollerConstants`, `ShooterConstants`) for organization.
+Each subsystem has its own constants class (e.g., `RollerConstants`, `ShooterConstants`) for organization. :broom:
 
 ## Motor Hardware Abstraction :hammer_and_wrench:
 
@@ -98,11 +98,11 @@ The `RobotCommandFactory` centralizes command creation for complex robot behavio
 
 This keeps command logic organized and reusable across teleop and autonomous modes.
 
-## Autonomous Routines
+## Autonomous Routines :auto_rickshaw: 
 
 Autonomous commands are defined in `Autos.java` and integrated with **PathPlanner** for trajectory generation:
 
-- **Path Following**: Uses PathPlanner for smooth, optimized trajectories
+- **Path Following** :running::walking:: Uses PathPlanner for smooth, optimized trajectories
 - **Named Commands**: Registered commands allow easy event-based actions during auto (intake, shoot, etc.)
 - **Dynamic Tuning**: Auto parameters (velocities, angles, timeouts) configurable via Constants.java
 - **Vision-Aided**: Pose estimation corrects path tracking in real-time
@@ -115,7 +115,7 @@ Autonomous routines combine:
 
 See **PathPlanner Documentation** (https://pathplanner.dev/) for trajectory creation and tuning.
 
-## Building :house_buildings: and Running :woman-running:
+## Building :office: and Running :runner:
 
 ### Prerequisites
 - JDK 17 or later
@@ -127,7 +127,7 @@ See **PathPlanner Documentation** (https://pathplanner.dev/) for trajectory crea
 ./gradlew compileJava
 ```
 
-### Test
+### Test :test_tube:
 ```bash
 ./gradlew test
 ```
@@ -153,7 +153,7 @@ See **PathPlanner Documentation** (https://pathplanner.dev/) for trajectory crea
 - [PhotonVision Documentation](https://docs.photonvision.org/)
 - [PathPlanner Documentation](https://pathplanner.dev/)
 
-## Team Information :spiral_note_pad::do_not_litter:
+## Team Information :notebook::do_not_litter:
 
 **Team Name**: The Missfits
 **Team Number**: FRC 6418
