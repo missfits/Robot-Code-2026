@@ -8,31 +8,31 @@ This is a command-based robot project for the 2026 FRC season with the following
 
 ### Subsystems
 
-**Drivetrain**
+**Drivetrain** :car::dash:
 - Swerve drivetrain using CTRE Phoenix 6
 - Full 360-degree movement with translation and rotation
 - Operator perspective support for Red/Blue alliance
 - Telemetry logging for debugging
 
-**Intake System** (2-stage intake)
+**Intake System** (2-stage intake) :open_mouth::poultry_leg:
 - **Pivot**: Arm that deploys/stores the intake mechanism
 - **Roller**: Primary intake mechanism with velocity control
 - **Indexer**: Transports game pieces from roller to column, also serves as an agitator
 - **Column**: Triple rollers that feed game pieces to shooter
 
-**Shooter**
+**Shooter** :gun: pewpew
 - Three independent motors (Influencer, Follower, Third) with real-time velocity control
 - **Shoot on the Move**: Dynamic velocity adjustment while translating
 - Distance/angle lookup table for consistent accuracy across the field
 - Independent PID tuning per motor with velocity ramping and timeout protection
 
-**Vision**
+**Vision** :eyes:
 - **Pose Estimation**: PhotonVision AprilTag detection with Kalman filter fusion
 - **Multi-Camera System**: Local and global camera pipelines with advanced filtering
 - Pose consistency validation, cross-camera consensus, and distance-based filtering
 - Real-time pose updates correct odometry drift during matches
 
-### Key Features
+### Key :key: Features 
 
 - **Dynamic Tuning**: SmartDashboard integration for real-time tuning of velocities, angles, and other parameters
 - **Motor Safety**: Dual current limiting (stator + supply) on all motors to protect mechanisms and battery
@@ -40,7 +40,7 @@ This is a command-based robot project for the 2026 FRC season with the following
 - **Command-Based Architecture**: Uses WPILib command-based programming for autonomous and teleop control
 - **Hardware Abstraction**: IO hardware classes separate motor control logic from subsystem interface
 
-## Project Structure
+## Project Structure :building_construction:
 
 ```
 src/main/java/frc/robot/
@@ -72,7 +72,7 @@ All mechanism constants are defined in `Constants.java` organized by subsystem:
 
 Each subsystem has its own constants class (e.g., `RollerConstants`, `ShooterConstants`) for organization.
 
-## Motor Hardware Abstraction
+## Motor Hardware Abstraction :hammer_and_wrench:
 
 ### MechanismsIOHardwareBase
 Base class for all motor IO implementations that handles:
@@ -88,7 +88,7 @@ Each mechanism has its own IO hardware class that extends `MechanismsIOHardwareB
 
 These classes implement mechanism-specific behavior like gravity feedforward for Pivot.
 
-## Command Factory Pattern
+## Command Factory :factory: Pattern 
 
 The `RobotCommandFactory` centralizes command creation for complex robot behaviors:
 - Intake, scoring, and neutral mode sequences
@@ -115,7 +115,7 @@ Autonomous routines combine:
 
 See **PathPlanner Documentation** (https://pathplanner.dev/) for trajectory creation and tuning.
 
-## Building and Running
+## Building :house_buildings: and Running :woman-running:
 
 ### Prerequisites
 - JDK 17 or later
@@ -153,7 +153,7 @@ See **PathPlanner Documentation** (https://pathplanner.dev/) for trajectory crea
 - [PhotonVision Documentation](https://docs.photonvision.org/)
 - [PathPlanner Documentation](https://pathplanner.dev/)
 
-## Team Information
+## Team Information :spiral_note_pad::do_not_litter:
 
 **Team Name**: The Missfits
 **Team Number**: FRC 6418
