@@ -153,7 +153,8 @@ public class RobotContainer {
     if (Utils.isSimulation()) {
       configureBindingsSimulation();
     } else {
-      configureBindingsCompetition();
+      configureBindingsOutreach();
+      // configureBindingsCompetition();
       configureBindingsTestingMechanisms();
       configureBindingsVision();
     }
@@ -241,6 +242,83 @@ public class RobotContainer {
     m_driverJoystick.rightTrigger().whileTrue(m_robotCommandFactory.outtakeCommand());
     m_driverJoystick.rightTrigger().onTrue(
       Commands.runOnce(() -> scoreMode = false));
+
+    // center d-pad: zero pivot
+    m_driverJoystick.povCenter().negate().whileTrue(m_pivot.zeroPivotCommand());
+
+    // ----------
+
+    // --- OPERATOR COMMANDS ---
+    // x: intake + indexer forward
+    m_operatorJoystick.x().and(m_operatorJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runRollerIndexerCommand());
+    // y: pivot down
+    m_operatorJoystick.y().and(m_operatorJoystick.leftBumper().negate()).whileTrue(m_pivot.voltageDeployPivotCommand());
+    // b: indexer + column forward
+    m_operatorJoystick.b().and(m_operatorJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runIndexerColumnCommand());
+    // a: intake, indexer, column forwards
+    m_operatorJoystick.a().and(m_operatorJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runAllRollersCommand());
+    // left bumper + x: intake + indexer backwards
+    m_operatorJoystick.leftBumper().and(m_operatorJoystick.x()).whileTrue(m_robotCommandFactory.runRollerIndexerBackCommand());
+    // left bumper + y: pivot up
+    m_operatorJoystick.leftBumper().and(m_operatorJoystick.y()).whileTrue(m_pivot.voltageStorePivotCommand());
+    // left bumper + b: indexer + column backwards
+    m_operatorJoystick.leftBumper().and(m_operatorJoystick.b()).whileTrue(m_robotCommandFactory.runIndexerColumnBackCommand());
+    // left bumper + a: intake, indexer, column backwards
+    m_operatorJoystick.leftBumper().and(m_operatorJoystick.a()).whileTrue(m_robotCommandFactory.runAllRollersBackCommand());
+    // right bumper: score speed 1
+    m_operatorJoystick.rightBumper().whileTrue(m_robotCommandFactory.runShooterCloseDistanceCommand());
+    // left trigger: score speed 2
+    m_operatorJoystick.leftTrigger().whileTrue(m_robotCommandFactory.runShooterMediumDistanceCommand());
+    // right trigger: score speed 3
+    m_operatorJoystick.rightTrigger().whileTrue(m_robotCommandFactory.runShooterFarDistanceCommand());
+
+    m_operatorJoystick.povCenter().negate().whileTrue(new InstantCommand(() -> m_pivot.resetToDeployPosition()));
+
+
+    m_drivetrain.registerTelemetry(logger::telemeterize);
+
+    configureDefaultCommands();
+  }
+
+  private void configureBindingsOutreach() {
+
+    // --- DRIVER COMMANDS ---
+    // Default drive
+    m_drivetrain.setDefaultCommand(
+      // Drivetrain will execute this command periodically
+      m_drivetrainCommandFactory.defaultDrive(
+        m_driverTranslationJoystickValsSupplier,
+        m_driverRotationJoystickValsSupplier
+      )
+    );
+
+    // x (on true): intake
+    m_driverJoystick.x().and(m_driverJoystick.leftBumper().negate()).onTrue(m_robotCommandFactory.intakeModeCommand());
+    // y (on true): neutral (stops everything)
+    m_driverJoystick.y().and(m_driverJoystick.leftBumper().negate()).onTrue(m_robotCommandFactory.neutralModeCommand());
+    // b (on true): shoot (snaps to hub, shoots with vision)
+    m_driverJoystick.b().and(m_driverJoystick.leftBumper().negate()).onTrue(
+      m_robotCommandFactory.shootWithVisionTestCommand(m_driverTranslationJoystickValsSupplier));
+    // a: shoot (outtakes fuel at set velocity; no snap, no vision)
+    m_driverJoystick.a().and(m_driverJoystick.leftBumper().negate()).whileTrue(
+      m_robotCommandFactory.runShooterCloseDistanceCommand());
+
+    // left bumper + x: deploy pivot
+    m_driverJoystick.leftBumper().and(m_driverJoystick.x()).onTrue(m_pivot.deployPivotCommand());
+    // left bumper + y: store pivot
+    m_driverJoystick.leftBumper().and(m_driverJoystick.y()).onTrue(m_pivot.storePivotCommand());
+    // left bumper + b: snap to hub
+    m_driverJoystick.leftBumper().and(m_driverJoystick.b()).whileTrue(
+      m_robotCommandFactory.snapToHubCommand(m_driverTranslationJoystickValsSupplier));
+    // left bumper + a: point wheels in x
+    m_driverJoystick.leftBumper().and(m_driverJoystick.a()).whileTrue(m_drivetrainCommandFactory.pointWheelsinX());
+
+    // right bumper: slowmode
+    m_drivetrainCommandFactory.setSlowmodeButton(m_driverJoystick.rightBumper());
+    // left trigger: shuttle
+    m_driverJoystick.leftTrigger().whileTrue(m_robotCommandFactory.shuttleCommand(m_driverTranslationJoystickValsSupplier));
+    // right trigger: outtake / everything backwards (voltage -5)
+    m_driverJoystick.rightTrigger().whileTrue(m_robotCommandFactory.outtakeCommand());
 
     // center d-pad: zero pivot
     m_driverJoystick.povCenter().negate().whileTrue(m_pivot.zeroPivotCommand());
