@@ -35,7 +35,8 @@ public final class Constants {
     public static final double STEER_JOYSTICK_DEADBAND = 0.1;
 
     // Slowmode factor for reduced speed control
-    public static final double SLOWMODE_FACTOR = 0.6;
+    public static final double PERMANENT_SLOWMODE_FACTOR = 0.6;
+    public static final double SLOWMODE_FACTOR = 0.36;
   }
 
   public static class DrivetrainConstants {

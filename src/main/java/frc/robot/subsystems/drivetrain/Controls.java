@@ -43,6 +43,10 @@ public class Controls {
             x = x * OperatorConstants.SLOWMODE_FACTOR;
             y = y * OperatorConstants.SLOWMODE_FACTOR;
         }
+        else {
+            x = x * OperatorConstants.PERMANENT_SLOWMODE_FACTOR;
+            y = y * OperatorConstants.PERMANENT_SLOWMODE_FACTOR;
+        }
 
         return new JoystickVals(x * scaleFactor, y * scaleFactor);
     }
