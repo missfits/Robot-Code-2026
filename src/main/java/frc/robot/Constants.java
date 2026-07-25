@@ -55,6 +55,14 @@ public final class Constants {
     public static double DRIVE_KV = 0.124;
     public static double DRIVE_KA = 0;
 
+    // Drive motor current limits (in Amps)
+    public static final double DRIVE_STATOR_CURRENT_LIMIT = 80;
+    public static final double DRIVE_SUPPLY_CURRENT_LIMIT = 45;
+
+    // Steer motor current limits (in Amps)
+    public static final double STEER_STATOR_CURRENT_LIMIT = 60;
+    public static final double STEER_SUPPLY_CURRENT_LIMIT = 40;
+
     public static double WHEEL_RADIUS_FUDGE_FACTOR = 1.0/1.05;
 
     // Max speeds for drivetrain
@@ -272,7 +280,7 @@ public final class Constants {
     public static double OUTTAKE_VELOCITY = -80.0;
     public static double RECYCLE_VELOCITY = 70.0;
     public static double INTAKE_VELOCITY = 80.0;
-    public static double SHOOT_VELOCITY = 70.0;
+    public static double SHOOT_VELOCITY = 50.0;
     public static double SHUTTLE_VELOCITY = INTAKE_VELOCITY;
 
 
@@ -308,7 +316,7 @@ public final class Constants {
 
     // Motor limits
     public static final int MOTOR_STATOR_LIMIT = 80;
-    public static final int MOTOR_SUPPLY_LIMIT = 25;
+    public static final int MOTOR_SUPPLY_LIMIT = 20;
 
     public static final boolean IS_INVERTED = true;
 
@@ -329,8 +337,8 @@ public final class Constants {
     public static double MANUAL_VELOCITY = 80.0;
     public static double MANUAL_BACK_VELOCITY = -80.0;
     public static double OUTTAKE_VELOCITY = -80.0;
-    public static double RECYCLE_VELOCITY = 50.0;
-    public static double INTAKE_VELOCITY = 50.0;
+    public static double RECYCLE_VELOCITY = 40.0;
+    public static double INTAKE_VELOCITY = 40.0;
     public static double SHUTTLE_VELOCITY = INTAKE_VELOCITY;
 
     // Testing velocities

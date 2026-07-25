@@ -3,6 +3,8 @@
 
 src/main/java/frc/robot/BuildConstants.java
 
+result_power_analysis.png
+
 ### C++ ###
 # Prerequisites
 *.d
