@@ -31,7 +31,7 @@ reach the drivetrain's pose estimator.
 Per camera:
 - If PhotonVision reports a high-ambiguity single-tag result, we reconstruct both
   candidate poses and keep the one that agrees with the gyro heading
-  (`resolveHighAmbiguityPose`). If neither is close, we drop it.
+  (`resolveHighAmbiguityPose`). 
 - Filter out poses with unreasonable z / roll / pitch (`LocalPoseZRollPitchFilter`).
 - Check that the last few readings from this camera are consistent with each other
   (implied speed between readings), OR that the reading is within some distance of the
@@ -60,7 +60,7 @@ the shooter wheel speed and robot drivetrain heading. `HubCalculations.calculate
 4. Subtract the robot's field-relative velocity from the desired ball velocity and use the
    result's angle as the drivetrain heading.
 
-The same function is used for shuttling to the near corners of the field.
+A similar function is used for shuttling to the near corners of the field.
 
 ## Teleop Control Scheme
 
