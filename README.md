@@ -95,8 +95,10 @@ src/main/java/frc/robot/
 │   ├── MechanismsIOHardwareBase.java  # Base class for motor IO
 │   ├── MechanismsSubsystemBase.java   # Base class for mechanisms
 │   └── RobotCommandFactory.java       # Factory for creating robot-wide commands
-├── utils/                     # Utility classes
-└── commands/                  # Command implementations for autos
+└── utils/                     # Utility classes
+
+src/main/deploy/
+├── pathplanner/                # PathPlanner paths and autos
 ```
 
 ## Running it
