@@ -70,7 +70,7 @@ Each mode is one command that operates the whole robot, so the driver switches m
 the code handles sequencing (spin up, wait for velocity, feed, etc). 
 Note that score mode is "dynamic": it keeps re-aiming while the robot moves. 
 
-## Tuning and telemetry
+## Tuning and Telemetry
 
 Most values determining robot state are pushed to SmartDashboard. Using Elastic, we can view real-time values 
 as the robot is running. With `DataLogManager`, we record these values, which can be replayed after the fact. 
@@ -101,7 +101,7 @@ src/main/deploy/
 ├── pathplanner/                # PathPlanner paths and autos
 ```
 
-## Running it
+## Running the Project
 
 Standard WPILib project: open in VS Code with the WPILib extension, deploy to the roboRIO.
 `./gradlew test` runs the unit tests.
