@@ -79,6 +79,13 @@ Through our base mechanism classes, (`MechanismsIOHardwareBase`), the state of e
 comprehensively and consistently logged. 
 We also implemented a system to tune robot constants through SmartDashboard and Elastic without needing to redeploy code. 
 
+## Autos
+
+We use PathPlanner. Paths and autos are in `src/main/deploy/pathplanner/`; named commands are
+registered in `RobotContainer`. We ran 2-pass auto to grab fuel from the center on both sides, and a special
+"flex" 1-pass auto that plays well as a third scoring routine running in offset with two other center-going robots.
+Our pathplanner folder also contains some other quirky autos. 
+
 ## Project Structure
 
 ```
