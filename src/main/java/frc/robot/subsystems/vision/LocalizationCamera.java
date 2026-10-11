@@ -197,23 +197,30 @@ public class LocalizationCamera {
       m_filterPipeline.updateSmartDashboardToggles();
     }
 
+    SmartDashboard.putNumber(m_logString + "/initial/result_size", results.size());
+
     if (!results.isEmpty()) {
       var result = results.get(results.size() - 1); // latest camera reading
 
       // updating + filtering runs on a copy pose estimator so filtered don't pollute the estimator 
       PhotonPoseEstimator candidatePoseEstimator = copyPoseEstimator();
       var poseEstimatorOutput = candidatePoseEstimator.update(result);
+      SmartDashboard.putBoolean(m_logString + "/initial/poseEstimatorPresent", poseEstimatorOutput.isPresent());
+
       
       // If present, create new CameraReading and run through pose ambiguity + local filter pipeline.
       if (poseEstimatorOutput.isPresent()) {
         EstimatedRobotPose estimatedPose = poseEstimatorOutput.get();
         String poseAmbiguityStatus = "happy";
+        SmartDashboard.putNumber(m_logString + "/initial/numTargets", result.getTargets().size());
+        SmartDashboard.putNumber(m_logString + "/initial/poseAmbiguity", result.getBestTarget().getPoseAmbiguity());
 
         // NOTE: doesn't make sense as a LocalVisionFilter bc pose ambiguity is attached to target, not camera reading
         if (result.getTargets().size() == 1 && result.getBestTarget().getPoseAmbiguity() > VisionConstants.MAX_POSE_AMBIGUITY) {
           // When PhotonVision reports high ambiguity, compare both candidates against
           // the robot's current heading and keep the one that is more consistent.
           var resolvedPose = resolveHighAmbiguityPose(candidatePoseEstimator, result.getBestTarget(), estimatedPose);
+          SmartDashboard.putBoolean(m_logString + "/initial/ambiguousPoseResolved", resolvedPose.isPresent());
           if (resolvedPose.isEmpty()) {
             SmartDashboard.putString(m_logString + "/filtering/poseAmbiguityStatus", "rejectedHighAmbiguity"); // alternate pose DNE
             return Optional.empty();
