@@ -371,7 +371,7 @@ public final class Constants {
     public static final int INFLUENCER_SUPPLY_LIMIT = 40;
     public static final int FOLLOWER_SUPPLY_LIMIT = INFLUENCER_SUPPLY_LIMIT;
 
-    public static final boolean IS_INFLUENCER_INVERTED = true;
+    public static final boolean IS_INFLUENCER_INVERTED = false;
 
     // Duty cycle limits
     public static final double PEAK_FORWARD_DUTY_CYCLE = 1;
@@ -458,7 +458,7 @@ public final class Constants {
     public static final int FOLLOWER_MOTOR_SUPPLY_LIMIT = INFLUENCER_MOTOR_SUPPLY_LIMIT;
     public static final int THIRD_MOTOR_SUPPLY_LIMIT = INFLUENCER_MOTOR_SUPPLY_LIMIT;
 
-    public static final boolean IS_INFLUENCER_INVERTED = true;
+    public static final boolean IS_INFLUENCER_INVERTED = false;
 
     // Duty cycle limits
     public static final double PEAK_FORWARD_DUTY_CYCLE = 1;
@@ -473,7 +473,7 @@ public final class Constants {
 
     public static double SHOOTER_DISTANCE1_VELOCITY = 47.3; // between trench and bump 
     public static double SHOOTER_DISTANCE2_VELOCITY = 49.;  // tower 
-    public static double SHOOTER_DISTANCE3_VELOCITY = 63.;  // corner 
+    public static double SHOOTER_DISTANCE3_VELOCITY = 100.;  // corner 
 
     // Testing velocities
     public static double TESTING_VELOCITY = 40.0;
