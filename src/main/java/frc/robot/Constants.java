@@ -371,7 +371,7 @@ public final class Constants {
     public static final int INFLUENCER_SUPPLY_LIMIT = 40;
     public static final int FOLLOWER_SUPPLY_LIMIT = INFLUENCER_SUPPLY_LIMIT;
 
-    public static final boolean IS_INFLUENCER_INVERTED = false;
+    public static final boolean IS_INFLUENCER_INVERTED = true;
 
     // Duty cycle limits
     public static final double PEAK_FORWARD_DUTY_CYCLE = 1;
