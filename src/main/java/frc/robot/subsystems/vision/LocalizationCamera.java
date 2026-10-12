@@ -214,6 +214,9 @@ public class LocalizationCamera {
         String poseAmbiguityStatus = "happy";
         SmartDashboard.putNumber(m_logString + "/initial/numTargets", result.getTargets().size());
         SmartDashboard.putNumber(m_logString + "/initial/poseAmbiguity", result.getBestTarget().getPoseAmbiguity());
+        SmartDashboard.putNumber(m_logString + "/initial/targetTransformX", result.getBestTarget().getBestCameraToTarget().getX());
+        SmartDashboard.putNumber(m_logString + "/initial/targetTransformY", result.getBestTarget().getBestCameraToTarget().getY());
+        SmartDashboard.putNumber(m_logString + "/initial/targetTransformZ", result.getBestTarget().getBestCameraToTarget().getZ());
 
         // NOTE: doesn't make sense as a LocalVisionFilter bc pose ambiguity is attached to target, not camera reading
         if (result.getTargets().size() == 1 && result.getBestTarget().getPoseAmbiguity() > VisionConstants.MAX_POSE_AMBIGUITY) {
