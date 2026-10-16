@@ -472,7 +472,7 @@ public final class Constants {
     public static double SHOOTER_BACK_VELOCITY = -1.0;
 
     public static double SHOOTER_DISTANCE1_VELOCITY = 47.3; // between trench and bump 
-    public static double SHOOTER_DISTANCE2_VELOCITY = 49.;  // tower 
+    public static double SHOOTER_DISTANCE2_VELOCITY = 62;  // tower 
     public static double SHOOTER_DISTANCE3_VELOCITY = 100.;  // corner 
 
     // Testing velocities
@@ -481,7 +481,7 @@ public final class Constants {
     public static double RECYCLE_VELOCITY = 10.0;
     public static double SHUTTLE_VELOCITY = 50.0;
     public static double OUTTAKE_VOLTAGE = -3.0;
-    public static double INTIAL_ADDITIONAL_VELOCITY = 15.0; 
+    public static double INTIAL_ADDITIONAL_VELOCITY = 10.0; 
 
     public static double SHOOTER_VOLTAGE = 1.0;
     public static double SHOOTER_BACK_VOLTAGE = -1.0;
