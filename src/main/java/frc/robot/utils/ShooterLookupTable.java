@@ -4,6 +4,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
 
+import edu.wpi.first.math.MathUtil;
+import frc.robot.Constants.ShooterConstants;
+
 /**
  * Lookup table for mapping distance from hub to shooter velocity.
  * Uses linear interpolation to find the appropriate velocity for a given distance.
@@ -58,9 +61,14 @@ public class ShooterLookupTable {
       return Optional.empty();
     }
 
+    // Calculate multiplier (bogus for calgames based on manual velocities)
+      // clamped for distances between tested manual shooter distances
+    double multiplier = ShooterConstants.SHOOTER_RPM_BASE_MULTIPLIER * (distance - ShooterConstants.SHOOTER_MANUAL_MIN_MULTIPLIER_DISTANCE);
+    multiplier = MathUtil.clamp(multiplier, 1.0, ShooterConstants.SHOOTER_RPM_BASE_MULTIPLIER);
+
     // If both entries are the same (exact match), return that value
     if (lowerEntry.getKey().equals(upperEntry.getKey())) {
-      return Optional.of(lowerEntry.getValue());
+      return Optional.of(lowerEntry.getValue() * multiplier);
     }
 
     // Linear interpolation between the two closest points
@@ -70,7 +78,7 @@ public class ShooterLookupTable {
         distance
     );
 
-    return Optional.of(interpolatedVelocity);
+    return Optional.of(interpolatedVelocity * multiplier);
   }
 
   /**

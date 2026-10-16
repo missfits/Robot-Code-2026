@@ -475,6 +475,11 @@ public final class Constants {
     public static double SHOOTER_DISTANCE2_VELOCITY = 62;  // tower 
     public static double SHOOTER_DISTANCE3_VELOCITY = 100.;  // corner 
 
+    // RPM scaling for ShooterLookupTable based on manual speeds
+    public static double SHOOTER_RPM_BASE_MULTIPLIER = 1.003476;
+    public static double SHOOTER_MANUAL_MIN_MULTIPLIER_DISTANCE = 66.3;
+    // note: for latter, this is the lowest velocity
+
     // Testing velocities
     public static double TESTING_VELOCITY = 40.0;
 
