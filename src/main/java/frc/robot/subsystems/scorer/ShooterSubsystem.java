@@ -22,7 +22,7 @@ public class ShooterSubsystem extends MechanismsSubsystemBase {
     super("shooter");
     resetPosition();
     m_followerIO.followMotor(m_influencerIO, false);
-    m_thirdIO.followMotor(m_influencerIO, false);
+    m_thirdIO.followMotor(m_influencerIO, true);
   }
 
   protected void setVoltage(double volts) {
