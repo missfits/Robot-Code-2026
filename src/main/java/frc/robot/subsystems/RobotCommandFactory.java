@@ -188,8 +188,9 @@ public class RobotCommandFactory {
    * Run shooter with shooter velocity supplier
    */
   public Command runShooterTestCommand() {
-    return m_shooter.shooterVelocityCommand(m_shooterDashboardSupplier)
-      .withName("runShooterTestCommand");
+    return m_shooter.shooterVoltageCommand();
+    // return m_shooter.shooterVelocityCommand(m_shooterDashboardSupplier)
+    //   .withName("runShooterTestCommand");
   }
 
   public Command runShooterBackTestCommand() {

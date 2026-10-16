@@ -470,7 +470,7 @@ public final class Constants {
     public static double SHOOTER_VELOCITY = 10.0;
     public static double SHOOTER_BACK_VELOCITY = -1.0;
 
-    public static double SHOOTER_DISTANCE1_VELOCITY = 47.3; // between trench and bump 
+    public static double SHOOTER_DISTANCE1_VELOCITY = 60; // between trench and bump
     public static double SHOOTER_DISTANCE2_VELOCITY = 49.;  // tower 
     public static double SHOOTER_DISTANCE3_VELOCITY = 63.;  // corner 
 
@@ -482,15 +482,15 @@ public final class Constants {
     public static double OUTTAKE_VOLTAGE = -3.0;
     public static double INTIAL_ADDITIONAL_VELOCITY = 15.0; 
 
-    public static double SHOOTER_VOLTAGE = 1.0;
+    public static double SHOOTER_VOLTAGE = 8.0;
     public static double SHOOTER_BACK_VOLTAGE = -1.0;
 
     // Influencer PID/FF gains
-    public static double INFLUENCER_kP = 0.3;
-    public static double INFLUENCER_kI = 0.3;
+    public static double INFLUENCER_kP = 0; // 0.25 lower
+    public static double INFLUENCER_kI = 0; // 0.3
     public static double INFLUENCER_kD = 0;
-    public static double INFLUENCER_kS = 0.2;
-    public static double INFLUENCER_kV = 0.115;
+    public static double INFLUENCER_kS = 0; //0.2
+    public static double INFLUENCER_kV = 0.12; //0.12
     public static double INFLUENCER_kA = 0;
 
     // Follower PID/FF gains
