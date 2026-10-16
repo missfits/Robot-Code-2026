@@ -308,15 +308,13 @@ public class RobotContainer {
     // m_testJoystick.leftBumper().and(m_testJoystick.a()).whileTrue(m_robotCommandFactory.runIntakeRollersBackCommand());
 
     m_testJoystick.leftTrigger().whileTrue(m_pivot.storePivotCommand());
-    // m_testJoystick.rightTrigger().whileTrue(
-    //   new ParallelCommandGroup(
-    //     m_robotCommandFactory.runRollerIndexerCommand(),
-    //     m_robotCommandFactory.runShooterTestCommand(),
-    //     m_column.columnVelocityCommand()
-    //   )
-    // );
-
-    m_testJoystick.rightTrigger().whileTrue(m_robotCommandFactory.runShooterTestCommand());
+    m_testJoystick.rightTrigger().whileTrue(
+      new ParallelCommandGroup(
+        m_robotCommandFactory.runRollerIndexerCommand(),
+        m_robotCommandFactory.runShooterTestCommand(),
+        m_column.columnVelocityCommand()
+      )
+    );
 
     m_testJoystick.povCenter().negate().onTrue(new InstantCommand(() -> resetControllerConstantsSmartDashboard()));
 
