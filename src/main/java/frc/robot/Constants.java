@@ -454,7 +454,7 @@ public final class Constants {
     public static final int INFLUENCER_MOTOR_STATOR_LIMIT = 80;
     public static final int FOLLOWER_MOTOR_STATOR_LIMIT = 80;
     public static final int THIRD_MOTOR_STATOR_LIMIT = 80;
-    public static final int INFLUENCER_MOTOR_SUPPLY_LIMIT = 40;
+    public static final int INFLUENCER_MOTOR_SUPPLY_LIMIT = 40; // fix for brownouts: supply = how much can go in --> change this :)
     public static final int FOLLOWER_MOTOR_SUPPLY_LIMIT = INFLUENCER_MOTOR_SUPPLY_LIMIT;
     public static final int THIRD_MOTOR_SUPPLY_LIMIT = INFLUENCER_MOTOR_SUPPLY_LIMIT;
 
@@ -482,6 +482,8 @@ public final class Constants {
 
     // Testing velocities
     public static double TESTING_VELOCITY = 40.0;
+
+    public static double POPCORN_VELOCITY = 10.0;
 
     public static double RECYCLE_VELOCITY = 10.0;
     public static double SHUTTLE_VELOCITY = 50.0;

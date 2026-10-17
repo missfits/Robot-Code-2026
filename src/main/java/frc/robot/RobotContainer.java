@@ -289,7 +289,6 @@ public class RobotContainer {
     // m_testJoystick.b().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runRollerBackTestCommand());
 
     // b: run column 
-
     m_testJoystick.b().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runColumnTestCommand());
 
     // a: run roller and indexer 
@@ -312,6 +311,15 @@ public class RobotContainer {
       new ParallelCommandGroup(
         m_robotCommandFactory.runRollerIndexerCommand(),
         m_robotCommandFactory.runShooterTestCommand(),
+        m_column.columnVelocityCommand()
+      )
+    );
+
+    // popcorn testing
+    m_testJoystick.rightBumper().whileTrue(
+      new ParallelCommandGroup(
+        m_robotCommandFactory.runRollerIndexerCommand(),
+        m_robotCommandFactory.runShooterPopcornCommand(),
         m_column.columnVelocityCommand()
       )
     );

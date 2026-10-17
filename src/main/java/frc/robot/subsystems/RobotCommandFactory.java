@@ -192,6 +192,13 @@ public class RobotCommandFactory {
       .withName("runShooterTestCommand");
   }
 
+  /*
+   * Run shooter with popcorn velocity
+   */
+  public Command runShooterPopcornCommand() {
+    return m_shooter.shooterVelocityCommand(ShooterConstants.POPCORN_VELOCITY);
+  }
+
   public Command runShooterBackTestCommand() {
     return m_shooter.shooterVelocityCommand(m_shooterBackVelocitySupplier)
       .withName("runShooterBackTestCommand");
