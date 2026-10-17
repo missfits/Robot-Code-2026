@@ -408,7 +408,7 @@ public class RobotCommandFactory {
   public Command intakeOnlyModeCommand() {
     return Commands.parallel(
       m_pivot.deployPivotHoldCommand(),
-      m_roller.velocityCommand(RollerConstants.INTAKE_VELOCITY),
+      m_roller.velocityCommand(RollerConstants.INTAKE_VELOCITY)
     ).withName("intakeOnlyModeCommand");
   }
 
