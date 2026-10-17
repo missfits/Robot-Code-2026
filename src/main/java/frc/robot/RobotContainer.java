@@ -596,7 +596,7 @@ public class RobotContainer {
    */
   private void createNamedCommands() {
 
-    new EventTrigger("deploy intake trigger").onTrue(m_robotCommandFactory.autoZeroPivotCommand()); 
+    new EventTrigger("deploy intake trigger").onTrue(m_robotCommandFactory.autoZeroPivotCommand());
     new EventTrigger("intake trigger").onTrue(m_robotCommandFactory.autoIntakeModeCommand());
     new EventTrigger("shoot trigger").onTrue(m_robotCommandFactory.autoShootWithVisionCommand().withTimeout(AutoConstants.AUTO_SHOOT_TIMEOUT)); // TODO: tune timeout
     new EventTrigger("shoot cleanup trigger").onTrue(m_robotCommandFactory.autoShootWithVisionCommand().withTimeout(AutoConstants.AUTO_SHOOT_CLEANUP_TIMEOUT));
