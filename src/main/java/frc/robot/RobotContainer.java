@@ -223,7 +223,11 @@ public class RobotContainer {
     m_driverJoystick.a().and(m_driverJoystick.leftBumper().negate()).whileTrue(
       m_drivetrainCommandFactory.snapToBump(m_driverTranslationJoystickValsSupplier));
     // left bumper + x: shoot far distance for shuttling
-    m_driverJoystick.leftBumper().and(m_driverJoystick.x()).onTrue(m_robotCommandFactory.runShooterFarDistanceCommand());
+    // m_driverJoystick.leftBumper().and(m_driverJoystick.x()).onTrue(m_robotCommandFactory.runShooterFarDistanceCommand());
+
+    // left bumper + x: intake mode without column or indexer
+    m_driverJoystick.leftBumper().and(m_driverJoystick.x()).onTrue(m_robotCommandFactory.intakeOnlyModeCommand());
+
     // left bumper + y: store pivot
     m_driverJoystick.leftBumper().and(m_driverJoystick.y()).onTrue(m_pivot.storePivotCommand());
     // left bumper + b: snap to hub

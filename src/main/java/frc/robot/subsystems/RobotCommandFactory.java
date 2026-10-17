@@ -405,6 +405,13 @@ public class RobotCommandFactory {
     ).withName("intakeModeCommand");
   }
 
+  public Command intakeOnlyModeCommand() {
+    return Commands.parallel(
+      m_pivot.deployPivotHoldCommand(),
+      m_roller.velocityCommand(RollerConstants.INTAKE_VELOCITY),
+    ).withName("intakeOnlyModeCommand");
+  }
+
   public Command autoIntakeModeCommand() {
     return Commands.parallel(
       m_pivot.repeatingZeroPivotCommand(),
