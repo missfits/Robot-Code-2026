@@ -445,6 +445,7 @@ public final class Constants {
 
 
     // Motor IDs
+    // note: 26 mounted on right, 25 and 27 mounted on left
     public static final int INFLUENCER_MOTOR_ID = 25;
     public static final int FOLLOWER_MOTOR_ID = 26;
     public static final int THIRD_MOTOR_ID = 27;
@@ -458,7 +459,7 @@ public final class Constants {
     public static final int THIRD_MOTOR_SUPPLY_LIMIT = INFLUENCER_MOTOR_SUPPLY_LIMIT;
 
     public static final boolean IS_INFLUENCER_INVERTED = false;
-    
+
     // Duty cycle limits
     public static final double PEAK_FORWARD_DUTY_CYCLE = 1;
     public static final double PEAK_REVERSE_DUTY_CYCLE = -1;
@@ -471,8 +472,13 @@ public final class Constants {
     public static double SHOOTER_BACK_VELOCITY = -1.0;
 
     public static double SHOOTER_DISTANCE1_VELOCITY = 47.3; // between trench and bump 
-    public static double SHOOTER_DISTANCE2_VELOCITY = 49.;  // tower 
-    public static double SHOOTER_DISTANCE3_VELOCITY = 63.;  // corner 
+    public static double SHOOTER_DISTANCE2_VELOCITY = 62;  // tower 
+    public static double SHOOTER_DISTANCE3_VELOCITY = 100.;  // corner 
+
+    // RPM scaling for ShooterLookupTable based on manual speeds
+    public static double SHOOTER_RPM_BASE_MULTIPLIER = 1.003476;
+    public static double SHOOTER_MANUAL_MIN_MULTIPLIER_DISTANCE = 66.3;
+    // note: for latter, this is the lowest velocity
 
     // Testing velocities
     public static double TESTING_VELOCITY = 40.0;
@@ -480,7 +486,7 @@ public final class Constants {
     public static double RECYCLE_VELOCITY = 10.0;
     public static double SHUTTLE_VELOCITY = 50.0;
     public static double OUTTAKE_VOLTAGE = -3.0;
-    public static double INTIAL_ADDITIONAL_VELOCITY = 15.0; 
+    public static double INTIAL_ADDITIONAL_VELOCITY = 10.0; 
 
     public static double SHOOTER_VOLTAGE = 1.0;
     public static double SHOOTER_BACK_VOLTAGE = -1.0;
@@ -614,7 +620,7 @@ public final class Constants {
       switch (RobotConfig.getRobot()) {
         case CLEO:
 
-          CAMERA1_NAME = "right_camera";
+          CAMERA1_NAME = "right_camera"; // pf 10/11/26 camera1 and camera2 are out of comission
           CAMERA2_NAME = "left_camera";
           CAMERA3_NAME = "front_right_camera";
           CAMERA4_NAME = "front_left_camera"; 
@@ -634,18 +640,18 @@ public final class Constants {
           ROBOT_TO_CAM2_PITCH = Units.degreesToRadians(-20);
           ROBOT_TO_CAM2_YAW = Units.degreesToRadians(-135)+0.14-0.01;
  
-          ROBOT_TO_CAM3_X = Units.inchesToMeters(-21./2+3); 
-          ROBOT_TO_CAM3_Y = Units.inchesToMeters(-33.0/2+(6.5-1.25)); 
-          ROBOT_TO_CAM3_Z = Units.inchesToMeters(27); 
+          ROBOT_TO_CAM3_X = Units.inchesToMeters(-21./2+2.5); // chagned 10/11/26 trench bot
+          ROBOT_TO_CAM3_Y = Units.inchesToMeters(-33.0/2+(6.5));
+          ROBOT_TO_CAM3_Z = Units.inchesToMeters(17.5); 
           ROBOT_TO_CAM3_ROLL = 0;
-          ROBOT_TO_CAM3_PITCH = Units.degreesToRadians(-25); 
+          ROBOT_TO_CAM3_PITCH = Units.degreesToRadians(-30);
           ROBOT_TO_CAM3_YAW = Units.degreesToRadians(0); 
 
-          ROBOT_TO_CAM4_X = Units.inchesToMeters(-21./2+3); 
-          ROBOT_TO_CAM4_Y = Units.inchesToMeters(33.0/2-(6.5-1.25)); 
-          ROBOT_TO_CAM4_Z = Units.inchesToMeters(26.75); 
+          ROBOT_TO_CAM4_X = Units.inchesToMeters(-21./2+2.5); 
+          ROBOT_TO_CAM4_Y = Units.inchesToMeters(33.0/2-(6.5)); 
+          ROBOT_TO_CAM4_Z = Units.inchesToMeters(17.5); 
           ROBOT_TO_CAM4_ROLL = 0;
-          ROBOT_TO_CAM4_PITCH = Units.degreesToRadians(-25); 
+          ROBOT_TO_CAM4_PITCH = Units.degreesToRadians(-33);
           ROBOT_TO_CAM4_YAW = Units.degreesToRadians(0); 
 
           break;
