@@ -231,8 +231,10 @@ public class RobotContainer {
     // left bumper + y: store pivot
     m_driverJoystick.leftBumper().and(m_driverJoystick.y()).onTrue(m_pivot.storePivotCommand());
     // left bumper + b: snap to hub
+    // left bumper + b: manual shoot close distance
     m_driverJoystick.leftBumper().and(m_driverJoystick.b()).whileTrue(
-      m_robotCommandFactory.snapToHubCommand(m_driverTranslationJoystickValsSupplier));
+      m_robotCommandFactory.runShooterCloseDistanceCommand());
+    //   m_robotCommandFactory.snapToHubCommand(m_driverTranslationJoystickValsSupplier));
     // left bumper + a: point wheels in x
     m_driverJoystick.leftBumper().and(m_driverJoystick.a()).whileTrue(m_drivetrainCommandFactory.pointWheelsinX());
     // right bumper: slowmode
