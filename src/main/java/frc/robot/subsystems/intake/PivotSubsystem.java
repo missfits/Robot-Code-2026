@@ -85,6 +85,14 @@ public class PivotSubsystem extends MechanismsSubsystemBase {
       .withName("deployPivotCommand");
   }
 
+  public Command deployPivotHoldCommand() {
+    return Commands.sequence(
+      motionMagicVoltageCommand(() -> PivotConstants.DEPLOY_POSITION_DEGREES),
+
+      this.run(() -> m_IO.setVoltage(0.5))
+    ).withName("deployPivotHoldCommand");
+  }
+
   public Command storePivotCommand() {
     return motionMagicVoltageCommand(() -> PivotConstants.STORE_POSITION_DEGREES)
       .withName("storePivotCommand");

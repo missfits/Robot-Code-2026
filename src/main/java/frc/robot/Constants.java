@@ -392,7 +392,7 @@ public final class Constants {
     public static double OUTTAKE_VELOCITY = -70.0;
     public static double RECYCLE_VELOCITY = 70.0;
     public static double SHUTTLE_VELOCITY = SHOOT_VELOCITY;
-    public static double INTAKE_VELOCITY = -40.0;
+    public static double INTAKE_VELOCITY = -20.0;
 
     // Testing velocities
     public static double TESTING_VELOCITY = 0.0;
@@ -454,7 +454,7 @@ public final class Constants {
     public static final int INFLUENCER_MOTOR_STATOR_LIMIT = 80;
     public static final int FOLLOWER_MOTOR_STATOR_LIMIT = 80;
     public static final int THIRD_MOTOR_STATOR_LIMIT = 80;
-    public static final int INFLUENCER_MOTOR_SUPPLY_LIMIT = 40;
+    public static final int INFLUENCER_MOTOR_SUPPLY_LIMIT = 40; // fix for brownouts: supply = how much can go in --> change this :)
     public static final int FOLLOWER_MOTOR_SUPPLY_LIMIT = INFLUENCER_MOTOR_SUPPLY_LIMIT;
     public static final int THIRD_MOTOR_SUPPLY_LIMIT = INFLUENCER_MOTOR_SUPPLY_LIMIT;
 
@@ -475,13 +475,20 @@ public final class Constants {
     public static double SHOOTER_DISTANCE2_VELOCITY = 62;  // tower 
     public static double SHOOTER_DISTANCE3_VELOCITY = 100.;  // corner 
 
+    // RPM scaling for ShooterLookupTable based on manual speeds
+    public static double SHOOTER_RPM_BASE_MULTIPLIER = 1.3;
+    public static double SHOOTER_MANUAL_MIN_MULTIPLIER_DISTANCE = 66.3;
+    // note: for latter, this is the lowest velocity
+
     // Testing velocities
     public static double TESTING_VELOCITY = 40.0;
+
+    public static double POPCORN_VELOCITY = 10.0;
 
     public static double RECYCLE_VELOCITY = 10.0;
     public static double SHUTTLE_VELOCITY = 50.0;
     public static double OUTTAKE_VOLTAGE = -3.0;
-    public static double INTIAL_ADDITIONAL_VELOCITY = 10.0; 
+    public static double INTIAL_ADDITIONAL_VELOCITY = 5.0; 
 
     public static double SHOOTER_VOLTAGE = 1.0;
     public static double SHOOTER_BACK_VOLTAGE = -1.0;
@@ -646,7 +653,7 @@ public final class Constants {
           ROBOT_TO_CAM4_Y = Units.inchesToMeters(33.0/2-(6.5)); 
           ROBOT_TO_CAM4_Z = Units.inchesToMeters(17.5); 
           ROBOT_TO_CAM4_ROLL = 0;
-          ROBOT_TO_CAM4_PITCH = Units.degreesToRadians(-33);
+          ROBOT_TO_CAM4_PITCH = Units.degreesToRadians(-41);
           ROBOT_TO_CAM4_YAW = Units.degreesToRadians(0); 
 
           break;

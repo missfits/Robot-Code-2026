@@ -192,6 +192,13 @@ public class RobotCommandFactory {
       .withName("runShooterTestCommand");
   }
 
+  /*
+   * Run shooter with popcorn velocity
+   */
+  public Command runShooterPopcornCommand() {
+    return m_shooter.shooterVelocityCommand(ShooterConstants.POPCORN_VELOCITY);
+  }
+
   public Command runShooterBackTestCommand() {
     return m_shooter.shooterVelocityCommand(m_shooterBackVelocitySupplier)
       .withName("runShooterBackTestCommand");
@@ -391,11 +398,18 @@ public class RobotCommandFactory {
   // intake mode
   public Command intakeModeCommand() {
     return Commands.parallel(
-      m_pivot.deployPivotCommand(),
+      m_pivot.deployPivotHoldCommand(),
       m_roller.velocityCommand(RollerConstants.INTAKE_VELOCITY),
       m_indexer.velocityCommand(IndexerConstants.INTAKE_VELOCITY),
       m_column.velocityCommand(ColumnConstants.INTAKE_VELOCITY) // will run backwards
     ).withName("intakeModeCommand");
+  }
+
+  public Command intakeOnlyModeCommand() {
+    return Commands.parallel(
+      m_pivot.deployPivotHoldCommand(),
+      m_roller.velocityCommand(RollerConstants.INTAKE_VELOCITY)
+    ).withName("intakeOnlyModeCommand");
   }
 
   public Command autoIntakeModeCommand() {

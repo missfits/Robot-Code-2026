@@ -220,17 +220,34 @@ public class RobotContainer {
       .whileTrue(m_robotCommandFactory.snapToHubCommand(m_driverTranslationJoystickValsSupplier));
       
     // a: snap to bump
-    m_driverJoystick.a().and(m_driverJoystick.leftBumper().negate()).whileTrue(
+    // m_driverJoystick.a().and(m_driverJoystick.leftBumper().negate()).whileTrue(
+    //   m_drivetrainCommandFactory.snapToBump(m_driverTranslationJoystickValsSupplier));
+
+    // left bumper + a: snap to bump
+    m_driverJoystick.leftBumper().and(m_driverJoystick.a()).whileTrue(
       m_drivetrainCommandFactory.snapToBump(m_driverTranslationJoystickValsSupplier));
+
     // left bumper + x: shoot far distance for shuttling
-    m_driverJoystick.leftBumper().and(m_driverJoystick.x()).onTrue(m_robotCommandFactory.runShooterFarDistanceCommand());
+    // m_driverJoystick.leftBumper().and(m_driverJoystick.x()).onTrue(m_robotCommandFactory.runShooterFarDistanceCommand());
+
+    // left bumper + x: intake mode without column or indexer
+    m_driverJoystick.leftBumper().and(m_driverJoystick.x()).onTrue(m_robotCommandFactory.intakeOnlyModeCommand());
+
     // left bumper + y: store pivot
     m_driverJoystick.leftBumper().and(m_driverJoystick.y()).onTrue(m_pivot.storePivotCommand());
-    // left bumper + b: snap to hub
+
+    // left bumper + b: snap to hub // changed calgames 10/18
+    // left bumper + b: manual shoot close distance
     m_driverJoystick.leftBumper().and(m_driverJoystick.b()).whileTrue(
-      m_robotCommandFactory.snapToHubCommand(m_driverTranslationJoystickValsSupplier));
+      m_robotCommandFactory.runShooterCloseDistanceCommand());
+    //   m_robotCommandFactory.snapToHubCommand(m_driverTranslationJoystickValsSupplier));
+
     // left bumper + a: point wheels in x
-    m_driverJoystick.leftBumper().and(m_driverJoystick.a()).whileTrue(m_drivetrainCommandFactory.pointWheelsinX());
+    // m_driverJoystick.leftBumper().and(m_driverJoystick.a()).whileTrue(m_drivetrainCommandFactory.pointWheelsinX());
+
+    // a: point wheels in x
+    m_driverJoystick.a().and(m_driverJoystick.leftBumper().negate()).whileTrue(m_drivetrainCommandFactory.pointWheelsinX());
+
     // right bumper: slowmode
     m_drivetrainCommandFactory.setSlowmodeButton(m_driverJoystick.rightBumper());
     // left trigger: shuttle
@@ -289,7 +306,6 @@ public class RobotContainer {
     // m_testJoystick.b().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runRollerBackTestCommand());
 
     // b: run column 
-
     m_testJoystick.b().and(m_testJoystick.leftBumper().negate()).whileTrue(m_robotCommandFactory.runColumnTestCommand());
 
     // a: run roller and indexer 
@@ -312,6 +328,15 @@ public class RobotContainer {
       new ParallelCommandGroup(
         m_robotCommandFactory.runRollerIndexerCommand(),
         m_robotCommandFactory.runShooterTestCommand(),
+        m_column.columnVelocityCommand()
+      )
+    );
+
+    // popcorn testing
+    m_testJoystick.rightBumper().whileTrue(
+      new ParallelCommandGroup(
+        m_robotCommandFactory.runRollerIndexerCommand(),
+        m_robotCommandFactory.runShooterPopcornCommand(),
         m_column.columnVelocityCommand()
       )
     );
@@ -596,7 +621,7 @@ public class RobotContainer {
    */
   private void createNamedCommands() {
 
-    new EventTrigger("deploy intake trigger").onTrue(m_robotCommandFactory.autoZeroPivotCommand()); 
+    new EventTrigger("deploy intake trigger").onTrue(m_robotCommandFactory.autoZeroPivotCommand());
     new EventTrigger("intake trigger").onTrue(m_robotCommandFactory.autoIntakeModeCommand());
     new EventTrigger("shoot trigger").onTrue(m_robotCommandFactory.autoShootWithVisionCommand().withTimeout(AutoConstants.AUTO_SHOOT_TIMEOUT)); // TODO: tune timeout
     new EventTrigger("shoot cleanup trigger").onTrue(m_robotCommandFactory.autoShootWithVisionCommand().withTimeout(AutoConstants.AUTO_SHOOT_CLEANUP_TIMEOUT));

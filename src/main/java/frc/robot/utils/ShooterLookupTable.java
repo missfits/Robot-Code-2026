@@ -4,6 +4,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
 
+import edu.wpi.first.math.MathUtil;
+import frc.robot.Constants.ShooterConstants;
+
 /**
  * Lookup table for mapping distance from hub to shooter velocity.
  * Uses linear interpolation to find the appropriate velocity for a given distance.
@@ -17,21 +20,20 @@ public class ShooterLookupTable {
   static {
     // Initialize the lookup table with placeholder values
     // Format: distance in meters -> velocity in rotations per second
-    DISTANCE_TO_VELOCITY_MAP.put(1.5, 37.);   // prolly too close but can still make some 
-    DISTANCE_TO_VELOCITY_MAP.put(1.7, 38.);   // closest while being consistent 
-    DISTANCE_TO_VELOCITY_MAP.put(2.0, 40.);   
-    DISTANCE_TO_VELOCITY_MAP.put(2.25, 42.);   
-    DISTANCE_TO_VELOCITY_MAP.put(2.5, 45.);   
-    DISTANCE_TO_VELOCITY_MAP.put(2.8, 47.3);  // between trench and bump
-    DISTANCE_TO_VELOCITY_MAP.put(3.0, 49.);
-    DISTANCE_TO_VELOCITY_MAP.put(3.15, 49.);  // tower 
-    DISTANCE_TO_VELOCITY_MAP.put(3.5, 51.);
-    DISTANCE_TO_VELOCITY_MAP.put(3.7, 51.);   // trench 
-    DISTANCE_TO_VELOCITY_MAP.put(4.0, 54.);   
-    DISTANCE_TO_VELOCITY_MAP.put(4.5, 57.);   
-    DISTANCE_TO_VELOCITY_MAP.put(5.1, 63.);   // corner
-    DISTANCE_TO_VELOCITY_MAP.put(5.6, 65.);   // bogus
-    DISTANCE_TO_VELOCITY_MAP.put(100.0, 70.);   // bogus for shuttling
+    DISTANCE_TO_VELOCITY_MAP.put(1.6, 43.);   // prolly too close but can still make some 
+    DISTANCE_TO_VELOCITY_MAP.put(2.0, 48.);   
+    DISTANCE_TO_VELOCITY_MAP.put(2.25, 49.);
+    DISTANCE_TO_VELOCITY_MAP.put(2.5, 52.);
+    DISTANCE_TO_VELOCITY_MAP.put(2.8, 53.); 
+    DISTANCE_TO_VELOCITY_MAP.put(3.0, 57.);
+    DISTANCE_TO_VELOCITY_MAP.put(3.15, 57.);
+    DISTANCE_TO_VELOCITY_MAP.put(3.5, 59.);
+    DISTANCE_TO_VELOCITY_MAP.put(3.7, 61.);
+    DISTANCE_TO_VELOCITY_MAP.put(4.0, 63.);
+    DISTANCE_TO_VELOCITY_MAP.put(4.5, 56.); // <<    
+    // DISTANCE_TO_VELOCITY_MAP.put(5.1, 63.);   // corner
+    // DISTANCE_TO_VELOCITY_MAP.put(5.6, 65.);   // bogus
+    // DISTANCE_TO_VELOCITY_MAP.put(100.0, 70.);   // bogus for shuttling
   }
   
   /**
@@ -58,9 +60,14 @@ public class ShooterLookupTable {
       return Optional.empty();
     }
 
+    // Calculate multiplier (bogus for calgames based on manual velocities)
+      // clamped for distances between tested manual shooter distances
+    double multiplier = ShooterConstants.SHOOTER_RPM_BASE_MULTIPLIER * (distance - ShooterConstants.SHOOTER_MANUAL_MIN_MULTIPLIER_DISTANCE);
+    multiplier = MathUtil.clamp(multiplier, 1.0, ShooterConstants.SHOOTER_RPM_BASE_MULTIPLIER);
+
     // If both entries are the same (exact match), return that value
     if (lowerEntry.getKey().equals(upperEntry.getKey())) {
-      return Optional.of(lowerEntry.getValue());
+      return Optional.of(lowerEntry.getValue() * multiplier);
     }
 
     // Linear interpolation between the two closest points
@@ -70,7 +77,7 @@ public class ShooterLookupTable {
         distance
     );
 
-    return Optional.of(interpolatedVelocity);
+    return Optional.of(interpolatedVelocity * multiplier);
   }
 
   /**
